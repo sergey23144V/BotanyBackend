@@ -1,0 +1,44 @@
+syntax = "proto3";
+import "ecomorphs.proto";
+import "elementary-type.proto";
+
+package botany;
+
+option go_package = "/TypePlant";
+
+service TypePlantService {
+  rpc CreateTypePlant(CreateTypePlantRequest) returns (TypePlant);
+
+  // Получение сущности по
+  rpc GetTypePlant (TypePlant) returns (TypePlant);
+
+  // Обновление сущности по id
+  rpc UpdateTypePlant (EcoEntity) returns (TypePlant);
+
+  // Удаление сущности по заголовку
+  rpc DeleteTypePlant (TypePlant) returns (BoolResponse);
+
+  // Получение списка всех сущностей
+  rpc GetAllTypePlant (EmptyRequest) returns (TypePlantList);
+}
+
+
+
+message TypePlant {
+  string id = 1;
+  string title = 2;
+  string subtitle = 3;
+  repeated EcoType ecoType = 4;
+}
+
+message TypePlantList {
+  repeated TypePlant typePlant = 1;
+}
+
+
+message CreateTypePlantRequest {
+  string title = 2;
+  string subtitle = 3;
+  repeated EcoType ecoType = 4;
+}
+

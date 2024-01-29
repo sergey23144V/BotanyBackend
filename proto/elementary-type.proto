@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package botany;
+
+option go_package = "/elementary-type";
+
+message EmptyRequest {
+}
+
+message IdRequest {
+  string id = 1;
+}
+
+message PagesRequest {
+  int32 pagesSize = 1;
+  int32 pagesNumber = 2;
+}
+
+message PagesResponse {
+  int32 total = 1;
+  int32 limit = 2;
+}
+
+message BoolResponse {
+  bool result = 1;
+}
+
+
+

@@ -1,0 +1,45 @@
+syntax = "proto3";
+import "elementary-type.proto";
+import "ecomorphs.proto";
+
+package botany;
+
+option go_package = "/Type";
+
+
+// Определение сервиса EcoCRUDService
+service EcomorphEntityService {
+  // Создание новой сущности
+  rpc CreateEcomorphEntity (CreateEcomorphsEntityRequest) returns (EcomorphsEntity);
+
+  // Получение сущности по заголовку
+  rpc GetEcomorphEntity (IdRequest) returns (EcomorphsEntity);
+
+  // Обновление сущности по заголовку
+  rpc UpdateEcomorphEntity(EcomorphsEntity) returns (EcomorphsEntity);
+
+  // Удаление сущности по заголовку
+  rpc DeleteEcomorphEntity (IdRequest) returns (BoolResponse);
+
+  // Получение списка всех сущностей
+  rpc GetAllEcomorphEntity (EmptyRequest) returns (EcomorphsEntityList);
+
+
+}
+
+message EcomorphsEntity {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  Ecomorph ecomorphs = 4;
+}
+
+message EcomorphsEntityList {
+  repeated EcomorphsEntity ecomorphsEntity = 1;
+}
+
+message CreateEcomorphsEntityRequest {
+  string title = 2;
+  string description = 3;
+}
+

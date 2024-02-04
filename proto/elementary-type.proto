@@ -1,8 +1,10 @@
 syntax = "proto3";
 
-package botany;
 
-option go_package = "/elementary-type";
+
+option go_package = "github.com/sergey23144V/BotanyBackend/servers/g-rpc";
+
+package botany;
 
 message EmptyRequest {
 }

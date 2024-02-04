@@ -1,14 +1,10 @@
 package main
 
 import (
-	repository "BotanyBackend/repository"
-	"BotanyBackend/servers/g-rpc/Type"
-	"BotanyBackend/servers/g-rpc/TypeImpl"
-	"BotanyBackend/service"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
+	"github.com/sergey23144V/BotanyBackend/pkg/repository"
+	"github.com/sergey23144V/BotanyBackend/pkg/service"
+	g_rpc "github.com/sergey23144V/BotanyBackend/servers/g-rpc"
 	"log"
-	"net"
 )
 
 func main() {
@@ -23,27 +19,14 @@ func main() {
 	}
 
 	db, err := repository.ConnectDB(cfgDB)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	repository := repository.NewRepository(db)
 
 	service := service.NewService(repository)
 
-	listener, err := net.Listen("tcp", ":50051")
-	if err != nil {
-		log.Fatalf("Failed to listen: %v", err)
-	}
-	s := grpc.NewServer()
+	g_rpc.StartGrpc(*service)
 
-	//Создание Сервера
-	srv := TypeImpl.EcoCRUDServiceServerImpl{Sevice: service}
-
-	//Регистрация Сервера
-	Type.RegisterEcoCRUDServiceServer(s, srv)
-
-	reflection.Register(s)
-
-	log.Println("Starting server on :50051")
-	if err := s.Serve(listener); err != nil {
-		log.Fatalf("Failed to serve: %v", err)
-	}
 }

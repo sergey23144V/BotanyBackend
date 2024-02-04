@@ -1,10 +1,15 @@
 syntax = "proto3";
+
+
+
+option go_package = "github.com/sergey23144V/BotanyBackend/servers/g-rpc";
+
+
+
+import "google/protobuf/timestamp.proto";
 import "elementary-type.proto";
 
 package botany;
-
-option go_package = "/Type";
-
 
 // Определение сервиса EcoCRUDService
 service EcomorphService {
@@ -25,9 +30,11 @@ service EcomorphService {
 }
 
 message Ecomorph {
+
   string id = 1;
   string title = 2;
   string description = 3;
+  google.protobuf.Timestamp time =4;
 }
 
 message EcomorphsList {

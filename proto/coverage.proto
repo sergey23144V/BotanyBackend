@@ -1,64 +1,9 @@
 syntax = "proto3";
-import "elementary-type.proto";
+
+option go_package = "github.com/sergey23144V/BotanyBackend/servers/g-rpc";
 
 package botany;
 
-option go_package = "BotanyBackend/servers/g-rpc/Type";
 
 
-// Определение сервиса EcoCRUDService
-service EcoCRUDService {
-  // Создание новой сущности
-  rpc CreateEcoEntity (CreateEcoEntityRequest) returns (EcoEntity);
-
-  // Получение сущности по заголовку
-  rpc GetEcoEntity (IdRequest) returns (EcoEntity);
-
-  // Обновление сущности по заголовку
-  rpc UpdateEcoEntity (EcoEntity) returns (EcoEntity);
-
-  // Удаление сущности по заголовку
-  rpc DeleteEcoEntity (IdRequest) returns (BoolResponse);
-
-  // Получение списка всех сущностей
-  rpc GetAllEcoEntities (EmptyRequest) returns (EcoEntityList);
-
-  // Получение списка всех типов
-  rpc GetListEcoType (EmptyRequest) returns (EcoTypeList);
-}
-
-
-// Определение перечисления EcoType
-enum EcoType {
-  BIOMORPHS = 0;
-  CLIMOTOFORMS = 1;
-  COVERED_PLANTS = 2;
-  FAMILIES = 3;
-  GEOMORPHS = 4;
-  HYDROMORPHS = 5;
-  LIFE_FORMS = 6;
-  TROPHOMORPHS = 7;
-  ZENOMORPHS = 8;
-}
-
-// Определение сообщения EcoEntity
-message EcoEntity {
-  string id = 1;
-  string title = 2;
-  string description = 3;
-  EcoType ecoType = 4;
-}
-
-message EcoEntityList {
-  repeated EcoEntity ecoEntity = 1;
-}
-message EcoTypeList {
-  repeated EcoType ecoType = 1;
-}
-
-message CreateEcoEntityRequest {
-  string title = 2;
-  string description = 3;
-  EcoType ecoType = 4;
-}
 

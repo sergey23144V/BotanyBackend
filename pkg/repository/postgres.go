@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"BotanyBackend/servers/g-rpc/Type"
+	g_rpc "github.com/sergey23144V/BotanyBackend/servers/g-rpc"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -22,7 +22,8 @@ func ConnectDB(cfg Config) (*gorm.DB, error) {
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
-	db.AutoMigrate(Type.EcoEntity{})
+	db.AutoMigrate(g_rpc.EcomorphsEntity{}, g_rpc.Ecomorph{})
+	println("log")
 
 	return db, err
 }

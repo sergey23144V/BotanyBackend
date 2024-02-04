@@ -1,11 +1,14 @@
 syntax = "proto3";
+
+
+
+
+option go_package = "github.com/sergey23144V/BotanyBackend/servers/g-rpc";
+
 import "elementary-type.proto";
 import "ecomorphs.proto";
 
 package botany;
-
-option go_package = "/Type";
-
 
 // Определение сервиса EcoCRUDService
 service EcomorphEntityService {
@@ -31,15 +34,17 @@ message EcomorphsEntity {
   string id = 1;
   string title = 2;
   string description = 3;
-  Ecomorph ecomorphs = 4;
+  repeated Ecomorph ecomorphs = 4;
 }
 
 message EcomorphsEntityList {
   repeated EcomorphsEntity ecomorphsEntity = 1;
 }
 
+
 message CreateEcomorphsEntityRequest {
   string title = 2;
   string description = 3;
+  string ecomorphsId = 1;
 }
 

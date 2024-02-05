@@ -2,9 +2,11 @@ syntax = "proto3";
 
 
 
-option go_package = "github.com/sergey23144V/BotanyBackend/servers/g-rpc";
+option go_package = "api/ecomorph/";
 
 
+import "github.com/infobloxopen/protoc-gen-gorm@v1.1.2/proto/options/gorm.proto";
+import "github.com/infobloxopen/protoc-gen-gorm@v1.1.2/third_party/proto/atlas/resource/v1/resource.proto";
 
 import "google/protobuf/timestamp.proto";
 import "elementary-type.proto";
@@ -14,35 +16,45 @@ package botany;
 // Определение сервиса EcoCRUDService
 service EcomorphService {
   // Создание новой сущности
-  rpc CreateEcomorph (CreateEcomorphsRequest) returns (Ecomorph);
+  rpc InsertEcomorph (Ecomorph) returns (Ecomorph);
 
   // Получение сущности по заголовку
-  rpc GetEcomorph (IdRequest) returns (Ecomorph);
+  rpc GetEcomorphById (IdRequest) returns (Ecomorph);
 
   // Обновление сущности по заголовку
-  rpc UpdateEcomorph(Ecomorph) returns (Ecomorph);
+  rpc UpEcomorphById(Ecomorph) returns (Ecomorph);
 
   // Удаление сущности по заголовку
-  rpc DeleteEcomorph (IdRequest) returns (BoolResponse);
+  rpc DeleteEcomorphById (IdRequest) returns (BoolResponse){
+    option (gorm.method).object_type = "Ecomorph";
+  };
 
   // Получение списка всех типов
-  rpc GetListEcomorph (EmptyRequest) returns (EcomorphsList);
+  rpc GetListEcomorphById (EmptyRequest) returns (EcomorphsList);
 }
 
 message Ecomorph {
+  option (gorm.opts) = {
+    ormable: true,
+    multi_account: true
+  };
+  atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
+  google.protobuf.Timestamp created_at = 2;
+  google.protobuf.Timestamp updated_at = 3;
 
-  string id = 1;
-  string title = 2;
-  string description = 3;
-  google.protobuf.Timestamp time =4;
+  string title = 4;
+  string description = 5;
+  atlas.rpc.Identifier user_id = 6;
 }
 
 message EcomorphsList {
   repeated Ecomorph ecomorph = 1;
 }
 
-message CreateEcomorphsRequest {
-  string title = 2;
-  string description = 3;
+message InsertEcomorph {
+  string title = 4;
+  string description = 5;
+  atlas.rpc.Identifier user_id = 6;
 }
+
 

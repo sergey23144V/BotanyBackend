@@ -1,40 +1,53 @@
 syntax = "proto3";
 
 
+import "github.com/infobloxopen/protoc-gen-gorm@v1.1.2/proto/options/gorm.proto";
+import "github.com/infobloxopen/protoc-gen-gorm@v1.1.2/third_party/proto/atlas/resource/v1/resource.proto";
+import "google/protobuf/timestamp.proto";
 
-
-option go_package = "github.com/sergey23144V/BotanyBackend/servers/g-rpc";
+option go_package = "api/ecomorph-entity";
 
 import "elementary-type.proto";
 import "ecomorphs.proto";
 
 package botany;
 
+
 // Определение сервиса EcoCRUDService
 service EcomorphEntityService {
+
   // Создание новой сущности
-  rpc CreateEcomorphEntity (CreateEcomorphsEntityRequest) returns (EcomorphsEntity);
+  rpc InsertEcomorphEntity (CreateEcomorphsEntityRequest) returns (EcomorphsEntity);
 
   // Получение сущности по заголовку
-  rpc GetEcomorphEntity (IdRequest) returns (EcomorphsEntity);
+  rpc GetEcomorphEntityByID (IdRequest) returns (EcomorphsEntity);
 
   // Обновление сущности по заголовку
-  rpc UpdateEcomorphEntity(EcomorphsEntity) returns (EcomorphsEntity);
+  rpc UpEcomorphEntityByID (UpdateEcomorphsEntityRequest) returns (EcomorphsEntity);
 
   // Удаление сущности по заголовку
-  rpc DeleteEcomorphEntity (IdRequest) returns (BoolResponse);
+  rpc DeleteEcomorphEntityByID  (IdRequest) returns (BoolResponse){
+    option (gorm.method).object_type = "EcomorphsEntity";
+  } ;
 
   // Получение списка всех сущностей
-  rpc GetAllEcomorphEntity (EmptyRequest) returns (EcomorphsEntityList);
+  rpc  GetAllEcomorphEntity (EmptyRequest) returns (EcomorphsEntityList);
 
 
 }
 
 message EcomorphsEntity {
-  string id = 1;
-  string title = 2;
-  string description = 3;
-  repeated Ecomorph ecomorphs = 4;
+  option (gorm.opts) = {
+    ormable: true,
+    multi_account: true
+  };
+  atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
+  google.protobuf.Timestamp created_at = 2;
+  google.protobuf.Timestamp updated_at = 3;
+  string title = 4;
+  string description = 5;
+  repeated Ecomorph ecomorphs = 6 [(gorm.field).many_to_many = {}];
+  atlas.rpc.Identifier user_id = 7;
 }
 
 message EcomorphsEntityList {
@@ -45,6 +58,13 @@ message EcomorphsEntityList {
 message CreateEcomorphsEntityRequest {
   string title = 2;
   string description = 3;
-  string ecomorphsId = 1;
+  repeated Ecomorph ecomorphsId = 1;
 }
+
+message UpdateEcomorphsEntityRequest {
+  string title = 2;
+  string description = 3;
+  repeated Ecomorph ecomorphsId = 1;
+}
+
 

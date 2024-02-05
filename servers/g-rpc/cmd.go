@@ -1,16 +1,17 @@
 package g_rpc
 
 import (
-	"github.com/sergey23144V/BotanyBackend/pkg/service"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/implementation"
+	"github.com/jinzhu/gorm"
 
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph-entity"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 )
 
-func StartGrpc(ser service.Service) {
+func StartGrpc(db *gorm.DB) {
 	listener, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
@@ -18,12 +19,12 @@ func StartGrpc(ser service.Service) {
 	s := grpc.NewServer()
 
 	//Создание Сервера
-	ecomorphsEntityServet := implementation.NewEcomorphsEntityServetImpl(ser)
-	ecomorphsServet := implementation.NewEcomorphsServetImplImpl(ser)
+	ecomorphsEntityServet := ecomorph_entity.NewEcomorphsEntityServetImpl(db)
+	ecomorphsServet := ecomorph.NewEcomorphsServetImplImpl(db)
 
 	//Регистрация Сервера
-	RegisterEcomorphEntityServiceServer(s, ecomorphsEntityServet)
-	RegisterEcomorphServiceServer(s, ecomorphsServet)
+	ecomorph_entity.RegisterEcomorphEntityServiceServer(s, ecomorphsEntityServet)
+	ecomorph.RegisterEcomorphServiceServer(s, ecomorphsServet)
 
 	reflection.Register(s)
 

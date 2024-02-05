@@ -1,104 +1,28 @@
 syntax = "proto3";
-// Designed to mimic the behavior shown in the GORM example at
-// http://doc.gorm.io/models.html
 
-package user;
+option go_package = "api/user";
 
-import "google/protobuf/timestamp.proto";
-
-
+package auth;
 import "github.com/infobloxopen/protoc-gen-gorm@v1.1.2/proto/options/gorm.proto";
 import "github.com/infobloxopen/protoc-gen-gorm@v1.1.2/third_party/proto/atlas/resource/v1/resource.proto";
+import "google/protobuf/timestamp.proto";
+import "elementary-type.proto";
 
-option go_package = "github.com/infobloxopen/protoc-gen-gorm/example/user;user";
+service UserService {
+  rpc GetMe(botany.EmptyRequest) returns (UserResponse) {}
+}
 
 message User {
-    option (gorm.opts) = {
-        ormable: true,
-        multi_account: true
-    };
-    atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
-    google.protobuf.Timestamp created_at = 2;
-    google.protobuf.Timestamp updated_at = 3;
-
-    google.protobuf.Timestamp birthday = 4;
-    uint32 age = 5 [(gorm.field).drop = true]; // synthetic field
-    uint32 num = 6;
-    CreditCard credit_card = 7; // has one
-    Address billing_address = 10 [(gorm.field).belongs_to = {}];
-    Address shipping_address = 11 [(gorm.field).belongs_to = {}];
-    repeated Language languages = 12 [(gorm.field).many_to_many = {}];
-    repeated User friends = 13 [(gorm.field).many_to_many = {}];
-    atlas.rpc.Identifier shipping_address_id = 14;
-    atlas.rpc.Identifier external_uuid = 15 [(gorm.field).tag = {type: "uuid"}];
-    Department department = 16;
+  option (gorm.opts) = {
+    ormable: true,
+  };
+  atlas.rpc.Identifier id = 1;
+  string name = 2;
+  string email = 3;
+  string role = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
 }
 
-message Email {
-    option (gorm.opts) = {
-        ormable: true,
-        multi_account: true
-    };
-    atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
-    string email = 2;
-    bool subscribed = 3;
-    atlas.rpc.Identifier user_id = 4;
-    atlas.rpc.Identifier external_not_null = 5 [(gorm.field).tag = {type: "uuid" not_null: true}];
-}
+message UserResponse { User user = 1; }
 
-message Address {
-    option (gorm.opts) = {
-        ormable: true,
-        multi_account: true
-    };
-    atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "integer" primary_key: true}];
-    string address_1 = 2;
-    string address_2 = 3;
-    string post = 4;
-    atlas.rpc.Identifier external = 5 [(gorm.field).tag = {type: "jsonb"}];
-    atlas.rpc.Identifier implicit_fk = 6 [(gorm.field) = {reference_of: "Email" tag: {type: "text"} }];
-}
-
-message Language {
-    option (gorm.opts) = {
-        ormable: true,
-        multi_account: true
-    };
-    atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "integer" primary_key: true}];
-    string name = 2;
-    string code = 3;
-    atlas.rpc.Identifier external_int = 4 [(gorm.field).tag = {type: "integer"}];
-}
-
-message CreditCard {
-    option (gorm.opts) = {
-        ormable: true,
-        multi_account: true
-    };
-    atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "integer" primary_key: true}];
-    google.protobuf.Timestamp created_at = 2;
-    google.protobuf.Timestamp updated_at = 3;
-    string number = 4;
-    atlas.rpc.Identifier user_id = 5;
-}
-
-message Task {
-    option (gorm.opts) = {
-        ormable: true,
-        multi_account: true
-    };
-    string name = 1;
-    string description = 2;
-    int64 priority = 3;
-     string id = 4;
-}
-
-// Department added example for composite primary keys
-message Department {
-    option (gorm.opts) = {
-        ormable: true,
-    };
-    // department name and id are composite primary keys
-    string name = 1 [(gorm.field).tag = {primary_key: true}];
-    int64 id = 2 [(gorm.field).tag = {primary_key: true}];
-}

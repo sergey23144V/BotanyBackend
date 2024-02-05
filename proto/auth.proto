@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option go_package = "api/auth";
+import "google/protobuf/timestamp.proto";
+import "elementary-type.proto";
+package auth;
+
+
+service AuthService {
+  rpc SignUpUser(SignUpUserInput) returns (SignInUserResponse) {}
+  rpc SignInUser(SignInUserInput) returns (SignInUserResponse) {}
+}
+
+message SignInUserInput {
+  string email = 1;
+  string password = 2;
+}
+
+message SignUpUserInput {
+  string email = 1;
+  string password = 2;
+  string name = 3;
+}
+
+message SignInUserResponse {
+  string status = 1;
+  string access_token = 2;
+  string refresh_token = 3;
+}
+
+

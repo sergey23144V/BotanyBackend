@@ -2,8 +2,11 @@ package ecomorph
 
 import (
 	context "context"
+	"github.com/infobloxopen/atlas-app-toolkit/atlas/resource"
 	"github.com/jinzhu/gorm"
+	"github.com/sergey23144V/BotanyBackend/pkg"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
+	log "github.com/sirupsen/logrus"
 )
 
 // EcomorphsServetImpl
@@ -12,11 +15,30 @@ type EcomorphsServetImpl struct {
 }
 
 func (e EcomorphsServetImpl) InsertEcomorph(ctx context.Context, ecomorph *Ecomorph) (*Ecomorph, error) {
-	return DefaultCreateEcomorph(ctx, ecomorph, e.db)
+	createEcomorph, err := DefaultCreateEcomorph(ctx, &Ecomorph{
+		Id:          &resource.Identifier{ResourceId: pkg.GenerateUUID()},
+		Title:       ecomorph.Title,
+		Description: ecomorph.Description,
+		UserId:      nil,
+	}, e.db)
+	if err != nil {
+		log.Error("InsertEcomorph:", err)
+		return nil, err
+	}
+	log.Debug("InsertEcomorph: good")
+
+	return createEcomorph, nil
 }
 
 func (e EcomorphsServetImpl) GetEcomorphById(ctx context.Context, request *api.IdRequest) (*Ecomorph, error) {
-	return DefaultReadEcomorph(ctx, &Ecomorph{Id: request.Id}, e.db)
+	ecomorph, err := DefaultReadEcomorph(ctx, &Ecomorph{Id: request.Id}, e.db)
+	if err != nil {
+		log.Error("InsertEcomorph:", err)
+		return nil, err
+	}
+	log.Debug("InsertEcomorph: good")
+
+	return ecomorph, nil
 }
 
 func (e EcomorphsServetImpl) UpEcomorphById(ctx context.Context, ecomorph *Ecomorph) (*Ecomorph, error) {

@@ -5,6 +5,7 @@ import (
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph"
 	ecomorph_entity "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph-entity"
 	"log"
+	"os"
 )
 
 // Config содержит необходимую конфигурацию для подключения к базе данных
@@ -24,8 +25,11 @@ func ConnectDB(cfg Config) (*gorm.DB, error) {
 	db, err := gorm.Open("postgres", dst)
 	log.Println("Open db")
 
-	db.AutoMigrate(ecomorph_entity.EcomorphsEntity{}, ecomorph.Ecomorph{})
+	db.AutoMigrate(ecomorph.EcomorphORM{}, ecomorph_entity.EcomorphsEntityORM{})
 	log.Println("migrant")
+
+	db.LogMode(true)
+	db.SetLogger(log.New(os.Stdout, "\r\n", 0))
 
 	return db, err
 }

@@ -36,7 +36,6 @@ service EcomorphService {
 message Ecomorph {
   option (gorm.opts) = {
     ormable: true,
-    multi_account: true
   };
   atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
   google.protobuf.Timestamp created_at = 2;
@@ -44,7 +43,7 @@ message Ecomorph {
 
   string title = 4;
   string description = 5;
-  atlas.rpc.Identifier user_id = 6;
+  atlas.rpc.Identifier user_id = 6 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
 }
 
 message EcomorphsList {

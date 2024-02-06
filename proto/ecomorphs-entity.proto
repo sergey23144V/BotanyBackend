@@ -17,13 +17,13 @@ package botany;
 service EcomorphEntityService {
 
   // Создание новой сущности
-  rpc InsertEcomorphEntity (CreateEcomorphsEntityRequest) returns (EcomorphsEntity);
+  rpc InsertEcomorphEntity (InputEcomorphsEntity) returns (EcomorphsEntity);
 
   // Получение сущности по заголовку
   rpc GetEcomorphEntityByID (IdRequest) returns (EcomorphsEntity);
 
   // Обновление сущности по заголовку
-  rpc UpEcomorphEntityByID (UpdateEcomorphsEntityRequest) returns (EcomorphsEntity);
+  rpc UpdateEcomorphEntity (InputEcomorphsEntity) returns (EcomorphsEntity);
 
   // Удаление сущности по заголовку
   rpc DeleteEcomorphEntityByID  (IdRequest) returns (BoolResponse){
@@ -54,16 +54,18 @@ message EcomorphsEntityList {
 }
 
 
-message CreateEcomorphsEntityRequest {
-  string title = 2;
-  string description = 3;
-  repeated Ecomorph ecomorphsId = 1;
+message InputFormEcomorphsEntity {
+  string title = 1;
+  string description = 2;
+  repeated Ecomorph ecomorphs = 3;
 }
 
-message UpdateEcomorphsEntityRequest {
-  string title = 2;
-  string description = 3;
-  repeated Ecomorph ecomorphsId = 1;
-}
+message InputEcomorphsEntity{
+  option (gorm.opts) = {
+    ormable: false,
 
+  };
+  atlas.rpc.Identifier id = 1;
+  InputFormEcomorphsEntity input = 2;
+}
 

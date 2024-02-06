@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-option go_package = "github.com/sergey23144V/BotanyBackend/servers/g-rpc";
-
-package botany;
-
-
-
-

@@ -1,7 +1,67 @@
 syntax = "proto3";
 
 
-
-option go_package = "github.com/sergey23144V/BotanyBackend/servers/g-rpc";
+option go_package = "api/trial-site";
 
 package botany;
+
+import "github.com/infobloxopen/protoc-gen-gorm@v1.1.2/proto/options/gorm.proto";
+import "github.com/infobloxopen/protoc-gen-gorm@v1.1.2/third_party/proto/atlas/resource/v1/resource.proto";
+import "google/protobuf/timestamp.proto";
+import "elementary-type.proto";
+import "type-plant.proto";
+
+
+service TrialSiteService {
+  rpc CreateTrialSite(InputTrialSiteRequest) returns (TrialSite);
+
+  // Получение сущности по
+  rpc GetTrialSite (IdRequest) returns (TrialSite);
+
+  // Обновление сущности по id
+  rpc UpdateTrialSite (InputTrialSiteRequest) returns (TrialSite);
+
+  // Удаление сущности по заголовку
+  rpc DeleteTrialSite (IdRequest) returns (BoolResponse){
+    option (gorm.method).object_type = "TrialSite";
+  } ;
+
+  // Получение списка всех сущностей
+  rpc GetAllTrialSite (EmptyRequest) returns (TrialSiteList);
+}
+
+
+
+message TrialSite {
+  option (gorm.opts) = {
+    ormable: true,
+  };
+  atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
+  string title = 2;
+  int32 covered = 3;
+  int32 rating = 10;
+  int32 count_types = 4;
+  atlas.rpc.Identifier  dominant = 7 [(gorm.field).has_many = {preload: true}];
+  atlas.rpc.Identifier  subDominant = 8 [(gorm.field).has_many = {preload: true}];
+  repeated TypePlant typePlant = 9 [(gorm.field).many_to_many = {}];
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+message TrialSiteList {
+  repeated TrialSite trialSite = 1;
+}
+
+
+message InputFormTrialSiteRequest {
+  string title = 2;
+  string subtitle = 3;
+  repeated TypePlant typePlant = 4;
+  optional TypePlant dominant = 7;
+  optional TypePlant subDominant = 8;
+}
+
+message InputTrialSiteRequest{
+  atlas.rpc.Identifier id = 1;
+  InputFormTrialSiteRequest input = 2;
+}

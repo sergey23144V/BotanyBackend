@@ -5,6 +5,7 @@ import (
 	"github.com/infobloxopen/atlas-app-toolkit/atlas/resource"
 	"github.com/jinzhu/gorm"
 	"github.com/sergey23144V/BotanyBackend/pkg"
+	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 )
 
@@ -12,30 +13,32 @@ type EcomorphsEntityServetImpl struct {
 	db *gorm.DB
 }
 
-func (e EcomorphsEntityServetImpl) InsertEcomorphEntity(ctx context.Context, request *CreateEcomorphsEntityRequest) (*EcomorphsEntity, error) {
-	return DefaultCreateEcomorphsEntity(ctx, &EcomorphsEntity{
-		Id:          &resource.Identifier{ResourceId: pkg.GenerateUUID()},
-		Title:       request.Title,
-		Description: request.Description,
-		Ecomorphs:   request.EcomorphsId,
-	}, e.db)
+func NewEcomorphsEntityServetImpl(db *gorm.DB) EcomorphsEntityServetImpl {
+	return EcomorphsEntityServetImpl{db}
+}
+
+func (e EcomorphsEntityServetImpl) InsertEcomorphEntity(ctx context.Context, entity *InputEcomorphsEntity) (*EcomorphsEntity, error) {
+	return DefaultCreateEcomorphsEntity(ctx, e.ToPB(ctx, entity), e.db)
+}
+
+func (e EcomorphsEntityServetImpl) UpdateEcomorphEntity(ctx context.Context, entity *InputEcomorphsEntity) (*EcomorphsEntity, error) {
+	return DefaultStrictUpdateEcomorphsEntity(ctx, e.ToPB(ctx, entity), e.db)
 }
 
 func (e EcomorphsEntityServetImpl) GetEcomorphEntityByID(ctx context.Context, request *api.IdRequest) (*EcomorphsEntity, error) {
-	return DefaultReadEcomorphsEntity(ctx, &EcomorphsEntity{Id: request.Id}, e.db)
-}
-
-func (e EcomorphsEntityServetImpl) UpEcomorphEntityByID(ctx context.Context, request *UpdateEcomorphsEntityRequest) (*EcomorphsEntity, error) {
-	return DefaultStrictUpdateEcomorphsEntity(ctx, &EcomorphsEntity{
-		Title:       request.Title,
-		Description: request.Description,
-		Ecomorphs:   request.EcomorphsId,
-	}, e.db)
+	userId := middlewares.GetUserIdFromContext(ctx)
+	return DefaultReadEcomorphsEntity(ctx, &EcomorphsEntity{Id: request.Id, UserId: userId}, e.db)
 }
 
 func (e EcomorphsEntityServetImpl) DeleteEcomorphEntityByID(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	userId := middlewares.GetUserIdFromContext(ctx)
+	result := &api.BoolResponse{Result: true}
+	err := DefaultDeleteEcomorphsEntity(ctx, &EcomorphsEntity{Id: request.Id, UserId: userId}, e.db)
+	if err != nil {
+		result.Result = false
+		return result, err
+	}
+	return result, nil
 }
 
 func (e EcomorphsEntityServetImpl) GetAllEcomorphEntity(ctx context.Context, request *api.EmptyRequest) (*EcomorphsEntityList, error) {
@@ -51,6 +54,21 @@ func (e EcomorphsEntityServetImpl) mustEmbedUnimplementedEcomorphEntityServiceSe
 	panic("implement me")
 }
 
-func NewEcomorphsEntityServetImpl(db *gorm.DB) EcomorphsEntityServetImpl {
-	return EcomorphsEntityServetImpl{db}
+func (e EcomorphsEntityServetImpl) ToPB(ctx context.Context, entity *InputEcomorphsEntity) *EcomorphsEntity {
+	var id *resource.Identifier
+
+	if entity.Id != nil {
+		id = entity.Id
+	} else {
+		id.ResourceId = pkg.GenerateUUID()
+	}
+
+	userId := middlewares.GetUserIdFromContext(ctx)
+	return &EcomorphsEntity{
+		Id:          entity.Id,
+		Title:       entity.Input.Title,
+		Description: entity.Input.Description,
+		Ecomorphs:   entity.Input.Ecomorphs,
+		UserId:      userId,
+	}
 }

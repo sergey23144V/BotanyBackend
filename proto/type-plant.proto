@@ -3,25 +3,28 @@ syntax = "proto3";
 
 
 
-option go_package = "github.com/sergey23144V/BotanyBackend/servers/g-rpc";
-
-import "ecomorphs.proto";
+option go_package = "api/type-plant";
+import "github.com/infobloxopen/protoc-gen-gorm@v1.1.2/proto/options/gorm.proto";
+import "github.com/infobloxopen/protoc-gen-gorm@v1.1.2/third_party/proto/atlas/resource/v1/resource.proto";
+import "google/protobuf/timestamp.proto";
 import "elementary-type.proto";
 import "ecomorphs-entity.proto";
 
 package botany;
 
 service TypePlantService {
-  rpc CreateTypePlant(CreateTypePlantRequest) returns (TypePlant);
+  rpc CreateTypePlant(InputTypePlantRequest) returns (TypePlant);
 
   // Получение сущности по
-  rpc GetTypePlant (TypePlant) returns (TypePlant);
+  rpc GetTypePlant (IdRequest) returns (TypePlant);
 
   // Обновление сущности по id
-  rpc UpdateTypePlant (EcomorphsEntity) returns (TypePlant);
+  rpc UpdateTypePlant (InputTypePlantRequest) returns (TypePlant);
 
   // Удаление сущности по заголовку
-  rpc DeleteTypePlant (TypePlant) returns (BoolResponse);
+  rpc DeleteTypePlant (IdRequest) returns (BoolResponse){
+    option (gorm.method).object_type = "TypePlant";
+  } ;
 
   // Получение списка всех сущностей
   rpc GetAllTypePlant (EmptyRequest) returns (TypePlantList);
@@ -30,10 +33,16 @@ service TypePlantService {
 
 
 message TypePlant {
-  string id = 1;
+  option (gorm.opts) = {
+    ormable: true,
+  };
+  atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
   string title = 2;
   string subtitle = 3;
-  repeated EcomorphsEntity ecoType = 4;
+  repeated EcomorphsEntity ecomorphsEntity = 4 [(gorm.field).many_to_many = {}];
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+  atlas.rpc.Identifier user_id = 7 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
 }
 
 message TypePlantList {
@@ -41,9 +50,18 @@ message TypePlantList {
 }
 
 
-message CreateTypePlantRequest {
+message InputFormTypePlantRequest {
   string title = 2;
   string subtitle = 3;
-  repeated EcomorphsEntity ecoType = 4;
+  repeated EcomorphsEntity ecomorphsEntity = 4;
 }
+
+message InputTypePlantRequest{
+  option (gorm.opts) = {
+    ormable: false,
+  };
+  atlas.rpc.Identifier id = 1;
+  InputFormTypePlantRequest input = 2;
+}
+
 

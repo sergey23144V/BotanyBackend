@@ -16,13 +16,13 @@ package botany;
 // Определение сервиса EcoCRUDService
 service EcomorphService {
   // Создание новой сущности
-  rpc InsertEcomorph (Ecomorph) returns (Ecomorph);
+  rpc InsertEcomorph (InputEcomorph) returns (Ecomorph);
 
   // Получение сущности по заголовку
   rpc GetEcomorphById (IdRequest) returns (Ecomorph);
 
   // Обновление сущности по заголовку
-  rpc UpEcomorphById(Ecomorph) returns (Ecomorph);
+  rpc UpdateEcomorph(InputEcomorph) returns (Ecomorph);
 
   // Удаление сущности по заголовку
   rpc DeleteEcomorphById (IdRequest) returns (BoolResponse){
@@ -30,7 +30,7 @@ service EcomorphService {
   };
 
   // Получение списка всех типов
-  rpc GetListEcomorphById (EmptyRequest) returns (EcomorphsList);
+  rpc GetListEcomorph (EmptyRequest) returns (EcomorphsList);
 }
 
 message Ecomorph {
@@ -50,10 +50,17 @@ message EcomorphsList {
   repeated Ecomorph ecomorph = 1;
 }
 
-message InsertEcomorph {
+message InputFormEcomorph {
   string title = 4;
   string description = 5;
-  atlas.rpc.Identifier user_id = 6;
+}
+
+message InputEcomorph{
+  option (gorm.opts) = {
+    ormable: false,
+  };
+  atlas.rpc.Identifier id = 1;
+  InputFormEcomorph input = 2;
 }
 
 

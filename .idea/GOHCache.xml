@@ -3,6 +3,13 @@
   <component name="GoORMHelperCache">
     <option name="schemaMapping">
       <map>
+        <entry key="AuthServerImpl">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/auth/auth-impl.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="BoolResponse">
           <value>
             <set>
@@ -21,7 +28,13 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity.pb.go" />
-              <option value="file://$PROJECT_DIR$/../BotanyClient/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="CredentialsAuth">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/pkg/auth-helper/Authorization.go" />
             </set>
           </value>
         </entry>
@@ -29,8 +42,6 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs.pb.go" />
-              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorphs.pb.go" />
-              <option value="file://$PROJECT_DIR$/../BotanyClient/servers/g-rpc/api/ecomorph/ecomorphs.pb.go" />
             </set>
           </value>
         </entry>
@@ -38,7 +49,6 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs.pb.gorm.go" />
-              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorphs.pb.gorm.go" />
             </set>
           </value>
         </entry>
@@ -60,7 +70,6 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity.pb.go" />
-              <option value="file://$PROJECT_DIR$/../BotanyClient/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity.pb.go" />
             </set>
           </value>
         </entry>
@@ -68,7 +77,6 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity.pb.go" />
-              <option value="file://$PROJECT_DIR$/../BotanyClient/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity.pb.go" />
             </set>
           </value>
         </entry>
@@ -90,7 +98,6 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity-impl.go" />
-              <option value="file://$PROJECT_DIR$/servers/g-rpc/implementation/ecomorphs-entity.go" />
             </set>
           </value>
         </entry>
@@ -105,8 +112,6 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs.pb.go" />
-              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorphs.pb.go" />
-              <option value="file://$PROJECT_DIR$/../BotanyClient/servers/g-rpc/api/ecomorph/ecomorphs.pb.go" />
             </set>
           </value>
         </entry>
@@ -114,7 +119,6 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs-impl.go" />
-              <option value="file://$PROJECT_DIR$/servers/g-rpc/implementation/ecomorphs.go" />
             </set>
           </value>
         </entry>
@@ -132,11 +136,52 @@
             </set>
           </value>
         </entry>
+        <entry key="InputEcomorph">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="InputEcomorphsEntity">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="InputFormEcomorph">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="InputFormEcomorphsEntity">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="InputFormTypePlantRequest">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant/type-plant.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="InputTypePlantRequest">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant/type-plant.pb.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="InsertEcomorph">
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs.pb.go" />
-              <option value="file://$PROJECT_DIR$/../BotanyClient/servers/g-rpc/api/ecomorph/ecomorphs.pb.go" />
             </set>
           </value>
         </entry>
@@ -161,10 +206,73 @@
             </set>
           </value>
         </entry>
-        <entry key="Service">
+        <entry key="SignInUserInput">
           <value>
             <set>
-              <option value="file://$PROJECT_DIR$/pkg/service/service.go" />
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/auth/auth.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="SignInUserResponse">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/auth/auth.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="SignUpUserInput">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/auth/auth.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="TokenAuth">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/pkg/auth-helper/Authorization.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="TokenClaims">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/pkg/auth-helper/HttpAuth.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="TypePlant">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant/type-plant.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="TypePlantList">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant/type-plant.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="TypePlantORM">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant/type-plant.pb.gorm.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="TypePlantServetImpl">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant/type-plant-impl.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="UnimplementedAuthServiceServer">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/auth/auth_grpc.pb.go" />
             </set>
           </value>
         </entry>
@@ -172,7 +280,6 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity_grpc.pb.go" />
-              <option value="file://$PROJECT_DIR$/../BotanyClient/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity_grpc.pb.go" />
             </set>
           </value>
         </entry>
@@ -180,8 +287,20 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs_grpc.pb.go" />
-              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorphs_grpc.pb.go" />
-              <option value="file://$PROJECT_DIR$/../BotanyClient/servers/g-rpc/api/ecomorph/ecomorphs_grpc.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="UnimplementedTypePlantServiceServer">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant/type-plant_grpc.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="UnimplementedUserServiceServer">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/user/user_grpc.pb.go" />
             </set>
           </value>
         </entry>
@@ -189,7 +308,34 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity.pb.go" />
-              <option value="file://$PROJECT_DIR$/../BotanyClient/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="User">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/user/user.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="UserORM">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/user/user.pb.gorm.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="UserResponse">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/user/user.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="authServiceClient">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/auth/auth_grpc.pb.go" />
             </set>
           </value>
         </entry>
@@ -197,7 +343,6 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity_grpc.pb.go" />
-              <option value="file://$PROJECT_DIR$/../BotanyClient/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity_grpc.pb.go" />
             </set>
           </value>
         </entry>
@@ -205,20 +350,32 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs_grpc.pb.go" />
-              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorphs_grpc.pb.go" />
-              <option value="file://$PROJECT_DIR$/../BotanyClient/servers/g-rpc/api/ecomorph/ecomorphs_grpc.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="typePlantServiceClient">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant/type-plant_grpc.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="userServiceClient">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/user/user_grpc.pb.go" />
             </set>
           </value>
         </entry>
         <entry key="x">
           <value>
             <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/auth/auth.pb.go" />
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity.pb.go" />
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs.pb.go" />
-              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorphs.pb.go" />
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/elementary-type.pb.go" />
-              <option value="file://$PROJECT_DIR$/../BotanyClient/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity.pb.go" />
-              <option value="file://$PROJECT_DIR$/../BotanyClient/servers/g-rpc/api/ecomorph/ecomorphs.pb.go" />
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant/type-plant.pb.go" />
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/user/user.pb.go" />
             </set>
           </value>
         </entry>
@@ -233,10 +390,42 @@
             </ScannedPath>
           </value>
         </entry>
+        <entry key="file://$PROJECT_DIR$/pkg/auth-helper/Authorization.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707217815745" />
+              <option name="schema">
+                <list>
+                  <option value="CredentialsAuth" />
+                  <option value="TokenAuth" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/pkg/auth-helper/HttpAuth.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707218540862" />
+              <option name="schema">
+                <list>
+                  <option value="TokenClaims" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
         <entry key="file://$PROJECT_DIR$/pkg/generate.go">
           <value>
             <ScannedPath>
               <option name="lastModified" value="1706454986108" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/pkg/middlewares/middlewares.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707218936037" />
             </ScannedPath>
           </value>
         </entry>
@@ -267,7 +456,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/repository/postgres.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707144255802" />
+              <option name="lastModified" value="1707212132788" />
               <option name="schema">
                 <list>
                   <option value="Config" />
@@ -319,10 +508,50 @@
             </ScannedPath>
           </value>
         </entry>
+        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/auth/auth-impl.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707220648751" />
+              <option name="schema">
+                <list>
+                  <option value="AuthServerImpl" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/auth/auth.pb.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707209330432" />
+              <option name="schema">
+                <list>
+                  <option value="SignInUserInput" />
+                  <option value="SignUpUserInput" />
+                  <option value="SignInUserResponse" />
+                  <option value="x" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/auth/auth_grpc.pb.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707209330433" />
+              <option name="schema">
+                <list>
+                  <option value="authServiceClient" />
+                  <option value="UnimplementedAuthServiceServer" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity-impl.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707129970520" />
+              <option name="lastModified" value="1707243716542" />
               <option name="schema">
                 <list>
                   <option value="EcomorphsEntityServetImpl" />
@@ -334,13 +563,13 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity.pb.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707144521110" />
+              <option name="lastModified" value="1707242564345" />
               <option name="schema">
                 <list>
                   <option value="EcomorphsEntity" />
                   <option value="EcomorphsEntityList" />
-                  <option value="CreateEcomorphsEntityRequest" />
-                  <option value="UpdateEcomorphsEntityRequest" />
+                  <option value="InputFormEcomorphsEntity" />
+                  <option value="InputEcomorphsEntity" />
                   <option value="x" />
                 </list>
               </option>
@@ -350,7 +579,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity.pb.gorm.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707144521286" />
+              <option name="lastModified" value="1707242564446" />
               <option name="schema">
                 <list>
                   <option value="EcomorphsEntityORM" />
@@ -362,7 +591,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity_grpc.pb.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707144521133" />
+              <option name="lastModified" value="1707242564364" />
               <option name="schema">
                 <list>
                   <option value="ecomorphEntityServiceClient" />
@@ -375,7 +604,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs-impl.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707144603668" />
+              <option name="lastModified" value="1707243566377" />
               <option name="schema">
                 <list>
                   <option value="EcomorphsServetImpl" />
@@ -387,12 +616,13 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs.pb.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707144521148" />
+              <option name="lastModified" value="1707241613224" />
               <option name="schema">
                 <list>
                   <option value="Ecomorph" />
                   <option value="EcomorphsList" />
-                  <option value="InsertEcomorph" />
+                  <option value="InputFormEcomorph" />
+                  <option value="InputEcomorph" />
                   <option value="x" />
                 </list>
               </option>
@@ -414,46 +644,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs_grpc.pb.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707144521094" />
-              <option name="schema">
-                <list>
-                  <option value="ecomorphServiceClient" />
-                  <option value="UnimplementedEcomorphServiceServer" />
-                </list>
-              </option>
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorphs.pb.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1707058385038" />
-              <option name="schema">
-                <list>
-                  <option value="Ecomorph" />
-                  <option value="EcomorphsList" />
-                  <option value="x" />
-                </list>
-              </option>
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorphs.pb.gorm.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1707058151882" />
-              <option name="schema">
-                <list>
-                  <option value="EcomorphORM" />
-                </list>
-              </option>
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorphs_grpc.pb.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1707058627547" />
+              <option name="lastModified" value="1707241613233" />
               <option name="schema">
                 <list>
                   <option value="ecomorphServiceClient" />
@@ -480,98 +671,109 @@
             </ScannedPath>
           </value>
         </entry>
+        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant/type-plant-impl.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707243716547" />
+              <option name="schema">
+                <list>
+                  <option value="TypePlantServetImpl" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant/type-plant.pb.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707243566322" />
+              <option name="schema">
+                <list>
+                  <option value="TypePlant" />
+                  <option value="TypePlantList" />
+                  <option value="InputFormTypePlantRequest" />
+                  <option value="InputTypePlantRequest" />
+                  <option value="x" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant/type-plant.pb.gorm.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707243566594" />
+              <option name="schema">
+                <list>
+                  <option value="TypePlantORM" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant/type-plant_grpc.pb.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707243566303" />
+              <option name="schema">
+                <list>
+                  <option value="typePlantServiceClient" />
+                  <option value="UnimplementedTypePlantServiceServer" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/user/user-impl.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707220710398" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/user/user.pb.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707212615386" />
+              <option name="schema">
+                <list>
+                  <option value="User" />
+                  <option value="UserResponse" />
+                  <option value="x" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/user/user.pb.gorm.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707212548860" />
+              <option name="schema">
+                <list>
+                  <option value="UserORM" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/user/user_grpc.pb.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707212615404" />
+              <option name="schema">
+                <list>
+                  <option value="userServiceClient" />
+                  <option value="UnimplementedUserServiceServer" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/cmd.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707130133451" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/servers/g-rpc/implementation/ecomorphs-entity.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1707128516903" />
-              <option name="schema">
-                <list>
-                  <option value="EcomorphsEntityServetImpl" />
-                </list>
-              </option>
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/servers/g-rpc/implementation/ecomorphs.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1707052515307" />
-              <option name="schema">
-                <list>
-                  <option value="EcomorphsServetImpl" />
-                </list>
-              </option>
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/../BotanyClient/cmd/main.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1707143097299" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/../BotanyClient/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity.pb.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1707142321834" />
-              <option name="schema">
-                <list>
-                  <option value="EcomorphsEntity" />
-                  <option value="EcomorphsEntityList" />
-                  <option value="CreateEcomorphsEntityRequest" />
-                  <option value="UpdateEcomorphsEntityRequest" />
-                  <option value="x" />
-                </list>
-              </option>
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/../BotanyClient/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity_grpc.pb.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1707142376721" />
-              <option name="schema">
-                <list>
-                  <option value="ecomorphEntityServiceClient" />
-                  <option value="UnimplementedEcomorphEntityServiceServer" />
-                </list>
-              </option>
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/../BotanyClient/servers/g-rpc/api/ecomorph/ecomorphs.pb.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1707143000943" />
-              <option name="schema">
-                <list>
-                  <option value="Ecomorph" />
-                  <option value="EcomorphsList" />
-                  <option value="InsertEcomorph" />
-                  <option value="x" />
-                </list>
-              </option>
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/../BotanyClient/servers/g-rpc/api/ecomorph/ecomorphs_grpc.pb.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1707142720783" />
-              <option name="schema">
-                <list>
-                  <option value="ecomorphServiceClient" />
-                  <option value="UnimplementedEcomorphServiceServer" />
-                </list>
-              </option>
+              <option name="lastModified" value="1707218609849" />
             </ScannedPath>
           </value>
         </entry>
@@ -579,9 +781,12 @@
     </option>
     <option name="tableStructMapping">
       <map>
+        <entry key="auth_server_impl" value="AuthServerImpl" />
+        <entry key="auth_service_client" value="authServiceClient" />
         <entry key="bool_response" value="BoolResponse" />
         <entry key="config" value="Config" />
         <entry key="create_ecomorphs_entity_request" value="CreateEcomorphsEntityRequest" />
+        <entry key="credentials_auth" value="CredentialsAuth" />
         <entry key="ecomorph" value="Ecomorph" />
         <entry key="ecomorph_entity_service_client" value="ecomorphEntityServiceClient" />
         <entry key="ecomorph_orm" value="EcomorphORM" />
@@ -598,17 +803,39 @@
         <entry key="ecomorphs_servet_impl" value="EcomorphsServetImpl" />
         <entry key="empty_request" value="EmptyRequest" />
         <entry key="id_request" value="IdRequest" />
+        <entry key="input_ecomorph" value="InputEcomorph" />
+        <entry key="input_ecomorphs_entity" value="InputEcomorphsEntity" />
+        <entry key="input_form_ecomorph" value="InputFormEcomorph" />
+        <entry key="input_form_ecomorphs_entity" value="InputFormEcomorphsEntity" />
+        <entry key="input_form_type_plant_request" value="InputFormTypePlantRequest" />
+        <entry key="input_type_plant_request" value="InputTypePlantRequest" />
         <entry key="insert_ecomorph" value="InsertEcomorph" />
         <entry key="pages_request" value="PagesRequest" />
         <entry key="pages_response" value="PagesResponse" />
         <entry key="repository" value="Repository" />
-        <entry key="service" value="Service" />
+        <entry key="sign_in_user_input" value="SignInUserInput" />
+        <entry key="sign_in_user_response" value="SignInUserResponse" />
+        <entry key="sign_up_user_input" value="SignUpUserInput" />
+        <entry key="token_auth" value="TokenAuth" />
+        <entry key="token_claims" value="TokenClaims" />
+        <entry key="type_plant" value="TypePlant" />
+        <entry key="type_plant_list" value="TypePlantList" />
+        <entry key="type_plant_orm" value="TypePlantORM" />
+        <entry key="type_plant_servet_impl" value="TypePlantServetImpl" />
+        <entry key="type_plant_service_client" value="typePlantServiceClient" />
+        <entry key="unimplemented_auth_service_server" value="UnimplementedAuthServiceServer" />
         <entry key="unimplemented_ecomorph_entity_service_server" value="UnimplementedEcomorphEntityServiceServer" />
         <entry key="unimplemented_ecomorph_service_server" value="UnimplementedEcomorphServiceServer" />
+        <entry key="unimplemented_type_plant_service_server" value="UnimplementedTypePlantServiceServer" />
+        <entry key="unimplemented_user_service_server" value="UnimplementedUserServiceServer" />
         <entry key="update_ecomorphs_entity_request" value="UpdateEcomorphsEntityRequest" />
+        <entry key="user" value="User" />
+        <entry key="user_orm" value="UserORM" />
+        <entry key="user_response" value="UserResponse" />
+        <entry key="user_service_client" value="userServiceClient" />
         <entry key="x" value="x" />
       </map>
     </option>
-    <option name="lastTimeChecked" value="1707125741990" />
+    <option name="lastTimeChecked" value="1707240039526" />
   </component>
 </project>

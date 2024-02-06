@@ -16,12 +16,13 @@ message User {
   option (gorm.opts) = {
     ormable: true,
   };
-  atlas.rpc.Identifier id = 1;
+  atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
   string name = 2;
-  string email = 3;
-  string role = 4;
-  google.protobuf.Timestamp created_at = 5;
-  google.protobuf.Timestamp updated_at = 6;
+  string email = 3 [(gorm.field).tag = {unique: true}];
+  string password = 4 [(gorm.field).tag = {unique: true}];
+  string role = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
 }
 
 message UserResponse { User user = 1; }

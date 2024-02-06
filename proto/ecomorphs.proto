@@ -34,9 +34,7 @@ service EcomorphService {
 }
 
 message Ecomorph {
-  option (gorm.opts) = {
-    ormable: true,
-  };
+//  option (gorm.opts).ormable = true;
   atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
   google.protobuf.Timestamp created_at = 2;
   google.protobuf.Timestamp updated_at = 3;
@@ -51,16 +49,16 @@ message EcomorphsList {
 }
 
 message InputFormEcomorph {
+
   string title = 4;
   string description = 5;
 }
 
 message InputEcomorph{
-  option (gorm.opts) = {
-    ormable: false,
-  };
+  option (gorm.opts).ormable = true ;
   atlas.rpc.Identifier id = 1;
-  InputFormEcomorph input = 2;
+  InputFormEcomorph payload = 2;
 }
+
 
 

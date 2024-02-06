@@ -143,6 +143,13 @@
             </set>
           </value>
         </entry>
+        <entry key="InputEcomorphORM">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs.pb.gorm.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="InputEcomorphsEntity">
           <value>
             <set>
@@ -164,10 +171,24 @@
             </set>
           </value>
         </entry>
+        <entry key="InputFormTrialSiteRequest">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/trial-site/trial-site.pb.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="InputFormTypePlantRequest">
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant/type-plant.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="InputTrialSiteRequest">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/trial-site/trial-site.pb.go" />
             </set>
           </value>
         </entry>
@@ -241,6 +262,34 @@
             </set>
           </value>
         </entry>
+        <entry key="TrialSite">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/trial-site/trial-site.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="TrialSiteList">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/trial-site/trial-site.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="TrialSiteORM">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/trial-site/trial-site.pb.gorm.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="TrialSiteServetImpl">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/trial-site/trial-site-impl.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="TypePlant">
           <value>
             <set>
@@ -287,6 +336,13 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs_grpc.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="UnimplementedTrialSiteServiceServer">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/trial-site/trial-site_grpc.pb.go" />
             </set>
           </value>
         </entry>
@@ -353,6 +409,13 @@
             </set>
           </value>
         </entry>
+        <entry key="trialSiteServiceClient">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/trial-site/trial-site_grpc.pb.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="typePlantServiceClient">
           <value>
             <set>
@@ -374,6 +437,7 @@
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity.pb.go" />
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs.pb.go" />
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/elementary-type.pb.go" />
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/trial-site/trial-site.pb.go" />
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant/type-plant.pb.go" />
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/user/user.pb.go" />
             </set>
@@ -616,7 +680,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs.pb.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707241613224" />
+              <option name="lastModified" value="1707246025410" />
               <option name="schema">
                 <list>
                   <option value="Ecomorph" />
@@ -632,10 +696,11 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs.pb.gorm.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707144437039" />
+              <option name="lastModified" value="1707245976133" />
               <option name="schema">
                 <list>
                   <option value="EcomorphORM" />
+                  <option value="InputEcomorphORM" />
                 </list>
               </option>
             </ScannedPath>
@@ -644,7 +709,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs_grpc.pb.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707241613233" />
+              <option name="lastModified" value="1707246025420" />
               <option name="schema">
                 <list>
                   <option value="ecomorphServiceClient" />
@@ -671,6 +736,59 @@
             </ScannedPath>
           </value>
         </entry>
+        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/trial-site/trial-site-impl.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707249973013" />
+              <option name="schema">
+                <list>
+                  <option value="TrialSiteServetImpl" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/trial-site/trial-site.pb.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707249958121" />
+              <option name="schema">
+                <list>
+                  <option value="TrialSite" />
+                  <option value="TrialSiteList" />
+                  <option value="InputFormTrialSiteRequest" />
+                  <option value="InputTrialSiteRequest" />
+                  <option value="x" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/trial-site/trial-site.pb.gorm.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707249958139" />
+              <option name="schema">
+                <list>
+                  <option value="TrialSiteORM" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/trial-site/trial-site_grpc.pb.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707249958131" />
+              <option name="schema">
+                <list>
+                  <option value="trialSiteServiceClient" />
+                  <option value="UnimplementedTrialSiteServiceServer" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant/type-plant-impl.go">
           <value>
             <ScannedPath>
@@ -686,7 +804,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant/type-plant.pb.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707243566322" />
+              <option name="lastModified" value="1707248711694" />
               <option name="schema">
                 <list>
                   <option value="TypePlant" />
@@ -702,7 +820,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant/type-plant.pb.gorm.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707243566594" />
+              <option name="lastModified" value="1707248711884" />
               <option name="schema">
                 <list>
                   <option value="TypePlantORM" />
@@ -714,7 +832,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant/type-plant_grpc.pb.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707243566303" />
+              <option name="lastModified" value="1707248711714" />
               <option name="schema">
                 <list>
                   <option value="typePlantServiceClient" />
@@ -804,10 +922,13 @@
         <entry key="empty_request" value="EmptyRequest" />
         <entry key="id_request" value="IdRequest" />
         <entry key="input_ecomorph" value="InputEcomorph" />
+        <entry key="input_ecomorph_orm" value="InputEcomorphORM" />
         <entry key="input_ecomorphs_entity" value="InputEcomorphsEntity" />
         <entry key="input_form_ecomorph" value="InputFormEcomorph" />
         <entry key="input_form_ecomorphs_entity" value="InputFormEcomorphsEntity" />
+        <entry key="input_form_trial_site_request" value="InputFormTrialSiteRequest" />
         <entry key="input_form_type_plant_request" value="InputFormTypePlantRequest" />
+        <entry key="input_trial_site_request" value="InputTrialSiteRequest" />
         <entry key="input_type_plant_request" value="InputTypePlantRequest" />
         <entry key="insert_ecomorph" value="InsertEcomorph" />
         <entry key="pages_request" value="PagesRequest" />
@@ -818,6 +939,11 @@
         <entry key="sign_up_user_input" value="SignUpUserInput" />
         <entry key="token_auth" value="TokenAuth" />
         <entry key="token_claims" value="TokenClaims" />
+        <entry key="trial_site" value="TrialSite" />
+        <entry key="trial_site_list" value="TrialSiteList" />
+        <entry key="trial_site_orm" value="TrialSiteORM" />
+        <entry key="trial_site_servet_impl" value="TrialSiteServetImpl" />
+        <entry key="trial_site_service_client" value="trialSiteServiceClient" />
         <entry key="type_plant" value="TypePlant" />
         <entry key="type_plant_list" value="TypePlantList" />
         <entry key="type_plant_orm" value="TypePlantORM" />
@@ -826,6 +952,7 @@
         <entry key="unimplemented_auth_service_server" value="UnimplementedAuthServiceServer" />
         <entry key="unimplemented_ecomorph_entity_service_server" value="UnimplementedEcomorphEntityServiceServer" />
         <entry key="unimplemented_ecomorph_service_server" value="UnimplementedEcomorphServiceServer" />
+        <entry key="unimplemented_trial_site_service_server" value="UnimplementedTrialSiteServiceServer" />
         <entry key="unimplemented_type_plant_service_server" value="UnimplementedTypePlantServiceServer" />
         <entry key="unimplemented_user_service_server" value="UnimplementedUserServiceServer" />
         <entry key="update_ecomorphs_entity_request" value="UpdateEcomorphsEntityRequest" />

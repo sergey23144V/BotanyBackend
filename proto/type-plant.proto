@@ -57,9 +57,6 @@ message InputFormTypePlantRequest {
 }
 
 message InputTypePlantRequest{
-  option (gorm.opts) = {
-    ormable: false,
-  };
   atlas.rpc.Identifier id = 1;
   InputFormTypePlantRequest input = 2;
 }

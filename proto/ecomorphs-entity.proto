@@ -45,7 +45,7 @@ message EcomorphsEntity {
   google.protobuf.Timestamp updated_at = 3;
   string title = 4;
   string description = 5;
-  repeated Ecomorph ecomorphs = 6 [(gorm.field).many_to_many = {}  ];
+  repeated Ecomorph ecomorphs = 6 [(gorm.field).many_to_many = {association_autocreate: true, association_autoupdate: true, preload: true}];
   atlas.rpc.Identifier user_id = 7 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
 }
 
@@ -55,17 +55,12 @@ message EcomorphsEntityList {
 
 
 message InputFormEcomorphsEntity {
-  option (gorm.opts).ormable = true ;
   string title = 1;
   string description = 2;
   repeated Ecomorph ecomorphs = 3;
 }
 
 message InputEcomorphsEntity{
-  option (gorm.opts) = {
-    ormable: false,
-
-  };
   atlas.rpc.Identifier id = 1;
   InputFormEcomorphsEntity input = 2;
 }

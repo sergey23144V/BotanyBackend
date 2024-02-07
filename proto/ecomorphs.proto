@@ -34,7 +34,7 @@ service EcomorphService {
 }
 
 message Ecomorph {
-//  option (gorm.opts).ormable = true;
+  option (gorm.opts).ormable = true;
   atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
   google.protobuf.Timestamp created_at = 2;
   google.protobuf.Timestamp updated_at = 3;

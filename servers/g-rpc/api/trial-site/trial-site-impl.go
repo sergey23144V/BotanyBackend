@@ -21,10 +21,10 @@ func NewTrialSiteServetImpl(db *gorm.DB) TrialSiteServetImpl {
 func (t TrialSiteServetImpl) CreateTrialSite(ctx context.Context, request *InputTrialSiteRequest) (*TrialSite, error) {
 	createEcomorph, err := DefaultCreateTrialSite(ctx, t.ToPB(ctx, request), t.db)
 	if err != nil {
-		log.Error("Insert Ecomorph:", err)
+		log.Error("Insert TrialSite:", err)
 		return nil, err
 	}
-	log.Debug("Insert Ecomorph: good")
+	log.Debug("Insert TrialSite: good")
 
 	return createEcomorph, nil
 }
@@ -33,10 +33,10 @@ func (t TrialSiteServetImpl) GetTrialSite(ctx context.Context, request *api.IdRe
 	userId := middlewares.GetUserIdFromContext(ctx)
 	typePlant, err := DefaultReadTrialSite(ctx, &TrialSite{Id: request.Id, UserId: userId}, t.db)
 	if err != nil {
-		log.Error("Get Ecomorph:", err)
+		log.Error("Get TrialSite:", err)
 		return nil, err
 	}
-	log.Debug("Get Ecomorph: good")
+	log.Debug("Get TrialSite: good")
 
 	return typePlant, nil
 }
@@ -75,8 +75,9 @@ func (t TrialSiteServetImpl) ToPB(ctx context.Context, request *InputTrialSiteRe
 	if request.Id != nil {
 		id = request.Id
 	} else {
-		id.ResourceId = pkg.GenerateUUID()
+		id = &resource.Identifier{ResourceId: pkg.GenerateUUID()}
 	}
+
 	userId := middlewares.GetUserIdFromContext(ctx)
 	return &TrialSite{
 		Id:          id,

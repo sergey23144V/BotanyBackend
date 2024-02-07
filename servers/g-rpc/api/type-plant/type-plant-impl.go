@@ -75,8 +75,9 @@ func (t TypePlantServetImpl) ToPB(ctx context.Context, request *InputTypePlantRe
 	if request.Id != nil {
 		id = request.Id
 	} else {
-		id.ResourceId = pkg.GenerateUUID()
+		id = &resource.Identifier{ResourceId: pkg.GenerateUUID()}
 	}
+
 	userId := middlewares.GetUserIdFromContext(ctx)
 	return &TypePlant{
 		Id:              id,

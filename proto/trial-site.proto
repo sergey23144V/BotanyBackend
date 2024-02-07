@@ -41,9 +41,9 @@ message TrialSite {
   int32 covered = 3;
   int32 rating = 10;
   int32 count_types = 4;
-  TypePlant  dominant = 7 [(gorm.field).belongs_to = {}];
-  TypePlant  subDominant = 8 [(gorm.field).belongs_to = {}];
-  repeated TypePlant typePlant = 9 [(gorm.field).many_to_many = {}];
+  TypePlant  dominant = 7 [(gorm.field).belongs_to = {association_autocreate:true , association_autoupdate: true, preload: true}];
+  TypePlant  subDominant = 8 [(gorm.field).belongs_to = {association_autocreate:true, association_autoupdate: true, preload: true}];
+  repeated TypePlant typePlant = 9 [(gorm.field).many_to_many = {association_autocreate:true, association_autoupdate: true, preload: true}];
   google.protobuf.Timestamp created_at = 5;
   google.protobuf.Timestamp updated_at = 6;
   atlas.rpc.Identifier user_id = 11 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];

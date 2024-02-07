@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/infobloxopen/atlas-app-toolkit/atlas/resource"
+	"github.com/sergey23144V/BotanyBackend/models/auth"
 
 	"github.com/jinzhu/gorm"
 	"github.com/sergey23144V/BotanyBackend/pkg"
@@ -24,13 +25,13 @@ func NewAuthServer(db *gorm.DB) AuthServerImpl {
 	return AuthServerImpl{db: db}
 }
 
-func (a AuthServerImpl) SignUpUser(ctx context.Context, input *SignUpUserInput) (*SignInUserResponse, error) {
+func (a AuthServerImpl) SignUpUser(ctx context.Context, input *auth.SignUpUserInput) (*auth.SignInUserResponse, error) {
 	_, err := a.CreateUser(ctx, input)
 	if err != nil {
 		return nil, err
 	}
 
-	token, err := a.GenerateToken(ctx, &SignInUserInput{
+	token, err := a.GenerateToken(ctx, &auth.SignInUserInput{
 		Email:    input.Email,
 		Password: input.Password,
 	})
@@ -38,20 +39,20 @@ func (a AuthServerImpl) SignUpUser(ctx context.Context, input *SignUpUserInput) 
 		return nil, err
 	}
 
-	return &SignInUserResponse{
+	return &auth.SignInUserResponse{
 		Status:       "200",
 		AccessToken:  token,
 		RefreshToken: "",
 	}, nil
 }
 
-func (a AuthServerImpl) SignInUser(ctx context.Context, input *SignInUserInput) (*SignInUserResponse, error) {
+func (a AuthServerImpl) SignInUser(ctx context.Context, input *auth.SignInUserInput) (*auth.SignInUserResponse, error) {
 	token, err := a.GenerateToken(ctx, input)
 	if err != nil {
 		return nil, err
 	}
 
-	return &SignInUserResponse{
+	return &auth.SignInUserResponse{
 		Status:       "200",
 		AccessToken:  token,
 		RefreshToken: "",
@@ -63,7 +64,7 @@ func (a AuthServerImpl) mustEmbedUnimplementedAuthServiceServer() {
 	panic("implement me")
 }
 
-func (s *AuthServerImpl) GenerateToken(ctx context.Context, input *SignInUserInput) (string, error) {
+func (s *AuthServerImpl) GenerateToken(ctx context.Context, input *auth.SignInUserInput) (string, error) {
 	userResult, err := user.ReadUserByEmailAndPassword(ctx, &user.User{Email: input.Email, Password: generatePasswordHash(input.Password)}, s.db)
 	if err != nil {
 		return "", err
@@ -87,7 +88,7 @@ func generatePasswordHash(password string) string {
 	return fmt.Sprintf("%x", hash.Sum([]byte(auth_helper.Salt)))
 }
 
-func (s *AuthServerImpl) CreateUser(ctx context.Context, input *SignUpUserInput) (*user.User, error) {
+func (s *AuthServerImpl) CreateUser(ctx context.Context, input *auth.SignUpUserInput) (*user.User, error) {
 	dubl, err := user.CheckingForDuplicateEmails(ctx, &user.User{Email: input.Email}, s.db)
 	if err != nil {
 		return nil, err

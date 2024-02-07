@@ -38,8 +38,8 @@ message TypePlant {
   };
   atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
   string title = 2;
-  string subtitle = 3;
-  repeated EcomorphsEntity ecomorphsEntity = 4 [(gorm.field).many_to_many = {}];
+  string subtitle = 3 ;
+  repeated EcomorphsEntity ecomorphsEntity = 4 [(gorm.field).many_to_many = {association_autoupdate: true, association_autocreate: false , preload: true}];
   google.protobuf.Timestamp created_at = 5;
   google.protobuf.Timestamp updated_at = 6;
   atlas.rpc.Identifier user_id = 7 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];

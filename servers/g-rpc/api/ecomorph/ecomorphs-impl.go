@@ -83,14 +83,14 @@ func (e EcomorphsServetImpl) ToPB(ctx context.Context, ecomorph *InputEcomorph) 
 	if ecomorph.Id != nil {
 		id = ecomorph.Id
 	} else {
-		id.ResourceId = pkg.GenerateUUID()
+		id = &resource.Identifier{ResourceId: pkg.GenerateUUID()}
 	}
 
 	userId := middlewares.GetUserIdFromContext(ctx)
 	return &Ecomorph{
 		Id:          id,
-		Title:       ecomorph.Input.Title,
-		Description: ecomorph.Input.Description,
+		Title:       ecomorph.Payload.Title,
+		Description: ecomorph.Payload.Description,
 		UserId:      userId,
 	}
 }

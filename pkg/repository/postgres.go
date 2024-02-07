@@ -4,6 +4,9 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph"
 	ecomorph_entity "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph-entity"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/transect"
+	trial_site "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/trial-site"
+	type_plant "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/type-plant"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/user"
 	"log"
 	"os"
@@ -26,7 +29,7 @@ func ConnectDB(cfg Config) (*gorm.DB, error) {
 	db, err := gorm.Open("postgres", dst)
 	log.Println("Open db")
 
-	db.AutoMigrate(ecomorph.EcomorphORM{}, ecomorph_entity.EcomorphsEntityORM{}, user.UserORM{})
+	db.AutoMigrate(ecomorph.EcomorphORM{}, ecomorph_entity.EcomorphsEntityORM{}, user.UserORM{}, type_plant.TypePlantORM{}, trial_site.TrialSiteORM{}, transect.TransectORM{})
 	log.Println("migrant")
 
 	db.LogMode(true)

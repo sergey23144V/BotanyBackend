@@ -21,7 +21,7 @@ service TransectService {
   rpc GetTransect (IdRequest) returns (Transect);
 
   // Обновление сущности по id
-  rpc UpdateTransect (InputTransectRequest) returns (Transect);
+  rpc UpTransect (InputTransectRequest) returns (Transect);
 
   // Удаление сущности по заголовку
   rpc DeleteTransect (IdRequest) returns (BoolResponse){
@@ -45,11 +45,12 @@ message Transect {
   int32 square = 11;
   int32 squareTrialSite = 12;
   int32 count_types = 4;
-  atlas.rpc.Identifier  dominant = 7 [(gorm.field).has_many = {preload: true}];
-  atlas.rpc.Identifier  subDominant = 8 [(gorm.field).has_many = {preload: true}];
-  repeated TrialSite trialSite = 9 [(gorm.field).many_to_many = {}];
+  TypePlant  dominant = 7 [(gorm.field).belongs_to = {association_autocreate:true , association_autoupdate: true, preload: true}];
+  TypePlant  subDominant = 8 [(gorm.field).belongs_to = {association_autocreate:true , association_autoupdate: true, preload: true}];
+  repeated TrialSite trialSite = 9 [(gorm.field).many_to_many = {association_autocreate:true , association_autoupdate: true, preload: true}];
   google.protobuf.Timestamp created_at = 5;
   google.protobuf.Timestamp updated_at = 6;
+  atlas.rpc.Identifier user_id = 13 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
 }
 
 message TransectList {
@@ -59,10 +60,15 @@ message TransectList {
 
 message InputFormTransectRequest {
   string title = 2;
-  string subtitle = 3;
-  repeated TrialSite trialSite = 4;
-  optional TypePlant dominant = 7;
-  optional TypePlant subDominant = 8;
+  int32 covered = 3;
+  int32 rating = 10;
+  int32 square = 11;
+  int32 squareTrialSite = 12;
+  int32 count_types = 4;
+  repeated TrialSite trialSite = 1;
+  TypePlant dominant = 7;
+  TypePlant subDominant = 8;
+
 }
 
 message InputTransectRequest{

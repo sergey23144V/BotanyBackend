@@ -1,0 +1,43 @@
+type EcomorphsEntity {
+    id: IdentifierType!
+    createdAt: Timestamp
+    updatedAt: Timestamp
+    title: String
+    description: String
+    ecomorphs: [Ecomorph]
+    userId: IdentifierType
+}
+
+input EcomorphsEntityInput {
+    id: IdentifierInput!
+    title: String
+    description: String
+    ecomorphs: [EcomorphInput]
+}
+
+
+type EcomorphsEntityList {
+    ecomorphsEntity: [EcomorphsEntity]
+}
+
+input InputFormEcomorphsEntity {
+    title: String
+    description: String
+    ecomorphs: [EcomorphInput]
+}
+
+input InputEcomorphsEntity {
+    id : IdentifierInput!
+    input: InputFormEcomorphsEntity
+}
+
+type EcomorphsEntityQuery {
+    getEcomorphEntityByID(id: ID!): EcomorphsEntity @goField(forceResolver: true)
+    getAllEcomorphEntity: EcomorphsEntityList @goField(forceResolver: true)
+}
+
+type EcomorphsEntityMutation {
+    insertEcomorphEntity(input: InputFormEcomorphsEntity): EcomorphsEntity @goField(forceResolver: true)
+    updateEcomorphEntity(input: InputEcomorphsEntity): EcomorphsEntity @goField(forceResolver: true)
+    deleteEcomorphEntityByID(id: ID!): BoolResponse @goField(forceResolver: true)
+}

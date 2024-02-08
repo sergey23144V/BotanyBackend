@@ -1,0 +1,61 @@
+type TransectQuery {
+    getTransect(id: ID!): Transect @goField(forceResolver: true)
+    getAllTransect: TransectList @goField(forceResolver: true)
+}
+
+type TransectMutation {
+    createTransect(input: InputTransectRequest): Transect @goField(forceResolver: true)
+    upTransect(input: InputTransectRequest): Transect @goField(forceResolver: true)
+    deleteTransect(id: ID!): BoolResponse @goField(forceResolver: true)
+}
+
+type Transect {
+    id: IdentifierType!
+    title: String
+    covered: Int
+    rating: Int
+    square: Int
+    squareTrialSite: Int
+    countTypes: Int
+    dominant: TypePlant
+    subDominant: TypePlant
+    trialSite: [TrialSite]
+    createdAt: Timestamp
+    updatedAt: Timestamp
+    userId: IdentifierType
+}
+
+input TransectInput {
+    id: IdentifierInput!
+    title: String
+    covered: Int
+    rating: Int
+    square: Int
+    squareTrialSite: Int
+    countTypes: Int
+    dominant: TypePlantInput
+    subDominant: TypePlantInput
+    trialSite: [TrialSiteInput]
+    userId: IdentifierInput
+}
+
+type TransectList {
+    transect: [Transect]
+}
+
+input InputFormTransectRequest {
+    title: String
+    covered: Int
+    rating: Int
+    square: Int
+    squareTrialSite: Int
+    countTypes: Int
+    trialSite: [TrialSiteInput]
+    dominant: TypePlantInput
+    subDominant: TypePlantInput
+}
+
+input InputTransectRequest {
+    id: IdentifierInput!
+    input: InputFormTransectRequest
+}

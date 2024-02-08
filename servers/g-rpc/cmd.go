@@ -17,33 +17,35 @@ import (
 )
 
 func StartGrpc(db *gorm.DB) {
-	listener, err := net.Listen("tcp", ":50051")
-	if err != nil {
-		log.Fatalf("Failed to listen: %v", err)
-	}
-	s := grpc.NewServer(
-		grpc.UnaryInterceptor(middlewares.AuthInterceptor))
+	go func() {
+		listener, err := net.Listen("tcp", ":50051")
+		if err != nil {
+			log.Fatalf("Failed to listen: %v", err)
+		}
+		s := grpc.NewServer(
+			grpc.UnaryInterceptor(middlewares.AuthInterceptor))
 
-	//Создание Сервера
-	ecomorphsEntityServet := ecomorph_entity.NewEcomorphsEntityServetImpl(db)
-	ecomorphsServet := ecomorph.NewEcomorphsServetImplImpl(db)
-	authServet := auth.NewAuthServer(db)
-	typePlantServet := type_plant.NewTypePlantServetImpl(db)
-	trialSiteServet := trial_site.NewTrialSiteServetImpl(db)
-	transectServet := transect.NewTransectServetImpl(db)
+		//Создание Сервера
+		ecomorphsEntityServet := ecomorph_entity.NewEcomorphsEntityServetImpl(db)
+		ecomorphsServet := ecomorph.NewEcomorphsServetImplImpl(db)
+		authServet := auth.NewAuthServer(db)
+		typePlantServet := type_plant.NewTypePlantServetImpl(db)
+		trialSiteServet := trial_site.NewTrialSiteServetImpl(db)
+		transectServet := transect.NewTransectServetImpl(db)
 
-	//Регистрация Сервера
-	ecomorph_entity.RegisterEcomorphEntityServiceServer(s, ecomorphsEntityServet)
-	ecomorph.RegisterEcomorphServiceServer(s, ecomorphsServet)
-	auth.RegisterAuthServiceServer(s, authServet)
-	type_plant.RegisterTypePlantServiceServer(s, typePlantServet)
-	trial_site.RegisterTrialSiteServiceServer(s, trialSiteServet)
-	transect.RegisterTransectServiceServer(s, transectServet)
+		//Регистрация Сервера
+		ecomorph_entity.RegisterEcomorphEntityServiceServer(s, ecomorphsEntityServet)
+		ecomorph.RegisterEcomorphServiceServer(s, ecomorphsServet)
+		auth.RegisterAuthServiceServer(s, authServet)
+		type_plant.RegisterTypePlantServiceServer(s, typePlantServet)
+		trial_site.RegisterTrialSiteServiceServer(s, trialSiteServet)
+		transect.RegisterTransectServiceServer(s, transectServet)
 
-	reflection.Register(s)
+		reflection.Register(s)
 
-	log.Println("Starting server on :50051")
-	if err := s.Serve(listener); err != nil {
-		log.Fatalf("Failed to serve: %v", err)
-	}
+		log.Println("Starting server on :50051")
+		if err := s.Serve(listener); err != nil {
+			log.Fatalf("Failed to serve: %v", err)
+		}
+	}()
 }

@@ -3,6 +3,13 @@
   <component name="GoORMHelperCache">
     <option name="schemaMapping">
       <map>
+        <entry key="AuthMutation">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/model/models_gen.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="AuthServerImpl">
           <value>
             <set>
@@ -18,10 +25,18 @@
             </set>
           </value>
         </entry>
+        <entry key="ComplexityRoot">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/generated.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="Config">
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/pkg/repository/postgres.go" />
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/generated.go" />
             </set>
           </value>
         </entry>
@@ -29,6 +44,13 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/pkg/auth-helper/Authorization.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="DirectiveRoot">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/generated.go" />
             </set>
           </value>
         </entry>
@@ -40,10 +62,24 @@
             </set>
           </value>
         </entry>
+        <entry key="EcomorphMutation">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/model/models_gen.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="EcomorphORM">
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs.pb.gorm.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="EcomorphQuery">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/model/models_gen.go" />
             </set>
           </value>
         </entry>
@@ -75,10 +111,24 @@
             </set>
           </value>
         </entry>
+        <entry key="EcomorphsEntityMutation">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/model/models_gen.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="EcomorphsEntityORM">
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph-entity/ecomorphs-entity.pb.gorm.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="EcomorphsEntityQuery">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/model/models_gen.go" />
             </set>
           </value>
         </entry>
@@ -123,6 +173,13 @@
             <set>
               <option value="file://$PROJECT_DIR$/models/elementary-type.pb.go" />
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/elementary-type.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="IDRequest">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/model/models_gen.go" />
             </set>
           </value>
         </entry>
@@ -213,11 +270,33 @@
             </set>
           </value>
         </entry>
+        <entry key="ListEcomorph">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/model/models_gen.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="Mutation">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/model/models_gen.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="NewTodo">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/model/models_gen.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="PagesRequest">
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/models/elementary-type.pb.go" />
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/elementary-type.pb.go" />
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/model/models_gen.go" />
             </set>
           </value>
         </entry>
@@ -226,6 +305,14 @@
             <set>
               <option value="file://$PROJECT_DIR$/models/elementary-type.pb.go" />
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/elementary-type.pb.go" />
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/model/models_gen.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="Query">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/model/models_gen.go" />
             </set>
           </value>
         </entry>
@@ -233,6 +320,13 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/pkg/repository/repository.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="Resolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/resolver.go" />
             </set>
           </value>
         </entry>
@@ -254,6 +348,13 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/auth/auth.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="Todo">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/model/models_gen.go" />
             </set>
           </value>
         </entry>
@@ -408,6 +509,7 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/user/user.pb.go" />
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/model/models_gen.go" />
             </set>
           </value>
         </entry>
@@ -425,6 +527,13 @@
             </set>
           </value>
         </entry>
+        <entry key="authMutationResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/auth.resolvers.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="authServiceClient">
           <value>
             <set>
@@ -439,10 +548,112 @@
             </set>
           </value>
         </entry>
+        <entry key="ecomorphMutationResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/ecomorph.resolvers.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="ecomorphQueryResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/ecomorph.resolvers.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="ecomorphResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/ecomorph.resolvers.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="ecomorphServiceClient">
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs_grpc.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="ecomorphsEntityMutationResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/ecomorph-entity.resolvers.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="ecomorphsEntityQueryResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/ecomorph-entity.resolvers.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="ecomorphsListResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/ecomorph.resolvers.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="executableSchema">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/generated.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="executionContext">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/generated.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="inputEcomorphsEntityResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/ecomorph-entity.resolvers.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="inputTypePlantRequestResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/type-plant.resolvers.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="mutationResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/ecomorph.resolvers.go" />
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/main.resolvers.go" />
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/schema.resolvers.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="queryResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/ecomorph.resolvers.go" />
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/main.resolvers.go" />
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/schema.resolvers.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="transectMutationResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/transect.resolvers.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="transectQueryResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/transect.resolvers.go" />
             </set>
           </value>
         </entry>
@@ -453,10 +664,38 @@
             </set>
           </value>
         </entry>
+        <entry key="trialSiteMutationResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/trial-site.resolvers.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="trialSiteQueryResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/trial-site.resolvers.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="trialSiteServiceClient">
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/trial-site/trial-site_grpc.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="typePlantMutationResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/type-plant.resolvers.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="typePlantQueryResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/grapgql/graph/type-plant.resolvers.go" />
             </set>
           </value>
         </entry>
@@ -497,7 +736,7 @@
         <entry key="file://$PROJECT_DIR$/cmd/main.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707130335582" />
+              <option name="lastModified" value="1707338409895" />
             </ScannedPath>
           </value>
         </entry>
@@ -569,7 +808,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/middlewares/middlewares.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707218936037" />
+              <option name="lastModified" value="1707388334396" />
             </ScannedPath>
           </value>
         </entry>
@@ -655,7 +894,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/auth/auth-impl.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707331599710" />
+              <option name="lastModified" value="1707333102124" />
               <option name="schema">
                 <list>
                   <option value="AuthServerImpl" />
@@ -667,7 +906,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/auth/auth.pb.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707209330432" />
+              <option name="lastModified" value="1707332648703" />
               <option name="schema">
                 <list>
                   <option value="SignInUserInput" />
@@ -682,7 +921,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/auth/auth_grpc.pb.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707331599716" />
+              <option name="lastModified" value="1707332648703" />
               <option name="schema">
                 <list>
                   <option value="authServiceClient" />
@@ -767,7 +1006,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs.pb.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707307694812" />
+              <option name="lastModified" value="1707333289154" />
               <option name="schema">
                 <list>
                   <option value="Ecomorph" />
@@ -783,7 +1022,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorph/ecomorphs.pb.gorm.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707248149451" />
+              <option name="lastModified" value="1707332674175" />
               <option name="schema">
                 <list>
                   <option value="EcomorphORM" />
@@ -919,7 +1158,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/trial-site/trial-site_grpc.pb.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707322314783" />
+              <option name="lastModified" value="1707333039753" />
               <option name="schema">
                 <list>
                   <option value="trialSiteServiceClient" />
@@ -999,7 +1238,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/user/user.pb.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707212615386" />
+              <option name="lastModified" value="1707333041467" />
               <option name="schema">
                 <list>
                   <option value="User" />
@@ -1025,7 +1264,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/user/user_grpc.pb.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707212615404" />
+              <option name="lastModified" value="1707333041468" />
               <option name="schema">
                 <list>
                   <option value="userServiceClient" />
@@ -1038,7 +1277,167 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/cmd.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1707328798586" />
+              <option name="lastModified" value="1707338249587" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/grapgql/graph/auth.resolvers.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707378965719" />
+              <option name="schema">
+                <list>
+                  <option value="authMutationResolver" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/grapgql/graph/ecomorph-entity.resolvers.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707383338658" />
+              <option name="schema">
+                <list>
+                  <option value="ecomorphsEntityMutationResolver" />
+                  <option value="ecomorphsEntityQueryResolver" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/grapgql/graph/ecomorph.resolvers.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707378965720" />
+              <option name="schema">
+                <list>
+                  <option value="ecomorphMutationResolver" />
+                  <option value="ecomorphQueryResolver" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/grapgql/graph/generated.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707378965798" />
+              <option name="schema">
+                <list>
+                  <option value="Config" />
+                  <option value="DirectiveRoot" />
+                  <option value="ComplexityRoot" />
+                  <option value="executableSchema" />
+                  <option value="executionContext" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/grapgql/graph/main.resolvers.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707386387578" />
+              <option name="schema">
+                <list>
+                  <option value="mutationResolver" />
+                  <option value="queryResolver" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/grapgql/graph/model/models_gen.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707378960777" />
+              <option name="schema">
+                <list>
+                  <option value="AuthMutation" />
+                  <option value="EcomorphMutation" />
+                  <option value="EcomorphQuery" />
+                  <option value="EcomorphsEntityMutation" />
+                  <option value="EcomorphsEntityQuery" />
+                  <option value="IDRequest" />
+                  <option value="ListEcomorph" />
+                  <option value="Mutation" />
+                  <option value="PagesRequest" />
+                  <option value="PagesResponse" />
+                  <option value="Query" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/grapgql/graph/resolver.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707338271778" />
+              <option name="schema">
+                <list>
+                  <option value="Resolver" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/grapgql/graph/schema.resolvers.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707335415815" />
+              <option name="schema">
+                <list>
+                  <option value="mutationResolver" />
+                  <option value="queryResolver" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/grapgql/graph/transect.resolvers.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707386147609" />
+              <option name="schema">
+                <list>
+                  <option value="transectMutationResolver" />
+                  <option value="transectQueryResolver" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/grapgql/graph/trial-site.resolvers.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707385196886" />
+              <option name="schema">
+                <list>
+                  <option value="trialSiteMutationResolver" />
+                  <option value="trialSiteQueryResolver" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/grapgql/graph/type-plant.resolvers.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707383508674" />
+              <option name="schema">
+                <list>
+                  <option value="typePlantMutationResolver" />
+                  <option value="typePlantQueryResolver" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/grapgql/server.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1707387649471" />
             </ScannedPath>
           </value>
         </entry>
@@ -1046,30 +1445,47 @@
     </option>
     <option name="tableStructMapping">
       <map>
+        <entry key="auth_mutation" value="AuthMutation" />
+        <entry key="auth_mutation_resolver" value="authMutationResolver" />
         <entry key="auth_server_impl" value="AuthServerImpl" />
         <entry key="auth_service_client" value="authServiceClient" />
         <entry key="bool_response" value="BoolResponse" />
+        <entry key="complexity_root" value="ComplexityRoot" />
         <entry key="config" value="Config" />
         <entry key="credentials_auth" value="CredentialsAuth" />
+        <entry key="directive_root" value="DirectiveRoot" />
         <entry key="ecomorph" value="Ecomorph" />
         <entry key="ecomorph_entity_service_client" value="ecomorphEntityServiceClient" />
+        <entry key="ecomorph_mutation" value="EcomorphMutation" />
+        <entry key="ecomorph_mutation_resolver" value="ecomorphMutationResolver" />
         <entry key="ecomorph_orm" value="EcomorphORM" />
+        <entry key="ecomorph_query" value="EcomorphQuery" />
+        <entry key="ecomorph_query_resolver" value="ecomorphQueryResolver" />
         <entry key="ecomorph_repository_impl" value="EcomorphRepositoryImpl" />
+        <entry key="ecomorph_resolver" value="ecomorphResolver" />
         <entry key="ecomorph_service_client" value="ecomorphServiceClient" />
         <entry key="ecomorph_service_impl" value="EcomorphServiceImpl" />
         <entry key="ecomorphs_entity" value="EcomorphsEntity" />
         <entry key="ecomorphs_entity_list" value="EcomorphsEntityList" />
+        <entry key="ecomorphs_entity_mutation" value="EcomorphsEntityMutation" />
+        <entry key="ecomorphs_entity_mutation_resolver" value="ecomorphsEntityMutationResolver" />
         <entry key="ecomorphs_entity_orm" value="EcomorphsEntityORM" />
+        <entry key="ecomorphs_entity_query" value="EcomorphsEntityQuery" />
+        <entry key="ecomorphs_entity_query_resolver" value="ecomorphsEntityQueryResolver" />
         <entry key="ecomorphs_entity_repository_impl" value="EcomorphsEntityRepositoryImpl" />
         <entry key="ecomorphs_entity_servet_impl" value="EcomorphsEntityServetImpl" />
         <entry key="ecomorphs_entity_service_impl" value="EcomorphsEntityServiceImpl" />
         <entry key="ecomorphs_list" value="EcomorphsList" />
+        <entry key="ecomorphs_list_resolver" value="ecomorphsListResolver" />
         <entry key="ecomorphs_servet_impl" value="EcomorphsServetImpl" />
         <entry key="empty_request" value="EmptyRequest" />
-        <entry key="id_request" value="IdRequest" />
+        <entry key="executable_schema" value="executableSchema" />
+        <entry key="execution_context" value="executionContext" />
+        <entry key="id_request" value="IDRequest" />
         <entry key="input_ecomorph" value="InputEcomorph" />
         <entry key="input_ecomorph_orm" value="InputEcomorphORM" />
         <entry key="input_ecomorphs_entity" value="InputEcomorphsEntity" />
+        <entry key="input_ecomorphs_entity_resolver" value="inputEcomorphsEntityResolver" />
         <entry key="input_form_ecomorph" value="InputFormEcomorph" />
         <entry key="input_form_ecomorphs_entity" value="InputFormEcomorphsEntity" />
         <entry key="input_form_transect_request" value="InputFormTransectRequest" />
@@ -1078,27 +1494,42 @@
         <entry key="input_transect_request" value="InputTransectRequest" />
         <entry key="input_trial_site_request" value="InputTrialSiteRequest" />
         <entry key="input_type_plant_request" value="InputTypePlantRequest" />
+        <entry key="input_type_plant_request_resolver" value="inputTypePlantRequestResolver" />
+        <entry key="list_ecomorph" value="ListEcomorph" />
+        <entry key="mutation" value="Mutation" />
+        <entry key="mutation_resolver" value="mutationResolver" />
+        <entry key="new_todo" value="NewTodo" />
         <entry key="pages_request" value="PagesRequest" />
         <entry key="pages_response" value="PagesResponse" />
+        <entry key="query" value="Query" />
+        <entry key="query_resolver" value="queryResolver" />
         <entry key="repository" value="Repository" />
+        <entry key="resolver" value="Resolver" />
         <entry key="sign_in_user_input" value="SignInUserInput" />
         <entry key="sign_in_user_response" value="SignInUserResponse" />
         <entry key="sign_up_user_input" value="SignUpUserInput" />
+        <entry key="todo" value="Todo" />
         <entry key="token_auth" value="TokenAuth" />
         <entry key="token_claims" value="TokenClaims" />
         <entry key="transect" value="Transect" />
         <entry key="transect_list" value="TransectList" />
+        <entry key="transect_mutation_resolver" value="transectMutationResolver" />
         <entry key="transect_orm" value="TransectORM" />
+        <entry key="transect_query_resolver" value="transectQueryResolver" />
         <entry key="transect_servet_impl" value="TransectServetImpl" />
         <entry key="transect_service_client" value="transectServiceClient" />
         <entry key="trial_site" value="TrialSite" />
         <entry key="trial_site_list" value="TrialSiteList" />
+        <entry key="trial_site_mutation_resolver" value="trialSiteMutationResolver" />
         <entry key="trial_site_orm" value="TrialSiteORM" />
+        <entry key="trial_site_query_resolver" value="trialSiteQueryResolver" />
         <entry key="trial_site_servet_impl" value="TrialSiteServetImpl" />
         <entry key="trial_site_service_client" value="trialSiteServiceClient" />
         <entry key="type_plant" value="TypePlant" />
         <entry key="type_plant_list" value="TypePlantList" />
+        <entry key="type_plant_mutation_resolver" value="typePlantMutationResolver" />
         <entry key="type_plant_orm" value="TypePlantORM" />
+        <entry key="type_plant_query_resolver" value="typePlantQueryResolver" />
         <entry key="type_plant_servet_impl" value="TypePlantServetImpl" />
         <entry key="type_plant_service_client" value="typePlantServiceClient" />
         <entry key="unimplemented_auth_service_server" value="UnimplementedAuthServiceServer" />

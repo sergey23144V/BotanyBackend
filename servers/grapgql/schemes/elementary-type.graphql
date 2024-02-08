@@ -1,0 +1,36 @@
+
+type IdRequest {
+    id: ID!
+}
+
+input PagesRequest {
+    pageSize: Int!
+    pageNumber: Int!
+}
+
+type PagesResponse {
+    total: Int!
+    limit: Int!
+}
+
+type BoolResponse {
+    result: Boolean!
+}
+
+type IdentifierType {
+    applicationName: String!
+    resourceType: String!
+    resourceId: String!
+}
+
+input IdentifierInput {
+    applicationName: String!
+    resourceType: String!
+    resourceId: String!
+}
+
+type Timestamp {
+    seconds: Int
+    nanos: Int
+}
+

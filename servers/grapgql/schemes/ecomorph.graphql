@@ -1,0 +1,42 @@
+
+type Ecomorph {
+    id: IdentifierType!
+    createdAt: Timestamp!
+    updatedAt: Timestamp!
+    title: String!
+    description: String!
+    userID: IdentifierType!
+}
+
+input EcomorphInput {
+    id: IdentifierInput!
+    title: String!
+    description: String!
+    userID: IdentifierInput!
+}
+
+type ListEcomorph {
+    ecomorph: [Ecomorph]
+}
+
+
+input InputFormEcomorph {
+    title: String!
+    description: String!
+}
+
+input InputEcomorph {
+    id: IdentifierInput!
+    payload: InputFormEcomorph!
+}
+
+type EcomorphQuery {
+    getEcomorphById(id: ID!): Ecomorph! @goField(forceResolver: true)
+    getListEcomorph: ListEcomorph! @goField(forceResolver: true)
+}
+
+type EcomorphMutation {
+    insertEcomorph(payload: InputFormEcomorph): Ecomorph! @goField(forceResolver: true)
+    updateEcomorph(input: InputEcomorph): Ecomorph! @goField(forceResolver: true)
+    deleteEcomorphById(id: ID!): BoolResponse! @goField(forceResolver: true)
+}

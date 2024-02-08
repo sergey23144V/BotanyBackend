@@ -1,0 +1,43 @@
+type TypePlantQuery {
+    getTypePlant(id: ID!): TypePlant @goField(forceResolver: true)
+    getAllTypePlant: TypePlantList @goField(forceResolver: true)
+}
+
+type TypePlantMutation {
+    createTypePlant(input: InputFormTypePlantRequest): TypePlant @goField(forceResolver: true)
+    updateTypePlant(input: InputTypePlantRequest): TypePlant @goField(forceResolver: true)
+    deleteTypePlant(id: ID!): BoolResponse @goField(forceResolver: true)
+}
+
+type TypePlant {
+    id: IdentifierType!
+    title: String
+    subtitle: String
+    ecomorphsEntity: [EcomorphsEntity]
+    createdAt: Timestamp
+    updatedAt: Timestamp
+    userId: IdentifierType
+}
+
+input TypePlantInput {
+    id: IdentifierInput!
+    title: String
+    subtitle: String
+    ecomorphsEntity: [EcomorphsEntityInput]
+    userId: IdentifierInput
+}
+
+type TypePlantList {
+    typePlant: [TypePlant]
+}
+
+input InputFormTypePlantRequest  {
+    title: String
+    subtitle: String
+    ecomorphsEntity: [EcomorphsEntityInput]
+}
+
+input InputTypePlantRequest  {
+    id: IdentifierInput!
+    input: InputFormTypePlantRequest
+}

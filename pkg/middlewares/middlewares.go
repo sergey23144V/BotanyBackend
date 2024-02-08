@@ -9,6 +9,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+	"log"
+	"net/http"
 	"strings"
 )
 
@@ -16,6 +18,37 @@ const (
 	KeyToken  = "token"
 	KeyUserId = "userId"
 )
+
+func Middleware() func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+			log.Print(r.Method)
+
+			token := r.Header.Get("authorization")
+
+			if token == "" {
+
+				return
+			}
+			authorization := ParseAuthorization(token)
+
+			userId, err := authorization.(auth_helper.TokenAuth).GetUserIdFromToken()
+			if err != nil {
+				next.ServeHTTP(w, r)
+				return
+			}
+			ctx := r.Context()
+			ctx = context.WithValue(ctx, KeyToken, token)
+
+			ctx = context.WithValue(ctx, KeyUserId, userId)
+
+			r = r.WithContext(ctx)
+			next.ServeHTTP(w, r)
+			return
+		})
+	}
+}
 
 // AuthInterceptor - промежуточный слой для проверки токена в gRPC
 func AuthInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {

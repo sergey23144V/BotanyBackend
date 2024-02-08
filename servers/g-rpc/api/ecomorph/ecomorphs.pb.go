@@ -7,9 +7,9 @@
 package ecomorph
 
 import (
-	api "api/"
 	resource "github.com/infobloxopen/atlas-app-toolkit/atlas/resource"
 	_ "github.com/infobloxopen/protoc-gen-gorm/options"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"

@@ -1,0 +1,18 @@
+
+
+type Query{
+    ecomorph: EcomorphQuery @goField(forceResolver: true)
+    ecomorphsEntity: EcomorphsEntityQuery @goField(forceResolver: true)
+    typePlant: TypePlantQuery @goField(forceResolver: true)
+    trialSite: TrialSiteQuery @goField(forceResolver: true)
+    transect: TransectQuery @goField(forceResolver: true)
+}
+
+type Mutation{
+    ecomorph: EcomorphMutation @goField(forceResolver: true)
+    auth: AuthMutation   @goField(forceResolver: true)
+    ecomorphsEntity: EcomorphMutation  @goField(forceResolver: true)
+    typePlant: TypePlantMutation  @goField(forceResolver: true)
+    trialSite: TrialSiteMutation @goField(forceResolver: true)
+    transect: TransectMutation @goField(forceResolver: true)
+}

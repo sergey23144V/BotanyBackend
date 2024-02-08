@@ -1,0 +1,26 @@
+
+
+
+type SignInUserResponse{
+    status: String!
+    access_token: String!
+    refresh_token: String!
+}
+
+input SignInUserInput{
+    email: String!
+    password: String!
+}
+
+input SignUpUserInput{
+    email: String!
+    password: String!
+    name:String!
+}
+
+
+type AuthMutation{
+    signUpUser(data : SignUpUserInput): SignInUserResponse @goField(forceResolver: true)
+    signInUser(data : SignInUserInput): SignInUserResponse @goField(forceResolver: true)
+}
+

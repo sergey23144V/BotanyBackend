@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/sergey23144V/BotanyBackend/pkg/repository"
 	g_rpc "github.com/sergey23144V/BotanyBackend/servers/g-rpc"
+	"github.com/sergey23144V/BotanyBackend/servers/grapgql"
 	"log"
 )
 
@@ -23,5 +24,7 @@ func main() {
 	}
 
 	g_rpc.StartGrpc(db)
+	grapgql.StartGraphQl(db)
 
+	select {}
 }

@@ -8,7 +8,17 @@ import (
 	"github.com/sergey23144V/BotanyBackend/pkg/repository"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	ecomorph_entity "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph-entity"
+	"google.golang.org/genproto/protobuf/field_mask"
 )
+
+type EcomorphsEntityService interface {
+	CreateEcomorphsEntity(ctx context.Context, entity *ecomorph_entity.InputEcomorphsEntity) (*ecomorph_entity.EcomorphsEntity, error)
+	GetEcomorphsEntityById(ctx context.Context, request *api.IdRequest) (*ecomorph_entity.EcomorphsEntity, error)
+	DeleteEcomorphsEntity(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error)
+	StrictUpdateEcomorphsEntity(ctx context.Context, entity *ecomorph_entity.InputEcomorphsEntity) (*ecomorph_entity.EcomorphsEntity, error)
+	UpdateEcomorphsEntity(ctx context.Context, entity *ecomorph_entity.InputEcomorphsEntity) (*ecomorph_entity.EcomorphsEntity, error)
+	GetListEcomorphsEntity(ctx context.Context, request *api.EmptyRequest) (*ecomorph_entity.EcomorphsEntityList, error)
+}
 
 type EcomorphsEntityServiceImpl struct {
 	repository *repository.Repository
@@ -39,12 +49,11 @@ func (e EcomorphsEntityServiceImpl) DeleteEcomorphsEntity(ctx context.Context, r
 }
 
 func (e EcomorphsEntityServiceImpl) StrictUpdateEcomorphsEntity(ctx context.Context, entity *ecomorph_entity.InputEcomorphsEntity) (*ecomorph_entity.EcomorphsEntity, error) {
-	return e.repository.EcomorphsEntityRepository.UpdateEcomorphsEntity(ctx, e.ToPB(ctx, entity))
+	return e.repository.EcomorphsEntityRepository.StrictUpdateEcomorphsEntity(ctx, e.ToPB(ctx, entity))
 }
 
 func (e EcomorphsEntityServiceImpl) UpdateEcomorphsEntity(ctx context.Context, entity *ecomorph_entity.InputEcomorphsEntity) (*ecomorph_entity.EcomorphsEntity, error) {
-	//TODO implement me
-	panic("implement me")
+	return e.repository.EcomorphsEntityRepository.UpdateEcomorphsEntity(ctx, e.ToPB(ctx, entity), &field_mask.FieldMask{Paths: []string{"Title", "Description", "Ecomorphs"}})
 }
 
 func (e EcomorphsEntityServiceImpl) GetListEcomorphsEntity(ctx context.Context, request *api.EmptyRequest) (*ecomorph_entity.EcomorphsEntityList, error) {

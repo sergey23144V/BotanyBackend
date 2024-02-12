@@ -30,7 +30,7 @@ func StartGrpc(db *gorm.DB, authServet *auth.AuthServerImpl, newRepository *serv
 		//Создание Сервера
 		ecomorphsEntityServet := implementation.NewEcomorphsEntityServetImpl(newRepository)
 		ecomorphsServet := implementation.NewEcomorphsServetImplImpl(newRepository)
-		typePlantServet := type_plant.NewTypePlantServetImpl(db)
+		typePlantServet := implementation.NewTypePlantServetImpl(db)
 		trialSiteServet := trial_site.NewTrialSiteServetImpl(db)
 		transectServet := transect.NewTransectServetImpl(db)
 

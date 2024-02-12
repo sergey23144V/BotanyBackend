@@ -7,6 +7,7 @@ import (
 	"github.com/infobloxopen/protoc-gen-gorm/errors"
 	"github.com/jinzhu/gorm"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph"
+	"google.golang.org/genproto/protobuf/field_mask"
 )
 
 type EcomorphRepository interface {
@@ -14,7 +15,7 @@ type EcomorphRepository interface {
 	GetEcomorphById(ctx context.Context, in *ecomorph.Ecomorph) (*ecomorph.Ecomorph, error)
 	DeleteEcomorph(ctx context.Context, in *ecomorph.Ecomorph) error
 	StrictUpdateEcomorph(ctx context.Context, in *ecomorph.Ecomorph) (*ecomorph.Ecomorph, error)
-	UpdateEcomorph(ctx context.Context, in *ecomorph.Ecomorph) (*ecomorph.Ecomorph, error)
+	UpdateEcomorph(ctx context.Context, in *ecomorph.Ecomorph, updateMask *field_mask.FieldMask) (*ecomorph.Ecomorph, error)
 	GetListEcomorph(ctx context.Context, in *ecomorph.Ecomorph) ([]*ecomorph.Ecomorph, error)
 }
 
@@ -149,9 +150,45 @@ func (e EcomorphRepositoryImpl) StrictUpdateEcomorph(ctx context.Context, in *ec
 	return &pbResponse, err
 }
 
-func (e EcomorphRepositoryImpl) UpdateEcomorph(ctx context.Context, in *ecomorph.Ecomorph) (*ecomorph.Ecomorph, error) {
-	//TODO implement me
-	panic("implement me")
+func (e EcomorphRepositoryImpl) UpdateEcomorph(ctx context.Context, in *ecomorph.Ecomorph, updateMask *field_mask.FieldMask) (*ecomorph.Ecomorph, error) {
+	if in == nil {
+		return nil, errors.NilArgumentError
+	}
+	var pbObj ecomorph.Ecomorph
+	var err error
+	if hook, ok := interface{}(&pbObj).(ecomorph.EcomorphWithBeforePatchRead); ok {
+		if e.db, err = hook.BeforePatchRead(ctx, in, updateMask, e.db); err != nil {
+			return nil, err
+		}
+	}
+	pbReadRes, err := ecomorph.DefaultReadEcomorph(ctx, &ecomorph.Ecomorph{Id: in.GetId()}, e.db)
+	if err != nil {
+		return nil, err
+	}
+	pbObj = *pbReadRes
+	if hook, ok := interface{}(&pbObj).(ecomorph.EcomorphWithBeforePatchApplyFieldMask); ok {
+		if e.db, err = hook.BeforePatchApplyFieldMask(ctx, in, updateMask, e.db); err != nil {
+			return nil, err
+		}
+	}
+	if _, err := ecomorph.DefaultApplyFieldMaskEcomorph(ctx, &pbObj, in, updateMask, "", e.db); err != nil {
+		return nil, err
+	}
+	if hook, ok := interface{}(&pbObj).(ecomorph.EcomorphWithBeforePatchSave); ok {
+		if e.db, err = hook.BeforePatchSave(ctx, in, updateMask, e.db); err != nil {
+			return nil, err
+		}
+	}
+	pbResponse, err := ecomorph.DefaultStrictUpdateEcomorph(ctx, &pbObj, e.db)
+	if err != nil {
+		return nil, err
+	}
+	if hook, ok := interface{}(pbResponse).(ecomorph.EcomorphWithAfterPatchSave); ok {
+		if err = hook.AfterPatchSave(ctx, in, updateMask, e.db); err != nil {
+			return nil, err
+		}
+	}
+	return pbResponse, nil
 }
 
 func (e EcomorphRepositoryImpl) GetListEcomorph(ctx context.Context, in *ecomorph.Ecomorph) ([]*ecomorph.Ecomorph, error) {

@@ -10,4 +10,6 @@ var NoTransactionError = errors.New("transaction is not opened")
 
 var NotDelete = errors.New("not delete")
 
+var NotAuthorization = errors.New("Not Authorization")
+
 var BadRepeatedFieldMaskTpl = "unexpected fieldmask count %d for objects count %d"

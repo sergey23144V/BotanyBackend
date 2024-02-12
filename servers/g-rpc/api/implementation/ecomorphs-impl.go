@@ -12,7 +12,7 @@ import (
 
 // EcomorphsServetImpl
 type EcomorphsServetImpl struct {
-	repository *service.Service
+	service *service.Service
 }
 
 func NewEcomorphsServetImplImpl(repository *service.Service) EcomorphsServetImpl {
@@ -20,25 +20,25 @@ func NewEcomorphsServetImplImpl(repository *service.Service) EcomorphsServetImpl
 }
 
 func (e EcomorphsServetImpl) UpdateEcomorph(ctx context.Context, in *ecomorph.InputEcomorph) (*ecomorph.Ecomorph, error) {
-	return e.repository.StrictUpdateEcomorph(ctx, in)
+	return e.service.StrictUpdateEcomorph(ctx, in)
 
 }
 
 func (e EcomorphsServetImpl) GetListEcomorph(ctx context.Context, request *api.EmptyRequest) (*ecomorph.EcomorphsList, error) {
-	return e.repository.GetListEcomorph(ctx, request)
+	return e.service.GetListEcomorph(ctx, request)
 }
 
 func (e EcomorphsServetImpl) InsertEcomorph(ctx context.Context, in *ecomorph.InputEcomorph) (*ecomorph.Ecomorph, error) {
-	return e.repository.CreateEcomorph(ctx, in)
+	return e.service.CreateEcomorph(ctx, in)
 
 }
 
 func (e EcomorphsServetImpl) GetEcomorphById(ctx context.Context, request *api.IdRequest) (*ecomorph.Ecomorph, error) {
-	return e.repository.GetEcomorphById(ctx, request)
+	return e.service.GetEcomorphById(ctx, request)
 }
 
 func (e EcomorphsServetImpl) DeleteEcomorphById(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error) {
-	return e.repository.EcomorphService.DeleteEcomorph(ctx, request)
+	return e.service.EcomorphService.DeleteEcomorph(ctx, request)
 
 }
 

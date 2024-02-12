@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/infobloxopen/atlas-app-toolkit/atlas/resource"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
+	"google.golang.org/genproto/protobuf/field_mask"
 
 	"github.com/sergey23144V/BotanyBackend/pkg"
 	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
@@ -11,6 +12,15 @@ import (
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph"
 	log "github.com/sirupsen/logrus"
 )
+
+type EcomorphService interface {
+	CreateEcomorph(ctx context.Context, in *ecomorph.InputEcomorph) (*ecomorph.Ecomorph, error)
+	GetEcomorphById(ctx context.Context, request *api.IdRequest) (*ecomorph.Ecomorph, error)
+	DeleteEcomorph(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error)
+	StrictUpdateEcomorph(ctx context.Context, in *ecomorph.InputEcomorph) (*ecomorph.Ecomorph, error)
+	UpdateEcomorph(ctx context.Context, in *ecomorph.InputEcomorph) (*ecomorph.Ecomorph, error)
+	GetListEcomorph(ctx context.Context, request *api.EmptyRequest) (*ecomorph.EcomorphsList, error)
+}
 
 type EcomorphServiceImpl struct {
 	repository *repository.Repository
@@ -21,7 +31,7 @@ func NewEcomorphServiceImpl(repository *repository.Repository) EcomorphServiceIm
 }
 
 func (e EcomorphServiceImpl) CreateEcomorph(ctx context.Context, in *ecomorph.InputEcomorph) (*ecomorph.Ecomorph, error) {
-	createEcomorph, err := e.repository.CreateEcomorph(ctx, ToPB(ctx, in))
+	createEcomorph, err := e.repository.CreateEcomorph(ctx, e.ToPB(ctx, in))
 	if err != nil {
 		log.Error("Insert Ecomorph:", err)
 		return nil, err
@@ -55,7 +65,7 @@ func (e EcomorphServiceImpl) DeleteEcomorph(ctx context.Context, request *api.Id
 }
 
 func (e EcomorphServiceImpl) StrictUpdateEcomorph(ctx context.Context, in *ecomorph.InputEcomorph) (*ecomorph.Ecomorph, error) {
-	createEcomorph, err := e.repository.StrictUpdateEcomorph(ctx, ToPB(ctx, in))
+	createEcomorph, err := e.repository.StrictUpdateEcomorph(ctx, e.ToPB(ctx, in))
 	if err != nil {
 		log.Error("Update Ecomorph:", err)
 		return nil, err
@@ -66,8 +76,7 @@ func (e EcomorphServiceImpl) StrictUpdateEcomorph(ctx context.Context, in *ecomo
 }
 
 func (e EcomorphServiceImpl) UpdateEcomorph(ctx context.Context, in *ecomorph.InputEcomorph) (*ecomorph.Ecomorph, error) {
-	//TODO implement me
-	panic("implement me")
+	return e.repository.UpdateEcomorph(ctx, e.ToPB(ctx, in), &field_mask.FieldMask{Paths: []string{"Title", "Description"}})
 }
 
 func (e EcomorphServiceImpl) GetListEcomorph(ctx context.Context, request *api.EmptyRequest) (*ecomorph.EcomorphsList, error) {
@@ -79,7 +88,7 @@ func (e EcomorphServiceImpl) GetListEcomorph(ctx context.Context, request *api.E
 	return &ecomorph.EcomorphsList{Ecomorph: list}, nil
 }
 
-func ToPB(ctx context.Context, in *ecomorph.InputEcomorph) *ecomorph.Ecomorph {
+func (e EcomorphServiceImpl) ToPB(ctx context.Context, in *ecomorph.InputEcomorph) *ecomorph.Ecomorph {
 	var id *resource.Identifier
 
 	if in.Id != nil {

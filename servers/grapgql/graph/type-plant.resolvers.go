@@ -6,7 +6,8 @@ package graph
 
 import (
 	"context"
-	"fmt"
+	"github.com/sergey23144V/BotanyBackend/pkg/errors"
+	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	type_plant "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/type-plant"
@@ -15,31 +16,42 @@ import (
 
 // CreateTypePlant is the resolver for the createTypePlant field.
 func (r *typePlantMutationResolver) CreateTypePlant(ctx context.Context, obj *model.TypePlantMutation, input *type_plant.InputFormTypePlantRequest) (*type_plant.TypePlant, error) {
-	panic(fmt.Errorf("not implemented: CreateTypePlant - createTypePlant"))
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.NotAuthorization
+	}
+	return r.service.TypePlantService.CreateTypePlant(ctx, &type_plant.InputTypePlantRequest{Input: input})
 }
 
 // UpdateTypePlant is the resolver for the updateTypePlant field.
 func (r *typePlantMutationResolver) UpdateTypePlant(ctx context.Context, obj *model.TypePlantMutation, input *type_plant.InputTypePlantRequest) (*type_plant.TypePlant, error) {
-	panic(fmt.Errorf("not implemented: UpdateTypePlant - updateTypePlant"))
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.NotAuthorization
+	}
+	return r.service.TypePlantService.UpdateTypePlant(ctx, input)
 }
 
 // DeleteTypePlant is the resolver for the deleteTypePlant field.
 func (r *typePlantMutationResolver) DeleteTypePlant(ctx context.Context, obj *model.TypePlantMutation, id string) (*api.BoolResponse, error) {
-	panic(fmt.Errorf("not implemented: DeleteTypePlant - deleteTypePlant"))
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.NotAuthorization
+	}
+	return r.service.TypePlantService.DeleteTypePlant(ctx, ToIdRequest(id))
 }
 
 // GetTypePlant is the resolver for the getTypePlant field.
 func (r *typePlantQueryResolver) GetTypePlant(ctx context.Context, obj *model.TypePlantQuery, id string) (*type_plant.TypePlant, error) {
-	panic(fmt.Errorf("not implemented: GetTypePlant - getTypePlant"))
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.NotAuthorization
+	}
+	return r.service.TypePlantService.GetTypePlantById(ctx, ToIdRequest(id))
 }
 
 // GetAllTypePlant is the resolver for the getAllTypePlant field.
 func (r *typePlantQueryResolver) GetAllTypePlant(ctx context.Context, obj *model.TypePlantQuery) (*type_plant.TypePlantList, error) {
-	list, err := type_plant.DefaultListTypePlant(ctx, r.Db)
-	if err != nil {
-		return nil, err
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.NotAuthorization
 	}
-	return &type_plant.TypePlantList{TypePlant: list}, nil
+	return r.service.TypePlantService.GetListTypePlant(ctx, &api.EmptyRequest{})
 }
 
 // TypePlantMutation returns TypePlantMutationResolver implementation.

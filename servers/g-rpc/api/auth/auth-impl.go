@@ -150,7 +150,3 @@ func ValidatePassword(password string) error {
 	// Пароль прошел валидацию
 	return nil
 }
-
-func ValidateEmail(email string) {
-
-}

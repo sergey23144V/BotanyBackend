@@ -6,40 +6,53 @@ package graph
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
+	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph"
 	"github.com/sergey23144V/BotanyBackend/servers/grapgql/graph/model"
 )
 
 // InsertEcomorph is the resolver for the insertEcomorph field.
-func (r *ecomorphMutationResolver) InsertEcomorph(ctx context.Context, obj *model.EcomorphMutation, payload *ecomorph.InputFormEcomorph) (*ecomorph.Ecomorph, error) {
-	panic(fmt.Errorf("not implemented: InsertEcomorph - insertEcomorph"))
+func (r *ecomorphMutationResolver) InsertEcomorph(ctx context.Context, obj *model.EcomorphMutation, input *ecomorph.InputEcomorph) (*ecomorph.Ecomorph, error) {
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.New("not authorization")
+	}
+	ecomorph, err := r.service.EcomorphService.CreateEcomorph(ctx, input)
+	return ecomorph, err
 }
 
 // UpdateEcomorph is the resolver for the updateEcomorph field.
 func (r *ecomorphMutationResolver) UpdateEcomorph(ctx context.Context, obj *model.EcomorphMutation, input *ecomorph.InputEcomorph) (*ecomorph.Ecomorph, error) {
-	panic(fmt.Errorf("not implemented: UpdateEcomorph - updateEcomorph"))
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.New("not authorization")
+	}
+	return r.service.EcomorphService.StrictUpdateEcomorph(ctx, input)
 }
 
 // DeleteEcomorphByID is the resolver for the deleteEcomorphById field.
 func (r *ecomorphMutationResolver) DeleteEcomorphByID(ctx context.Context, obj *model.EcomorphMutation, id string) (*api.BoolResponse, error) {
-	panic(fmt.Errorf("not implemented: DeleteEcomorphByID - deleteEcomorphById"))
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.New("not authorization")
+	}
+	return r.service.EcomorphService.DeleteEcomorph(ctx, ToIdRequest(id))
 }
 
 // GetEcomorphByID is the resolver for the getEcomorphById field.
 func (r *ecomorphQueryResolver) GetEcomorphByID(ctx context.Context, obj *model.EcomorphQuery, id string) (*ecomorph.Ecomorph, error) {
-	panic(fmt.Errorf("not implemented: GetEcomorphByID - getEcomorphById"))
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.New("not authorization")
+	}
+	return r.service.EcomorphService.GetEcomorphById(ctx, ToIdRequest(id))
 }
 
 // GetListEcomorph is the resolver for the getListEcomorph field.
-func (r *ecomorphQueryResolver) GetListEcomorph(ctx context.Context, obj *model.EcomorphQuery) (*model.ListEcomorph, error) {
-	list, err := ecomorph.DefaultListEcomorph(ctx, r.Db)
-	if err != nil {
-		return nil, err
+func (r *ecomorphQueryResolver) GetListEcomorph(ctx context.Context, obj *model.EcomorphQuery) (*ecomorph.EcomorphsList, error) {
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.New("not authorization")
 	}
-	return &model.ListEcomorph{Ecomorph: list}, nil
+	return r.service.EcomorphService.GetListEcomorph(ctx, &api.EmptyRequest{})
 }
 
 // EcomorphMutation returns EcomorphMutationResolver implementation.

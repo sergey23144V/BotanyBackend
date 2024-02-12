@@ -6,7 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/auth"
 	"github.com/sergey23144V/BotanyBackend/servers/grapgql/graph/model"
@@ -14,12 +13,12 @@ import (
 
 // SignUpUser is the resolver for the signUpUser field.
 func (r *authMutationResolver) SignUpUser(ctx context.Context, obj *model.AuthMutation, data *auth.SignUpUserInput) (*auth.SignInUserResponse, error) {
-	panic(fmt.Errorf("not implemented: SignUpUser - signUpUser"))
+	return r.AuthServerImpl.SignUpUser(ctx, data)
 }
 
 // SignInUser is the resolver for the signInUser field.
 func (r *authMutationResolver) SignInUser(ctx context.Context, obj *model.AuthMutation, data *auth.SignInUserInput) (*auth.SignInUserResponse, error) {
-	panic(fmt.Errorf("not implemented: SignInUser - signInUser"))
+	return r.AuthServerImpl.SignInUser(ctx, data)
 }
 
 // AuthMutation returns AuthMutationResolver implementation.

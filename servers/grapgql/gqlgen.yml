@@ -91,6 +91,7 @@ models:
     model: github.com/infobloxopen/atlas-app-toolkit/atlas/resource.Identifier
   IdentifierType:
     model: github.com/infobloxopen/atlas-app-toolkit/atlas/resource.Identifier
+
 #Ecomorph
   Ecomorph:
     model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph.Ecomorph
@@ -100,8 +101,8 @@ models:
     model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph.InputFormEcomorph
   InputEcomorph:
     model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph.InputEcomorph
-  EcomorphsList:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph.InputEcomorph
+  ListEcomorph:
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph.EcomorphsList
   BoolResponse:
     model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.BoolResponse
 

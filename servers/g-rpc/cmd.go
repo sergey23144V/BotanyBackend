@@ -3,7 +3,9 @@ package g_rpc
 import (
 	"github.com/jinzhu/gorm"
 	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
+	"github.com/sergey23144V/BotanyBackend/pkg/service"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/auth"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/implementation"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/transect"
 	trial_site "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/trial-site"
 	type_plant "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/type-plant"
@@ -16,7 +18,7 @@ import (
 	"net"
 )
 
-func StartGrpc(db *gorm.DB) {
+func StartGrpc(db *gorm.DB, authServet *auth.AuthServerImpl, newRepository *service.Service) {
 	go func() {
 		listener, err := net.Listen("tcp", ":50051")
 		if err != nil {
@@ -26,9 +28,8 @@ func StartGrpc(db *gorm.DB) {
 			grpc.UnaryInterceptor(middlewares.AuthInterceptor))
 
 		//Создание Сервера
-		ecomorphsEntityServet := ecomorph_entity.NewEcomorphsEntityServetImpl(db)
-		ecomorphsServet := ecomorph.NewEcomorphsServetImplImpl(db)
-		authServet := auth.NewAuthServer(db)
+		ecomorphsEntityServet := implementation.NewEcomorphsEntityServetImpl(newRepository)
+		ecomorphsServet := implementation.NewEcomorphsServetImplImpl(newRepository)
 		typePlantServet := type_plant.NewTypePlantServetImpl(db)
 		trialSiteServet := trial_site.NewTrialSiteServetImpl(db)
 		transectServet := transect.NewTransectServetImpl(db)

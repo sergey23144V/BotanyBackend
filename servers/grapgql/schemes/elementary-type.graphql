@@ -18,8 +18,8 @@ type BoolResponse {
 }
 
 type IdentifierType {
-    applicationName: String!
-    resourceType: String!
+    applicationName: String
+    resourceType: String
     resourceId: String!
 }
 

@@ -2,14 +2,15 @@ package middlewares
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/infobloxopen/atlas-app-toolkit/atlas/resource"
 	auth_helper "github.com/sergey23144V/BotanyBackend/pkg/auth-helper"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -19,16 +20,14 @@ const (
 	KeyUserId = "userId"
 )
 
-func Middleware() func(http.Handler) http.Handler {
+func AuthInterceptorGraphQL() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-			log.Print(r.Method)
 
 			token := r.Header.Get("authorization")
 
 			if token == "" {
-
+				next.ServeHTTP(w, r)
 				return
 			}
 			authorization := ParseAuthorization(token)
@@ -39,7 +38,8 @@ func Middleware() func(http.Handler) http.Handler {
 				return
 			}
 			ctx := r.Context()
-			ctx = context.WithValue(ctx, KeyToken, token)
+
+			ctx = context.WithValue(ctx, KeyToken, authorization.String())
 
 			ctx = context.WithValue(ctx, KeyUserId, userId)
 
@@ -74,7 +74,7 @@ func AuthInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServe
 		return nil, err
 	}
 
-	ctx = context.WithValue(ctx, KeyToken, token)
+	ctx = context.WithValue(ctx, KeyToken, authorization.String())
 
 	ctx = context.WithValue(ctx, KeyUserId, userId)
 
@@ -90,15 +90,19 @@ func getToken(md metadata.MD) string {
 }
 
 func GetUserIdFromContext(ctx context.Context) *resource.Identifier {
-	id := ctx.Value(KeyUserId).(string)
-
+	id, ok := ctx.Value(KeyUserId).(string)
+	if !ok {
+		return nil
+	}
 	return &resource.Identifier{
 		ResourceId: id,
 	}
 }
 func GetTokenFromContext(ctx context.Context) *string {
-	raw := ctx.Value(KeyToken).(string)
-
+	raw, ok := ctx.Value(KeyToken).(string)
+	if !ok {
+		return nil
+	}
 	return &raw
 }
 
@@ -132,4 +136,26 @@ func ParseAuthorization(authToken string) auth_helper.Authorization {
 		fmt.Errorf("неподдерживаемый тип аутентификации: %s", authType)
 	}
 	return authorization
+}
+
+func ValidToken(ctx context.Context) bool {
+
+	token := GetTokenFromContext(ctx)
+	if token == nil {
+		return false
+	}
+	result, err := jwt.ParseWithClaims(*token, &auth_helper.TokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("invalid signing method")
+		}
+
+		return []byte(auth_helper.SigningKey), nil
+	})
+	if err != nil {
+		return false
+	}
+	if result == nil {
+		return false
+	}
+	return true
 }

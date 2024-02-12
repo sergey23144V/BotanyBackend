@@ -6,6 +6,8 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/jinzhu/gorm"
 	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
+	"github.com/sergey23144V/BotanyBackend/pkg/service"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/auth"
 	"github.com/sergey23144V/BotanyBackend/servers/grapgql/graph"
 	"log"
 	"net/http"
@@ -14,7 +16,7 @@ import (
 
 const defaultPort = "8080"
 
-func StartGraphQl(db *gorm.DB) {
+func StartGraphQl(db *gorm.DB, authServerImpl *auth.AuthServerImpl, newService *service.Service) {
 	go func() {
 		port := os.Getenv("PORT")
 		if port == "" {
@@ -22,8 +24,8 @@ func StartGraphQl(db *gorm.DB) {
 		}
 		router := chi.NewRouter()
 
-		router.Use(middlewares.Middleware())
-		srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{Db: db}}))
+		router.Use(middlewares.AuthInterceptorGraphQL())
+		srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: graph.NewResolver(db, authServerImpl, newService)}))
 
 		router.Handle("/", playground.Handler("GraphQL playground", "/query"))
 		router.Handle("/query", srv)

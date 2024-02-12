@@ -102,7 +102,7 @@ type EcomorphEntityServiceServer interface {
 	DeleteEcomorphEntityByID(context.Context, *api.IdRequest) (*api.BoolResponse, error)
 	// Получение списка всех сущностей
 	GetAllEcomorphEntity(context.Context, *api.EmptyRequest) (*EcomorphsEntityList, error)
-	mustEmbedUnimplementedEcomorphEntityServiceServer()
+	MustEmbedUnimplementedEcomorphEntityServiceServer()
 }
 
 // UnimplementedEcomorphEntityServiceServer must be embedded to have forward compatible implementations.
@@ -124,13 +124,13 @@ func (UnimplementedEcomorphEntityServiceServer) DeleteEcomorphEntityByID(context
 func (UnimplementedEcomorphEntityServiceServer) GetAllEcomorphEntity(context.Context, *api.EmptyRequest) (*EcomorphsEntityList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllEcomorphEntity not implemented")
 }
-func (UnimplementedEcomorphEntityServiceServer) mustEmbedUnimplementedEcomorphEntityServiceServer() {}
+func (UnimplementedEcomorphEntityServiceServer) MustEmbedUnimplementedEcomorphEntityServiceServer() {}
 
 // UnsafeEcomorphEntityServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to EcomorphEntityServiceServer will
 // result in compilation errors.
 type UnsafeEcomorphEntityServiceServer interface {
-	mustEmbedUnimplementedEcomorphEntityServiceServer()
+	MustEmbedUnimplementedEcomorphEntityServiceServer()
 }
 
 func RegisterEcomorphEntityServiceServer(s grpc.ServiceRegistrar, srv EcomorphEntityServiceServer) {

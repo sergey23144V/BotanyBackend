@@ -24,8 +24,8 @@ type EcomorphMutation struct {
 }
 
 type EcomorphQuery struct {
-	GetEcomorphByID *ecomorph.Ecomorph `json:"getEcomorphById"`
-	GetListEcomorph *ListEcomorph      `json:"getListEcomorph"`
+	GetEcomorphByID *ecomorph.Ecomorph      `json:"getEcomorphById"`
+	GetListEcomorph *ecomorph.EcomorphsList `json:"getListEcomorph"`
 }
 
 type EcomorphsEntityMutation struct {
@@ -41,10 +41,6 @@ type EcomorphsEntityQuery struct {
 
 type IDRequest struct {
 	ID string `json:"id"`
-}
-
-type ListEcomorph struct {
-	Ecomorph []*ecomorph.Ecomorph `json:"ecomorph,omitempty"`
 }
 
 type Mutation struct {

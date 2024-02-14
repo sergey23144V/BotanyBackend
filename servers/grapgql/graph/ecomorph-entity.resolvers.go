@@ -6,8 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
-
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	ecomorph_entity "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph-entity"
 	"github.com/sergey23144V/BotanyBackend/servers/grapgql/graph/model"
@@ -15,31 +13,27 @@ import (
 
 // InsertEcomorphEntity is the resolver for the insertEcomorphEntity field.
 func (r *ecomorphsEntityMutationResolver) InsertEcomorphEntity(ctx context.Context, obj *model.EcomorphsEntityMutation, input *ecomorph_entity.InputFormEcomorphsEntity) (*ecomorph_entity.EcomorphsEntity, error) {
-	panic(fmt.Errorf("not implemented: InsertEcomorphEntity - insertEcomorphEntity"))
+	return r.service.EcomorphsEntityService.CreateEcomorphsEntity(ctx, &ecomorph_entity.InputEcomorphsEntity{Input: input})
 }
 
 // UpdateEcomorphEntity is the resolver for the updateEcomorphEntity field.
 func (r *ecomorphsEntityMutationResolver) UpdateEcomorphEntity(ctx context.Context, obj *model.EcomorphsEntityMutation, input *ecomorph_entity.InputEcomorphsEntity) (*ecomorph_entity.EcomorphsEntity, error) {
-	panic(fmt.Errorf("not implemented: UpdateEcomorphEntity - updateEcomorphEntity"))
+	return r.service.EcomorphsEntityService.StrictUpdateEcomorphsEntity(ctx, input)
 }
 
 // DeleteEcomorphEntityByID is the resolver for the deleteEcomorphEntityByID field.
 func (r *ecomorphsEntityMutationResolver) DeleteEcomorphEntityByID(ctx context.Context, obj *model.EcomorphsEntityMutation, id string) (*api.BoolResponse, error) {
-	panic(fmt.Errorf("not implemented: DeleteEcomorphEntityByID - deleteEcomorphEntityByID"))
+	return r.service.EcomorphsEntityService.DeleteEcomorphsEntity(ctx, ToIdRequest(id))
 }
 
 // GetEcomorphEntityByID is the resolver for the getEcomorphEntityByID field.
 func (r *ecomorphsEntityQueryResolver) GetEcomorphEntityByID(ctx context.Context, obj *model.EcomorphsEntityQuery, id string) (*ecomorph_entity.EcomorphsEntity, error) {
-	panic(fmt.Errorf("not implemented: GetEcomorphEntityByID - getEcomorphEntityByID"))
+	return r.service.EcomorphsEntityService.GetEcomorphsEntityById(ctx, ToIdRequest(id))
 }
 
 // GetAllEcomorphEntity is the resolver for the getAllEcomorphEntity field.
 func (r *ecomorphsEntityQueryResolver) GetAllEcomorphEntity(ctx context.Context, obj *model.EcomorphsEntityQuery) (*ecomorph_entity.EcomorphsEntityList, error) {
-	list, err := ecomorph_entity.DefaultListEcomorphsEntity(ctx, r.Db)
-	if err != nil {
-		return nil, err
-	}
-	return &ecomorph_entity.EcomorphsEntityList{EcomorphsEntity: list}, nil
+	return r.service.EcomorphsEntityService.GetListEcomorphsEntity(ctx, &api.EmptyRequest{})
 }
 
 // EcomorphsEntityMutation returns EcomorphsEntityMutationResolver implementation.

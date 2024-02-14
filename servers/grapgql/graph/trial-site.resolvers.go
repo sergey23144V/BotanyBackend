@@ -6,8 +6,9 @@ package graph
 
 import (
 	"context"
-	"fmt"
+	"github.com/sergey23144V/BotanyBackend/pkg/errors"
 
+	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	trial_site "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/trial-site"
 	"github.com/sergey23144V/BotanyBackend/servers/grapgql/graph/model"
@@ -15,31 +16,42 @@ import (
 
 // CreateTrialSite is the resolver for the createTrialSite field.
 func (r *trialSiteMutationResolver) CreateTrialSite(ctx context.Context, obj *model.TrialSiteMutation, input *trial_site.InputFormTrialSiteRequest) (*trial_site.TrialSite, error) {
-	panic(fmt.Errorf("not implemented: CreateTrialSite - createTrialSite"))
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.NotAuthorization
+	}
+	return r.service.CreateTrialSite(ctx, &trial_site.InputTrialSiteRequest{Input: input})
 }
 
 // UpTrialSite is the resolver for the upTrialSite field.
 func (r *trialSiteMutationResolver) UpTrialSite(ctx context.Context, obj *model.TrialSiteMutation, input *trial_site.InputTrialSiteRequest) (*trial_site.TrialSite, error) {
-	panic(fmt.Errorf("not implemented: UpTrialSite - upTrialSite"))
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.NotAuthorization
+	}
+	return r.service.UpdateTrialSite(ctx, input)
 }
 
 // DeleteTrialSite is the resolver for the deleteTrialSite field.
 func (r *trialSiteMutationResolver) DeleteTrialSite(ctx context.Context, obj *model.TrialSiteMutation, id string) (*api.BoolResponse, error) {
-	panic(fmt.Errorf("not implemented: DeleteTrialSite - deleteTrialSite"))
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.NotAuthorization
+	}
+	return r.service.DeleteTrialSite(ctx, ToIdRequest(id))
 }
 
 // GetTrialSite is the resolver for the getTrialSite field.
 func (r *trialSiteQueryResolver) GetTrialSite(ctx context.Context, obj *model.TrialSiteQuery, id string) (*trial_site.TrialSite, error) {
-	panic(fmt.Errorf("not implemented: GetTrialSite - getTrialSite"))
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.NotAuthorization
+	}
+	return r.service.GetTrialSiteById(ctx, ToIdRequest(id))
 }
 
 // GetAllTrialSite is the resolver for the getAllTrialSite field.
 func (r *trialSiteQueryResolver) GetAllTrialSite(ctx context.Context, obj *model.TrialSiteQuery) (*trial_site.TrialSiteList, error) {
-	list, err := trial_site.DefaultListTrialSite(ctx, r.Db)
-	if err != nil {
-		return nil, err
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.NotAuthorization
 	}
-	return &trial_site.TrialSiteList{TrialSite: list}, nil
+	return r.service.GetListTrialSite(ctx, &api.EmptyRequest{})
 }
 
 // TrialSiteMutation returns TrialSiteMutationResolver implementation.

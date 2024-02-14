@@ -7,8 +7,8 @@ package graph
 import (
 	"context"
 	"github.com/sergey23144V/BotanyBackend/pkg/errors"
-	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 
+	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	type_plant "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/type-plant"
 	"github.com/sergey23144V/BotanyBackend/servers/grapgql/graph/model"

@@ -86,7 +86,7 @@ type ComplexityRoot struct {
 
 	EcomorphMutation struct {
 		DeleteEcomorphByID func(childComplexity int, id string) int
-		InsertEcomorph     func(childComplexity int, input *ecomorph.InputEcomorph) int
+		InsertEcomorph     func(childComplexity int, input *ecomorph.InputFormEcomorph) int
 		UpdateEcomorph     func(childComplexity int, input *ecomorph.InputEcomorph) int
 	}
 
@@ -258,7 +258,7 @@ type AuthMutationResolver interface {
 	SignInUser(ctx context.Context, obj *model.AuthMutation, data *auth.SignInUserInput) (*auth.SignInUserResponse, error)
 }
 type EcomorphMutationResolver interface {
-	InsertEcomorph(ctx context.Context, obj *model.EcomorphMutation, input *ecomorph.InputEcomorph) (*ecomorph.Ecomorph, error)
+	InsertEcomorph(ctx context.Context, obj *model.EcomorphMutation, input *ecomorph.InputFormEcomorph) (*ecomorph.Ecomorph, error)
 	UpdateEcomorph(ctx context.Context, obj *model.EcomorphMutation, input *ecomorph.InputEcomorph) (*ecomorph.Ecomorph, error)
 	DeleteEcomorphByID(ctx context.Context, obj *model.EcomorphMutation, id string) (*api.BoolResponse, error)
 }
@@ -432,7 +432,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.EcomorphMutation.InsertEcomorph(childComplexity, args["input"].(*ecomorph.InputEcomorph)), true
+		return e.complexity.EcomorphMutation.InsertEcomorph(childComplexity, args["input"].(*ecomorph.InputFormEcomorph)), true
 
 	case "EcomorphMutation.updateEcomorph":
 		if e.complexity.EcomorphMutation.UpdateEcomorph == nil {
@@ -1385,7 +1385,7 @@ type EcomorphQuery {
 }
 
 type EcomorphMutation {
-    insertEcomorph(input: InputEcomorph): Ecomorph! @goField(forceResolver: true)
+    insertEcomorph(input: InputFormEcomorph): Ecomorph! @goField(forceResolver: true)
     updateEcomorph(input: InputEcomorph): Ecomorph! @goField(forceResolver: true)
     deleteEcomorphById(id: ID!): BoolResponse! @goField(forceResolver: true)
 }
@@ -1416,8 +1416,8 @@ type IdentifierType {
 }
 
 input IdentifierInput {
-    applicationName: String!
-    resourceType: String!
+    applicationName: String
+    resourceType: String
     resourceId: String!
 }
 
@@ -1659,10 +1659,10 @@ func (ec *executionContext) field_EcomorphMutation_deleteEcomorphById_args(ctx c
 func (ec *executionContext) field_EcomorphMutation_insertEcomorph_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *ecomorph.InputEcomorph
+	var arg0 *ecomorph.InputFormEcomorph
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOInputEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐInputEcomorph(ctx, tmp)
+		arg0, err = ec.unmarshalOInputFormEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐInputFormEcomorph(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2464,7 +2464,7 @@ func (ec *executionContext) _EcomorphMutation_insertEcomorph(ctx context.Context
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.EcomorphMutation().InsertEcomorph(rctx, obj, fc.Args["input"].(*ecomorph.InputEcomorph))
+		return ec.resolvers.EcomorphMutation().InsertEcomorph(rctx, obj, fc.Args["input"].(*ecomorph.InputFormEcomorph))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9176,14 +9176,14 @@ func (ec *executionContext) unmarshalInputIdentifierInput(ctx context.Context, o
 		switch k {
 		case "applicationName":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("applicationName"))
-			data, err := ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.ApplicationName = data
 		case "resourceType":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("resourceType"))
-			data, err := ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -13161,6 +13161,14 @@ func (ec *executionContext) unmarshalOInputEcomorphsEntity2ᚖgithubᚗcomᚋser
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputInputEcomorphsEntity(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOInputFormEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐInputFormEcomorph(ctx context.Context, v interface{}) (*ecomorph.InputFormEcomorph, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputInputFormEcomorph(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

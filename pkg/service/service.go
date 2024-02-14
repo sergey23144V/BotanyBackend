@@ -8,6 +8,8 @@ type Service struct {
 	EcomorphService
 	EcomorphsEntityService
 	TypePlantService
+	TrialSiteService
+	TransectService
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -15,5 +17,7 @@ func NewService(repos *repository.Repository) *Service {
 		EcomorphsEntityService: NewEcomorphsEntityServiceImpl(repos),
 		EcomorphService:        NewEcomorphServiceImpl(repos),
 		TypePlantService:       NewTypePlantServiceImpl(repos),
+		TrialSiteService:       NewTrialSiteServiceImpl(repos),
+		TransectService:        NewTransectServiceImpl(repos),
 	}
 }

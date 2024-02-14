@@ -100,7 +100,7 @@ type TransectServiceServer interface {
 	DeleteTransect(context.Context, *api.IdRequest) (*api.BoolResponse, error)
 	// Получение списка всех сущностей
 	GetAllTransect(context.Context, *api.EmptyRequest) (*TransectList, error)
-	mustEmbedUnimplementedTransectServiceServer()
+	MustEmbedUnimplementedTransectServiceServer()
 }
 
 // UnimplementedTransectServiceServer must be embedded to have forward compatible implementations.
@@ -122,13 +122,13 @@ func (UnimplementedTransectServiceServer) DeleteTransect(context.Context, *api.I
 func (UnimplementedTransectServiceServer) GetAllTransect(context.Context, *api.EmptyRequest) (*TransectList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllTransect not implemented")
 }
-func (UnimplementedTransectServiceServer) mustEmbedUnimplementedTransectServiceServer() {}
+func (UnimplementedTransectServiceServer) MustEmbedUnimplementedTransectServiceServer() {}
 
 // UnsafeTransectServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to TransectServiceServer will
 // result in compilation errors.
 type UnsafeTransectServiceServer interface {
-	mustEmbedUnimplementedTransectServiceServer()
+	MustEmbedUnimplementedTransectServiceServer()
 }
 
 func RegisterTransectServiceServer(s grpc.ServiceRegistrar, srv TransectServiceServer) {

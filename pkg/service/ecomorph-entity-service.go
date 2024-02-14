@@ -57,7 +57,7 @@ func (e EcomorphsEntityServiceImpl) UpdateEcomorphsEntity(ctx context.Context, e
 }
 
 func (e EcomorphsEntityServiceImpl) GetListEcomorphsEntity(ctx context.Context, request *api.EmptyRequest) (*ecomorph_entity.EcomorphsEntityList, error) {
-	list, err := e.repository.EcomorphsEntityRepository.GetListEcomorphsEntity(ctx)
+	list, err := e.repository.EcomorphsEntityRepository.GetListEcomorphsEntity(ctx, &ecomorph_entity.EcomorphsEntity{UserId: middlewares.GetUserIdFromContext(ctx)})
 	if err != nil {
 		return nil, err
 	}

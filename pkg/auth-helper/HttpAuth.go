@@ -22,6 +22,7 @@ type TokenClaims struct {
 }
 
 var basicRegex = regexp.MustCompile(`^Basic (.+)$`)
+
 var bearerRegex = regexp.MustCompile(`^Bearer (.+)$`)
 
 func ParseHttpHeaderValue(value string) (Authorization, error) {

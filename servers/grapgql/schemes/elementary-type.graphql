@@ -24,8 +24,8 @@ type IdentifierType {
 }
 
 input IdentifierInput {
-    applicationName: String!
-    resourceType: String!
+    applicationName: String
+    resourceType: String
     resourceId: String!
 }
 

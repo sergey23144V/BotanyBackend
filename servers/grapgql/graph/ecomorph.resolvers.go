@@ -15,11 +15,11 @@ import (
 )
 
 // InsertEcomorph is the resolver for the insertEcomorph field.
-func (r *ecomorphMutationResolver) InsertEcomorph(ctx context.Context, obj *model.EcomorphMutation, input *ecomorph.InputEcomorph) (*ecomorph.Ecomorph, error) {
+func (r *ecomorphMutationResolver) InsertEcomorph(ctx context.Context, obj *model.EcomorphMutation, input *ecomorph.InputFormEcomorph) (*ecomorph.Ecomorph, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.New("not authorization")
 	}
-	ecomorph, err := r.service.EcomorphService.CreateEcomorph(ctx, input)
+	ecomorph, err := r.service.EcomorphService.CreateEcomorph(ctx, &ecomorph.InputEcomorph{Payload: input})
 	return ecomorph, err
 }
 

@@ -8,6 +8,8 @@ type Repository struct {
 	EcomorphsEntityRepository
 	EcomorphRepository
 	TypePlantRepository
+	TrialSiteRepository
+	TransectRepository
 }
 
 func NewRepository(db *gorm.DB) *Repository {
@@ -15,5 +17,7 @@ func NewRepository(db *gorm.DB) *Repository {
 		EcomorphsEntityRepository: NewEcomorphsEntityRepositoryImpl(db),
 		EcomorphRepository:        NewEcomorphRepositoryImpl(db),
 		TypePlantRepository:       NewTypePlantRepositoryImpl(db),
+		TrialSiteRepository:       NewTrialSiteRepositoryImpl(db),
+		TransectRepository:        NewTransectRepositoryImpl(db),
 	}
 }

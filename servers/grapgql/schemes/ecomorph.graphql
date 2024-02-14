@@ -36,7 +36,7 @@ type EcomorphQuery {
 }
 
 type EcomorphMutation {
-    insertEcomorph(input: InputEcomorph): Ecomorph! @goField(forceResolver: true)
+    insertEcomorph(input: InputFormEcomorph): Ecomorph! @goField(forceResolver: true)
     updateEcomorph(input: InputEcomorph): Ecomorph! @goField(forceResolver: true)
     deleteEcomorphById(id: ID!): BoolResponse! @goField(forceResolver: true)
 }

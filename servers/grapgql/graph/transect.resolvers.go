@@ -6,8 +6,9 @@ package graph
 
 import (
 	"context"
-	"fmt"
+	"github.com/sergey23144V/BotanyBackend/pkg/errors"
 
+	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/transect"
 	"github.com/sergey23144V/BotanyBackend/servers/grapgql/graph/model"
@@ -15,31 +16,42 @@ import (
 
 // CreateTransect is the resolver for the createTransect field.
 func (r *transectMutationResolver) CreateTransect(ctx context.Context, obj *model.TransectMutation, input *transect.InputTransectRequest) (*transect.Transect, error) {
-	panic(fmt.Errorf("not implemented: CreateTransect - createTransect"))
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.NotAuthorization
+	}
+	return r.service.CreateTransect(ctx, input)
 }
 
 // UpTransect is the resolver for the upTransect field.
 func (r *transectMutationResolver) UpTransect(ctx context.Context, obj *model.TransectMutation, input *transect.InputTransectRequest) (*transect.Transect, error) {
-	panic(fmt.Errorf("not implemented: UpTransect - upTransect"))
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.NotAuthorization
+	}
+	return r.service.UpdateTransect(ctx, input)
 }
 
 // DeleteTransect is the resolver for the deleteTransect field.
 func (r *transectMutationResolver) DeleteTransect(ctx context.Context, obj *model.TransectMutation, id string) (*api.BoolResponse, error) {
-	panic(fmt.Errorf("not implemented: DeleteTransect - deleteTransect"))
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.NotAuthorization
+	}
+	return r.service.DeleteTransect(ctx, ToIdRequest(id))
 }
 
 // GetTransect is the resolver for the getTransect field.
 func (r *transectQueryResolver) GetTransect(ctx context.Context, obj *model.TransectQuery, id string) (*transect.Transect, error) {
-	panic(fmt.Errorf("not implemented: GetTransect - getTransect"))
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.NotAuthorization
+	}
+	return r.service.GetTransectById(ctx, ToIdRequest(id))
 }
 
 // GetAllTransect is the resolver for the getAllTransect field.
 func (r *transectQueryResolver) GetAllTransect(ctx context.Context, obj *model.TransectQuery) (*transect.TransectList, error) {
-	list, err := transect.DefaultListTransect(ctx, r.Db)
-	if err != nil {
-		return nil, err
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.NotAuthorization
 	}
-	return &transect.TransectList{Transect: list}, nil
+	return r.service.GetListTransect(ctx, &api.EmptyRequest{})
 }
 
 // TransectMutation returns TransectMutationResolver implementation.

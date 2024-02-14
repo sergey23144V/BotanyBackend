@@ -35,7 +35,7 @@ func (t TypePlantServetImpl) GetAllTypePlant(ctx context.Context, request *api.E
 	return t.service.TypePlantService.GetListTypePlant(ctx, request)
 }
 
-func (t TypePlantServetImpl) mustEmbedUnimplementedTypePlantServiceServer() {
+func (t TypePlantServetImpl) MustEmbedUnimplementedTypePlantServiceServer() {
 	//TODO implement me
 	panic("implement me")
 }

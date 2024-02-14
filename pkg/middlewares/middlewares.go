@@ -98,6 +98,7 @@ func GetUserIdFromContext(ctx context.Context) *resource.Identifier {
 		ResourceId: id,
 	}
 }
+
 func GetTokenFromContext(ctx context.Context) *string {
 	raw, ok := ctx.Value(KeyToken).(string)
 	if !ok {

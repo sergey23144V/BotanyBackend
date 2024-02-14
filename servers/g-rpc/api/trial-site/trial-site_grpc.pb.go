@@ -100,7 +100,7 @@ type TrialSiteServiceServer interface {
 	DeleteTrialSite(context.Context, *api.IdRequest) (*api.BoolResponse, error)
 	// Получение списка всех сущностей
 	GetAllTrialSite(context.Context, *api.EmptyRequest) (*TrialSiteList, error)
-	mustEmbedUnimplementedTrialSiteServiceServer()
+	MustEmbedUnimplementedTrialSiteServiceServer()
 }
 
 // UnimplementedTrialSiteServiceServer must be embedded to have forward compatible implementations.
@@ -122,7 +122,7 @@ func (UnimplementedTrialSiteServiceServer) DeleteTrialSite(context.Context, *api
 func (UnimplementedTrialSiteServiceServer) GetAllTrialSite(context.Context, *api.EmptyRequest) (*TrialSiteList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllTrialSite not implemented")
 }
-func (UnimplementedTrialSiteServiceServer) mustEmbedUnimplementedTrialSiteServiceServer() {}
+func (UnimplementedTrialSiteServiceServer) MustEmbedUnimplementedTrialSiteServiceServer() {}
 
 // UnsafeTrialSiteServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to TrialSiteServiceServer will

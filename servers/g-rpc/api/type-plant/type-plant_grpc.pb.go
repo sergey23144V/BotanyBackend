@@ -100,7 +100,7 @@ type TypePlantServiceServer interface {
 	DeleteTypePlant(context.Context, *api.IdRequest) (*api.BoolResponse, error)
 	// Получение списка всех сущностей
 	GetAllTypePlant(context.Context, *api.EmptyRequest) (*TypePlantList, error)
-	mustEmbedUnimplementedTypePlantServiceServer()
+	MustEmbedUnimplementedTypePlantServiceServer()
 }
 
 // UnimplementedTypePlantServiceServer must be embedded to have forward compatible implementations.
@@ -122,13 +122,13 @@ func (UnimplementedTypePlantServiceServer) DeleteTypePlant(context.Context, *api
 func (UnimplementedTypePlantServiceServer) GetAllTypePlant(context.Context, *api.EmptyRequest) (*TypePlantList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllTypePlant not implemented")
 }
-func (UnimplementedTypePlantServiceServer) mustEmbedUnimplementedTypePlantServiceServer() {}
+func (UnimplementedTypePlantServiceServer) MustEmbedUnimplementedTypePlantServiceServer() {}
 
 // UnsafeTypePlantServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to TypePlantServiceServer will
 // result in compilation errors.
 type UnsafeTypePlantServiceServer interface {
-	mustEmbedUnimplementedTypePlantServiceServer()
+	MustEmbedUnimplementedTypePlantServiceServer()
 }
 
 func RegisterTypePlantServiceServer(s grpc.ServiceRegistrar, srv TypePlantServiceServer) {

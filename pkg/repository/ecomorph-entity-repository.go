@@ -16,7 +16,7 @@ type EcomorphsEntityRepository interface {
 	DeleteEcomorphsEntity(ctx context.Context, in *ecomorph_entity.EcomorphsEntity) error
 	StrictUpdateEcomorphsEntity(ctx context.Context, in *ecomorph_entity.EcomorphsEntity) (*ecomorph_entity.EcomorphsEntity, error)
 	UpdateEcomorphsEntity(ctx context.Context, in *ecomorph_entity.EcomorphsEntity, updateMask *field_mask.FieldMask) (*ecomorph_entity.EcomorphsEntity, error)
-	GetListEcomorphsEntity(ctx context.Context) ([]*ecomorph_entity.EcomorphsEntity, error)
+	GetListEcomorphsEntity(ctx context.Context, in *ecomorph_entity.EcomorphsEntity) ([]*ecomorph_entity.EcomorphsEntity, error)
 }
 
 type EcomorphsEntityRepositoryImpl struct {
@@ -198,8 +198,8 @@ func (e EcomorphsEntityRepositoryImpl) UpdateEcomorphsEntity(ctx context.Context
 	return pbResponse, nil
 }
 
-func (e EcomorphsEntityRepositoryImpl) GetListEcomorphsEntity(ctx context.Context) ([]*ecomorph_entity.EcomorphsEntity, error) {
-	in := ecomorph_entity.EcomorphsEntity{}
+func (e EcomorphsEntityRepositoryImpl) GetListEcomorphsEntity(ctx context.Context, in *ecomorph_entity.EcomorphsEntity) ([]*ecomorph_entity.EcomorphsEntity, error) {
+
 	ormObj, err := in.ToORM(ctx)
 	if err != nil {
 		return nil, err

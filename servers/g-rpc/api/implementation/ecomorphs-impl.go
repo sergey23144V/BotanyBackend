@@ -20,11 +20,11 @@ func NewEcomorphsServetImplImpl(repository *service.Service) EcomorphsServetImpl
 }
 
 func (e EcomorphsServetImpl) UpdateEcomorph(ctx context.Context, in *ecomorph.InputEcomorph) (*ecomorph.Ecomorph, error) {
-	return e.service.StrictUpdateEcomorph(ctx, in)
+	return e.service.UpdateEcomorph(ctx, in)
 
 }
 
-func (e EcomorphsServetImpl) GetListEcomorph(ctx context.Context, request *api.EmptyRequest) (*ecomorph.EcomorphsList, error) {
+func (e EcomorphsServetImpl) GetListEcomorph(ctx context.Context, request *api.PagesRequest) (*ecomorph.EcomorphsList, error) {
 	return e.service.GetListEcomorph(ctx, request)
 }
 

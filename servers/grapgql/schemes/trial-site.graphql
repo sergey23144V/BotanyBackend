@@ -1,6 +1,6 @@
 type TrialSiteQuery {
     getTrialSite(id: ID!): TrialSite @goField(forceResolver: true)
-    getAllTrialSite: TrialSiteList @goField(forceResolver: true)
+    getAllTrialSite(pages: PagesRequest ): TrialSiteList @goField(forceResolver: true)
 }
 
 type TrialSiteMutation {
@@ -36,7 +36,8 @@ input TrialSiteInput {
 }
 
 type TrialSiteList {
-    trialSite: [TrialSite]
+    page: PagesResponse!
+    list: [TrialSite]
 }
 
 input InputFormTrialSiteRequest {

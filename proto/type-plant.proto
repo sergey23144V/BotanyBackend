@@ -27,7 +27,7 @@ service TypePlantService {
   } ;
 
   // Получение списка всех сущностей
-  rpc GetAllTypePlant (EmptyRequest) returns (TypePlantList);
+  rpc GetAllTypePlant (PagesRequest) returns (TypePlantList);
 }
 
 
@@ -46,7 +46,8 @@ message TypePlant {
 }
 
 message TypePlantList {
-  repeated TypePlant typePlant = 1;
+  PagesResponse page = 2;
+  repeated TypePlant list = 1;
 }
 
 

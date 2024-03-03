@@ -17,7 +17,7 @@ type EcomorphsEntityService interface {
 	DeleteEcomorphsEntity(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error)
 	StrictUpdateEcomorphsEntity(ctx context.Context, entity *ecomorph_entity.InputEcomorphsEntity) (*ecomorph_entity.EcomorphsEntity, error)
 	UpdateEcomorphsEntity(ctx context.Context, entity *ecomorph_entity.InputEcomorphsEntity) (*ecomorph_entity.EcomorphsEntity, error)
-	GetListEcomorphsEntity(ctx context.Context, request *api.EmptyRequest) (*ecomorph_entity.EcomorphsEntityList, error)
+	GetListEcomorphsEntity(ctx context.Context, request *api.PagesRequest) (*ecomorph_entity.EcomorphsEntityList, error)
 }
 
 type EcomorphsEntityServiceImpl struct {
@@ -56,12 +56,16 @@ func (e EcomorphsEntityServiceImpl) UpdateEcomorphsEntity(ctx context.Context, e
 	return e.repository.EcomorphsEntityRepository.UpdateEcomorphsEntity(ctx, e.ToPB(ctx, entity), &field_mask.FieldMask{Paths: []string{"Title", "Description", "Ecomorphs"}})
 }
 
-func (e EcomorphsEntityServiceImpl) GetListEcomorphsEntity(ctx context.Context, request *api.EmptyRequest) (*ecomorph_entity.EcomorphsEntityList, error) {
-	list, err := e.repository.EcomorphsEntityRepository.GetListEcomorphsEntity(ctx, &ecomorph_entity.EcomorphsEntity{UserId: middlewares.GetUserIdFromContext(ctx)})
+func (e EcomorphsEntityServiceImpl) GetListEcomorphsEntity(ctx context.Context, request *api.PagesRequest) (*ecomorph_entity.EcomorphsEntityList, error) {
+	var page *api.PagesResponse
+	list, err := e.repository.EcomorphsEntityRepository.GetListEcomorphsEntity(ctx, &ecomorph_entity.EcomorphsEntity{UserId: middlewares.GetUserIdFromContext(ctx)}, request)
 	if err != nil {
 		return nil, err
 	}
-	return &ecomorph_entity.EcomorphsEntityList{EcomorphsEntity: list}, nil
+	if request != nil {
+		page = &api.PagesResponse{Page: request.Page, Limit: request.Limit, Total: int32(len(list))}
+	}
+	return &ecomorph_entity.EcomorphsEntityList{List: list, Page: page}, nil
 }
 
 func (e EcomorphsEntityServiceImpl) ToPB(ctx context.Context, entity *ecomorph_entity.InputEcomorphsEntity) *ecomorph_entity.EcomorphsEntity {

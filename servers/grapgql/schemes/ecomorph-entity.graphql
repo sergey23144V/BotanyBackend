@@ -17,7 +17,8 @@ input EcomorphsEntityInput {
 
 
 type EcomorphsEntityList {
-    ecomorphsEntity: [EcomorphsEntity]
+    page: PagesResponse!
+    list: [EcomorphsEntity]
 }
 
 input InputFormEcomorphsEntity {
@@ -33,7 +34,7 @@ input InputEcomorphsEntity {
 
 type EcomorphsEntityQuery {
     getEcomorphEntityByID(id: ID!): EcomorphsEntity @goField(forceResolver: true)
-    getAllEcomorphEntity: EcomorphsEntityList @goField(forceResolver: true)
+    getAllEcomorphEntity(pages: PagesRequest ): EcomorphsEntityList @goField(forceResolver: true)
 }
 
 type EcomorphsEntityMutation {

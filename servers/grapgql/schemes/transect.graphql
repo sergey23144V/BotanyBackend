@@ -1,6 +1,6 @@
 type TransectQuery {
     getTransect(id: ID!): Transect @goField(forceResolver: true)
-    getAllTransect: TransectList @goField(forceResolver: true)
+    getAllTransect(pages: PagesRequest ): TransectList @goField(forceResolver: true)
 }
 
 type TransectMutation {
@@ -40,7 +40,8 @@ input TransectInput {
 }
 
 type TransectList {
-    transect: [Transect]
+    page: PagesResponse!
+    list: [Transect]
 }
 
 input InputFormTransectRequest {

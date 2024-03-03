@@ -6,6 +6,7 @@ import (
 	gorm1 "github.com/infobloxopen/atlas-app-toolkit/gorm"
 	"github.com/jinzhu/gorm"
 	"github.com/sergey23144V/BotanyBackend/pkg/errors"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	ecomorph_entity "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph-entity"
 	"google.golang.org/genproto/protobuf/field_mask"
 )
@@ -16,7 +17,7 @@ type EcomorphsEntityRepository interface {
 	DeleteEcomorphsEntity(ctx context.Context, in *ecomorph_entity.EcomorphsEntity) error
 	StrictUpdateEcomorphsEntity(ctx context.Context, in *ecomorph_entity.EcomorphsEntity) (*ecomorph_entity.EcomorphsEntity, error)
 	UpdateEcomorphsEntity(ctx context.Context, in *ecomorph_entity.EcomorphsEntity, updateMask *field_mask.FieldMask) (*ecomorph_entity.EcomorphsEntity, error)
-	GetListEcomorphsEntity(ctx context.Context, in *ecomorph_entity.EcomorphsEntity) ([]*ecomorph_entity.EcomorphsEntity, error)
+	GetListEcomorphsEntity(ctx context.Context, in *ecomorph_entity.EcomorphsEntity, request *api.PagesRequest) ([]*ecomorph_entity.EcomorphsEntity, error)
 }
 
 type EcomorphsEntityRepositoryImpl struct {
@@ -198,8 +199,7 @@ func (e EcomorphsEntityRepositoryImpl) UpdateEcomorphsEntity(ctx context.Context
 	return pbResponse, nil
 }
 
-func (e EcomorphsEntityRepositoryImpl) GetListEcomorphsEntity(ctx context.Context, in *ecomorph_entity.EcomorphsEntity) ([]*ecomorph_entity.EcomorphsEntity, error) {
-
+func (e EcomorphsEntityRepositoryImpl) GetListEcomorphsEntity(ctx context.Context, in *ecomorph_entity.EcomorphsEntity, request *api.PagesRequest) ([]*ecomorph_entity.EcomorphsEntity, error) {
 	ormObj, err := in.ToORM(ctx)
 	if err != nil {
 		return nil, err
@@ -218,7 +218,12 @@ func (e EcomorphsEntityRepositoryImpl) GetListEcomorphsEntity(ctx context.Contex
 			return nil, err
 		}
 	}
-	e.db = e.db.Where(&ormObj)
+	if request != nil && request.Page != 0 && request.Limit != 0 {
+		offset := (request.Page - 1) * request.Limit
+		e.db = e.db.Where(&ormObj).Offset(offset).Limit(request.Limit)
+	} else {
+		e.db = e.db.Where(&ormObj)
+	}
 	e.db = e.db.Order("id")
 	ormResponse := []ecomorph_entity.EcomorphsEntityORM{}
 	if err := e.db.Find(&ormResponse).Error; err != nil {

@@ -25,6 +25,7 @@ type TrialSiteORM struct {
 	SubDominant   *type_plant.TypePlantORM `gorm:"foreignkey:SubDominantId;association_foreignkey:Id;association_autoupdate:false;association_autocreate:false;preload:true"`
 	SubDominantId *string
 	Title         string
+	TransectId    *string                    `gorm:"type:uuid;foreignkey:transect.Transect"`
 	TypePlant     []*type_plant.TypePlantORM `gorm:"foreignkey:Id;association_foreignkey:Id;many2many:trial_site_type_plants;jointable_foreignkey:TrialSiteId;association_jointable_foreignkey:TypePlantId;association_autoupdate:false;association_autocreate:false;preload:true"`
 	UpdatedAt     *time.Time
 	UserId        *string `gorm:"type:uuid;foreignkey:auth.User"`
@@ -95,6 +96,14 @@ func (m *TrialSite) ToORM(ctx context.Context) (TrialSiteORM, error) {
 			to.UserId = &vv
 		}
 	}
+	if m.TransectId != nil {
+		if v, err := resource.Decode(nil, m.TransectId); err != nil {
+			return to, err
+		} else if v != nil {
+			vv := v.(string)
+			to.TransectId = &vv
+		}
+	}
 	if posthook, ok := interface{}(m).(TrialSiteWithAfterToORM); ok {
 		err = posthook.AfterToORM(ctx, &to)
 	}
@@ -156,6 +165,13 @@ func (m *TrialSiteORM) ToPB(ctx context.Context) (TrialSite, error) {
 			return to, err
 		} else {
 			to.UserId = v
+		}
+	}
+	if m.TransectId != nil {
+		if v, err := resource.Encode(nil, *m.TransectId); err != nil {
+			return to, err
+		} else {
+			to.TransectId = v
 		}
 	}
 	if posthook, ok := interface{}(m).(TrialSiteWithAfterToPB); ok {
@@ -589,6 +605,10 @@ func DefaultApplyFieldMaskTrialSite(ctx context.Context, patchee *TrialSite, pat
 		}
 		if f == prefix+"UserId" {
 			patchee.UserId = patcher.UserId
+			continue
+		}
+		if f == prefix+"TransectId" {
+			patchee.TransectId = patcher.TransectId
 			continue
 		}
 	}

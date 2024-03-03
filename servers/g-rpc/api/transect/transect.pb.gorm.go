@@ -19,16 +19,16 @@ type TransectORM struct {
 	CountTypes      int32
 	Covered         int32
 	CreatedAt       *time.Time
-	Dominant        *type_plant.TypePlantORM `gorm:"foreignkey:DominantId;association_foreignkey:Id;association_autoupdate:true;association_autocreate:true;preload:true"`
+	Dominant        *type_plant.TypePlantORM `gorm:"foreignkey:DominantId;association_foreignkey:Id;association_autoupdate:false;association_autocreate:false;preload:true"`
 	DominantId      *string
 	Id              string `gorm:"type:uuid;primary_key"`
 	Rating          int32
 	Square          int32
 	SquareTrialSite int32
-	SubDominant     *type_plant.TypePlantORM `gorm:"foreignkey:SubDominantId;association_foreignkey:Id;association_autoupdate:true;association_autocreate:true;preload:true"`
+	SubDominant     *type_plant.TypePlantORM `gorm:"foreignkey:SubDominantId;association_foreignkey:Id;association_autoupdate:false;association_autocreate:false;preload:true"`
 	SubDominantId   *string
 	Title           string
-	TrialSite       []*trial_site.TrialSiteORM `gorm:"foreignkey:Id;association_foreignkey:Id;many2many:transect_trial_sites;jointable_foreignkey:TransectId;association_jointable_foreignkey:TrialSiteId;association_autoupdate:true;association_autocreate:true;preload:true"`
+	TrialSite       []*trial_site.TrialSiteORM `gorm:"foreignkey:TransectId;association_foreignkey:Id;association_autoupdate:true;association_autocreate:true;preload:true"`
 	UpdatedAt       *time.Time
 	UserId          *string `gorm:"type:uuid;foreignkey:auth.User"`
 }
@@ -59,6 +59,17 @@ func (m *Transect) ToORM(ctx context.Context) (TransectORM, error) {
 	to.Square = m.Square
 	to.SquareTrialSite = m.SquareTrialSite
 	to.CountTypes = m.CountTypes
+	for _, v := range m.TrialSite {
+		if v != nil {
+			if tempTrialSite, cErr := v.ToORM(ctx); cErr == nil {
+				to.TrialSite = append(to.TrialSite, &tempTrialSite)
+			} else {
+				return to, cErr
+			}
+		} else {
+			to.TrialSite = append(to.TrialSite, nil)
+		}
+	}
 	if m.Dominant != nil {
 		tempDominant, err := m.Dominant.ToORM(ctx)
 		if err != nil {
@@ -72,17 +83,6 @@ func (m *Transect) ToORM(ctx context.Context) (TransectORM, error) {
 			return to, err
 		}
 		to.SubDominant = &tempSubDominant
-	}
-	for _, v := range m.TrialSite {
-		if v != nil {
-			if tempTrialSite, cErr := v.ToORM(ctx); cErr == nil {
-				to.TrialSite = append(to.TrialSite, &tempTrialSite)
-			} else {
-				return to, cErr
-			}
-		} else {
-			to.TrialSite = append(to.TrialSite, nil)
-		}
 	}
 	if m.CreatedAt != nil {
 		t := m.CreatedAt.AsTime()
@@ -127,6 +127,17 @@ func (m *TransectORM) ToPB(ctx context.Context) (Transect, error) {
 	to.Square = m.Square
 	to.SquareTrialSite = m.SquareTrialSite
 	to.CountTypes = m.CountTypes
+	for _, v := range m.TrialSite {
+		if v != nil {
+			if tempTrialSite, cErr := v.ToPB(ctx); cErr == nil {
+				to.TrialSite = append(to.TrialSite, &tempTrialSite)
+			} else {
+				return to, cErr
+			}
+		} else {
+			to.TrialSite = append(to.TrialSite, nil)
+		}
+	}
 	if m.Dominant != nil {
 		tempDominant, err := m.Dominant.ToPB(ctx)
 		if err != nil {
@@ -140,17 +151,6 @@ func (m *TransectORM) ToPB(ctx context.Context) (Transect, error) {
 			return to, err
 		}
 		to.SubDominant = &tempSubDominant
-	}
-	for _, v := range m.TrialSite {
-		if v != nil {
-			if tempTrialSite, cErr := v.ToPB(ctx); cErr == nil {
-				to.TrialSite = append(to.TrialSite, &tempTrialSite)
-			} else {
-				return to, cErr
-			}
-		} else {
-			to.TrialSite = append(to.TrialSite, nil)
-		}
 	}
 	if m.CreatedAt != nil {
 		to.CreatedAt = timestamppb.New(*m.CreatedAt)
@@ -361,10 +361,15 @@ func DefaultStrictUpdateTransect(ctx context.Context, in *Transect, db *gorm.DB)
 			return nil, err
 		}
 	}
-	if err = db.Model(&ormObj).Association("TrialSite").Replace(ormObj.TrialSite).Error; err != nil {
+	filterTrialSite := trial_site.TrialSiteORM{}
+	if ormObj.Id == "" {
+		return nil, errors.EmptyIdError
+	}
+	filterTrialSite.TransectId = new(string)
+	*filterTrialSite.TransectId = ormObj.Id
+	if err = db.Where(filterTrialSite).Delete(trial_site.TrialSiteORM{}).Error; err != nil {
 		return nil, err
 	}
-	ormObj.TrialSite = nil
 	if hook, ok := interface{}(&ormObj).(TransectORMWithBeforeStrictUpdateSave); ok {
 		if db, err = hook.BeforeStrictUpdateSave(ctx, db); err != nil {
 			return nil, err
@@ -510,6 +515,10 @@ func DefaultApplyFieldMaskTransect(ctx context.Context, patchee *Transect, patch
 			patchee.CountTypes = patcher.CountTypes
 			continue
 		}
+		if f == prefix+"TrialSite" {
+			patchee.TrialSite = patcher.TrialSite
+			continue
+		}
 		if !updatedDominant && strings.HasPrefix(f, prefix+"Dominant.") {
 			updatedDominant = true
 			if patcher.Dominant == nil {
@@ -550,10 +559,6 @@ func DefaultApplyFieldMaskTransect(ctx context.Context, patchee *Transect, patch
 		if f == prefix+"SubDominant" {
 			updatedSubDominant = true
 			patchee.SubDominant = patcher.SubDominant
-			continue
-		}
-		if f == prefix+"TrialSite" {
-			patchee.TrialSite = patcher.TrialSite
 			continue
 		}
 		if !updatedCreatedAt && strings.HasPrefix(f, prefix+"CreatedAt.") {

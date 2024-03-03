@@ -19,7 +19,7 @@ type EcomorphService interface {
 	DeleteEcomorph(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error)
 	StrictUpdateEcomorph(ctx context.Context, in *ecomorph.InputEcomorph) (*ecomorph.Ecomorph, error)
 	UpdateEcomorph(ctx context.Context, in *ecomorph.InputEcomorph) (*ecomorph.Ecomorph, error)
-	GetListEcomorph(ctx context.Context, request *api.EmptyRequest) (*ecomorph.EcomorphsList, error)
+	GetListEcomorph(ctx context.Context, request *api.PagesRequest) (*ecomorph.EcomorphsList, error)
 }
 
 type EcomorphServiceImpl struct {
@@ -79,13 +79,17 @@ func (e EcomorphServiceImpl) UpdateEcomorph(ctx context.Context, in *ecomorph.In
 	return e.repository.UpdateEcomorph(ctx, e.ToPB(ctx, in), &field_mask.FieldMask{Paths: []string{"Title", "Description"}})
 }
 
-func (e EcomorphServiceImpl) GetListEcomorph(ctx context.Context, request *api.EmptyRequest) (*ecomorph.EcomorphsList, error) {
+func (e EcomorphServiceImpl) GetListEcomorph(ctx context.Context, request *api.PagesRequest) (*ecomorph.EcomorphsList, error) {
+	var page *api.PagesResponse
 	userId := middlewares.GetUserIdFromContext(ctx)
-	list, err := e.repository.GetListEcomorph(ctx, &ecomorph.Ecomorph{UserId: userId})
+	list, err := e.repository.GetListEcomorph(ctx, &ecomorph.Ecomorph{UserId: userId}, request)
 	if err != nil {
 		return nil, err
 	}
-	return &ecomorph.EcomorphsList{Ecomorph: list}, nil
+	if request != nil {
+		page = &api.PagesResponse{Page: request.Page, Limit: request.Limit, Total: int32(len(list))}
+	}
+	return &ecomorph.EcomorphsList{List: list, Page: page}, nil
 }
 
 func (e EcomorphServiceImpl) ToPB(ctx context.Context, in *ecomorph.InputEcomorph) *ecomorph.Ecomorph {

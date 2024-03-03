@@ -1,6 +1,6 @@
 type TypePlantQuery {
     getTypePlant(id: ID!): TypePlant @goField(forceResolver: true)
-    getAllTypePlant: TypePlantList @goField(forceResolver: true)
+    getAllTypePlant(pages: PagesRequest ): TypePlantList @goField(forceResolver: true)
 }
 
 type TypePlantMutation {
@@ -28,7 +28,8 @@ input TypePlantInput {
 }
 
 type TypePlantList {
-    typePlant: [TypePlant]
+    page: PagesResponse!
+    list: [TypePlant]
 }
 
 input InputFormTypePlantRequest  {

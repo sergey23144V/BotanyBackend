@@ -31,7 +31,7 @@ func (t TransectServetImpl) DeleteTransect(ctx context.Context, request *api.IdR
 	return t.service.TransectService.DeleteTransect(ctx, request)
 }
 
-func (t TransectServetImpl) GetAllTransect(ctx context.Context, request *api.EmptyRequest) (*transect.TransectList, error) {
+func (t TransectServetImpl) GetAllTransect(ctx context.Context, request *api.PagesRequest) (*transect.TransectList, error) {
 	return t.service.TransectService.GetListTransect(ctx, request)
 }
 

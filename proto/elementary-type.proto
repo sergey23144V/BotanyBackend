@@ -14,12 +14,13 @@ message IdRequest {
 }
 
 message PagesRequest {
-  int32 pagesSize = 1;
-  int32 pagesNumber = 2;
+  int32 limit = 1;
+  int32 page = 2;
 }
 
 message PagesResponse {
   int32 total = 1;
+  int32 page = 3;
   int32 limit = 2;
 }
 

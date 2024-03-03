@@ -17,7 +17,7 @@ type TransectService interface {
 	DeleteTransect(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error)
 	StrictUpdateTransect(ctx context.Context, in *transect.InputTransectRequest) (*transect.Transect, error)
 	UpdateTransect(ctx context.Context, in *transect.InputTransectRequest) (*transect.Transect, error)
-	GetListTransect(ctx context.Context, request *api.EmptyRequest) (*transect.TransectList, error)
+	GetListTransect(ctx context.Context, request *api.PagesRequest) (*transect.TransectList, error)
 }
 
 type TransectServiceImpl struct {
@@ -53,16 +53,22 @@ func (t TransectServiceImpl) StrictUpdateTransect(ctx context.Context, in *trans
 }
 
 func (t TransectServiceImpl) UpdateTransect(ctx context.Context, in *transect.InputTransectRequest) (*transect.Transect, error) {
-	return t.repository.TransectRepository.UpdateTransect(ctx, t.ToPB(ctx, in), &field_mask.FieldMask{Paths: []string{"Title", "Description", "Ecomorphs"}})
+	return t.repository.TransectRepository.UpdateTransect(ctx, t.ToPB(ctx, in), &field_mask.FieldMask{Paths: []string{"Title",
+		"TrialSite", "SubDominant", "Dominant", "CountTypes", "SquareTrialSite", "Square", "Rating", "Covered"}})
 }
 
-func (t TransectServiceImpl) GetListTransect(ctx context.Context, request *api.EmptyRequest) (*transect.TransectList, error) {
+func (t TransectServiceImpl) GetListTransect(ctx context.Context, request *api.PagesRequest) (*transect.TransectList, error) {
+	var page *api.PagesResponse
+
 	userId := middlewares.GetUserIdFromContext(ctx)
-	getList, err := t.repository.TransectRepository.GetListTransect(ctx, &transect.Transect{UserId: userId})
+	getList, err := t.repository.TransectRepository.GetListTransect(ctx, &transect.Transect{UserId: userId}, request)
+	if request != nil {
+		page = &api.PagesResponse{Page: request.Page, Limit: request.Limit, Total: int32(len(getList))}
+	}
 	if err != nil {
 		return nil, err
 	}
-	result := &transect.TransectList{Transect: getList}
+	result := &transect.TransectList{List: getList, Page: page}
 	return result, nil
 }
 
@@ -88,7 +94,6 @@ func (t TransectServiceImpl) ToPB(ctx context.Context, request *transect.InputTr
 		CountTypes:      request.Input.CountTypes,
 		Dominant:        request.Input.Dominant,
 		SubDominant:     request.Input.SubDominant,
-		TrialSite:       request.Input.TrialSite,
 		UserId:          userId,
 	}
 }

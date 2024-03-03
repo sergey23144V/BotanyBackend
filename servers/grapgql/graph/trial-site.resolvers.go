@@ -47,11 +47,11 @@ func (r *trialSiteQueryResolver) GetTrialSite(ctx context.Context, obj *model.Tr
 }
 
 // GetAllTrialSite is the resolver for the getAllTrialSite field.
-func (r *trialSiteQueryResolver) GetAllTrialSite(ctx context.Context, obj *model.TrialSiteQuery) (*trial_site.TrialSiteList, error) {
+func (r *trialSiteQueryResolver) GetAllTrialSite(ctx context.Context, obj *model.TrialSiteQuery, pages *api.PagesRequest) (*trial_site.TrialSiteList, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.NotAuthorization
 	}
-	return r.service.GetListTrialSite(ctx, &api.EmptyRequest{})
+	return r.service.GetListTrialSite(ctx, pages)
 }
 
 // TrialSiteMutation returns TrialSiteMutationResolver implementation.

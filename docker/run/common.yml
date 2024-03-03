@@ -1,0 +1,22 @@
+version: '2.2'
+services:
+  botany:
+    build:
+      context: ../..
+      dockerfile: Docker/run/Dockerfile
+    environment:
+      - DB_URL=jdbc:postgresql://botanydb:5432/botany
+      - PORT=8080
+      - PORT=50051
+
+  botanydb:
+    image: postgres:10.5-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123321
+      - POSTGRES_DB=botany
+    volumes:
+      - service_botany_pg_data:/var/lib/postgresql/data
+
+volumes:
+  service_botany_pg_data:

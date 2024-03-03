@@ -1,0 +1,27 @@
+version: '2.2'
+services:
+  botany:
+    extends:
+      service: botany
+      file: ./common.yml
+    ports:
+      - 8080:8080
+      - 50051:50051
+    depends_on:
+      - db
+    image: botany-service
+
+  db:
+    extends:
+      service: botanydb
+      file: ./common.yml
+    ports:
+      - 5432:5432
+    volumes:
+      - service_botany_pg_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123321
+      - POSTGRES_DB=botany
+volumes:
+  service_botany_pg_data:

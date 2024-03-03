@@ -18,7 +18,7 @@ type TypePlantService interface {
 	DeleteTypePlant(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error)
 	StrictUpdateTypePlant(ctx context.Context, in *type_plant.InputTypePlantRequest) (*type_plant.TypePlant, error)
 	UpdateTypePlant(ctx context.Context, in *type_plant.InputTypePlantRequest) (*type_plant.TypePlant, error)
-	GetListTypePlant(ctx context.Context, request *api.EmptyRequest) (*type_plant.TypePlantList, error)
+	GetListTypePlant(ctx context.Context, request *api.PagesRequest) (*type_plant.TypePlantList, error)
 }
 
 type TypePlantServiceImpl struct {
@@ -54,16 +54,21 @@ func (t TypePlantServiceImpl) StrictUpdateTypePlant(ctx context.Context, in *typ
 }
 
 func (t TypePlantServiceImpl) UpdateTypePlant(ctx context.Context, in *type_plant.InputTypePlantRequest) (*type_plant.TypePlant, error) {
-	return t.repository.TypePlantRepository.UpdateTypePlant(ctx, t.ToPB(ctx, in), &field_mask.FieldMask{Paths: []string{"Title", "Description", "Ecomorphs"}})
+	return t.repository.TypePlantRepository.UpdateTypePlant(ctx, t.ToPB(ctx, in), &field_mask.FieldMask{Paths: []string{"Title",
+		"Description", "Ecomorphs"}})
 }
 
-func (t TypePlantServiceImpl) GetListTypePlant(ctx context.Context, request *api.EmptyRequest) (*type_plant.TypePlantList, error) {
+func (t TypePlantServiceImpl) GetListTypePlant(ctx context.Context, request *api.PagesRequest) (*type_plant.TypePlantList, error) {
+	var page *api.PagesResponse
 	userId := middlewares.GetUserIdFromContext(ctx)
-	getList, err := t.repository.TypePlantRepository.GetListTypePlant(ctx, &type_plant.TypePlant{UserId: userId})
+	getList, err := t.repository.TypePlantRepository.GetListTypePlant(ctx, &type_plant.TypePlant{UserId: userId}, request)
+	if request != nil {
+		page = &api.PagesResponse{Page: request.Page, Limit: request.Limit, Total: int32(len(getList))}
+	}
 	if err != nil {
 		return nil, err
 	}
-	result := &type_plant.TypePlantList{TypePlant: getList}
+	result := &type_plant.TypePlantList{List: getList, Page: page}
 	return result, nil
 }
 

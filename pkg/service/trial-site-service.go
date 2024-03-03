@@ -17,7 +17,7 @@ type TrialSiteService interface {
 	DeleteTrialSite(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error)
 	StrictUpdateTrialSite(ctx context.Context, in *trial_site.InputTrialSiteRequest) (*trial_site.TrialSite, error)
 	UpdateTrialSite(ctx context.Context, in *trial_site.InputTrialSiteRequest) (*trial_site.TrialSite, error)
-	GetListTrialSite(ctx context.Context, request *api.EmptyRequest) (*trial_site.TrialSiteList, error)
+	GetListTrialSite(ctx context.Context, request *api.PagesRequest) (*trial_site.TrialSiteList, error)
 }
 
 type TrialSiteServiceImpl struct {
@@ -53,16 +53,22 @@ func (t TrialSiteServiceImpl) StrictUpdateTrialSite(ctx context.Context, in *tri
 }
 
 func (t TrialSiteServiceImpl) UpdateTrialSite(ctx context.Context, in *trial_site.InputTrialSiteRequest) (*trial_site.TrialSite, error) {
-	return t.repository.TrialSiteRepository.UpdateTrialSite(ctx, t.ToPB(ctx, in), &field_mask.FieldMask{Paths: []string{"Title", "Description", "Ecomorphs"}})
+	return t.repository.TrialSiteRepository.UpdateTrialSite(ctx, t.ToPB(ctx, in), &field_mask.FieldMask{Paths: []string{"Title",
+		"Description", "TypePlant", "SubDominant", "Dominant", "CountTypes", " Rating ", "Covered"}})
 }
 
-func (t TrialSiteServiceImpl) GetListTrialSite(ctx context.Context, request *api.EmptyRequest) (*trial_site.TrialSiteList, error) {
+func (t TrialSiteServiceImpl) GetListTrialSite(ctx context.Context, request *api.PagesRequest) (*trial_site.TrialSiteList, error) {
+	var page *api.PagesResponse
+
 	userId := middlewares.GetUserIdFromContext(ctx)
-	getList, err := t.repository.TrialSiteRepository.GetListTrialSite(ctx, &trial_site.TrialSite{UserId: userId})
+	getList, err := t.repository.TrialSiteRepository.GetListTrialSite(ctx, &trial_site.TrialSite{UserId: userId}, request)
+	if request != nil {
+		page = &api.PagesResponse{Page: request.Page, Limit: request.Limit, Total: int32(len(getList))}
+	}
 	if err != nil {
 		return nil, err
 	}
-	result := &trial_site.TrialSiteList{TrialSite: getList}
+	result := &trial_site.TrialSiteList{List: getList, Page: page}
 	return result, nil
 }
 
@@ -85,6 +91,7 @@ func (t TrialSiteServiceImpl) ToPB(ctx context.Context, request *trial_site.Inpu
 		Dominant:    request.Input.Dominant,
 		SubDominant: request.Input.SubDominant,
 		TypePlant:   request.Input.TypePlant,
+		TransectId:  request.Input.Transect,
 		UserId:      userId,
 	}
 }

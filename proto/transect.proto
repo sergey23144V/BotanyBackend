@@ -29,7 +29,7 @@ service TransectService {
   } ;
 
   // Получение списка всех сущностей
-  rpc GetAllTransect (EmptyRequest) returns (TransectList);
+  rpc GetAllTransect (PagesRequest) returns (TransectList);
 }
 
 
@@ -45,16 +45,17 @@ message Transect {
   int32 square = 11;
   int32 squareTrialSite = 12;
   int32 count_types = 4;
+  repeated  TrialSite trialSite = 14 [(gorm.field).has_many = {  association_autocreate:true , association_autoupdate: true, preload: true}];
   TypePlant  dominant = 7 [(gorm.field).belongs_to = {association_autocreate:true , association_autoupdate: true, preload: true}];
   TypePlant  subDominant = 8 [(gorm.field).belongs_to = {association_autocreate:true , association_autoupdate: true, preload: true}];
-  repeated TrialSite trialSite = 9 [(gorm.field).many_to_many = {association_autocreate:true , association_autoupdate: true, preload: true}];
   google.protobuf.Timestamp created_at = 5;
   google.protobuf.Timestamp updated_at = 6;
   atlas.rpc.Identifier user_id = 13 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
 }
 
 message TransectList {
-  repeated Transect transect = 1;
+  PagesResponse page = 1;
+  repeated Transect list = 2;
 }
 
 

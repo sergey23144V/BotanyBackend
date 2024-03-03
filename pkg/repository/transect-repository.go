@@ -6,6 +6,7 @@ import (
 	gorm1 "github.com/infobloxopen/atlas-app-toolkit/gorm"
 	"github.com/jinzhu/gorm"
 	"github.com/sergey23144V/BotanyBackend/pkg/errors"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/transect"
 	"google.golang.org/genproto/protobuf/field_mask"
 )
@@ -16,7 +17,7 @@ type TransectRepository interface {
 	DeleteTransect(ctx context.Context, in *transect.Transect) error
 	StrictUpdateTransect(ctx context.Context, in *transect.Transect) (*transect.Transect, error)
 	UpdateTransect(ctx context.Context, in *transect.Transect, updateMask *field_mask.FieldMask) (*transect.Transect, error)
-	GetListTransect(ctx context.Context, in *transect.Transect) ([]*transect.Transect, error)
+	GetListTransect(ctx context.Context, in *transect.Transect, request *api.PagesRequest) ([]*transect.Transect, error)
 }
 
 type TransectRepositoryImpl struct {
@@ -130,10 +131,6 @@ func (t TransectRepositoryImpl) StrictUpdateTransect(ctx context.Context, in *tr
 			return nil, err
 		}
 	}
-	if err = t.db.Model(&ormObj).Association("TrialSite").Replace(ormObj.TrialSite).Error; err != nil {
-		return nil, err
-	}
-	ormObj.TrialSite = nil
 	if hook, ok := interface{}(&ormObj).(transect.TransectORMWithBeforeStrictUpdateSave); ok {
 		if t.db, err = hook.BeforeStrictUpdateSave(ctx, t.db); err != nil {
 			return nil, err
@@ -195,7 +192,7 @@ func (t TransectRepositoryImpl) UpdateTransect(ctx context.Context, in *transect
 	return pbResponse, nil
 }
 
-func (t TransectRepositoryImpl) GetListTransect(ctx context.Context, in *transect.Transect) ([]*transect.Transect, error) {
+func (t TransectRepositoryImpl) GetListTransect(ctx context.Context, in *transect.Transect, request *api.PagesRequest) ([]*transect.Transect, error) {
 	ormObj, err := in.ToORM(ctx)
 	if err != nil {
 		return nil, err
@@ -214,7 +211,12 @@ func (t TransectRepositoryImpl) GetListTransect(ctx context.Context, in *transec
 			return nil, err
 		}
 	}
-	t.db = t.db.Where(&ormObj)
+	if request != nil && request.Page != 0 && request.Limit != 0 {
+		offset := (request.Page - 1) * request.Limit
+		t.db = t.db.Where(&ormObj).Offset(offset).Limit(request.Limit)
+	} else {
+		t.db = t.db.Where(&ormObj)
+	}
 	t.db = t.db.Order("id")
 	ormResponse := []transect.TransectORM{}
 	if err := t.db.Find(&ormResponse).Error; err != nil {

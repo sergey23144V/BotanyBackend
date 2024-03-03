@@ -16,7 +16,7 @@ import (
 
 type TypePlantORM struct {
 	CreatedAt       *time.Time
-	EcomorphsEntity []*ecomorph_entity.EcomorphsEntityORM `gorm:"foreignkey:Id;association_foreignkey:Id;many2many:type_plant_ecomorphs_entities;jointable_foreignkey:TypePlantId;association_jointable_foreignkey:EcomorphsEntityId;association_autoupdate:false;preload:true"`
+	EcomorphsEntity []*ecomorph_entity.EcomorphsEntityORM `gorm:"foreignkey:Id;association_foreignkey:Id;many2many:type_plant_ecomorphs_entities;jointable_foreignkey:TypePlantId;association_jointable_foreignkey:EcomorphsEntityId;association_autoupdate:true;preload:true"`
 	Id              string                                `gorm:"type:uuid;primary_key"`
 	Subtitle        string
 	Title           string

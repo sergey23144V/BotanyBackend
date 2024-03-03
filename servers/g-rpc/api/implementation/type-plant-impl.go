@@ -31,7 +31,7 @@ func (t TypePlantServetImpl) DeleteTypePlant(ctx context.Context, request *api.I
 	return t.service.TypePlantService.DeleteTypePlant(ctx, request)
 }
 
-func (t TypePlantServetImpl) GetAllTypePlant(ctx context.Context, request *api.EmptyRequest) (*type_plant.TypePlantList, error) {
+func (t TypePlantServetImpl) GetAllTypePlant(ctx context.Context, request *api.PagesRequest) (*type_plant.TypePlantList, error) {
 	return t.service.TypePlantService.GetListTypePlant(ctx, request)
 }
 

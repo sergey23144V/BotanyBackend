@@ -31,7 +31,7 @@ func (e EcomorphsEntityServetImpl) DeleteEcomorphEntityByID(ctx context.Context,
 	return e.service.EcomorphsEntityService.DeleteEcomorphsEntity(ctx, request)
 }
 
-func (e EcomorphsEntityServetImpl) GetAllEcomorphEntity(ctx context.Context, request *api.EmptyRequest) (*ecomorph_entity.EcomorphsEntityList, error) {
+func (e EcomorphsEntityServetImpl) GetAllEcomorphEntity(ctx context.Context, request *api.PagesRequest) (*ecomorph_entity.EcomorphsEntityList, error) {
 	return e.service.EcomorphsEntityService.GetListEcomorphsEntity(ctx, request)
 }
 

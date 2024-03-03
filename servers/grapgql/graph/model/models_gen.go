@@ -46,16 +46,6 @@ type IDRequest struct {
 type Mutation struct {
 }
 
-type PagesRequest struct {
-	PageSize   int `json:"pageSize"`
-	PageNumber int `json:"pageNumber"`
-}
-
-type PagesResponse struct {
-	Total int `json:"total"`
-	Limit int `json:"limit"`
-}
-
 type Query struct {
 }
 

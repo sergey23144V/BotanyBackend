@@ -85,12 +85,18 @@ models:
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
       - github.com/99designs/gqlgen/graphql.Int32
+
+#Elementary-type
   Timestamp:
     model: google.golang.org/protobuf/types/known/timestamppb.Timestamp
   IdentifierInput:
     model: github.com/infobloxopen/atlas-app-toolkit/atlas/resource.Identifier
   IdentifierType:
     model: github.com/infobloxopen/atlas-app-toolkit/atlas/resource.Identifier
+  PagesRequest:
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.PagesRequest
+  PagesResponse:
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.PagesResponse
 
 #Ecomorph
   Ecomorph:

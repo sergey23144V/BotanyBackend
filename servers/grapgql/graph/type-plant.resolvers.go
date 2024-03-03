@@ -47,11 +47,11 @@ func (r *typePlantQueryResolver) GetTypePlant(ctx context.Context, obj *model.Ty
 }
 
 // GetAllTypePlant is the resolver for the getAllTypePlant field.
-func (r *typePlantQueryResolver) GetAllTypePlant(ctx context.Context, obj *model.TypePlantQuery) (*type_plant.TypePlantList, error) {
+func (r *typePlantQueryResolver) GetAllTypePlant(ctx context.Context, obj *model.TypePlantQuery, pages *api.PagesRequest) (*type_plant.TypePlantList, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.NotAuthorization
 	}
-	return r.service.TypePlantService.GetListTypePlant(ctx, &api.EmptyRequest{})
+	return r.service.TypePlantService.GetListTypePlant(ctx, pages)
 }
 
 // TypePlantMutation returns TypePlantMutationResolver implementation.

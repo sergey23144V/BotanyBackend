@@ -6,6 +6,7 @@ import (
 	gorm1 "github.com/infobloxopen/atlas-app-toolkit/gorm"
 	"github.com/infobloxopen/protoc-gen-gorm/errors"
 	"github.com/jinzhu/gorm"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph"
 	"google.golang.org/genproto/protobuf/field_mask"
 )
@@ -16,7 +17,7 @@ type EcomorphRepository interface {
 	DeleteEcomorph(ctx context.Context, in *ecomorph.Ecomorph) error
 	StrictUpdateEcomorph(ctx context.Context, in *ecomorph.Ecomorph) (*ecomorph.Ecomorph, error)
 	UpdateEcomorph(ctx context.Context, in *ecomorph.Ecomorph, updateMask *field_mask.FieldMask) (*ecomorph.Ecomorph, error)
-	GetListEcomorph(ctx context.Context, in *ecomorph.Ecomorph) ([]*ecomorph.Ecomorph, error)
+	GetListEcomorph(ctx context.Context, in *ecomorph.Ecomorph, request *api.PagesRequest) ([]*ecomorph.Ecomorph, error)
 }
 
 type EcomorphRepositoryImpl struct {
@@ -191,7 +192,7 @@ func (e EcomorphRepositoryImpl) UpdateEcomorph(ctx context.Context, in *ecomorph
 	return pbResponse, nil
 }
 
-func (e EcomorphRepositoryImpl) GetListEcomorph(ctx context.Context, in *ecomorph.Ecomorph) ([]*ecomorph.Ecomorph, error) {
+func (e EcomorphRepositoryImpl) GetListEcomorph(ctx context.Context, in *ecomorph.Ecomorph, request *api.PagesRequest) ([]*ecomorph.Ecomorph, error) {
 	ormObj, err := in.ToORM(ctx)
 	if err != nil {
 		return nil, err
@@ -210,7 +211,13 @@ func (e EcomorphRepositoryImpl) GetListEcomorph(ctx context.Context, in *ecomorp
 			return nil, err
 		}
 	}
-	e.db = e.db.Where(&ormObj)
+	if request != nil && request.Page != 0 && request.Limit != 0 {
+		offset := (request.Page - 1) * request.Limit
+		e.db = e.db.Where(&ormObj).Offset(offset).Limit(request.Limit)
+	} else {
+		e.db = e.db.Where(&ormObj)
+	}
+
 	e.db = e.db.Order("id")
 	ormResponse := []ecomorph.EcomorphORM{}
 	if err := e.db.Find(&ormResponse).Error; err != nil {

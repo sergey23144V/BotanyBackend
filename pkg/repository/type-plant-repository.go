@@ -6,6 +6,7 @@ import (
 	gorm1 "github.com/infobloxopen/atlas-app-toolkit/gorm"
 	"github.com/jinzhu/gorm"
 	"github.com/sergey23144V/BotanyBackend/pkg/errors"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	type_plant "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/type-plant"
 	"google.golang.org/genproto/protobuf/field_mask"
 )
@@ -16,7 +17,7 @@ type TypePlantRepository interface {
 	DeleteTypePlant(ctx context.Context, in *type_plant.TypePlant) error
 	StrictUpdateTypePlant(ctx context.Context, in *type_plant.TypePlant) (*type_plant.TypePlant, error)
 	UpdateTypePlant(ctx context.Context, in *type_plant.TypePlant, updateMask *field_mask.FieldMask) (*type_plant.TypePlant, error)
-	GetListTypePlant(ctx context.Context, in *type_plant.TypePlant) ([]*type_plant.TypePlant, error)
+	GetListTypePlant(ctx context.Context, in *type_plant.TypePlant, request *api.PagesRequest) ([]*type_plant.TypePlant, error)
 }
 
 type TypePlantRepositoryImpl struct {
@@ -195,7 +196,7 @@ func (t TypePlantRepositoryImpl) UpdateTypePlant(ctx context.Context, in *type_p
 	return pbResponse, nil
 }
 
-func (t TypePlantRepositoryImpl) GetListTypePlant(ctx context.Context, in *type_plant.TypePlant) ([]*type_plant.TypePlant, error) {
+func (t TypePlantRepositoryImpl) GetListTypePlant(ctx context.Context, in *type_plant.TypePlant, request *api.PagesRequest) ([]*type_plant.TypePlant, error) {
 	ormObj, err := in.ToORM(ctx)
 	if err != nil {
 		return nil, err
@@ -214,7 +215,12 @@ func (t TypePlantRepositoryImpl) GetListTypePlant(ctx context.Context, in *type_
 			return nil, err
 		}
 	}
-	t.db = t.db.Where(&ormObj)
+	if request != nil && request.Page != 0 && request.Limit != 0 {
+		offset := (request.Page - 1) * request.Limit
+		t.db = t.db.Where(&ormObj).Offset(offset).Limit(request.Limit)
+	} else {
+		t.db = t.db.Where(&ormObj)
+	}
 	t.db = t.db.Order("id")
 	ormResponse := []type_plant.TypePlantORM{}
 	if err := t.db.Find(&ormResponse).Error; err != nil {

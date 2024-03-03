@@ -16,7 +16,8 @@ input EcomorphInput {
 }
 
 type ListEcomorph {
-    ecomorph: [Ecomorph]
+    page: PagesResponse!
+    list: [Ecomorph]
 }
 
 
@@ -32,7 +33,7 @@ input InputEcomorph {
 
 type EcomorphQuery {
     getEcomorphById(id: ID!): Ecomorph! @goField(forceResolver: true)
-    getListEcomorph: ListEcomorph! @goField(forceResolver: true)
+    getListEcomorph(pages: PagesRequest ): ListEcomorph! @goField(forceResolver: true)
 }
 
 type EcomorphMutation {

@@ -31,7 +31,7 @@ func (t TrialSiteServetImpl) DeleteTrialSite(ctx context.Context, request *api.I
 	return t.service.TrialSiteService.DeleteTrialSite(ctx, request)
 }
 
-func (t TrialSiteServetImpl) GetAllTrialSite(ctx context.Context, request *api.EmptyRequest) (*trial_site.TrialSiteList, error) {
+func (t TrialSiteServetImpl) GetAllTrialSite(ctx context.Context, request *api.PagesRequest) (*trial_site.TrialSiteList, error) {
 	return t.service.TrialSiteService.GetListTrialSite(ctx, request)
 }
 

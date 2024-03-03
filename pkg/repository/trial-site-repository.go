@@ -6,12 +6,13 @@ import (
 	gorm1 "github.com/infobloxopen/atlas-app-toolkit/gorm"
 	"github.com/jinzhu/gorm"
 	"github.com/sergey23144V/BotanyBackend/pkg/errors"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	trial_site "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/trial-site"
 	"google.golang.org/genproto/protobuf/field_mask"
 )
 
 type TrialSiteRepository interface {
-	GetListTrialSite(ctx context.Context, in *trial_site.TrialSite) ([]*trial_site.TrialSite, error)
+	GetListTrialSite(ctx context.Context, in *trial_site.TrialSite, request *api.PagesRequest) ([]*trial_site.TrialSite, error)
 	GetTrialSiteById(ctx context.Context, in *trial_site.TrialSite) (*trial_site.TrialSite, error)
 	UpdateTrialSite(ctx context.Context, in *trial_site.TrialSite, updateMask *field_mask.FieldMask) (*trial_site.TrialSite, error)
 	StrictUpdateTrialSite(ctx context.Context, in *trial_site.TrialSite) (*trial_site.TrialSite, error)
@@ -195,7 +196,7 @@ func (t TrialSiteRepositoryImpl) DeleteTrialSite(ctx context.Context, in *trial_
 	return err
 }
 
-func (t TrialSiteRepositoryImpl) GetListTrialSite(ctx context.Context, in *trial_site.TrialSite) ([]*trial_site.TrialSite, error) {
+func (t TrialSiteRepositoryImpl) GetListTrialSite(ctx context.Context, in *trial_site.TrialSite, request *api.PagesRequest) ([]*trial_site.TrialSite, error) {
 	ormObj, err := in.ToORM(ctx)
 	if err != nil {
 		return nil, err
@@ -214,7 +215,12 @@ func (t TrialSiteRepositoryImpl) GetListTrialSite(ctx context.Context, in *trial
 			return nil, err
 		}
 	}
-	t.db = t.db.Where(&ormObj)
+	if request != nil && request.Page != 0 && request.Limit != 0 {
+		offset := (request.Page - 1) * request.Limit
+		t.db = t.db.Where(&ormObj).Offset(offset).Limit(request.Limit)
+	} else {
+		t.db = t.db.Where(&ormObj)
+	}
 	t.db = t.db.Order("id")
 	ormResponse := []trial_site.TrialSiteORM{}
 	if err := t.db.Find(&ormResponse).Error; err != nil {

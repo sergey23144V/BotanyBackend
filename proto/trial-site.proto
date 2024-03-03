@@ -12,6 +12,7 @@ import "elementary-type.proto";
 import "type-plant.proto";
 
 
+
 service TrialSiteService {
   rpc CreateTrialSite(InputTrialSiteRequest) returns (TrialSite);
 
@@ -27,7 +28,7 @@ service TrialSiteService {
   } ;
 
   // Получение списка всех сущностей
-  rpc GetAllTrialSite (EmptyRequest) returns (TrialSiteList);
+  rpc GetAllTrialSite (PagesRequest) returns (TrialSiteList);
 }
 
 
@@ -47,10 +48,12 @@ message TrialSite {
   google.protobuf.Timestamp created_at = 5;
   google.protobuf.Timestamp updated_at = 6;
   atlas.rpc.Identifier user_id = 11 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
+  atlas.rpc.Identifier transectId = 12 [(gorm.field).tag = {type: "uuid" foreignkey:"transect.Transect"}];
 }
 
 message TrialSiteList {
-  repeated TrialSite trialSite = 1;
+  PagesResponse page = 1;
+  repeated TrialSite list = 2;
 }
 
 
@@ -62,6 +65,7 @@ message InputFormTrialSiteRequest {
   repeated TypePlant typePlant = 5;
    TypePlant dominant = 7;
    TypePlant subDominant = 8;
+  atlas.rpc.Identifier transect = 9;
 }
 
 message InputTrialSiteRequest{

@@ -13,6 +13,7 @@ import "type-plant.proto";
 
 
 
+
 service TrialSiteService {
   rpc CreateTrialSite(InputTrialSiteRequest) returns (TrialSite);
 
@@ -21,6 +22,9 @@ service TrialSiteService {
 
   // Обновление сущности по id
   rpc UpTrialSite (InputTrialSiteRequest) returns (TrialSite);
+
+
+  rpc AddPlant (AddPlantTrialSiteRequest) returns (TrialSite);
 
   // Удаление сущности по заголовку
   rpc DeleteTrialSite (IdRequest) returns (BoolResponse){
@@ -31,6 +35,15 @@ service TrialSiteService {
   rpc GetAllTrialSite (PagesRequest) returns (TrialSiteList);
 }
 
+message AddPlantTrialSiteRequest{
+  option (gorm.opts) = {
+    ormable: true,
+  };
+  atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
+  atlas.rpc.Identifier idTrialSite = 2;
+  atlas.rpc.Identifier idPlant = 3;
+  int32 covered = 4;
+}
 
 
 message TrialSite {
@@ -42,13 +55,13 @@ message TrialSite {
   int32 covered = 3;
   int32 rating = 10;
   int32 count_types = 4;
-  TypePlant  dominant = 7 [(gorm.field).belongs_to = {association_autocreate:true , association_autoupdate: true, preload: true}];
-  TypePlant  subDominant = 8 [(gorm.field).belongs_to = {association_autocreate:true, association_autoupdate: true, preload: true}];
-  repeated TypePlant typePlant = 9 [(gorm.field).many_to_many = {association_autocreate:true, association_autoupdate: true, preload: true}];
+  TypePlant  dominant = 7 [(gorm.field).belongs_to = {preload: true}];
+  TypePlant  subDominant = 8 [(gorm.field).belongs_to = {preload: true}];
+  repeated TypePlant typePlant = 9 [(gorm.field).many_to_many = {association_autocreate:true, association_autoupdate: true, preload: true, append:true}];
   google.protobuf.Timestamp created_at = 5;
   google.protobuf.Timestamp updated_at = 6;
   atlas.rpc.Identifier user_id = 11 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
-  atlas.rpc.Identifier transectId = 12 [(gorm.field).tag = {type: "uuid" foreignkey:"transect.Transect"}];
+  atlas.rpc.Identifier transectId = 12 [(gorm.field).tag = {type: "uuid"  foreignkey:"Transect.transectId"}];
 }
 
 message TrialSiteList {
@@ -62,6 +75,7 @@ message InputFormTrialSiteRequest {
   int32 covered = 3;
   int32 rating = 10;
   int32 count_types = 4;
+  atlas.rpc.Identifier transectId = 12;
   repeated TypePlant typePlant = 5;
    TypePlant dominant = 7;
    TypePlant subDominant = 8;

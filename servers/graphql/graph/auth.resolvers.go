@@ -8,7 +8,7 @@ import (
 	"context"
 
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/auth"
-	"github.com/sergey23144V/BotanyBackend/servers/grapgql/graph/model"
+	"github.com/sergey23144V/BotanyBackend/servers/graphql/graph/model"
 )
 
 // SignUpUser is the resolver for the signUpUser field.

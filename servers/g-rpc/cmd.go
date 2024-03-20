@@ -1,7 +1,6 @@
 package g_rpc
 
 import (
-	"github.com/jinzhu/gorm"
 	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/pkg/service"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/auth"
@@ -18,7 +17,7 @@ import (
 	"net"
 )
 
-func StartGrpc(db *gorm.DB, authServet *auth.AuthServerImpl, newRepository *service.Service) {
+func StartGrpc(authServet *auth.AuthServerImpl, newRepository *service.Service) {
 	go func() {
 		listener, err := net.Listen("tcp", ":50051")
 		if err != nil {
@@ -48,5 +47,7 @@ func StartGrpc(db *gorm.DB, authServet *auth.AuthServerImpl, newRepository *serv
 		if err := s.Serve(listener); err != nil {
 			log.Fatalf("Failed to serve: %v", err)
 		}
+
 	}()
+
 }

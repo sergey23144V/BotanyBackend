@@ -27,6 +27,10 @@ func (t TrialSiteServetImpl) UpTrialSite(ctx context.Context, request *trial_sit
 	return t.service.TrialSiteService.UpdateTrialSite(ctx, request)
 }
 
+func (t TrialSiteServetImpl) AddPlant(ctx context.Context, in *trial_site.AddPlantTrialSiteRequest) (*trial_site.TrialSite, error) {
+	return t.service.TrialSiteService.AddPlant(ctx, in)
+}
+
 func (t TrialSiteServetImpl) DeleteTrialSite(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error) {
 	return t.service.TrialSiteService.DeleteTrialSite(ctx, request)
 }

@@ -28,7 +28,7 @@ type TransectORM struct {
 	SubDominant     *type_plant.TypePlantORM `gorm:"foreignkey:SubDominantId;association_foreignkey:Id;association_autoupdate:false;association_autocreate:false;preload:true"`
 	SubDominantId   *string
 	Title           string
-	TrialSite       []*trial_site.TrialSiteORM `gorm:"foreignkey:TransectId;association_foreignkey:Id;association_autoupdate:true;association_autocreate:true;preload:true"`
+	TrialSite       []*trial_site.TrialSiteORM `gorm:"foreignkey:TransectId;association_foreignkey:Id;association_autoupdate:false;association_autocreate:false;association_save_reference:true;preload:true"`
 	UpdatedAt       *time.Time
 	UserId          *string `gorm:"type:uuid;foreignkey:auth.User"`
 }

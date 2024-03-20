@@ -8,6 +8,7 @@ import (
 	"github.com/sergey23144V/BotanyBackend/pkg/repository"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	trial_site "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/trial-site"
+	type_plant "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/type-plant"
 	"google.golang.org/genproto/protobuf/field_mask"
 )
 
@@ -15,6 +16,7 @@ type TrialSiteService interface {
 	CreateTrialSite(ctx context.Context, ecomorph *trial_site.InputTrialSiteRequest) (*trial_site.TrialSite, error)
 	GetTrialSiteById(ctx context.Context, request *api.IdRequest) (*trial_site.TrialSite, error)
 	DeleteTrialSite(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error)
+	AddPlant(context.Context, *trial_site.AddPlantTrialSiteRequest) (*trial_site.TrialSite, error)
 	StrictUpdateTrialSite(ctx context.Context, in *trial_site.InputTrialSiteRequest) (*trial_site.TrialSite, error)
 	UpdateTrialSite(ctx context.Context, in *trial_site.InputTrialSiteRequest) (*trial_site.TrialSite, error)
 	GetListTrialSite(ctx context.Context, request *api.PagesRequest) (*trial_site.TrialSiteList, error)
@@ -50,6 +52,14 @@ func (t TrialSiteServiceImpl) DeleteTrialSite(ctx context.Context, request *api.
 
 func (t TrialSiteServiceImpl) StrictUpdateTrialSite(ctx context.Context, in *trial_site.InputTrialSiteRequest) (*trial_site.TrialSite, error) {
 	return t.repository.TrialSiteRepository.StrictUpdateTrialSite(ctx, t.ToPB(ctx, in))
+}
+
+func (t TrialSiteServiceImpl) AddPlant(ctx context.Context, in *trial_site.AddPlantTrialSiteRequest) (*trial_site.TrialSite, error) {
+	trialSite, err := t.GetTrialSiteById(ctx, &api.IdRequest{Id: in.Id})
+	if err != nil {
+		return nil, err
+	}
+	return t.repository.TrialSiteRepository.UpdateTrialSite(ctx, t.ToAddPlant(in, trialSite), &field_mask.FieldMask{Paths: []string{"TypePlant"}})
 }
 
 func (t TrialSiteServiceImpl) UpdateTrialSite(ctx context.Context, in *trial_site.InputTrialSiteRequest) (*trial_site.TrialSite, error) {
@@ -91,7 +101,14 @@ func (t TrialSiteServiceImpl) ToPB(ctx context.Context, request *trial_site.Inpu
 		Dominant:    request.Input.Dominant,
 		SubDominant: request.Input.SubDominant,
 		TypePlant:   request.Input.TypePlant,
-		TransectId:  request.Input.Transect,
+		TransectId:  request.Input.TransectId,
 		UserId:      userId,
 	}
+}
+
+func (t TrialSiteServiceImpl) ToAddPlant(request *trial_site.AddPlantTrialSiteRequest, trialSite *trial_site.TrialSite) *trial_site.TrialSite {
+
+	plants := append(trialSite.TypePlant, &type_plant.TypePlant{Id: request.IdPlant})
+	trialSite.TypePlant = plants
+	return trialSite
 }

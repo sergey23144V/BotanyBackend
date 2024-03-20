@@ -11,7 +11,7 @@ import (
 	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	type_plant "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/type-plant"
-	"github.com/sergey23144V/BotanyBackend/servers/grapgql/graph/model"
+	"github.com/sergey23144V/BotanyBackend/servers/graphql/graph/model"
 )
 
 // CreateTypePlant is the resolver for the createTypePlant field.

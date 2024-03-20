@@ -21,7 +21,7 @@ import (
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/transect"
 	trial_site "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/trial-site"
 	type_plant "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/type-plant"
-	"github.com/sergey23144V/BotanyBackend/servers/grapgql/graph/model"
+	"github.com/sergey23144V/BotanyBackend/servers/graphql/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 	"google.golang.org/protobuf/types/known/timestamppb"

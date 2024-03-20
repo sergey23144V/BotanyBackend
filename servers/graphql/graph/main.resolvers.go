@@ -7,7 +7,7 @@ package graph
 import (
 	"context"
 
-	"github.com/sergey23144V/BotanyBackend/servers/grapgql/graph/model"
+	"github.com/sergey23144V/BotanyBackend/servers/graphql/graph/model"
 )
 
 // Ecomorph is the resolver for the ecomorph field.

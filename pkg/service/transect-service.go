@@ -94,6 +94,7 @@ func (t TransectServiceImpl) ToPB(ctx context.Context, request *transect.InputTr
 		CountTypes:      request.Input.CountTypes,
 		Dominant:        request.Input.Dominant,
 		SubDominant:     request.Input.SubDominant,
+		TrialSite:       request.Input.TrialSite,
 		UserId:          userId,
 	}
 }

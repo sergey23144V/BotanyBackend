@@ -11,7 +11,7 @@ import (
 	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	ecomorph_entity "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph-entity"
-	"github.com/sergey23144V/BotanyBackend/servers/grapgql/graph/model"
+	"github.com/sergey23144V/BotanyBackend/servers/graphql/graph/model"
 )
 
 // InsertEcomorphEntity is the resolver for the insertEcomorphEntity field.

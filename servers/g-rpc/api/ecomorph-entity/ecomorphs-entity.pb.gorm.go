@@ -17,7 +17,7 @@ import (
 type EcomorphsEntityORM struct {
 	CreatedAt   *time.Time
 	Description string
-	Ecomorphs   []*ecomorph.EcomorphORM `gorm:"foreignkey:Id;association_foreignkey:Id;many2many:ecomorphs_entity_ecomorphs;jointable_foreignkey:EcomorphsEntityId;association_jointable_foreignkey:EcomorphId;association_autoupdate:true;association_autocreate:true;preload:true"`
+	Ecomorphs   []*ecomorph.EcomorphORM `gorm:"foreignkey:Id;association_foreignkey:Id;many2many:ecomorphs_entity_ecomorphs;jointable_foreignkey:EcomorphsEntityId;association_jointable_foreignkey:EcomorphId;association_autoupdate:false;association_autocreate:false;preload:true"`
 	Id          string                  `gorm:"type:uuid;primary_key"`
 	Title       string
 	UpdatedAt   *time.Time

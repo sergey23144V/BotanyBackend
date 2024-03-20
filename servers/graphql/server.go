@@ -1,4 +1,4 @@
-package grapgql
+package graphql
 
 import (
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -8,7 +8,7 @@ import (
 	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/pkg/service"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/auth"
-	"github.com/sergey23144V/BotanyBackend/servers/grapgql/graph"
+	"github.com/sergey23144V/BotanyBackend/servers/graphql/graph"
 	"log"
 	"net/http"
 )

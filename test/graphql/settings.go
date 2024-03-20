@@ -1,9 +1,8 @@
-package main
+package graphql
 
 import (
 	"github.com/sergey23144V/BotanyBackend/pkg/repository"
 	"github.com/sergey23144V/BotanyBackend/pkg/service"
-	g_rpc "github.com/sergey23144V/BotanyBackend/servers/g-rpc"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/auth"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph"
 	ecomorph_entity "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph-entity"
@@ -16,8 +15,7 @@ import (
 	"os"
 )
 
-func main() {
-
+func StartServerGraphQl() {
 	cfgDB := repository.Config{
 		Host:     "localhost",
 		Port:     "5432",
@@ -43,8 +41,5 @@ func main() {
 	newRepository := repository.NewRepository(db)
 	newService := service.NewService(newRepository)
 
-	g_rpc.StartGrpc(&authServet, newService)
 	graphql.StartGraphQl(db, &authServet, newService)
-
-	select {}
 }

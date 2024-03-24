@@ -4,11 +4,10 @@
 // - protoc             v4.24.3
 // source: type-plant.proto
 
-package type_plant
+package api
 
 import (
 	context "context"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -25,13 +24,13 @@ const _ = grpc.SupportPackageIsVersion7
 type TypePlantServiceClient interface {
 	CreateTypePlant(ctx context.Context, in *InputTypePlantRequest, opts ...grpc.CallOption) (*TypePlant, error)
 	// Получение сущности по
-	GetTypePlant(ctx context.Context, in *api.IdRequest, opts ...grpc.CallOption) (*TypePlant, error)
+	GetTypePlant(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*TypePlant, error)
 	// Обновление сущности по id
 	UpdateTypePlant(ctx context.Context, in *InputTypePlantRequest, opts ...grpc.CallOption) (*TypePlant, error)
 	// Удаление сущности по заголовку
-	DeleteTypePlant(ctx context.Context, in *api.IdRequest, opts ...grpc.CallOption) (*api.BoolResponse, error)
+	DeleteTypePlant(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*BoolResponse, error)
 	// Получение списка всех сущностей
-	GetAllTypePlant(ctx context.Context, in *api.PagesRequest, opts ...grpc.CallOption) (*TypePlantList, error)
+	GetAllTypePlant(ctx context.Context, in *PagesRequest, opts ...grpc.CallOption) (*TypePlantList, error)
 }
 
 type typePlantServiceClient struct {
@@ -51,7 +50,7 @@ func (c *typePlantServiceClient) CreateTypePlant(ctx context.Context, in *InputT
 	return out, nil
 }
 
-func (c *typePlantServiceClient) GetTypePlant(ctx context.Context, in *api.IdRequest, opts ...grpc.CallOption) (*TypePlant, error) {
+func (c *typePlantServiceClient) GetTypePlant(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*TypePlant, error) {
 	out := new(TypePlant)
 	err := c.cc.Invoke(ctx, "/botany.TypePlantService/GetTypePlant", in, out, opts...)
 	if err != nil {
@@ -69,8 +68,8 @@ func (c *typePlantServiceClient) UpdateTypePlant(ctx context.Context, in *InputT
 	return out, nil
 }
 
-func (c *typePlantServiceClient) DeleteTypePlant(ctx context.Context, in *api.IdRequest, opts ...grpc.CallOption) (*api.BoolResponse, error) {
-	out := new(api.BoolResponse)
+func (c *typePlantServiceClient) DeleteTypePlant(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*BoolResponse, error) {
+	out := new(BoolResponse)
 	err := c.cc.Invoke(ctx, "/botany.TypePlantService/DeleteTypePlant", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -78,7 +77,7 @@ func (c *typePlantServiceClient) DeleteTypePlant(ctx context.Context, in *api.Id
 	return out, nil
 }
 
-func (c *typePlantServiceClient) GetAllTypePlant(ctx context.Context, in *api.PagesRequest, opts ...grpc.CallOption) (*TypePlantList, error) {
+func (c *typePlantServiceClient) GetAllTypePlant(ctx context.Context, in *PagesRequest, opts ...grpc.CallOption) (*TypePlantList, error) {
 	out := new(TypePlantList)
 	err := c.cc.Invoke(ctx, "/botany.TypePlantService/GetAllTypePlant", in, out, opts...)
 	if err != nil {
@@ -93,13 +92,13 @@ func (c *typePlantServiceClient) GetAllTypePlant(ctx context.Context, in *api.Pa
 type TypePlantServiceServer interface {
 	CreateTypePlant(context.Context, *InputTypePlantRequest) (*TypePlant, error)
 	// Получение сущности по
-	GetTypePlant(context.Context, *api.IdRequest) (*TypePlant, error)
+	GetTypePlant(context.Context, *IdRequest) (*TypePlant, error)
 	// Обновление сущности по id
 	UpdateTypePlant(context.Context, *InputTypePlantRequest) (*TypePlant, error)
 	// Удаление сущности по заголовку
-	DeleteTypePlant(context.Context, *api.IdRequest) (*api.BoolResponse, error)
+	DeleteTypePlant(context.Context, *IdRequest) (*BoolResponse, error)
 	// Получение списка всех сущностей
-	GetAllTypePlant(context.Context, *api.PagesRequest) (*TypePlantList, error)
+	GetAllTypePlant(context.Context, *PagesRequest) (*TypePlantList, error)
 	MustEmbedUnimplementedTypePlantServiceServer()
 }
 
@@ -110,16 +109,16 @@ type UnimplementedTypePlantServiceServer struct {
 func (UnimplementedTypePlantServiceServer) CreateTypePlant(context.Context, *InputTypePlantRequest) (*TypePlant, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateTypePlant not implemented")
 }
-func (UnimplementedTypePlantServiceServer) GetTypePlant(context.Context, *api.IdRequest) (*TypePlant, error) {
+func (UnimplementedTypePlantServiceServer) GetTypePlant(context.Context, *IdRequest) (*TypePlant, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTypePlant not implemented")
 }
 func (UnimplementedTypePlantServiceServer) UpdateTypePlant(context.Context, *InputTypePlantRequest) (*TypePlant, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateTypePlant not implemented")
 }
-func (UnimplementedTypePlantServiceServer) DeleteTypePlant(context.Context, *api.IdRequest) (*api.BoolResponse, error) {
+func (UnimplementedTypePlantServiceServer) DeleteTypePlant(context.Context, *IdRequest) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteTypePlant not implemented")
 }
-func (UnimplementedTypePlantServiceServer) GetAllTypePlant(context.Context, *api.PagesRequest) (*TypePlantList, error) {
+func (UnimplementedTypePlantServiceServer) GetAllTypePlant(context.Context, *PagesRequest) (*TypePlantList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllTypePlant not implemented")
 }
 func (UnimplementedTypePlantServiceServer) MustEmbedUnimplementedTypePlantServiceServer() {}
@@ -154,7 +153,7 @@ func _TypePlantService_CreateTypePlant_Handler(srv interface{}, ctx context.Cont
 }
 
 func _TypePlantService_GetTypePlant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.IdRequest)
+	in := new(IdRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -166,7 +165,7 @@ func _TypePlantService_GetTypePlant_Handler(srv interface{}, ctx context.Context
 		FullMethod: "/botany.TypePlantService/GetTypePlant",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TypePlantServiceServer).GetTypePlant(ctx, req.(*api.IdRequest))
+		return srv.(TypePlantServiceServer).GetTypePlant(ctx, req.(*IdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -190,7 +189,7 @@ func _TypePlantService_UpdateTypePlant_Handler(srv interface{}, ctx context.Cont
 }
 
 func _TypePlantService_DeleteTypePlant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.IdRequest)
+	in := new(IdRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -202,13 +201,13 @@ func _TypePlantService_DeleteTypePlant_Handler(srv interface{}, ctx context.Cont
 		FullMethod: "/botany.TypePlantService/DeleteTypePlant",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TypePlantServiceServer).DeleteTypePlant(ctx, req.(*api.IdRequest))
+		return srv.(TypePlantServiceServer).DeleteTypePlant(ctx, req.(*IdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _TypePlantService_GetAllTypePlant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.PagesRequest)
+	in := new(PagesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -220,7 +219,7 @@ func _TypePlantService_GetAllTypePlant_Handler(srv interface{}, ctx context.Cont
 		FullMethod: "/botany.TypePlantService/GetAllTypePlant",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TypePlantServiceServer).GetAllTypePlant(ctx, req.(*api.PagesRequest))
+		return srv.(TypePlantServiceServer).GetAllTypePlant(ctx, req.(*PagesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

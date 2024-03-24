@@ -10,20 +10,19 @@ import (
 
 	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
-	type_plant "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/type-plant"
 	"github.com/sergey23144V/BotanyBackend/servers/graphql/graph/model"
 )
 
 // CreateTypePlant is the resolver for the createTypePlant field.
-func (r *typePlantMutationResolver) CreateTypePlant(ctx context.Context, obj *model.TypePlantMutation, input *type_plant.InputFormTypePlantRequest) (*type_plant.TypePlant, error) {
+func (r *typePlantMutationResolver) CreateTypePlant(ctx context.Context, obj *model.TypePlantMutation, input *api.InputFormTypePlantRequest) (*api.TypePlant, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.NotAuthorization
 	}
-	return r.service.TypePlantService.CreateTypePlant(ctx, &type_plant.InputTypePlantRequest{Input: input})
+	return r.service.TypePlantService.CreateTypePlant(ctx, &api.InputTypePlantRequest{Input: input})
 }
 
 // UpdateTypePlant is the resolver for the updateTypePlant field.
-func (r *typePlantMutationResolver) UpdateTypePlant(ctx context.Context, obj *model.TypePlantMutation, input *type_plant.InputTypePlantRequest) (*type_plant.TypePlant, error) {
+func (r *typePlantMutationResolver) UpdateTypePlant(ctx context.Context, obj *model.TypePlantMutation, input *api.InputTypePlantRequest) (*api.TypePlant, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.NotAuthorization
 	}
@@ -39,7 +38,7 @@ func (r *typePlantMutationResolver) DeleteTypePlant(ctx context.Context, obj *mo
 }
 
 // GetTypePlant is the resolver for the getTypePlant field.
-func (r *typePlantQueryResolver) GetTypePlant(ctx context.Context, obj *model.TypePlantQuery, id string) (*type_plant.TypePlant, error) {
+func (r *typePlantQueryResolver) GetTypePlant(ctx context.Context, obj *model.TypePlantQuery, id string) (*api.TypePlant, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.NotAuthorization
 	}
@@ -47,7 +46,7 @@ func (r *typePlantQueryResolver) GetTypePlant(ctx context.Context, obj *model.Ty
 }
 
 // GetAllTypePlant is the resolver for the getAllTypePlant field.
-func (r *typePlantQueryResolver) GetAllTypePlant(ctx context.Context, obj *model.TypePlantQuery, pages *api.PagesRequest) (*type_plant.TypePlantList, error) {
+func (r *typePlantQueryResolver) GetAllTypePlant(ctx context.Context, obj *model.TypePlantQuery, pages *api.PagesRequest) (*api.TypePlantList, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.NotAuthorization
 	}

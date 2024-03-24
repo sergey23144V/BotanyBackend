@@ -7,17 +7,17 @@ package graph
 import (
 	"context"
 
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/auth"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"github.com/sergey23144V/BotanyBackend/servers/graphql/graph/model"
 )
 
 // SignUpUser is the resolver for the signUpUser field.
-func (r *authMutationResolver) SignUpUser(ctx context.Context, obj *model.AuthMutation, data *auth.SignUpUserInput) (*auth.SignInUserResponse, error) {
+func (r *authMutationResolver) SignUpUser(ctx context.Context, obj *model.AuthMutation, data *api.SignUpUserInput) (*api.SignInUserResponse, error) {
 	return r.AuthServerImpl.SignUpUser(ctx, data)
 }
 
 // SignInUser is the resolver for the signInUser field.
-func (r *authMutationResolver) SignInUser(ctx context.Context, obj *model.AuthMutation, data *auth.SignInUserInput) (*auth.SignInUserResponse, error) {
+func (r *authMutationResolver) SignInUser(ctx context.Context, obj *model.AuthMutation, data *api.SignInUserInput) (*api.SignInUserResponse, error) {
 	return r.AuthServerImpl.SignInUser(ctx, data)
 }
 

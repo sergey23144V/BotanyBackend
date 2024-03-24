@@ -4,11 +4,10 @@
 // - protoc             v4.24.3
 // source: ecomorphs.proto
 
-package ecomorph
+package api
 
 import (
 	context "context"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -26,13 +25,13 @@ type EcomorphServiceClient interface {
 	// Создание новой сущности
 	InsertEcomorph(ctx context.Context, in *InputEcomorph, opts ...grpc.CallOption) (*Ecomorph, error)
 	// Получение сущности по заголовку
-	GetEcomorphById(ctx context.Context, in *api.IdRequest, opts ...grpc.CallOption) (*Ecomorph, error)
+	GetEcomorphById(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*Ecomorph, error)
 	// Обновление сущности по заголовку
 	UpdateEcomorph(ctx context.Context, in *InputEcomorph, opts ...grpc.CallOption) (*Ecomorph, error)
 	// Удаление сущности по заголовку
-	DeleteEcomorphById(ctx context.Context, in *api.IdRequest, opts ...grpc.CallOption) (*api.BoolResponse, error)
+	DeleteEcomorphById(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*BoolResponse, error)
 	// Получение списка всех типов
-	GetListEcomorph(ctx context.Context, in *api.PagesRequest, opts ...grpc.CallOption) (*EcomorphsList, error)
+	GetListEcomorph(ctx context.Context, in *PagesRequest, opts ...grpc.CallOption) (*EcomorphsList, error)
 }
 
 type ecomorphServiceClient struct {
@@ -52,7 +51,7 @@ func (c *ecomorphServiceClient) InsertEcomorph(ctx context.Context, in *InputEco
 	return out, nil
 }
 
-func (c *ecomorphServiceClient) GetEcomorphById(ctx context.Context, in *api.IdRequest, opts ...grpc.CallOption) (*Ecomorph, error) {
+func (c *ecomorphServiceClient) GetEcomorphById(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*Ecomorph, error) {
 	out := new(Ecomorph)
 	err := c.cc.Invoke(ctx, "/botany.EcomorphService/GetEcomorphById", in, out, opts...)
 	if err != nil {
@@ -70,8 +69,8 @@ func (c *ecomorphServiceClient) UpdateEcomorph(ctx context.Context, in *InputEco
 	return out, nil
 }
 
-func (c *ecomorphServiceClient) DeleteEcomorphById(ctx context.Context, in *api.IdRequest, opts ...grpc.CallOption) (*api.BoolResponse, error) {
-	out := new(api.BoolResponse)
+func (c *ecomorphServiceClient) DeleteEcomorphById(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*BoolResponse, error) {
+	out := new(BoolResponse)
 	err := c.cc.Invoke(ctx, "/botany.EcomorphService/DeleteEcomorphById", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -79,7 +78,7 @@ func (c *ecomorphServiceClient) DeleteEcomorphById(ctx context.Context, in *api.
 	return out, nil
 }
 
-func (c *ecomorphServiceClient) GetListEcomorph(ctx context.Context, in *api.PagesRequest, opts ...grpc.CallOption) (*EcomorphsList, error) {
+func (c *ecomorphServiceClient) GetListEcomorph(ctx context.Context, in *PagesRequest, opts ...grpc.CallOption) (*EcomorphsList, error) {
 	out := new(EcomorphsList)
 	err := c.cc.Invoke(ctx, "/botany.EcomorphService/GetListEcomorph", in, out, opts...)
 	if err != nil {
@@ -95,13 +94,13 @@ type EcomorphServiceServer interface {
 	// Создание новой сущности
 	InsertEcomorph(context.Context, *InputEcomorph) (*Ecomorph, error)
 	// Получение сущности по заголовку
-	GetEcomorphById(context.Context, *api.IdRequest) (*Ecomorph, error)
+	GetEcomorphById(context.Context, *IdRequest) (*Ecomorph, error)
 	// Обновление сущности по заголовку
 	UpdateEcomorph(context.Context, *InputEcomorph) (*Ecomorph, error)
 	// Удаление сущности по заголовку
-	DeleteEcomorphById(context.Context, *api.IdRequest) (*api.BoolResponse, error)
+	DeleteEcomorphById(context.Context, *IdRequest) (*BoolResponse, error)
 	// Получение списка всех типов
-	GetListEcomorph(context.Context, *api.PagesRequest) (*EcomorphsList, error)
+	GetListEcomorph(context.Context, *PagesRequest) (*EcomorphsList, error)
 	MustEmbedUnimplementedEcomorphServiceServer()
 }
 
@@ -112,16 +111,16 @@ type UnimplementedEcomorphServiceServer struct {
 func (UnimplementedEcomorphServiceServer) InsertEcomorph(context.Context, *InputEcomorph) (*Ecomorph, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InsertEcomorph not implemented")
 }
-func (UnimplementedEcomorphServiceServer) GetEcomorphById(context.Context, *api.IdRequest) (*Ecomorph, error) {
+func (UnimplementedEcomorphServiceServer) GetEcomorphById(context.Context, *IdRequest) (*Ecomorph, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetEcomorphById not implemented")
 }
 func (UnimplementedEcomorphServiceServer) UpdateEcomorph(context.Context, *InputEcomorph) (*Ecomorph, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateEcomorph not implemented")
 }
-func (UnimplementedEcomorphServiceServer) DeleteEcomorphById(context.Context, *api.IdRequest) (*api.BoolResponse, error) {
+func (UnimplementedEcomorphServiceServer) DeleteEcomorphById(context.Context, *IdRequest) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteEcomorphById not implemented")
 }
-func (UnimplementedEcomorphServiceServer) GetListEcomorph(context.Context, *api.PagesRequest) (*EcomorphsList, error) {
+func (UnimplementedEcomorphServiceServer) GetListEcomorph(context.Context, *PagesRequest) (*EcomorphsList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetListEcomorph not implemented")
 }
 func (UnimplementedEcomorphServiceServer) MustEmbedUnimplementedEcomorphServiceServer() {}
@@ -156,7 +155,7 @@ func _EcomorphService_InsertEcomorph_Handler(srv interface{}, ctx context.Contex
 }
 
 func _EcomorphService_GetEcomorphById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.IdRequest)
+	in := new(IdRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -168,7 +167,7 @@ func _EcomorphService_GetEcomorphById_Handler(srv interface{}, ctx context.Conte
 		FullMethod: "/botany.EcomorphService/GetEcomorphById",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EcomorphServiceServer).GetEcomorphById(ctx, req.(*api.IdRequest))
+		return srv.(EcomorphServiceServer).GetEcomorphById(ctx, req.(*IdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -192,7 +191,7 @@ func _EcomorphService_UpdateEcomorph_Handler(srv interface{}, ctx context.Contex
 }
 
 func _EcomorphService_DeleteEcomorphById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.IdRequest)
+	in := new(IdRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -204,13 +203,13 @@ func _EcomorphService_DeleteEcomorphById_Handler(srv interface{}, ctx context.Co
 		FullMethod: "/botany.EcomorphService/DeleteEcomorphById",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EcomorphServiceServer).DeleteEcomorphById(ctx, req.(*api.IdRequest))
+		return srv.(EcomorphServiceServer).DeleteEcomorphById(ctx, req.(*IdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _EcomorphService_GetListEcomorph_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.PagesRequest)
+	in := new(PagesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -222,7 +221,7 @@ func _EcomorphService_GetListEcomorph_Handler(srv interface{}, ctx context.Conte
 		FullMethod: "/botany.EcomorphService/GetListEcomorph",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EcomorphServiceServer).GetListEcomorph(ctx, req.(*api.PagesRequest))
+		return srv.(EcomorphServiceServer).GetListEcomorph(ctx, req.(*PagesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

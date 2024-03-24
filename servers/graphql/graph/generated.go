@@ -13,14 +13,8 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/infobloxopen/atlas-app-toolkit/atlas/resource"
+	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/auth"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph"
-	ecomorph_entity "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph-entity"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/transect"
-	trial_site "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/trial-site"
-	type_plant "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/type-plant"
 	"github.com/sergey23144V/BotanyBackend/servers/graphql/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
@@ -54,14 +48,15 @@ type ResolverRoot interface {
 	EcomorphsEntityQuery() EcomorphsEntityQueryResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
-	Transect() TransectResolver
 	TransectMutation() TransectMutationResolver
 	TransectQuery() TransectQueryResolver
+	TrialSite() TrialSiteResolver
 	TrialSiteMutation() TrialSiteMutationResolver
 	TrialSiteQuery() TrialSiteQueryResolver
 	TypePlantMutation() TypePlantMutationResolver
 	TypePlantQuery() TypePlantQueryResolver
-	TransectInput() TransectInputResolver
+	InputFormEcomorphsEntity() InputFormEcomorphsEntityResolver
+	TrialSiteInput() TrialSiteInputResolver
 }
 
 type DirectiveRoot struct {
@@ -69,8 +64,8 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	AuthMutation struct {
-		SignInUser func(childComplexity int, data *auth.SignInUserInput) int
-		SignUpUser func(childComplexity int, data *auth.SignUpUserInput) int
+		SignInUser func(childComplexity int, data *api.SignInUserInput) int
+		SignUpUser func(childComplexity int, data *api.SignUpUserInput) int
 	}
 
 	BoolResponse struct {
@@ -88,8 +83,8 @@ type ComplexityRoot struct {
 
 	EcomorphMutation struct {
 		DeleteEcomorphByID func(childComplexity int, id string) int
-		InsertEcomorph     func(childComplexity int, input *ecomorph.InputFormEcomorph) int
-		UpdateEcomorph     func(childComplexity int, input *ecomorph.InputEcomorph) int
+		InsertEcomorph     func(childComplexity int, input *api.InputFormEcomorph) int
+		UpdateEcomorph     func(childComplexity int, input *api.InputEcomorph) int
 	}
 
 	EcomorphQuery struct {
@@ -114,8 +109,8 @@ type ComplexityRoot struct {
 
 	EcomorphsEntityMutation struct {
 		DeleteEcomorphEntityByID func(childComplexity int, id string) int
-		InsertEcomorphEntity     func(childComplexity int, input *ecomorph_entity.InputFormEcomorphsEntity) int
-		UpdateEcomorphEntity     func(childComplexity int, input *ecomorph_entity.InputEcomorphsEntity) int
+		InsertEcomorphEntity     func(childComplexity int, input *api.InputFormEcomorphsEntity) int
+		UpdateEcomorphEntity     func(childComplexity int, input *api.InputEcomorphsEntity) int
 	}
 
 	EcomorphsEntityQuery struct {
@@ -194,9 +189,9 @@ type ComplexityRoot struct {
 	}
 
 	TransectMutation struct {
-		CreateTransect func(childComplexity int, input *transect.InputTransectRequest) int
+		CreateTransect func(childComplexity int, input *api.InputTransectRequest) int
 		DeleteTransect func(childComplexity int, id string) int
-		UpTransect     func(childComplexity int, input *transect.InputTransectRequest) int
+		UpTransect     func(childComplexity int, input *api.InputTransectRequest) int
 	}
 
 	TransectQuery struct {
@@ -224,9 +219,9 @@ type ComplexityRoot struct {
 	}
 
 	TrialSiteMutation struct {
-		CreateTrialSite func(childComplexity int, input *trial_site.InputFormTrialSiteRequest) int
+		CreateTrialSite func(childComplexity int, input *api.InputFormTrialSiteRequest) int
 		DeleteTrialSite func(childComplexity int, id string) int
-		UpTrialSite     func(childComplexity int, input *trial_site.InputTrialSiteRequest) int
+		UpTrialSite     func(childComplexity int, input *api.InputTrialSiteRequest) int
 	}
 
 	TrialSiteQuery struct {
@@ -250,9 +245,9 @@ type ComplexityRoot struct {
 	}
 
 	TypePlantMutation struct {
-		CreateTypePlant func(childComplexity int, input *type_plant.InputFormTypePlantRequest) int
+		CreateTypePlant func(childComplexity int, input *api.InputFormTypePlantRequest) int
 		DeleteTypePlant func(childComplexity int, id string) int
-		UpdateTypePlant func(childComplexity int, input *type_plant.InputTypePlantRequest) int
+		UpdateTypePlant func(childComplexity int, input *api.InputTypePlantRequest) int
 	}
 
 	TypePlantQuery struct {
@@ -262,31 +257,31 @@ type ComplexityRoot struct {
 }
 
 type AuthMutationResolver interface {
-	SignUpUser(ctx context.Context, obj *model.AuthMutation, data *auth.SignUpUserInput) (*auth.SignInUserResponse, error)
-	SignInUser(ctx context.Context, obj *model.AuthMutation, data *auth.SignInUserInput) (*auth.SignInUserResponse, error)
+	SignUpUser(ctx context.Context, obj *model.AuthMutation, data *api.SignUpUserInput) (*api.SignInUserResponse, error)
+	SignInUser(ctx context.Context, obj *model.AuthMutation, data *api.SignInUserInput) (*api.SignInUserResponse, error)
 }
 type EcomorphMutationResolver interface {
-	InsertEcomorph(ctx context.Context, obj *model.EcomorphMutation, input *ecomorph.InputFormEcomorph) (*ecomorph.Ecomorph, error)
-	UpdateEcomorph(ctx context.Context, obj *model.EcomorphMutation, input *ecomorph.InputEcomorph) (*ecomorph.Ecomorph, error)
+	InsertEcomorph(ctx context.Context, obj *model.EcomorphMutation, input *api.InputFormEcomorph) (*api.Ecomorph, error)
+	UpdateEcomorph(ctx context.Context, obj *model.EcomorphMutation, input *api.InputEcomorph) (*api.Ecomorph, error)
 	DeleteEcomorphByID(ctx context.Context, obj *model.EcomorphMutation, id string) (*api.BoolResponse, error)
 }
 type EcomorphQueryResolver interface {
-	GetEcomorphByID(ctx context.Context, obj *model.EcomorphQuery, id string) (*ecomorph.Ecomorph, error)
-	GetListEcomorph(ctx context.Context, obj *model.EcomorphQuery, pages *api.PagesRequest) (*ecomorph.EcomorphsList, error)
+	GetEcomorphByID(ctx context.Context, obj *model.EcomorphQuery, id string) (*api.Ecomorph, error)
+	GetListEcomorph(ctx context.Context, obj *model.EcomorphQuery, pages *api.PagesRequest) (*api.EcomorphsList, error)
 }
 type EcomorphsEntityMutationResolver interface {
-	InsertEcomorphEntity(ctx context.Context, obj *model.EcomorphsEntityMutation, input *ecomorph_entity.InputFormEcomorphsEntity) (*ecomorph_entity.EcomorphsEntity, error)
-	UpdateEcomorphEntity(ctx context.Context, obj *model.EcomorphsEntityMutation, input *ecomorph_entity.InputEcomorphsEntity) (*ecomorph_entity.EcomorphsEntity, error)
+	InsertEcomorphEntity(ctx context.Context, obj *model.EcomorphsEntityMutation, input *api.InputFormEcomorphsEntity) (*api.EcomorphsEntity, error)
+	UpdateEcomorphEntity(ctx context.Context, obj *model.EcomorphsEntityMutation, input *api.InputEcomorphsEntity) (*api.EcomorphsEntity, error)
 	DeleteEcomorphEntityByID(ctx context.Context, obj *model.EcomorphsEntityMutation, id string) (*api.BoolResponse, error)
 }
 type EcomorphsEntityQueryResolver interface {
-	GetEcomorphEntityByID(ctx context.Context, obj *model.EcomorphsEntityQuery, id string) (*ecomorph_entity.EcomorphsEntity, error)
-	GetAllEcomorphEntity(ctx context.Context, obj *model.EcomorphsEntityQuery, pages *api.PagesRequest) (*ecomorph_entity.EcomorphsEntityList, error)
+	GetEcomorphEntityByID(ctx context.Context, obj *model.EcomorphsEntityQuery, id string) (*api.EcomorphsEntity, error)
+	GetAllEcomorphEntity(ctx context.Context, obj *model.EcomorphsEntityQuery, pages *api.PagesRequest) (*api.EcomorphsEntityList, error)
 }
 type MutationResolver interface {
 	Ecomorph(ctx context.Context) (*model.EcomorphMutation, error)
 	Auth(ctx context.Context) (*model.AuthMutation, error)
-	EcomorphsEntity(ctx context.Context) (*model.EcomorphMutation, error)
+	EcomorphsEntity(ctx context.Context) (*model.EcomorphsEntityMutation, error)
 	TypePlant(ctx context.Context) (*model.TypePlantMutation, error)
 	TrialSite(ctx context.Context) (*model.TrialSiteMutation, error)
 	Transect(ctx context.Context) (*model.TransectMutation, error)
@@ -298,39 +293,42 @@ type QueryResolver interface {
 	TrialSite(ctx context.Context) (*model.TrialSiteQuery, error)
 	Transect(ctx context.Context) (*model.TransectQuery, error)
 }
-type TransectResolver interface {
-	TrialSite(ctx context.Context, obj *transect.Transect) ([]*trial_site.TrialSite, error)
-}
 type TransectMutationResolver interface {
-	CreateTransect(ctx context.Context, obj *model.TransectMutation, input *transect.InputTransectRequest) (*transect.Transect, error)
-	UpTransect(ctx context.Context, obj *model.TransectMutation, input *transect.InputTransectRequest) (*transect.Transect, error)
+	CreateTransect(ctx context.Context, obj *model.TransectMutation, input *api.InputTransectRequest) (*api.Transect, error)
+	UpTransect(ctx context.Context, obj *model.TransectMutation, input *api.InputTransectRequest) (*api.Transect, error)
 	DeleteTransect(ctx context.Context, obj *model.TransectMutation, id string) (*api.BoolResponse, error)
 }
 type TransectQueryResolver interface {
-	GetTransect(ctx context.Context, obj *model.TransectQuery, id string) (*transect.Transect, error)
-	GetAllTransect(ctx context.Context, obj *model.TransectQuery, pages *api.PagesRequest) (*transect.TransectList, error)
+	GetTransect(ctx context.Context, obj *model.TransectQuery, id string) (*api.Transect, error)
+	GetAllTransect(ctx context.Context, obj *model.TransectQuery, pages *api.PagesRequest) (*api.TransectList, error)
+}
+type TrialSiteResolver interface {
+	TypePlant(ctx context.Context, obj *api.TrialSite) ([]*api.TypePlant, error)
 }
 type TrialSiteMutationResolver interface {
-	CreateTrialSite(ctx context.Context, obj *model.TrialSiteMutation, input *trial_site.InputFormTrialSiteRequest) (*trial_site.TrialSite, error)
-	UpTrialSite(ctx context.Context, obj *model.TrialSiteMutation, input *trial_site.InputTrialSiteRequest) (*trial_site.TrialSite, error)
+	CreateTrialSite(ctx context.Context, obj *model.TrialSiteMutation, input *api.InputFormTrialSiteRequest) (*api.TrialSite, error)
+	UpTrialSite(ctx context.Context, obj *model.TrialSiteMutation, input *api.InputTrialSiteRequest) (*api.TrialSite, error)
 	DeleteTrialSite(ctx context.Context, obj *model.TrialSiteMutation, id string) (*api.BoolResponse, error)
 }
 type TrialSiteQueryResolver interface {
-	GetTrialSite(ctx context.Context, obj *model.TrialSiteQuery, id string) (*trial_site.TrialSite, error)
-	GetAllTrialSite(ctx context.Context, obj *model.TrialSiteQuery, pages *api.PagesRequest) (*trial_site.TrialSiteList, error)
+	GetTrialSite(ctx context.Context, obj *model.TrialSiteQuery, id string) (*api.TrialSite, error)
+	GetAllTrialSite(ctx context.Context, obj *model.TrialSiteQuery, pages *api.PagesRequest) (*api.TrialSiteList, error)
 }
 type TypePlantMutationResolver interface {
-	CreateTypePlant(ctx context.Context, obj *model.TypePlantMutation, input *type_plant.InputFormTypePlantRequest) (*type_plant.TypePlant, error)
-	UpdateTypePlant(ctx context.Context, obj *model.TypePlantMutation, input *type_plant.InputTypePlantRequest) (*type_plant.TypePlant, error)
+	CreateTypePlant(ctx context.Context, obj *model.TypePlantMutation, input *api.InputFormTypePlantRequest) (*api.TypePlant, error)
+	UpdateTypePlant(ctx context.Context, obj *model.TypePlantMutation, input *api.InputTypePlantRequest) (*api.TypePlant, error)
 	DeleteTypePlant(ctx context.Context, obj *model.TypePlantMutation, id string) (*api.BoolResponse, error)
 }
 type TypePlantQueryResolver interface {
-	GetTypePlant(ctx context.Context, obj *model.TypePlantQuery, id string) (*type_plant.TypePlant, error)
-	GetAllTypePlant(ctx context.Context, obj *model.TypePlantQuery, pages *api.PagesRequest) (*type_plant.TypePlantList, error)
+	GetTypePlant(ctx context.Context, obj *model.TypePlantQuery, id string) (*api.TypePlant, error)
+	GetAllTypePlant(ctx context.Context, obj *model.TypePlantQuery, pages *api.PagesRequest) (*api.TypePlantList, error)
 }
 
-type TransectInputResolver interface {
-	TrialSite(ctx context.Context, obj *transect.Transect, data []*trial_site.TrialSite) error
+type InputFormEcomorphsEntityResolver interface {
+	Ecomorphs(ctx context.Context, obj *api.InputFormEcomorphsEntity, data []*api.Ecomorph) error
+}
+type TrialSiteInputResolver interface {
+	TypePlant(ctx context.Context, obj *api.TrialSite, data []*api.TypePlant) error
 }
 
 type executableSchema struct {
@@ -362,7 +360,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.AuthMutation.SignInUser(childComplexity, args["data"].(*auth.SignInUserInput)), true
+		return e.complexity.AuthMutation.SignInUser(childComplexity, args["data"].(*api.SignInUserInput)), true
 
 	case "AuthMutation.signUpUser":
 		if e.complexity.AuthMutation.SignUpUser == nil {
@@ -374,7 +372,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.AuthMutation.SignUpUser(childComplexity, args["data"].(*auth.SignUpUserInput)), true
+		return e.complexity.AuthMutation.SignUpUser(childComplexity, args["data"].(*api.SignUpUserInput)), true
 
 	case "BoolResponse.result":
 		if e.complexity.BoolResponse.Result == nil {
@@ -447,7 +445,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.EcomorphMutation.InsertEcomorph(childComplexity, args["input"].(*ecomorph.InputFormEcomorph)), true
+		return e.complexity.EcomorphMutation.InsertEcomorph(childComplexity, args["input"].(*api.InputFormEcomorph)), true
 
 	case "EcomorphMutation.updateEcomorph":
 		if e.complexity.EcomorphMutation.UpdateEcomorph == nil {
@@ -459,7 +457,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.EcomorphMutation.UpdateEcomorph(childComplexity, args["input"].(*ecomorph.InputEcomorph)), true
+		return e.complexity.EcomorphMutation.UpdateEcomorph(childComplexity, args["input"].(*api.InputEcomorph)), true
 
 	case "EcomorphQuery.getEcomorphById":
 		if e.complexity.EcomorphQuery.GetEcomorphByID == nil {
@@ -570,7 +568,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.EcomorphsEntityMutation.InsertEcomorphEntity(childComplexity, args["input"].(*ecomorph_entity.InputFormEcomorphsEntity)), true
+		return e.complexity.EcomorphsEntityMutation.InsertEcomorphEntity(childComplexity, args["input"].(*api.InputFormEcomorphsEntity)), true
 
 	case "EcomorphsEntityMutation.updateEcomorphEntity":
 		if e.complexity.EcomorphsEntityMutation.UpdateEcomorphEntity == nil {
@@ -582,7 +580,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.EcomorphsEntityMutation.UpdateEcomorphEntity(childComplexity, args["input"].(*ecomorph_entity.InputEcomorphsEntity)), true
+		return e.complexity.EcomorphsEntityMutation.UpdateEcomorphEntity(childComplexity, args["input"].(*api.InputEcomorphsEntity)), true
 
 	case "EcomorphsEntityQuery.getAllEcomorphEntity":
 		if e.complexity.EcomorphsEntityQuery.GetAllEcomorphEntity == nil {
@@ -898,7 +896,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.TransectMutation.CreateTransect(childComplexity, args["input"].(*transect.InputTransectRequest)), true
+		return e.complexity.TransectMutation.CreateTransect(childComplexity, args["input"].(*api.InputTransectRequest)), true
 
 	case "TransectMutation.deleteTransect":
 		if e.complexity.TransectMutation.DeleteTransect == nil {
@@ -922,7 +920,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.TransectMutation.UpTransect(childComplexity, args["input"].(*transect.InputTransectRequest)), true
+		return e.complexity.TransectMutation.UpTransect(childComplexity, args["input"].(*api.InputTransectRequest)), true
 
 	case "TransectQuery.getAllTransect":
 		if e.complexity.TransectQuery.GetAllTransect == nil {
@@ -1049,7 +1047,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.TrialSiteMutation.CreateTrialSite(childComplexity, args["input"].(*trial_site.InputFormTrialSiteRequest)), true
+		return e.complexity.TrialSiteMutation.CreateTrialSite(childComplexity, args["input"].(*api.InputFormTrialSiteRequest)), true
 
 	case "TrialSiteMutation.deleteTrialSite":
 		if e.complexity.TrialSiteMutation.DeleteTrialSite == nil {
@@ -1073,7 +1071,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.TrialSiteMutation.UpTrialSite(childComplexity, args["input"].(*trial_site.InputTrialSiteRequest)), true
+		return e.complexity.TrialSiteMutation.UpTrialSite(childComplexity, args["input"].(*api.InputTrialSiteRequest)), true
 
 	case "TrialSiteQuery.getAllTrialSite":
 		if e.complexity.TrialSiteQuery.GetAllTrialSite == nil {
@@ -1172,7 +1170,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.TypePlantMutation.CreateTypePlant(childComplexity, args["input"].(*type_plant.InputFormTypePlantRequest)), true
+		return e.complexity.TypePlantMutation.CreateTypePlant(childComplexity, args["input"].(*api.InputFormTypePlantRequest)), true
 
 	case "TypePlantMutation.deleteTypePlant":
 		if e.complexity.TypePlantMutation.DeleteTypePlant == nil {
@@ -1196,7 +1194,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.TypePlantMutation.UpdateTypePlant(childComplexity, args["input"].(*type_plant.InputTypePlantRequest)), true
+		return e.complexity.TypePlantMutation.UpdateTypePlant(childComplexity, args["input"].(*api.InputTypePlantRequest)), true
 
 	case "TypePlantQuery.getAllTypePlant":
 		if e.complexity.TypePlantQuery.GetAllTypePlant == nil {
@@ -1392,7 +1390,7 @@ directive @goField(forceResolver: Boolean, name: String) on INPUT_FIELD_DEFINITI
     updatedAt: Timestamp
     title: String
     description: String
-    ecomorphs: [Ecomorph]
+    ecomorphs: Ecomorph
     userId: IdentifierType
 }
 
@@ -1400,7 +1398,7 @@ input EcomorphsEntityInput {
     id: IdentifierInput!
     title: String
     description: String
-    ecomorphs: [EcomorphInput]
+    ecomorphs: EcomorphInput
 }
 
 
@@ -1525,7 +1523,7 @@ type Query{
 type Mutation{
     ecomorph: EcomorphMutation @goField(forceResolver: true)
     auth: AuthMutation   @goField(forceResolver: true)
-    ecomorphsEntity: EcomorphMutation  @goField(forceResolver: true)
+    ecomorphsEntity: EcomorphsEntityMutation  @goField(forceResolver: true)
     typePlant: TypePlantMutation  @goField(forceResolver: true)
     trialSite: TrialSiteMutation @goField(forceResolver: true)
     transect: TransectMutation @goField(forceResolver: true)
@@ -1702,10 +1700,10 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 func (ec *executionContext) field_AuthMutation_signInUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *auth.SignInUserInput
+	var arg0 *api.SignInUserInput
 	if tmp, ok := rawArgs["data"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
-		arg0, err = ec.unmarshalOSignInUserInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋauthᚐSignInUserInput(ctx, tmp)
+		arg0, err = ec.unmarshalOSignInUserInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐSignInUserInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1717,10 +1715,10 @@ func (ec *executionContext) field_AuthMutation_signInUser_args(ctx context.Conte
 func (ec *executionContext) field_AuthMutation_signUpUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *auth.SignUpUserInput
+	var arg0 *api.SignUpUserInput
 	if tmp, ok := rawArgs["data"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
-		arg0, err = ec.unmarshalOSignUpUserInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋauthᚐSignUpUserInput(ctx, tmp)
+		arg0, err = ec.unmarshalOSignUpUserInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐSignUpUserInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1747,10 +1745,10 @@ func (ec *executionContext) field_EcomorphMutation_deleteEcomorphById_args(ctx c
 func (ec *executionContext) field_EcomorphMutation_insertEcomorph_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *ecomorph.InputFormEcomorph
+	var arg0 *api.InputFormEcomorph
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOInputFormEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐInputFormEcomorph(ctx, tmp)
+		arg0, err = ec.unmarshalOInputFormEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormEcomorph(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1762,10 +1760,10 @@ func (ec *executionContext) field_EcomorphMutation_insertEcomorph_args(ctx conte
 func (ec *executionContext) field_EcomorphMutation_updateEcomorph_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *ecomorph.InputEcomorph
+	var arg0 *api.InputEcomorph
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOInputEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐInputEcomorph(ctx, tmp)
+		arg0, err = ec.unmarshalOInputEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputEcomorph(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1822,10 +1820,10 @@ func (ec *executionContext) field_EcomorphsEntityMutation_deleteEcomorphEntityBy
 func (ec *executionContext) field_EcomorphsEntityMutation_insertEcomorphEntity_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *ecomorph_entity.InputFormEcomorphsEntity
+	var arg0 *api.InputFormEcomorphsEntity
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOInputFormEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐInputFormEcomorphsEntity(ctx, tmp)
+		arg0, err = ec.unmarshalOInputFormEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormEcomorphsEntity(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1837,10 +1835,10 @@ func (ec *executionContext) field_EcomorphsEntityMutation_insertEcomorphEntity_a
 func (ec *executionContext) field_EcomorphsEntityMutation_updateEcomorphEntity_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *ecomorph_entity.InputEcomorphsEntity
+	var arg0 *api.InputEcomorphsEntity
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOInputEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐInputEcomorphsEntity(ctx, tmp)
+		arg0, err = ec.unmarshalOInputEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputEcomorphsEntity(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1897,10 +1895,10 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 func (ec *executionContext) field_TransectMutation_createTransect_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *transect.InputTransectRequest
+	var arg0 *api.InputTransectRequest
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOInputTransectRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtransectᚐInputTransectRequest(ctx, tmp)
+		arg0, err = ec.unmarshalOInputTransectRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputTransectRequest(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1927,10 +1925,10 @@ func (ec *executionContext) field_TransectMutation_deleteTransect_args(ctx conte
 func (ec *executionContext) field_TransectMutation_upTransect_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *transect.InputTransectRequest
+	var arg0 *api.InputTransectRequest
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOInputTransectRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtransectᚐInputTransectRequest(ctx, tmp)
+		arg0, err = ec.unmarshalOInputTransectRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputTransectRequest(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1972,10 +1970,10 @@ func (ec *executionContext) field_TransectQuery_getTransect_args(ctx context.Con
 func (ec *executionContext) field_TrialSiteMutation_createTrialSite_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *trial_site.InputFormTrialSiteRequest
+	var arg0 *api.InputFormTrialSiteRequest
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOInputFormTrialSiteRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐInputFormTrialSiteRequest(ctx, tmp)
+		arg0, err = ec.unmarshalOInputFormTrialSiteRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormTrialSiteRequest(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2002,10 +2000,10 @@ func (ec *executionContext) field_TrialSiteMutation_deleteTrialSite_args(ctx con
 func (ec *executionContext) field_TrialSiteMutation_upTrialSite_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *trial_site.InputTrialSiteRequest
+	var arg0 *api.InputTrialSiteRequest
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOInputTrialSiteRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐInputTrialSiteRequest(ctx, tmp)
+		arg0, err = ec.unmarshalOInputTrialSiteRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputTrialSiteRequest(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2047,10 +2045,10 @@ func (ec *executionContext) field_TrialSiteQuery_getTrialSite_args(ctx context.C
 func (ec *executionContext) field_TypePlantMutation_createTypePlant_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *type_plant.InputFormTypePlantRequest
+	var arg0 *api.InputFormTypePlantRequest
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOInputFormTypePlantRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐInputFormTypePlantRequest(ctx, tmp)
+		arg0, err = ec.unmarshalOInputFormTypePlantRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormTypePlantRequest(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2077,10 +2075,10 @@ func (ec *executionContext) field_TypePlantMutation_deleteTypePlant_args(ctx con
 func (ec *executionContext) field_TypePlantMutation_updateTypePlant_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *type_plant.InputTypePlantRequest
+	var arg0 *api.InputTypePlantRequest
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOInputTypePlantRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐInputTypePlantRequest(ctx, tmp)
+		arg0, err = ec.unmarshalOInputTypePlantRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputTypePlantRequest(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2171,7 +2169,7 @@ func (ec *executionContext) _AuthMutation_signUpUser(ctx context.Context, field 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.AuthMutation().SignUpUser(rctx, obj, fc.Args["data"].(*auth.SignUpUserInput))
+		return ec.resolvers.AuthMutation().SignUpUser(rctx, obj, fc.Args["data"].(*api.SignUpUserInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2180,9 +2178,9 @@ func (ec *executionContext) _AuthMutation_signUpUser(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*auth.SignInUserResponse)
+	res := resTmp.(*api.SignInUserResponse)
 	fc.Result = res
-	return ec.marshalOSignInUserResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋauthᚐSignInUserResponse(ctx, field.Selections, res)
+	return ec.marshalOSignInUserResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐSignInUserResponse(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AuthMutation_signUpUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2231,7 +2229,7 @@ func (ec *executionContext) _AuthMutation_signInUser(ctx context.Context, field 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.AuthMutation().SignInUser(rctx, obj, fc.Args["data"].(*auth.SignInUserInput))
+		return ec.resolvers.AuthMutation().SignInUser(rctx, obj, fc.Args["data"].(*api.SignInUserInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2240,9 +2238,9 @@ func (ec *executionContext) _AuthMutation_signInUser(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*auth.SignInUserResponse)
+	res := resTmp.(*api.SignInUserResponse)
 	fc.Result = res
-	return ec.marshalOSignInUserResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋauthᚐSignInUserResponse(ctx, field.Selections, res)
+	return ec.marshalOSignInUserResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐSignInUserResponse(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AuthMutation_signInUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2321,7 +2319,7 @@ func (ec *executionContext) fieldContext_BoolResponse_result(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _Ecomorph_id(ctx context.Context, field graphql.CollectedField, obj *ecomorph.Ecomorph) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ecomorph_id(ctx context.Context, field graphql.CollectedField, obj *api.Ecomorph) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Ecomorph_id(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -2349,7 +2347,7 @@ func (ec *executionContext) _Ecomorph_id(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(*resource.Identifier)
 	fc.Result = res
-	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, field.Selections, res)
+	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Ecomorph_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2373,7 +2371,7 @@ func (ec *executionContext) fieldContext_Ecomorph_id(ctx context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) _Ecomorph_createdAt(ctx context.Context, field graphql.CollectedField, obj *ecomorph.Ecomorph) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ecomorph_createdAt(ctx context.Context, field graphql.CollectedField, obj *api.Ecomorph) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Ecomorph_createdAt(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -2423,7 +2421,7 @@ func (ec *executionContext) fieldContext_Ecomorph_createdAt(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Ecomorph_updatedAt(ctx context.Context, field graphql.CollectedField, obj *ecomorph.Ecomorph) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ecomorph_updatedAt(ctx context.Context, field graphql.CollectedField, obj *api.Ecomorph) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Ecomorph_updatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -2473,7 +2471,7 @@ func (ec *executionContext) fieldContext_Ecomorph_updatedAt(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Ecomorph_title(ctx context.Context, field graphql.CollectedField, obj *ecomorph.Ecomorph) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ecomorph_title(ctx context.Context, field graphql.CollectedField, obj *api.Ecomorph) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Ecomorph_title(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -2517,7 +2515,7 @@ func (ec *executionContext) fieldContext_Ecomorph_title(ctx context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _Ecomorph_description(ctx context.Context, field graphql.CollectedField, obj *ecomorph.Ecomorph) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ecomorph_description(ctx context.Context, field graphql.CollectedField, obj *api.Ecomorph) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Ecomorph_description(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -2561,7 +2559,7 @@ func (ec *executionContext) fieldContext_Ecomorph_description(ctx context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _Ecomorph_userID(ctx context.Context, field graphql.CollectedField, obj *ecomorph.Ecomorph) (ret graphql.Marshaler) {
+func (ec *executionContext) _Ecomorph_userID(ctx context.Context, field graphql.CollectedField, obj *api.Ecomorph) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Ecomorph_userID(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -2589,7 +2587,7 @@ func (ec *executionContext) _Ecomorph_userID(ctx context.Context, field graphql.
 	}
 	res := resTmp.(*resource.Identifier)
 	fc.Result = res
-	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, field.Selections, res)
+	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Ecomorph_userID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2627,7 +2625,7 @@ func (ec *executionContext) _EcomorphMutation_insertEcomorph(ctx context.Context
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.EcomorphMutation().InsertEcomorph(rctx, obj, fc.Args["input"].(*ecomorph.InputFormEcomorph))
+		return ec.resolvers.EcomorphMutation().InsertEcomorph(rctx, obj, fc.Args["input"].(*api.InputFormEcomorph))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2639,9 +2637,9 @@ func (ec *executionContext) _EcomorphMutation_insertEcomorph(ctx context.Context
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*ecomorph.Ecomorph)
+	res := resTmp.(*api.Ecomorph)
 	fc.Result = res
-	return ec.marshalNEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐEcomorph(ctx, field.Selections, res)
+	return ec.marshalNEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_EcomorphMutation_insertEcomorph(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2696,7 +2694,7 @@ func (ec *executionContext) _EcomorphMutation_updateEcomorph(ctx context.Context
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.EcomorphMutation().UpdateEcomorph(rctx, obj, fc.Args["input"].(*ecomorph.InputEcomorph))
+		return ec.resolvers.EcomorphMutation().UpdateEcomorph(rctx, obj, fc.Args["input"].(*api.InputEcomorph))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2708,9 +2706,9 @@ func (ec *executionContext) _EcomorphMutation_updateEcomorph(ctx context.Context
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*ecomorph.Ecomorph)
+	res := resTmp.(*api.Ecomorph)
 	fc.Result = res
-	return ec.marshalNEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐEcomorph(ctx, field.Selections, res)
+	return ec.marshalNEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_EcomorphMutation_updateEcomorph(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2836,9 +2834,9 @@ func (ec *executionContext) _EcomorphQuery_getEcomorphById(ctx context.Context, 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*ecomorph.Ecomorph)
+	res := resTmp.(*api.Ecomorph)
 	fc.Result = res
-	return ec.marshalNEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐEcomorph(ctx, field.Selections, res)
+	return ec.marshalNEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_EcomorphQuery_getEcomorphById(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2905,9 +2903,9 @@ func (ec *executionContext) _EcomorphQuery_getListEcomorph(ctx context.Context, 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*ecomorph.EcomorphsList)
+	res := resTmp.(*api.EcomorphsList)
 	fc.Result = res
-	return ec.marshalNListEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐEcomorphsList(ctx, field.Selections, res)
+	return ec.marshalNListEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsList(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_EcomorphQuery_getListEcomorph(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2940,7 +2938,7 @@ func (ec *executionContext) fieldContext_EcomorphQuery_getListEcomorph(ctx conte
 	return fc, nil
 }
 
-func (ec *executionContext) _EcomorphsEntity_id(ctx context.Context, field graphql.CollectedField, obj *ecomorph_entity.EcomorphsEntity) (ret graphql.Marshaler) {
+func (ec *executionContext) _EcomorphsEntity_id(ctx context.Context, field graphql.CollectedField, obj *api.EcomorphsEntity) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_EcomorphsEntity_id(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -2968,7 +2966,7 @@ func (ec *executionContext) _EcomorphsEntity_id(ctx context.Context, field graph
 	}
 	res := resTmp.(*resource.Identifier)
 	fc.Result = res
-	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, field.Selections, res)
+	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_EcomorphsEntity_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2992,7 +2990,7 @@ func (ec *executionContext) fieldContext_EcomorphsEntity_id(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _EcomorphsEntity_createdAt(ctx context.Context, field graphql.CollectedField, obj *ecomorph_entity.EcomorphsEntity) (ret graphql.Marshaler) {
+func (ec *executionContext) _EcomorphsEntity_createdAt(ctx context.Context, field graphql.CollectedField, obj *api.EcomorphsEntity) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_EcomorphsEntity_createdAt(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -3039,7 +3037,7 @@ func (ec *executionContext) fieldContext_EcomorphsEntity_createdAt(ctx context.C
 	return fc, nil
 }
 
-func (ec *executionContext) _EcomorphsEntity_updatedAt(ctx context.Context, field graphql.CollectedField, obj *ecomorph_entity.EcomorphsEntity) (ret graphql.Marshaler) {
+func (ec *executionContext) _EcomorphsEntity_updatedAt(ctx context.Context, field graphql.CollectedField, obj *api.EcomorphsEntity) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_EcomorphsEntity_updatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -3086,7 +3084,7 @@ func (ec *executionContext) fieldContext_EcomorphsEntity_updatedAt(ctx context.C
 	return fc, nil
 }
 
-func (ec *executionContext) _EcomorphsEntity_title(ctx context.Context, field graphql.CollectedField, obj *ecomorph_entity.EcomorphsEntity) (ret graphql.Marshaler) {
+func (ec *executionContext) _EcomorphsEntity_title(ctx context.Context, field graphql.CollectedField, obj *api.EcomorphsEntity) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_EcomorphsEntity_title(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -3127,7 +3125,7 @@ func (ec *executionContext) fieldContext_EcomorphsEntity_title(ctx context.Conte
 	return fc, nil
 }
 
-func (ec *executionContext) _EcomorphsEntity_description(ctx context.Context, field graphql.CollectedField, obj *ecomorph_entity.EcomorphsEntity) (ret graphql.Marshaler) {
+func (ec *executionContext) _EcomorphsEntity_description(ctx context.Context, field graphql.CollectedField, obj *api.EcomorphsEntity) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_EcomorphsEntity_description(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -3168,7 +3166,7 @@ func (ec *executionContext) fieldContext_EcomorphsEntity_description(ctx context
 	return fc, nil
 }
 
-func (ec *executionContext) _EcomorphsEntity_ecomorphs(ctx context.Context, field graphql.CollectedField, obj *ecomorph_entity.EcomorphsEntity) (ret graphql.Marshaler) {
+func (ec *executionContext) _EcomorphsEntity_ecomorphs(ctx context.Context, field graphql.CollectedField, obj *api.EcomorphsEntity) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_EcomorphsEntity_ecomorphs(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -3191,9 +3189,9 @@ func (ec *executionContext) _EcomorphsEntity_ecomorphs(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*ecomorph.Ecomorph)
+	res := resTmp.(*api.Ecomorph)
 	fc.Result = res
-	return ec.marshalOEcomorph2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐEcomorph(ctx, field.Selections, res)
+	return ec.marshalOEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_EcomorphsEntity_ecomorphs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3223,7 +3221,7 @@ func (ec *executionContext) fieldContext_EcomorphsEntity_ecomorphs(ctx context.C
 	return fc, nil
 }
 
-func (ec *executionContext) _EcomorphsEntity_userId(ctx context.Context, field graphql.CollectedField, obj *ecomorph_entity.EcomorphsEntity) (ret graphql.Marshaler) {
+func (ec *executionContext) _EcomorphsEntity_userId(ctx context.Context, field graphql.CollectedField, obj *api.EcomorphsEntity) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_EcomorphsEntity_userId(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -3248,7 +3246,7 @@ func (ec *executionContext) _EcomorphsEntity_userId(ctx context.Context, field g
 	}
 	res := resTmp.(*resource.Identifier)
 	fc.Result = res
-	return ec.marshalOIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, field.Selections, res)
+	return ec.marshalOIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_EcomorphsEntity_userId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3272,7 +3270,7 @@ func (ec *executionContext) fieldContext_EcomorphsEntity_userId(ctx context.Cont
 	return fc, nil
 }
 
-func (ec *executionContext) _EcomorphsEntityList_page(ctx context.Context, field graphql.CollectedField, obj *ecomorph_entity.EcomorphsEntityList) (ret graphql.Marshaler) {
+func (ec *executionContext) _EcomorphsEntityList_page(ctx context.Context, field graphql.CollectedField, obj *api.EcomorphsEntityList) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_EcomorphsEntityList_page(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -3324,7 +3322,7 @@ func (ec *executionContext) fieldContext_EcomorphsEntityList_page(ctx context.Co
 	return fc, nil
 }
 
-func (ec *executionContext) _EcomorphsEntityList_list(ctx context.Context, field graphql.CollectedField, obj *ecomorph_entity.EcomorphsEntityList) (ret graphql.Marshaler) {
+func (ec *executionContext) _EcomorphsEntityList_list(ctx context.Context, field graphql.CollectedField, obj *api.EcomorphsEntityList) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_EcomorphsEntityList_list(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -3347,9 +3345,9 @@ func (ec *executionContext) _EcomorphsEntityList_list(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*ecomorph_entity.EcomorphsEntity)
+	res := resTmp.([]*api.EcomorphsEntity)
 	fc.Result = res
-	return ec.marshalOEcomorphsEntity2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐEcomorphsEntity(ctx, field.Selections, res)
+	return ec.marshalOEcomorphsEntity2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsEntity(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_EcomorphsEntityList_list(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3395,7 +3393,7 @@ func (ec *executionContext) _EcomorphsEntityMutation_insertEcomorphEntity(ctx co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.EcomorphsEntityMutation().InsertEcomorphEntity(rctx, obj, fc.Args["input"].(*ecomorph_entity.InputFormEcomorphsEntity))
+		return ec.resolvers.EcomorphsEntityMutation().InsertEcomorphEntity(rctx, obj, fc.Args["input"].(*api.InputFormEcomorphsEntity))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3404,9 +3402,9 @@ func (ec *executionContext) _EcomorphsEntityMutation_insertEcomorphEntity(ctx co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*ecomorph_entity.EcomorphsEntity)
+	res := resTmp.(*api.EcomorphsEntity)
 	fc.Result = res
-	return ec.marshalOEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐEcomorphsEntity(ctx, field.Selections, res)
+	return ec.marshalOEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsEntity(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_EcomorphsEntityMutation_insertEcomorphEntity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3463,7 +3461,7 @@ func (ec *executionContext) _EcomorphsEntityMutation_updateEcomorphEntity(ctx co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.EcomorphsEntityMutation().UpdateEcomorphEntity(rctx, obj, fc.Args["input"].(*ecomorph_entity.InputEcomorphsEntity))
+		return ec.resolvers.EcomorphsEntityMutation().UpdateEcomorphEntity(rctx, obj, fc.Args["input"].(*api.InputEcomorphsEntity))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3472,9 +3470,9 @@ func (ec *executionContext) _EcomorphsEntityMutation_updateEcomorphEntity(ctx co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*ecomorph_entity.EcomorphsEntity)
+	res := resTmp.(*api.EcomorphsEntity)
 	fc.Result = res
-	return ec.marshalOEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐEcomorphsEntity(ctx, field.Selections, res)
+	return ec.marshalOEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsEntity(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_EcomorphsEntityMutation_updateEcomorphEntity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3596,9 +3594,9 @@ func (ec *executionContext) _EcomorphsEntityQuery_getEcomorphEntityByID(ctx cont
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*ecomorph_entity.EcomorphsEntity)
+	res := resTmp.(*api.EcomorphsEntity)
 	fc.Result = res
-	return ec.marshalOEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐEcomorphsEntity(ctx, field.Selections, res)
+	return ec.marshalOEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsEntity(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_EcomorphsEntityQuery_getEcomorphEntityByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3664,9 +3662,9 @@ func (ec *executionContext) _EcomorphsEntityQuery_getAllEcomorphEntity(ctx conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*ecomorph_entity.EcomorphsEntityList)
+	res := resTmp.(*api.EcomorphsEntityList)
 	fc.Result = res
-	return ec.marshalOEcomorphsEntityList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐEcomorphsEntityList(ctx, field.Selections, res)
+	return ec.marshalOEcomorphsEntityList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsEntityList(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_EcomorphsEntityQuery_getAllEcomorphEntity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3869,7 +3867,7 @@ func (ec *executionContext) fieldContext_IdentifierType_resourceId(ctx context.C
 	return fc, nil
 }
 
-func (ec *executionContext) _ListEcomorph_page(ctx context.Context, field graphql.CollectedField, obj *ecomorph.EcomorphsList) (ret graphql.Marshaler) {
+func (ec *executionContext) _ListEcomorph_page(ctx context.Context, field graphql.CollectedField, obj *api.EcomorphsList) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_ListEcomorph_page(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -3921,7 +3919,7 @@ func (ec *executionContext) fieldContext_ListEcomorph_page(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _ListEcomorph_list(ctx context.Context, field graphql.CollectedField, obj *ecomorph.EcomorphsList) (ret graphql.Marshaler) {
+func (ec *executionContext) _ListEcomorph_list(ctx context.Context, field graphql.CollectedField, obj *api.EcomorphsList) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_ListEcomorph_list(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -3944,9 +3942,9 @@ func (ec *executionContext) _ListEcomorph_list(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*ecomorph.Ecomorph)
+	res := resTmp.([]*api.Ecomorph)
 	fc.Result = res
-	return ec.marshalOEcomorph2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐEcomorph(ctx, field.Selections, res)
+	return ec.marshalOEcomorph2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ListEcomorph_list(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4001,7 +3999,7 @@ func (ec *executionContext) _Mutation_ecomorph(ctx context.Context, field graphq
 	}
 	res := resTmp.(*model.EcomorphMutation)
 	fc.Result = res
-	return ec.marshalOEcomorphMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐEcomorphMutation(ctx, field.Selections, res)
+	return ec.marshalOEcomorphMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐEcomorphMutation(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_ecomorph(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4050,7 +4048,7 @@ func (ec *executionContext) _Mutation_auth(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*model.AuthMutation)
 	fc.Result = res
-	return ec.marshalOAuthMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐAuthMutation(ctx, field.Selections, res)
+	return ec.marshalOAuthMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐAuthMutation(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_auth(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4095,9 +4093,9 @@ func (ec *executionContext) _Mutation_ecomorphsEntity(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.EcomorphMutation)
+	res := resTmp.(*model.EcomorphsEntityMutation)
 	fc.Result = res
-	return ec.marshalOEcomorphMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐEcomorphMutation(ctx, field.Selections, res)
+	return ec.marshalOEcomorphsEntityMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐEcomorphsEntityMutation(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_ecomorphsEntity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4108,14 +4106,14 @@ func (ec *executionContext) fieldContext_Mutation_ecomorphsEntity(ctx context.Co
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "insertEcomorph":
-				return ec.fieldContext_EcomorphMutation_insertEcomorph(ctx, field)
-			case "updateEcomorph":
-				return ec.fieldContext_EcomorphMutation_updateEcomorph(ctx, field)
-			case "deleteEcomorphById":
-				return ec.fieldContext_EcomorphMutation_deleteEcomorphById(ctx, field)
+			case "insertEcomorphEntity":
+				return ec.fieldContext_EcomorphsEntityMutation_insertEcomorphEntity(ctx, field)
+			case "updateEcomorphEntity":
+				return ec.fieldContext_EcomorphsEntityMutation_updateEcomorphEntity(ctx, field)
+			case "deleteEcomorphEntityByID":
+				return ec.fieldContext_EcomorphsEntityMutation_deleteEcomorphEntityByID(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type EcomorphMutation", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type EcomorphsEntityMutation", field.Name)
 		},
 	}
 	return fc, nil
@@ -4146,7 +4144,7 @@ func (ec *executionContext) _Mutation_typePlant(ctx context.Context, field graph
 	}
 	res := resTmp.(*model.TypePlantMutation)
 	fc.Result = res
-	return ec.marshalOTypePlantMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐTypePlantMutation(ctx, field.Selections, res)
+	return ec.marshalOTypePlantMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTypePlantMutation(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_typePlant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4195,7 +4193,7 @@ func (ec *executionContext) _Mutation_trialSite(ctx context.Context, field graph
 	}
 	res := resTmp.(*model.TrialSiteMutation)
 	fc.Result = res
-	return ec.marshalOTrialSiteMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐTrialSiteMutation(ctx, field.Selections, res)
+	return ec.marshalOTrialSiteMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTrialSiteMutation(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_trialSite(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4244,7 +4242,7 @@ func (ec *executionContext) _Mutation_transect(ctx context.Context, field graphq
 	}
 	res := resTmp.(*model.TransectMutation)
 	fc.Result = res
-	return ec.marshalOTransectMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐTransectMutation(ctx, field.Selections, res)
+	return ec.marshalOTransectMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTransectMutation(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_transect(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4425,7 +4423,7 @@ func (ec *executionContext) _Query_ecomorph(ctx context.Context, field graphql.C
 	}
 	res := resTmp.(*model.EcomorphQuery)
 	fc.Result = res
-	return ec.marshalOEcomorphQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐEcomorphQuery(ctx, field.Selections, res)
+	return ec.marshalOEcomorphQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐEcomorphQuery(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_ecomorph(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4472,7 +4470,7 @@ func (ec *executionContext) _Query_ecomorphsEntity(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.EcomorphsEntityQuery)
 	fc.Result = res
-	return ec.marshalOEcomorphsEntityQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐEcomorphsEntityQuery(ctx, field.Selections, res)
+	return ec.marshalOEcomorphsEntityQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐEcomorphsEntityQuery(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_ecomorphsEntity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4519,7 +4517,7 @@ func (ec *executionContext) _Query_typePlant(ctx context.Context, field graphql.
 	}
 	res := resTmp.(*model.TypePlantQuery)
 	fc.Result = res
-	return ec.marshalOTypePlantQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐTypePlantQuery(ctx, field.Selections, res)
+	return ec.marshalOTypePlantQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTypePlantQuery(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_typePlant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4566,7 +4564,7 @@ func (ec *executionContext) _Query_trialSite(ctx context.Context, field graphql.
 	}
 	res := resTmp.(*model.TrialSiteQuery)
 	fc.Result = res
-	return ec.marshalOTrialSiteQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐTrialSiteQuery(ctx, field.Selections, res)
+	return ec.marshalOTrialSiteQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTrialSiteQuery(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_trialSite(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4613,7 +4611,7 @@ func (ec *executionContext) _Query_transect(ctx context.Context, field graphql.C
 	}
 	res := resTmp.(*model.TransectQuery)
 	fc.Result = res
-	return ec.marshalOTransectQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐTransectQuery(ctx, field.Selections, res)
+	return ec.marshalOTransectQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTransectQuery(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_transect(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4764,7 +4762,7 @@ func (ec *executionContext) fieldContext_Query___schema(ctx context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _SignInUserResponse_status(ctx context.Context, field graphql.CollectedField, obj *auth.SignInUserResponse) (ret graphql.Marshaler) {
+func (ec *executionContext) _SignInUserResponse_status(ctx context.Context, field graphql.CollectedField, obj *api.SignInUserResponse) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_SignInUserResponse_status(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -4808,7 +4806,7 @@ func (ec *executionContext) fieldContext_SignInUserResponse_status(ctx context.C
 	return fc, nil
 }
 
-func (ec *executionContext) _SignInUserResponse_access_token(ctx context.Context, field graphql.CollectedField, obj *auth.SignInUserResponse) (ret graphql.Marshaler) {
+func (ec *executionContext) _SignInUserResponse_access_token(ctx context.Context, field graphql.CollectedField, obj *api.SignInUserResponse) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_SignInUserResponse_access_token(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -4852,7 +4850,7 @@ func (ec *executionContext) fieldContext_SignInUserResponse_access_token(ctx con
 	return fc, nil
 }
 
-func (ec *executionContext) _SignInUserResponse_refresh_token(ctx context.Context, field graphql.CollectedField, obj *auth.SignInUserResponse) (ret graphql.Marshaler) {
+func (ec *executionContext) _SignInUserResponse_refresh_token(ctx context.Context, field graphql.CollectedField, obj *api.SignInUserResponse) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_SignInUserResponse_refresh_token(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -4978,7 +4976,7 @@ func (ec *executionContext) fieldContext_Timestamp_nanos(ctx context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _Transect_id(ctx context.Context, field graphql.CollectedField, obj *transect.Transect) (ret graphql.Marshaler) {
+func (ec *executionContext) _Transect_id(ctx context.Context, field graphql.CollectedField, obj *api.Transect) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Transect_id(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -5006,7 +5004,7 @@ func (ec *executionContext) _Transect_id(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(*resource.Identifier)
 	fc.Result = res
-	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, field.Selections, res)
+	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Transect_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -5030,7 +5028,7 @@ func (ec *executionContext) fieldContext_Transect_id(ctx context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) _Transect_title(ctx context.Context, field graphql.CollectedField, obj *transect.Transect) (ret graphql.Marshaler) {
+func (ec *executionContext) _Transect_title(ctx context.Context, field graphql.CollectedField, obj *api.Transect) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Transect_title(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -5071,7 +5069,7 @@ func (ec *executionContext) fieldContext_Transect_title(ctx context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _Transect_covered(ctx context.Context, field graphql.CollectedField, obj *transect.Transect) (ret graphql.Marshaler) {
+func (ec *executionContext) _Transect_covered(ctx context.Context, field graphql.CollectedField, obj *api.Transect) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Transect_covered(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -5112,7 +5110,7 @@ func (ec *executionContext) fieldContext_Transect_covered(ctx context.Context, f
 	return fc, nil
 }
 
-func (ec *executionContext) _Transect_rating(ctx context.Context, field graphql.CollectedField, obj *transect.Transect) (ret graphql.Marshaler) {
+func (ec *executionContext) _Transect_rating(ctx context.Context, field graphql.CollectedField, obj *api.Transect) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Transect_rating(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -5153,7 +5151,7 @@ func (ec *executionContext) fieldContext_Transect_rating(ctx context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _Transect_square(ctx context.Context, field graphql.CollectedField, obj *transect.Transect) (ret graphql.Marshaler) {
+func (ec *executionContext) _Transect_square(ctx context.Context, field graphql.CollectedField, obj *api.Transect) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Transect_square(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -5194,7 +5192,7 @@ func (ec *executionContext) fieldContext_Transect_square(ctx context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _Transect_squareTrialSite(ctx context.Context, field graphql.CollectedField, obj *transect.Transect) (ret graphql.Marshaler) {
+func (ec *executionContext) _Transect_squareTrialSite(ctx context.Context, field graphql.CollectedField, obj *api.Transect) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Transect_squareTrialSite(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -5235,7 +5233,7 @@ func (ec *executionContext) fieldContext_Transect_squareTrialSite(ctx context.Co
 	return fc, nil
 }
 
-func (ec *executionContext) _Transect_countTypes(ctx context.Context, field graphql.CollectedField, obj *transect.Transect) (ret graphql.Marshaler) {
+func (ec *executionContext) _Transect_countTypes(ctx context.Context, field graphql.CollectedField, obj *api.Transect) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Transect_countTypes(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -5276,7 +5274,7 @@ func (ec *executionContext) fieldContext_Transect_countTypes(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _Transect_dominant(ctx context.Context, field graphql.CollectedField, obj *transect.Transect) (ret graphql.Marshaler) {
+func (ec *executionContext) _Transect_dominant(ctx context.Context, field graphql.CollectedField, obj *api.Transect) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Transect_dominant(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -5299,9 +5297,9 @@ func (ec *executionContext) _Transect_dominant(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*type_plant.TypePlant)
+	res := resTmp.(*api.TypePlant)
 	fc.Result = res
-	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, field.Selections, res)
+	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Transect_dominant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -5333,7 +5331,7 @@ func (ec *executionContext) fieldContext_Transect_dominant(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _Transect_subDominant(ctx context.Context, field graphql.CollectedField, obj *transect.Transect) (ret graphql.Marshaler) {
+func (ec *executionContext) _Transect_subDominant(ctx context.Context, field graphql.CollectedField, obj *api.Transect) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Transect_subDominant(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -5356,9 +5354,9 @@ func (ec *executionContext) _Transect_subDominant(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*type_plant.TypePlant)
+	res := resTmp.(*api.TypePlant)
 	fc.Result = res
-	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, field.Selections, res)
+	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Transect_subDominant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -5390,7 +5388,7 @@ func (ec *executionContext) fieldContext_Transect_subDominant(ctx context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _Transect_trialSite(ctx context.Context, field graphql.CollectedField, obj *transect.Transect) (ret graphql.Marshaler) {
+func (ec *executionContext) _Transect_trialSite(ctx context.Context, field graphql.CollectedField, obj *api.Transect) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Transect_trialSite(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -5404,7 +5402,7 @@ func (ec *executionContext) _Transect_trialSite(ctx context.Context, field graph
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Transect().TrialSite(rctx, obj)
+		return obj.TrialSite, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5413,17 +5411,17 @@ func (ec *executionContext) _Transect_trialSite(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*trial_site.TrialSite)
+	res := resTmp.([]*api.TrialSite)
 	fc.Result = res
-	return ec.marshalOTrialSite2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐTrialSite(ctx, field.Selections, res)
+	return ec.marshalOTrialSite2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTrialSite(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Transect_trialSite(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Transect",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
@@ -5455,7 +5453,7 @@ func (ec *executionContext) fieldContext_Transect_trialSite(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Transect_createdAt(ctx context.Context, field graphql.CollectedField, obj *transect.Transect) (ret graphql.Marshaler) {
+func (ec *executionContext) _Transect_createdAt(ctx context.Context, field graphql.CollectedField, obj *api.Transect) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Transect_createdAt(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -5502,7 +5500,7 @@ func (ec *executionContext) fieldContext_Transect_createdAt(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Transect_updatedAt(ctx context.Context, field graphql.CollectedField, obj *transect.Transect) (ret graphql.Marshaler) {
+func (ec *executionContext) _Transect_updatedAt(ctx context.Context, field graphql.CollectedField, obj *api.Transect) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Transect_updatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -5549,7 +5547,7 @@ func (ec *executionContext) fieldContext_Transect_updatedAt(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Transect_userId(ctx context.Context, field graphql.CollectedField, obj *transect.Transect) (ret graphql.Marshaler) {
+func (ec *executionContext) _Transect_userId(ctx context.Context, field graphql.CollectedField, obj *api.Transect) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Transect_userId(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -5574,7 +5572,7 @@ func (ec *executionContext) _Transect_userId(ctx context.Context, field graphql.
 	}
 	res := resTmp.(*resource.Identifier)
 	fc.Result = res
-	return ec.marshalOIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, field.Selections, res)
+	return ec.marshalOIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Transect_userId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -5598,7 +5596,7 @@ func (ec *executionContext) fieldContext_Transect_userId(ctx context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _TransectList_page(ctx context.Context, field graphql.CollectedField, obj *transect.TransectList) (ret graphql.Marshaler) {
+func (ec *executionContext) _TransectList_page(ctx context.Context, field graphql.CollectedField, obj *api.TransectList) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TransectList_page(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -5650,7 +5648,7 @@ func (ec *executionContext) fieldContext_TransectList_page(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _TransectList_list(ctx context.Context, field graphql.CollectedField, obj *transect.TransectList) (ret graphql.Marshaler) {
+func (ec *executionContext) _TransectList_list(ctx context.Context, field graphql.CollectedField, obj *api.TransectList) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TransectList_list(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -5673,9 +5671,9 @@ func (ec *executionContext) _TransectList_list(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*transect.Transect)
+	res := resTmp.([]*api.Transect)
 	fc.Result = res
-	return ec.marshalOTransect2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtransectᚐTransect(ctx, field.Selections, res)
+	return ec.marshalOTransect2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTransect(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TransectList_list(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -5733,7 +5731,7 @@ func (ec *executionContext) _TransectMutation_createTransect(ctx context.Context
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.TransectMutation().CreateTransect(rctx, obj, fc.Args["input"].(*transect.InputTransectRequest))
+		return ec.resolvers.TransectMutation().CreateTransect(rctx, obj, fc.Args["input"].(*api.InputTransectRequest))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5742,9 +5740,9 @@ func (ec *executionContext) _TransectMutation_createTransect(ctx context.Context
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*transect.Transect)
+	res := resTmp.(*api.Transect)
 	fc.Result = res
-	return ec.marshalOTransect2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtransectᚐTransect(ctx, field.Selections, res)
+	return ec.marshalOTransect2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTransect(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TransectMutation_createTransect(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -5813,7 +5811,7 @@ func (ec *executionContext) _TransectMutation_upTransect(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.TransectMutation().UpTransect(rctx, obj, fc.Args["input"].(*transect.InputTransectRequest))
+		return ec.resolvers.TransectMutation().UpTransect(rctx, obj, fc.Args["input"].(*api.InputTransectRequest))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5822,9 +5820,9 @@ func (ec *executionContext) _TransectMutation_upTransect(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*transect.Transect)
+	res := resTmp.(*api.Transect)
 	fc.Result = res
-	return ec.marshalOTransect2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtransectᚐTransect(ctx, field.Selections, res)
+	return ec.marshalOTransect2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTransect(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TransectMutation_upTransect(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -5958,9 +5956,9 @@ func (ec *executionContext) _TransectQuery_getTransect(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*transect.Transect)
+	res := resTmp.(*api.Transect)
 	fc.Result = res
-	return ec.marshalOTransect2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtransectᚐTransect(ctx, field.Selections, res)
+	return ec.marshalOTransect2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTransect(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TransectQuery_getTransect(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6038,9 +6036,9 @@ func (ec *executionContext) _TransectQuery_getAllTransect(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*transect.TransectList)
+	res := resTmp.(*api.TransectList)
 	fc.Result = res
-	return ec.marshalOTransectList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtransectᚐTransectList(ctx, field.Selections, res)
+	return ec.marshalOTransectList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTransectList(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TransectQuery_getAllTransect(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6073,7 +6071,7 @@ func (ec *executionContext) fieldContext_TransectQuery_getAllTransect(ctx contex
 	return fc, nil
 }
 
-func (ec *executionContext) _TrialSite_id(ctx context.Context, field graphql.CollectedField, obj *trial_site.TrialSite) (ret graphql.Marshaler) {
+func (ec *executionContext) _TrialSite_id(ctx context.Context, field graphql.CollectedField, obj *api.TrialSite) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TrialSite_id(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -6101,7 +6099,7 @@ func (ec *executionContext) _TrialSite_id(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(*resource.Identifier)
 	fc.Result = res
-	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, field.Selections, res)
+	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TrialSite_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6125,7 +6123,7 @@ func (ec *executionContext) fieldContext_TrialSite_id(ctx context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _TrialSite_title(ctx context.Context, field graphql.CollectedField, obj *trial_site.TrialSite) (ret graphql.Marshaler) {
+func (ec *executionContext) _TrialSite_title(ctx context.Context, field graphql.CollectedField, obj *api.TrialSite) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TrialSite_title(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -6166,7 +6164,7 @@ func (ec *executionContext) fieldContext_TrialSite_title(ctx context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _TrialSite_covered(ctx context.Context, field graphql.CollectedField, obj *trial_site.TrialSite) (ret graphql.Marshaler) {
+func (ec *executionContext) _TrialSite_covered(ctx context.Context, field graphql.CollectedField, obj *api.TrialSite) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TrialSite_covered(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -6207,7 +6205,7 @@ func (ec *executionContext) fieldContext_TrialSite_covered(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _TrialSite_rating(ctx context.Context, field graphql.CollectedField, obj *trial_site.TrialSite) (ret graphql.Marshaler) {
+func (ec *executionContext) _TrialSite_rating(ctx context.Context, field graphql.CollectedField, obj *api.TrialSite) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TrialSite_rating(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -6248,7 +6246,7 @@ func (ec *executionContext) fieldContext_TrialSite_rating(ctx context.Context, f
 	return fc, nil
 }
 
-func (ec *executionContext) _TrialSite_countTypes(ctx context.Context, field graphql.CollectedField, obj *trial_site.TrialSite) (ret graphql.Marshaler) {
+func (ec *executionContext) _TrialSite_countTypes(ctx context.Context, field graphql.CollectedField, obj *api.TrialSite) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TrialSite_countTypes(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -6289,7 +6287,7 @@ func (ec *executionContext) fieldContext_TrialSite_countTypes(ctx context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _TrialSite_dominant(ctx context.Context, field graphql.CollectedField, obj *trial_site.TrialSite) (ret graphql.Marshaler) {
+func (ec *executionContext) _TrialSite_dominant(ctx context.Context, field graphql.CollectedField, obj *api.TrialSite) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TrialSite_dominant(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -6312,9 +6310,9 @@ func (ec *executionContext) _TrialSite_dominant(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*type_plant.TypePlant)
+	res := resTmp.(*api.TypePlant)
 	fc.Result = res
-	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, field.Selections, res)
+	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TrialSite_dominant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6346,7 +6344,7 @@ func (ec *executionContext) fieldContext_TrialSite_dominant(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _TrialSite_subDominant(ctx context.Context, field graphql.CollectedField, obj *trial_site.TrialSite) (ret graphql.Marshaler) {
+func (ec *executionContext) _TrialSite_subDominant(ctx context.Context, field graphql.CollectedField, obj *api.TrialSite) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TrialSite_subDominant(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -6369,9 +6367,9 @@ func (ec *executionContext) _TrialSite_subDominant(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*type_plant.TypePlant)
+	res := resTmp.(*api.TypePlant)
 	fc.Result = res
-	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, field.Selections, res)
+	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TrialSite_subDominant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6403,7 +6401,7 @@ func (ec *executionContext) fieldContext_TrialSite_subDominant(ctx context.Conte
 	return fc, nil
 }
 
-func (ec *executionContext) _TrialSite_typePlant(ctx context.Context, field graphql.CollectedField, obj *trial_site.TrialSite) (ret graphql.Marshaler) {
+func (ec *executionContext) _TrialSite_typePlant(ctx context.Context, field graphql.CollectedField, obj *api.TrialSite) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TrialSite_typePlant(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -6417,7 +6415,7 @@ func (ec *executionContext) _TrialSite_typePlant(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.TypePlant, nil
+		return ec.resolvers.TrialSite().TypePlant(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6426,17 +6424,17 @@ func (ec *executionContext) _TrialSite_typePlant(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*type_plant.TypePlant)
+	res := resTmp.([]*api.TypePlant)
 	fc.Result = res
-	return ec.marshalOTypePlant2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, field.Selections, res)
+	return ec.marshalOTypePlant2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TrialSite_typePlant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TrialSite",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
@@ -6460,7 +6458,7 @@ func (ec *executionContext) fieldContext_TrialSite_typePlant(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _TrialSite_createdAt(ctx context.Context, field graphql.CollectedField, obj *trial_site.TrialSite) (ret graphql.Marshaler) {
+func (ec *executionContext) _TrialSite_createdAt(ctx context.Context, field graphql.CollectedField, obj *api.TrialSite) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TrialSite_createdAt(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -6507,7 +6505,7 @@ func (ec *executionContext) fieldContext_TrialSite_createdAt(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _TrialSite_updatedAt(ctx context.Context, field graphql.CollectedField, obj *trial_site.TrialSite) (ret graphql.Marshaler) {
+func (ec *executionContext) _TrialSite_updatedAt(ctx context.Context, field graphql.CollectedField, obj *api.TrialSite) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TrialSite_updatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -6554,7 +6552,7 @@ func (ec *executionContext) fieldContext_TrialSite_updatedAt(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _TrialSite_userId(ctx context.Context, field graphql.CollectedField, obj *trial_site.TrialSite) (ret graphql.Marshaler) {
+func (ec *executionContext) _TrialSite_userId(ctx context.Context, field graphql.CollectedField, obj *api.TrialSite) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TrialSite_userId(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -6579,7 +6577,7 @@ func (ec *executionContext) _TrialSite_userId(ctx context.Context, field graphql
 	}
 	res := resTmp.(*resource.Identifier)
 	fc.Result = res
-	return ec.marshalOIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, field.Selections, res)
+	return ec.marshalOIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TrialSite_userId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6603,7 +6601,7 @@ func (ec *executionContext) fieldContext_TrialSite_userId(ctx context.Context, f
 	return fc, nil
 }
 
-func (ec *executionContext) _TrialSiteList_page(ctx context.Context, field graphql.CollectedField, obj *trial_site.TrialSiteList) (ret graphql.Marshaler) {
+func (ec *executionContext) _TrialSiteList_page(ctx context.Context, field graphql.CollectedField, obj *api.TrialSiteList) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TrialSiteList_page(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -6655,7 +6653,7 @@ func (ec *executionContext) fieldContext_TrialSiteList_page(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _TrialSiteList_list(ctx context.Context, field graphql.CollectedField, obj *trial_site.TrialSiteList) (ret graphql.Marshaler) {
+func (ec *executionContext) _TrialSiteList_list(ctx context.Context, field graphql.CollectedField, obj *api.TrialSiteList) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TrialSiteList_list(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -6678,9 +6676,9 @@ func (ec *executionContext) _TrialSiteList_list(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*trial_site.TrialSite)
+	res := resTmp.([]*api.TrialSite)
 	fc.Result = res
-	return ec.marshalOTrialSite2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐTrialSite(ctx, field.Selections, res)
+	return ec.marshalOTrialSite2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTrialSite(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TrialSiteList_list(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6734,7 +6732,7 @@ func (ec *executionContext) _TrialSiteMutation_createTrialSite(ctx context.Conte
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.TrialSiteMutation().CreateTrialSite(rctx, obj, fc.Args["input"].(*trial_site.InputFormTrialSiteRequest))
+		return ec.resolvers.TrialSiteMutation().CreateTrialSite(rctx, obj, fc.Args["input"].(*api.InputFormTrialSiteRequest))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6743,9 +6741,9 @@ func (ec *executionContext) _TrialSiteMutation_createTrialSite(ctx context.Conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*trial_site.TrialSite)
+	res := resTmp.(*api.TrialSite)
 	fc.Result = res
-	return ec.marshalOTrialSite2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐTrialSite(ctx, field.Selections, res)
+	return ec.marshalOTrialSite2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTrialSite(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TrialSiteMutation_createTrialSite(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6810,7 +6808,7 @@ func (ec *executionContext) _TrialSiteMutation_upTrialSite(ctx context.Context, 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.TrialSiteMutation().UpTrialSite(rctx, obj, fc.Args["input"].(*trial_site.InputTrialSiteRequest))
+		return ec.resolvers.TrialSiteMutation().UpTrialSite(rctx, obj, fc.Args["input"].(*api.InputTrialSiteRequest))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6819,9 +6817,9 @@ func (ec *executionContext) _TrialSiteMutation_upTrialSite(ctx context.Context, 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*trial_site.TrialSite)
+	res := resTmp.(*api.TrialSite)
 	fc.Result = res
-	return ec.marshalOTrialSite2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐTrialSite(ctx, field.Selections, res)
+	return ec.marshalOTrialSite2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTrialSite(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TrialSiteMutation_upTrialSite(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6951,9 +6949,9 @@ func (ec *executionContext) _TrialSiteQuery_getTrialSite(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*trial_site.TrialSite)
+	res := resTmp.(*api.TrialSite)
 	fc.Result = res
-	return ec.marshalOTrialSite2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐTrialSite(ctx, field.Selections, res)
+	return ec.marshalOTrialSite2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTrialSite(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TrialSiteQuery_getTrialSite(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7027,9 +7025,9 @@ func (ec *executionContext) _TrialSiteQuery_getAllTrialSite(ctx context.Context,
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*trial_site.TrialSiteList)
+	res := resTmp.(*api.TrialSiteList)
 	fc.Result = res
-	return ec.marshalOTrialSiteList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐTrialSiteList(ctx, field.Selections, res)
+	return ec.marshalOTrialSiteList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTrialSiteList(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TrialSiteQuery_getAllTrialSite(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7062,7 +7060,7 @@ func (ec *executionContext) fieldContext_TrialSiteQuery_getAllTrialSite(ctx cont
 	return fc, nil
 }
 
-func (ec *executionContext) _TypePlant_id(ctx context.Context, field graphql.CollectedField, obj *type_plant.TypePlant) (ret graphql.Marshaler) {
+func (ec *executionContext) _TypePlant_id(ctx context.Context, field graphql.CollectedField, obj *api.TypePlant) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TypePlant_id(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -7090,7 +7088,7 @@ func (ec *executionContext) _TypePlant_id(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(*resource.Identifier)
 	fc.Result = res
-	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, field.Selections, res)
+	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TypePlant_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7114,7 +7112,7 @@ func (ec *executionContext) fieldContext_TypePlant_id(ctx context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _TypePlant_title(ctx context.Context, field graphql.CollectedField, obj *type_plant.TypePlant) (ret graphql.Marshaler) {
+func (ec *executionContext) _TypePlant_title(ctx context.Context, field graphql.CollectedField, obj *api.TypePlant) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TypePlant_title(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -7155,7 +7153,7 @@ func (ec *executionContext) fieldContext_TypePlant_title(ctx context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _TypePlant_subtitle(ctx context.Context, field graphql.CollectedField, obj *type_plant.TypePlant) (ret graphql.Marshaler) {
+func (ec *executionContext) _TypePlant_subtitle(ctx context.Context, field graphql.CollectedField, obj *api.TypePlant) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TypePlant_subtitle(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -7196,7 +7194,7 @@ func (ec *executionContext) fieldContext_TypePlant_subtitle(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _TypePlant_ecomorphsEntity(ctx context.Context, field graphql.CollectedField, obj *type_plant.TypePlant) (ret graphql.Marshaler) {
+func (ec *executionContext) _TypePlant_ecomorphsEntity(ctx context.Context, field graphql.CollectedField, obj *api.TypePlant) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TypePlant_ecomorphsEntity(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -7219,9 +7217,9 @@ func (ec *executionContext) _TypePlant_ecomorphsEntity(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*ecomorph_entity.EcomorphsEntity)
+	res := resTmp.([]*api.EcomorphsEntity)
 	fc.Result = res
-	return ec.marshalOEcomorphsEntity2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐEcomorphsEntity(ctx, field.Selections, res)
+	return ec.marshalOEcomorphsEntity2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsEntity(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TypePlant_ecomorphsEntity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7253,7 +7251,7 @@ func (ec *executionContext) fieldContext_TypePlant_ecomorphsEntity(ctx context.C
 	return fc, nil
 }
 
-func (ec *executionContext) _TypePlant_createdAt(ctx context.Context, field graphql.CollectedField, obj *type_plant.TypePlant) (ret graphql.Marshaler) {
+func (ec *executionContext) _TypePlant_createdAt(ctx context.Context, field graphql.CollectedField, obj *api.TypePlant) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TypePlant_createdAt(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -7300,7 +7298,7 @@ func (ec *executionContext) fieldContext_TypePlant_createdAt(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _TypePlant_updatedAt(ctx context.Context, field graphql.CollectedField, obj *type_plant.TypePlant) (ret graphql.Marshaler) {
+func (ec *executionContext) _TypePlant_updatedAt(ctx context.Context, field graphql.CollectedField, obj *api.TypePlant) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TypePlant_updatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -7347,7 +7345,7 @@ func (ec *executionContext) fieldContext_TypePlant_updatedAt(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _TypePlant_userId(ctx context.Context, field graphql.CollectedField, obj *type_plant.TypePlant) (ret graphql.Marshaler) {
+func (ec *executionContext) _TypePlant_userId(ctx context.Context, field graphql.CollectedField, obj *api.TypePlant) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TypePlant_userId(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -7372,7 +7370,7 @@ func (ec *executionContext) _TypePlant_userId(ctx context.Context, field graphql
 	}
 	res := resTmp.(*resource.Identifier)
 	fc.Result = res
-	return ec.marshalOIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, field.Selections, res)
+	return ec.marshalOIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TypePlant_userId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7396,7 +7394,7 @@ func (ec *executionContext) fieldContext_TypePlant_userId(ctx context.Context, f
 	return fc, nil
 }
 
-func (ec *executionContext) _TypePlantList_page(ctx context.Context, field graphql.CollectedField, obj *type_plant.TypePlantList) (ret graphql.Marshaler) {
+func (ec *executionContext) _TypePlantList_page(ctx context.Context, field graphql.CollectedField, obj *api.TypePlantList) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TypePlantList_page(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -7448,7 +7446,7 @@ func (ec *executionContext) fieldContext_TypePlantList_page(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _TypePlantList_list(ctx context.Context, field graphql.CollectedField, obj *type_plant.TypePlantList) (ret graphql.Marshaler) {
+func (ec *executionContext) _TypePlantList_list(ctx context.Context, field graphql.CollectedField, obj *api.TypePlantList) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TypePlantList_list(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -7471,9 +7469,9 @@ func (ec *executionContext) _TypePlantList_list(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*type_plant.TypePlant)
+	res := resTmp.([]*api.TypePlant)
 	fc.Result = res
-	return ec.marshalOTypePlant2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, field.Selections, res)
+	return ec.marshalOTypePlant2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TypePlantList_list(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7519,7 +7517,7 @@ func (ec *executionContext) _TypePlantMutation_createTypePlant(ctx context.Conte
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.TypePlantMutation().CreateTypePlant(rctx, obj, fc.Args["input"].(*type_plant.InputFormTypePlantRequest))
+		return ec.resolvers.TypePlantMutation().CreateTypePlant(rctx, obj, fc.Args["input"].(*api.InputFormTypePlantRequest))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7528,9 +7526,9 @@ func (ec *executionContext) _TypePlantMutation_createTypePlant(ctx context.Conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*type_plant.TypePlant)
+	res := resTmp.(*api.TypePlant)
 	fc.Result = res
-	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, field.Selections, res)
+	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TypePlantMutation_createTypePlant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7587,7 +7585,7 @@ func (ec *executionContext) _TypePlantMutation_updateTypePlant(ctx context.Conte
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.TypePlantMutation().UpdateTypePlant(rctx, obj, fc.Args["input"].(*type_plant.InputTypePlantRequest))
+		return ec.resolvers.TypePlantMutation().UpdateTypePlant(rctx, obj, fc.Args["input"].(*api.InputTypePlantRequest))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7596,9 +7594,9 @@ func (ec *executionContext) _TypePlantMutation_updateTypePlant(ctx context.Conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*type_plant.TypePlant)
+	res := resTmp.(*api.TypePlant)
 	fc.Result = res
-	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, field.Selections, res)
+	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TypePlantMutation_updateTypePlant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7720,9 +7718,9 @@ func (ec *executionContext) _TypePlantQuery_getTypePlant(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*type_plant.TypePlant)
+	res := resTmp.(*api.TypePlant)
 	fc.Result = res
-	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, field.Selections, res)
+	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TypePlantQuery_getTypePlant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7788,9 +7786,9 @@ func (ec *executionContext) _TypePlantQuery_getAllTypePlant(ctx context.Context,
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*type_plant.TypePlantList)
+	res := resTmp.(*api.TypePlantList)
 	fc.Result = res
-	return ec.marshalOTypePlantList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlantList(ctx, field.Selections, res)
+	return ec.marshalOTypePlantList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlantList(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TypePlantQuery_getAllTypePlant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9596,8 +9594,8 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(ctx context.Conte
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputEcomorphInput(ctx context.Context, obj interface{}) (ecomorph.Ecomorph, error) {
-	var it ecomorph.Ecomorph
+func (ec *executionContext) unmarshalInputEcomorphInput(ctx context.Context, obj interface{}) (api.Ecomorph, error) {
+	var it api.Ecomorph
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -9612,7 +9610,7 @@ func (ec *executionContext) unmarshalInputEcomorphInput(ctx context.Context, obj
 		switch k {
 		case "id":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, v)
+			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9633,7 +9631,7 @@ func (ec *executionContext) unmarshalInputEcomorphInput(ctx context.Context, obj
 			it.Description = data
 		case "userID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, v)
+			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9644,8 +9642,8 @@ func (ec *executionContext) unmarshalInputEcomorphInput(ctx context.Context, obj
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputEcomorphsEntityInput(ctx context.Context, obj interface{}) (ecomorph_entity.EcomorphsEntity, error) {
-	var it ecomorph_entity.EcomorphsEntity
+func (ec *executionContext) unmarshalInputEcomorphsEntityInput(ctx context.Context, obj interface{}) (api.EcomorphsEntity, error) {
+	var it api.EcomorphsEntity
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -9660,7 +9658,7 @@ func (ec *executionContext) unmarshalInputEcomorphsEntityInput(ctx context.Conte
 		switch k {
 		case "id":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, v)
+			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9681,7 +9679,7 @@ func (ec *executionContext) unmarshalInputEcomorphsEntityInput(ctx context.Conte
 			it.Description = data
 		case "ecomorphs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ecomorphs"))
-			data, err := ec.unmarshalOEcomorphInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐEcomorph(ctx, v)
+			data, err := ec.unmarshalOEcomorphInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9733,8 +9731,8 @@ func (ec *executionContext) unmarshalInputIdentifierInput(ctx context.Context, o
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputInputEcomorph(ctx context.Context, obj interface{}) (ecomorph.InputEcomorph, error) {
-	var it ecomorph.InputEcomorph
+func (ec *executionContext) unmarshalInputInputEcomorph(ctx context.Context, obj interface{}) (api.InputEcomorph, error) {
+	var it api.InputEcomorph
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -9749,14 +9747,14 @@ func (ec *executionContext) unmarshalInputInputEcomorph(ctx context.Context, obj
 		switch k {
 		case "id":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, v)
+			data, err := ec.unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Id = data
 		case "payload":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("payload"))
-			data, err := ec.unmarshalNInputFormEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐInputFormEcomorph(ctx, v)
+			data, err := ec.unmarshalNInputFormEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormEcomorph(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9767,8 +9765,8 @@ func (ec *executionContext) unmarshalInputInputEcomorph(ctx context.Context, obj
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputInputEcomorphsEntity(ctx context.Context, obj interface{}) (ecomorph_entity.InputEcomorphsEntity, error) {
-	var it ecomorph_entity.InputEcomorphsEntity
+func (ec *executionContext) unmarshalInputInputEcomorphsEntity(ctx context.Context, obj interface{}) (api.InputEcomorphsEntity, error) {
+	var it api.InputEcomorphsEntity
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -9783,14 +9781,14 @@ func (ec *executionContext) unmarshalInputInputEcomorphsEntity(ctx context.Conte
 		switch k {
 		case "id":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, v)
+			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Id = data
 		case "input":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-			data, err := ec.unmarshalOInputFormEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐInputFormEcomorphsEntity(ctx, v)
+			data, err := ec.unmarshalOInputFormEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormEcomorphsEntity(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9801,8 +9799,8 @@ func (ec *executionContext) unmarshalInputInputEcomorphsEntity(ctx context.Conte
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputInputFormEcomorph(ctx context.Context, obj interface{}) (ecomorph.InputFormEcomorph, error) {
-	var it ecomorph.InputFormEcomorph
+func (ec *executionContext) unmarshalInputInputFormEcomorph(ctx context.Context, obj interface{}) (api.InputFormEcomorph, error) {
+	var it api.InputFormEcomorph
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -9835,8 +9833,8 @@ func (ec *executionContext) unmarshalInputInputFormEcomorph(ctx context.Context,
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputInputFormEcomorphsEntity(ctx context.Context, obj interface{}) (ecomorph_entity.InputFormEcomorphsEntity, error) {
-	var it ecomorph_entity.InputFormEcomorphsEntity
+func (ec *executionContext) unmarshalInputInputFormEcomorphsEntity(ctx context.Context, obj interface{}) (api.InputFormEcomorphsEntity, error) {
+	var it api.InputFormEcomorphsEntity
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -9865,19 +9863,21 @@ func (ec *executionContext) unmarshalInputInputFormEcomorphsEntity(ctx context.C
 			it.Description = data
 		case "ecomorphs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ecomorphs"))
-			data, err := ec.unmarshalOEcomorphInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐEcomorph(ctx, v)
+			data, err := ec.unmarshalOEcomorphInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.Ecomorphs = data
+			if err = ec.resolvers.InputFormEcomorphsEntity().Ecomorphs(ctx, &it, data); err != nil {
+				return it, err
+			}
 		}
 	}
 
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputInputFormTransectRequest(ctx context.Context, obj interface{}) (transect.InputFormTransectRequest, error) {
-	var it transect.InputFormTransectRequest
+func (ec *executionContext) unmarshalInputInputFormTransectRequest(ctx context.Context, obj interface{}) (api.InputFormTransectRequest, error) {
+	var it api.InputFormTransectRequest
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -9934,21 +9934,21 @@ func (ec *executionContext) unmarshalInputInputFormTransectRequest(ctx context.C
 			it.CountTypes = data
 		case "trialSite":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("trialSite"))
-			data, err := ec.unmarshalOTrialSiteInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐTrialSite(ctx, v)
+			data, err := ec.unmarshalOTrialSiteInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTrialSite(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.TrialSite = data
 		case "dominant":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("dominant"))
-			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, v)
+			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Dominant = data
 		case "subDominant":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("subDominant"))
-			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, v)
+			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9959,8 +9959,8 @@ func (ec *executionContext) unmarshalInputInputFormTransectRequest(ctx context.C
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputInputFormTrialSiteRequest(ctx context.Context, obj interface{}) (trial_site.InputFormTrialSiteRequest, error) {
-	var it trial_site.InputFormTrialSiteRequest
+func (ec *executionContext) unmarshalInputInputFormTrialSiteRequest(ctx context.Context, obj interface{}) (api.InputFormTrialSiteRequest, error) {
+	var it api.InputFormTrialSiteRequest
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -10003,21 +10003,21 @@ func (ec *executionContext) unmarshalInputInputFormTrialSiteRequest(ctx context.
 			it.CountTypes = data
 		case "typePlant":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typePlant"))
-			data, err := ec.unmarshalOTypePlantInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, v)
+			data, err := ec.unmarshalOTypePlantInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.TypePlant = data
 		case "dominant":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("dominant"))
-			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, v)
+			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Dominant = data
 		case "subDominant":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("subDominant"))
-			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, v)
+			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10028,8 +10028,8 @@ func (ec *executionContext) unmarshalInputInputFormTrialSiteRequest(ctx context.
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputInputFormTypePlantRequest(ctx context.Context, obj interface{}) (type_plant.InputFormTypePlantRequest, error) {
-	var it type_plant.InputFormTypePlantRequest
+func (ec *executionContext) unmarshalInputInputFormTypePlantRequest(ctx context.Context, obj interface{}) (api.InputFormTypePlantRequest, error) {
+	var it api.InputFormTypePlantRequest
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -10058,7 +10058,7 @@ func (ec *executionContext) unmarshalInputInputFormTypePlantRequest(ctx context.
 			it.Subtitle = data
 		case "ecomorphsEntity":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ecomorphsEntity"))
-			data, err := ec.unmarshalOEcomorphsEntityInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐEcomorphsEntity(ctx, v)
+			data, err := ec.unmarshalOEcomorphsEntityInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsEntity(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10069,8 +10069,8 @@ func (ec *executionContext) unmarshalInputInputFormTypePlantRequest(ctx context.
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputInputTransectRequest(ctx context.Context, obj interface{}) (transect.InputTransectRequest, error) {
-	var it transect.InputTransectRequest
+func (ec *executionContext) unmarshalInputInputTransectRequest(ctx context.Context, obj interface{}) (api.InputTransectRequest, error) {
+	var it api.InputTransectRequest
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -10085,14 +10085,14 @@ func (ec *executionContext) unmarshalInputInputTransectRequest(ctx context.Conte
 		switch k {
 		case "id":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, v)
+			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Id = data
 		case "input":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-			data, err := ec.unmarshalOInputFormTransectRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtransectᚐInputFormTransectRequest(ctx, v)
+			data, err := ec.unmarshalOInputFormTransectRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormTransectRequest(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10103,8 +10103,8 @@ func (ec *executionContext) unmarshalInputInputTransectRequest(ctx context.Conte
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputInputTrialSiteRequest(ctx context.Context, obj interface{}) (trial_site.InputTrialSiteRequest, error) {
-	var it trial_site.InputTrialSiteRequest
+func (ec *executionContext) unmarshalInputInputTrialSiteRequest(ctx context.Context, obj interface{}) (api.InputTrialSiteRequest, error) {
+	var it api.InputTrialSiteRequest
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -10119,14 +10119,14 @@ func (ec *executionContext) unmarshalInputInputTrialSiteRequest(ctx context.Cont
 		switch k {
 		case "id":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, v)
+			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Id = data
 		case "input":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-			data, err := ec.unmarshalOInputFormTrialSiteRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐInputFormTrialSiteRequest(ctx, v)
+			data, err := ec.unmarshalOInputFormTrialSiteRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormTrialSiteRequest(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10137,8 +10137,8 @@ func (ec *executionContext) unmarshalInputInputTrialSiteRequest(ctx context.Cont
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputInputTypePlantRequest(ctx context.Context, obj interface{}) (type_plant.InputTypePlantRequest, error) {
-	var it type_plant.InputTypePlantRequest
+func (ec *executionContext) unmarshalInputInputTypePlantRequest(ctx context.Context, obj interface{}) (api.InputTypePlantRequest, error) {
+	var it api.InputTypePlantRequest
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -10153,14 +10153,14 @@ func (ec *executionContext) unmarshalInputInputTypePlantRequest(ctx context.Cont
 		switch k {
 		case "id":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, v)
+			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Id = data
 		case "input":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-			data, err := ec.unmarshalOInputFormTypePlantRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐInputFormTypePlantRequest(ctx, v)
+			data, err := ec.unmarshalOInputFormTypePlantRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormTypePlantRequest(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10205,8 +10205,8 @@ func (ec *executionContext) unmarshalInputPagesRequest(ctx context.Context, obj 
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputSignInUserInput(ctx context.Context, obj interface{}) (auth.SignInUserInput, error) {
-	var it auth.SignInUserInput
+func (ec *executionContext) unmarshalInputSignInUserInput(ctx context.Context, obj interface{}) (api.SignInUserInput, error) {
+	var it api.SignInUserInput
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -10239,8 +10239,8 @@ func (ec *executionContext) unmarshalInputSignInUserInput(ctx context.Context, o
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputSignUpUserInput(ctx context.Context, obj interface{}) (auth.SignUpUserInput, error) {
-	var it auth.SignUpUserInput
+func (ec *executionContext) unmarshalInputSignUpUserInput(ctx context.Context, obj interface{}) (api.SignUpUserInput, error) {
+	var it api.SignUpUserInput
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -10280,8 +10280,8 @@ func (ec *executionContext) unmarshalInputSignUpUserInput(ctx context.Context, o
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputTransectInput(ctx context.Context, obj interface{}) (transect.Transect, error) {
-	var it transect.Transect
+func (ec *executionContext) unmarshalInputTransectInput(ctx context.Context, obj interface{}) (api.Transect, error) {
+	var it api.Transect
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -10296,7 +10296,7 @@ func (ec *executionContext) unmarshalInputTransectInput(ctx context.Context, obj
 		switch k {
 		case "id":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, v)
+			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10345,30 +10345,28 @@ func (ec *executionContext) unmarshalInputTransectInput(ctx context.Context, obj
 			it.CountTypes = data
 		case "dominant":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("dominant"))
-			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, v)
+			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Dominant = data
 		case "subDominant":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("subDominant"))
-			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, v)
+			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.SubDominant = data
 		case "trialSite":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("trialSite"))
-			data, err := ec.unmarshalOTrialSiteInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐTrialSite(ctx, v)
+			data, err := ec.unmarshalOTrialSiteInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTrialSite(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			if err = ec.resolvers.TransectInput().TrialSite(ctx, &it, data); err != nil {
-				return it, err
-			}
+			it.TrialSite = data
 		case "userId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-			data, err := ec.unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, v)
+			data, err := ec.unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10379,8 +10377,8 @@ func (ec *executionContext) unmarshalInputTransectInput(ctx context.Context, obj
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputTrialSiteInput(ctx context.Context, obj interface{}) (trial_site.TrialSite, error) {
-	var it trial_site.TrialSite
+func (ec *executionContext) unmarshalInputTrialSiteInput(ctx context.Context, obj interface{}) (api.TrialSite, error) {
+	var it api.TrialSite
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -10395,7 +10393,7 @@ func (ec *executionContext) unmarshalInputTrialSiteInput(ctx context.Context, ob
 		switch k {
 		case "id":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, v)
+			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10430,28 +10428,30 @@ func (ec *executionContext) unmarshalInputTrialSiteInput(ctx context.Context, ob
 			it.CountTypes = data
 		case "dominant":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("dominant"))
-			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, v)
+			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Dominant = data
 		case "subDominant":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("subDominant"))
-			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, v)
+			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.SubDominant = data
 		case "typePlant":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typePlant"))
-			data, err := ec.unmarshalOTypePlantInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, v)
+			data, err := ec.unmarshalOTypePlantInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.TypePlant = data
+			if err = ec.resolvers.TrialSiteInput().TypePlant(ctx, &it, data); err != nil {
+				return it, err
+			}
 		case "userId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-			data, err := ec.unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, v)
+			data, err := ec.unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10462,8 +10462,8 @@ func (ec *executionContext) unmarshalInputTrialSiteInput(ctx context.Context, ob
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputTypePlantInput(ctx context.Context, obj interface{}) (type_plant.TypePlant, error) {
-	var it type_plant.TypePlant
+func (ec *executionContext) unmarshalInputTypePlantInput(ctx context.Context, obj interface{}) (api.TypePlant, error) {
+	var it api.TypePlant
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -10478,7 +10478,7 @@ func (ec *executionContext) unmarshalInputTypePlantInput(ctx context.Context, ob
 		switch k {
 		case "id":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, v)
+			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10499,14 +10499,14 @@ func (ec *executionContext) unmarshalInputTypePlantInput(ctx context.Context, ob
 			it.Subtitle = data
 		case "ecomorphsEntity":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ecomorphsEntity"))
-			data, err := ec.unmarshalOEcomorphsEntityInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐEcomorphsEntity(ctx, v)
+			data, err := ec.unmarshalOEcomorphsEntityInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsEntity(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.EcomorphsEntity = data
 		case "userId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-			data, err := ec.unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx, v)
+			data, err := ec.unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -10666,7 +10666,7 @@ func (ec *executionContext) _BoolResponse(ctx context.Context, sel ast.Selection
 
 var ecomorphImplementors = []string{"Ecomorph"}
 
-func (ec *executionContext) _Ecomorph(ctx context.Context, sel ast.SelectionSet, obj *ecomorph.Ecomorph) graphql.Marshaler {
+func (ec *executionContext) _Ecomorph(ctx context.Context, sel ast.SelectionSet, obj *api.Ecomorph) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, ecomorphImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -10978,7 +10978,7 @@ func (ec *executionContext) _EcomorphQuery(ctx context.Context, sel ast.Selectio
 
 var ecomorphsEntityImplementors = []string{"EcomorphsEntity"}
 
-func (ec *executionContext) _EcomorphsEntity(ctx context.Context, sel ast.SelectionSet, obj *ecomorph_entity.EcomorphsEntity) graphql.Marshaler {
+func (ec *executionContext) _EcomorphsEntity(ctx context.Context, sel ast.SelectionSet, obj *api.EcomorphsEntity) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, ecomorphsEntityImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -11029,7 +11029,7 @@ func (ec *executionContext) _EcomorphsEntity(ctx context.Context, sel ast.Select
 
 var ecomorphsEntityListImplementors = []string{"EcomorphsEntityList"}
 
-func (ec *executionContext) _EcomorphsEntityList(ctx context.Context, sel ast.SelectionSet, obj *ecomorph_entity.EcomorphsEntityList) graphql.Marshaler {
+func (ec *executionContext) _EcomorphsEntityList(ctx context.Context, sel ast.SelectionSet, obj *api.EcomorphsEntityList) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, ecomorphsEntityListImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -11385,7 +11385,7 @@ func (ec *executionContext) _IdentifierType(ctx context.Context, sel ast.Selecti
 
 var listEcomorphImplementors = []string{"ListEcomorph"}
 
-func (ec *executionContext) _ListEcomorph(ctx context.Context, sel ast.SelectionSet, obj *ecomorph.EcomorphsList) graphql.Marshaler {
+func (ec *executionContext) _ListEcomorph(ctx context.Context, sel ast.SelectionSet, obj *api.EcomorphsList) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, listEcomorphImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -11686,7 +11686,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 
 var signInUserResponseImplementors = []string{"SignInUserResponse"}
 
-func (ec *executionContext) _SignInUserResponse(ctx context.Context, sel ast.SelectionSet, obj *auth.SignInUserResponse) graphql.Marshaler {
+func (ec *executionContext) _SignInUserResponse(ctx context.Context, sel ast.SelectionSet, obj *api.SignInUserResponse) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, signInUserResponseImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -11773,7 +11773,7 @@ func (ec *executionContext) _Timestamp(ctx context.Context, sel ast.SelectionSet
 
 var transectImplementors = []string{"Transect"}
 
-func (ec *executionContext) _Transect(ctx context.Context, sel ast.SelectionSet, obj *transect.Transect) graphql.Marshaler {
+func (ec *executionContext) _Transect(ctx context.Context, sel ast.SelectionSet, obj *api.Transect) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, transectImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -11785,7 +11785,7 @@ func (ec *executionContext) _Transect(ctx context.Context, sel ast.SelectionSet,
 		case "id":
 			out.Values[i] = ec._Transect_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
+				out.Invalids++
 			}
 		case "title":
 			out.Values[i] = ec._Transect_title(ctx, field, obj)
@@ -11804,38 +11804,7 @@ func (ec *executionContext) _Transect(ctx context.Context, sel ast.SelectionSet,
 		case "subDominant":
 			out.Values[i] = ec._Transect_subDominant(ctx, field, obj)
 		case "trialSite":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Transect_trialSite(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			out.Values[i] = ec._Transect_trialSite(ctx, field, obj)
 		case "createdAt":
 			out.Values[i] = ec._Transect_createdAt(ctx, field, obj)
 		case "updatedAt":
@@ -11867,7 +11836,7 @@ func (ec *executionContext) _Transect(ctx context.Context, sel ast.SelectionSet,
 
 var transectListImplementors = []string{"TransectList"}
 
-func (ec *executionContext) _TransectList(ctx context.Context, sel ast.SelectionSet, obj *transect.TransectList) graphql.Marshaler {
+func (ec *executionContext) _TransectList(ctx context.Context, sel ast.SelectionSet, obj *api.TransectList) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, transectListImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -12141,7 +12110,7 @@ func (ec *executionContext) _TransectQuery(ctx context.Context, sel ast.Selectio
 
 var trialSiteImplementors = []string{"TrialSite"}
 
-func (ec *executionContext) _TrialSite(ctx context.Context, sel ast.SelectionSet, obj *trial_site.TrialSite) graphql.Marshaler {
+func (ec *executionContext) _TrialSite(ctx context.Context, sel ast.SelectionSet, obj *api.TrialSite) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, trialSiteImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -12153,7 +12122,7 @@ func (ec *executionContext) _TrialSite(ctx context.Context, sel ast.SelectionSet
 		case "id":
 			out.Values[i] = ec._TrialSite_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "title":
 			out.Values[i] = ec._TrialSite_title(ctx, field, obj)
@@ -12168,7 +12137,38 @@ func (ec *executionContext) _TrialSite(ctx context.Context, sel ast.SelectionSet
 		case "subDominant":
 			out.Values[i] = ec._TrialSite_subDominant(ctx, field, obj)
 		case "typePlant":
-			out.Values[i] = ec._TrialSite_typePlant(ctx, field, obj)
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._TrialSite_typePlant(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "createdAt":
 			out.Values[i] = ec._TrialSite_createdAt(ctx, field, obj)
 		case "updatedAt":
@@ -12200,7 +12200,7 @@ func (ec *executionContext) _TrialSite(ctx context.Context, sel ast.SelectionSet
 
 var trialSiteListImplementors = []string{"TrialSiteList"}
 
-func (ec *executionContext) _TrialSiteList(ctx context.Context, sel ast.SelectionSet, obj *trial_site.TrialSiteList) graphql.Marshaler {
+func (ec *executionContext) _TrialSiteList(ctx context.Context, sel ast.SelectionSet, obj *api.TrialSiteList) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, trialSiteListImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -12474,7 +12474,7 @@ func (ec *executionContext) _TrialSiteQuery(ctx context.Context, sel ast.Selecti
 
 var typePlantImplementors = []string{"TypePlant"}
 
-func (ec *executionContext) _TypePlant(ctx context.Context, sel ast.SelectionSet, obj *type_plant.TypePlant) graphql.Marshaler {
+func (ec *executionContext) _TypePlant(ctx context.Context, sel ast.SelectionSet, obj *api.TypePlant) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, typePlantImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -12525,7 +12525,7 @@ func (ec *executionContext) _TypePlant(ctx context.Context, sel ast.SelectionSet
 
 var typePlantListImplementors = []string{"TypePlantList"}
 
-func (ec *executionContext) _TypePlantList(ctx context.Context, sel ast.SelectionSet, obj *type_plant.TypePlantList) graphql.Marshaler {
+func (ec *executionContext) _TypePlantList(ctx context.Context, sel ast.SelectionSet, obj *api.TypePlantList) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, typePlantListImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -13152,11 +13152,11 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNEcomorph2githubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐEcomorph(ctx context.Context, sel ast.SelectionSet, v ecomorph.Ecomorph) graphql.Marshaler {
+func (ec *executionContext) marshalNEcomorph2githubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx context.Context, sel ast.SelectionSet, v api.Ecomorph) graphql.Marshaler {
 	return ec._Ecomorph(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐEcomorph(ctx context.Context, sel ast.SelectionSet, v *ecomorph.Ecomorph) graphql.Marshaler {
+func (ec *executionContext) marshalNEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx context.Context, sel ast.SelectionSet, v *api.Ecomorph) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -13181,12 +13181,12 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx context.Context, v interface{}) (*resource.Identifier, error) {
+func (ec *executionContext) unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx context.Context, v interface{}) (*resource.Identifier, error) {
 	res, err := ec.unmarshalInputIdentifierInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx context.Context, sel ast.SelectionSet, v *resource.Identifier) graphql.Marshaler {
+func (ec *executionContext) marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx context.Context, sel ast.SelectionSet, v *resource.Identifier) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -13196,7 +13196,7 @@ func (ec *executionContext) marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxope
 	return ec._IdentifierType(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNInputFormEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐInputFormEcomorph(ctx context.Context, v interface{}) (*ecomorph.InputFormEcomorph, error) {
+func (ec *executionContext) unmarshalNInputFormEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormEcomorph(ctx context.Context, v interface{}) (*api.InputFormEcomorph, error) {
 	res, err := ec.unmarshalInputInputFormEcomorph(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -13216,11 +13216,11 @@ func (ec *executionContext) marshalNInt2int32(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) marshalNListEcomorph2githubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐEcomorphsList(ctx context.Context, sel ast.SelectionSet, v ecomorph.EcomorphsList) graphql.Marshaler {
+func (ec *executionContext) marshalNListEcomorph2githubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsList(ctx context.Context, sel ast.SelectionSet, v api.EcomorphsList) graphql.Marshaler {
 	return ec._ListEcomorph(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNListEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐEcomorphsList(ctx context.Context, sel ast.SelectionSet, v *ecomorph.EcomorphsList) graphql.Marshaler {
+func (ec *executionContext) marshalNListEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsList(ctx context.Context, sel ast.SelectionSet, v *api.EcomorphsList) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -13518,7 +13518,7 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) marshalOAuthMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐAuthMutation(ctx context.Context, sel ast.SelectionSet, v *model.AuthMutation) graphql.Marshaler {
+func (ec *executionContext) marshalOAuthMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐAuthMutation(ctx context.Context, sel ast.SelectionSet, v *model.AuthMutation) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -13558,7 +13558,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) marshalOEcomorph2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐEcomorph(ctx context.Context, sel ast.SelectionSet, v []*ecomorph.Ecomorph) graphql.Marshaler {
+func (ec *executionContext) marshalOEcomorph2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx context.Context, sel ast.SelectionSet, v []*api.Ecomorph) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -13585,7 +13585,7 @@ func (ec *executionContext) marshalOEcomorph2ᚕᚖgithubᚗcomᚋsergey23144V�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐEcomorph(ctx, sel, v[i])
+			ret[i] = ec.marshalOEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -13599,14 +13599,14 @@ func (ec *executionContext) marshalOEcomorph2ᚕᚖgithubᚗcomᚋsergey23144V�
 	return ret
 }
 
-func (ec *executionContext) marshalOEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐEcomorph(ctx context.Context, sel ast.SelectionSet, v *ecomorph.Ecomorph) graphql.Marshaler {
+func (ec *executionContext) marshalOEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx context.Context, sel ast.SelectionSet, v *api.Ecomorph) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Ecomorph(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOEcomorphInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐEcomorph(ctx context.Context, v interface{}) ([]*ecomorph.Ecomorph, error) {
+func (ec *executionContext) unmarshalOEcomorphInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx context.Context, v interface{}) ([]*api.Ecomorph, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13615,10 +13615,10 @@ func (ec *executionContext) unmarshalOEcomorphInput2ᚕᚖgithubᚗcomᚋsergey2
 		vSlice = graphql.CoerceList(v)
 	}
 	var err error
-	res := make([]*ecomorph.Ecomorph, len(vSlice))
+	res := make([]*api.Ecomorph, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOEcomorphInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐEcomorph(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOEcomorphInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -13626,7 +13626,7 @@ func (ec *executionContext) unmarshalOEcomorphInput2ᚕᚖgithubᚗcomᚋsergey2
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOEcomorphInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐEcomorph(ctx context.Context, v interface{}) (*ecomorph.Ecomorph, error) {
+func (ec *executionContext) unmarshalOEcomorphInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx context.Context, v interface{}) (*api.Ecomorph, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13634,21 +13634,21 @@ func (ec *executionContext) unmarshalOEcomorphInput2ᚖgithubᚗcomᚋsergey2314
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOEcomorphMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐEcomorphMutation(ctx context.Context, sel ast.SelectionSet, v *model.EcomorphMutation) graphql.Marshaler {
+func (ec *executionContext) marshalOEcomorphMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐEcomorphMutation(ctx context.Context, sel ast.SelectionSet, v *model.EcomorphMutation) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._EcomorphMutation(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOEcomorphQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐEcomorphQuery(ctx context.Context, sel ast.SelectionSet, v *model.EcomorphQuery) graphql.Marshaler {
+func (ec *executionContext) marshalOEcomorphQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐEcomorphQuery(ctx context.Context, sel ast.SelectionSet, v *model.EcomorphQuery) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._EcomorphQuery(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOEcomorphsEntity2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐEcomorphsEntity(ctx context.Context, sel ast.SelectionSet, v []*ecomorph_entity.EcomorphsEntity) graphql.Marshaler {
+func (ec *executionContext) marshalOEcomorphsEntity2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsEntity(ctx context.Context, sel ast.SelectionSet, v []*api.EcomorphsEntity) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -13675,7 +13675,7 @@ func (ec *executionContext) marshalOEcomorphsEntity2ᚕᚖgithubᚗcomᚋsergey2
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐEcomorphsEntity(ctx, sel, v[i])
+			ret[i] = ec.marshalOEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsEntity(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -13689,14 +13689,14 @@ func (ec *executionContext) marshalOEcomorphsEntity2ᚕᚖgithubᚗcomᚋsergey2
 	return ret
 }
 
-func (ec *executionContext) marshalOEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐEcomorphsEntity(ctx context.Context, sel ast.SelectionSet, v *ecomorph_entity.EcomorphsEntity) graphql.Marshaler {
+func (ec *executionContext) marshalOEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsEntity(ctx context.Context, sel ast.SelectionSet, v *api.EcomorphsEntity) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._EcomorphsEntity(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOEcomorphsEntityInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐEcomorphsEntity(ctx context.Context, v interface{}) ([]*ecomorph_entity.EcomorphsEntity, error) {
+func (ec *executionContext) unmarshalOEcomorphsEntityInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsEntity(ctx context.Context, v interface{}) ([]*api.EcomorphsEntity, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13705,10 +13705,10 @@ func (ec *executionContext) unmarshalOEcomorphsEntityInput2ᚕᚖgithubᚗcomᚋ
 		vSlice = graphql.CoerceList(v)
 	}
 	var err error
-	res := make([]*ecomorph_entity.EcomorphsEntity, len(vSlice))
+	res := make([]*api.EcomorphsEntity, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOEcomorphsEntityInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐEcomorphsEntity(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOEcomorphsEntityInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsEntity(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -13716,7 +13716,7 @@ func (ec *executionContext) unmarshalOEcomorphsEntityInput2ᚕᚖgithubᚗcomᚋ
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOEcomorphsEntityInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐEcomorphsEntity(ctx context.Context, v interface{}) (*ecomorph_entity.EcomorphsEntity, error) {
+func (ec *executionContext) unmarshalOEcomorphsEntityInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsEntity(ctx context.Context, v interface{}) (*api.EcomorphsEntity, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13724,21 +13724,28 @@ func (ec *executionContext) unmarshalOEcomorphsEntityInput2ᚖgithubᚗcomᚋser
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOEcomorphsEntityList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐEcomorphsEntityList(ctx context.Context, sel ast.SelectionSet, v *ecomorph_entity.EcomorphsEntityList) graphql.Marshaler {
+func (ec *executionContext) marshalOEcomorphsEntityList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsEntityList(ctx context.Context, sel ast.SelectionSet, v *api.EcomorphsEntityList) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._EcomorphsEntityList(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOEcomorphsEntityQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐEcomorphsEntityQuery(ctx context.Context, sel ast.SelectionSet, v *model.EcomorphsEntityQuery) graphql.Marshaler {
+func (ec *executionContext) marshalOEcomorphsEntityMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐEcomorphsEntityMutation(ctx context.Context, sel ast.SelectionSet, v *model.EcomorphsEntityMutation) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._EcomorphsEntityMutation(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOEcomorphsEntityQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐEcomorphsEntityQuery(ctx context.Context, sel ast.SelectionSet, v *model.EcomorphsEntityQuery) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._EcomorphsEntityQuery(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx context.Context, v interface{}) (*resource.Identifier, error) {
+func (ec *executionContext) unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx context.Context, v interface{}) (*resource.Identifier, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13746,14 +13753,14 @@ func (ec *executionContext) unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfoblox
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋatlasᚋresourceᚐIdentifier(ctx context.Context, sel ast.SelectionSet, v *resource.Identifier) graphql.Marshaler {
+func (ec *executionContext) marshalOIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx context.Context, sel ast.SelectionSet, v *resource.Identifier) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._IdentifierType(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOInputEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐInputEcomorph(ctx context.Context, v interface{}) (*ecomorph.InputEcomorph, error) {
+func (ec *executionContext) unmarshalOInputEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputEcomorph(ctx context.Context, v interface{}) (*api.InputEcomorph, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13761,7 +13768,7 @@ func (ec *executionContext) unmarshalOInputEcomorph2ᚖgithubᚗcomᚋsergey2314
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOInputEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐInputEcomorphsEntity(ctx context.Context, v interface{}) (*ecomorph_entity.InputEcomorphsEntity, error) {
+func (ec *executionContext) unmarshalOInputEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputEcomorphsEntity(ctx context.Context, v interface{}) (*api.InputEcomorphsEntity, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13769,7 +13776,7 @@ func (ec *executionContext) unmarshalOInputEcomorphsEntity2ᚖgithubᚗcomᚋser
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOInputFormEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚐInputFormEcomorph(ctx context.Context, v interface{}) (*ecomorph.InputFormEcomorph, error) {
+func (ec *executionContext) unmarshalOInputFormEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormEcomorph(ctx context.Context, v interface{}) (*api.InputFormEcomorph, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13777,7 +13784,7 @@ func (ec *executionContext) unmarshalOInputFormEcomorph2ᚖgithubᚗcomᚋsergey
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOInputFormEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋecomorphᚑentityᚐInputFormEcomorphsEntity(ctx context.Context, v interface{}) (*ecomorph_entity.InputFormEcomorphsEntity, error) {
+func (ec *executionContext) unmarshalOInputFormEcomorphsEntity2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormEcomorphsEntity(ctx context.Context, v interface{}) (*api.InputFormEcomorphsEntity, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13785,7 +13792,7 @@ func (ec *executionContext) unmarshalOInputFormEcomorphsEntity2ᚖgithubᚗcom�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOInputFormTransectRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtransectᚐInputFormTransectRequest(ctx context.Context, v interface{}) (*transect.InputFormTransectRequest, error) {
+func (ec *executionContext) unmarshalOInputFormTransectRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormTransectRequest(ctx context.Context, v interface{}) (*api.InputFormTransectRequest, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13793,7 +13800,7 @@ func (ec *executionContext) unmarshalOInputFormTransectRequest2ᚖgithubᚗcom�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOInputFormTrialSiteRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐInputFormTrialSiteRequest(ctx context.Context, v interface{}) (*trial_site.InputFormTrialSiteRequest, error) {
+func (ec *executionContext) unmarshalOInputFormTrialSiteRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormTrialSiteRequest(ctx context.Context, v interface{}) (*api.InputFormTrialSiteRequest, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13801,7 +13808,7 @@ func (ec *executionContext) unmarshalOInputFormTrialSiteRequest2ᚖgithubᚗcom�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOInputFormTypePlantRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐInputFormTypePlantRequest(ctx context.Context, v interface{}) (*type_plant.InputFormTypePlantRequest, error) {
+func (ec *executionContext) unmarshalOInputFormTypePlantRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormTypePlantRequest(ctx context.Context, v interface{}) (*api.InputFormTypePlantRequest, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13809,7 +13816,7 @@ func (ec *executionContext) unmarshalOInputFormTypePlantRequest2ᚖgithubᚗcom�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOInputTransectRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtransectᚐInputTransectRequest(ctx context.Context, v interface{}) (*transect.InputTransectRequest, error) {
+func (ec *executionContext) unmarshalOInputTransectRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputTransectRequest(ctx context.Context, v interface{}) (*api.InputTransectRequest, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13817,7 +13824,7 @@ func (ec *executionContext) unmarshalOInputTransectRequest2ᚖgithubᚗcomᚋser
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOInputTrialSiteRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐInputTrialSiteRequest(ctx context.Context, v interface{}) (*trial_site.InputTrialSiteRequest, error) {
+func (ec *executionContext) unmarshalOInputTrialSiteRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputTrialSiteRequest(ctx context.Context, v interface{}) (*api.InputTrialSiteRequest, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13825,7 +13832,7 @@ func (ec *executionContext) unmarshalOInputTrialSiteRequest2ᚖgithubᚗcomᚋse
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOInputTypePlantRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐInputTypePlantRequest(ctx context.Context, v interface{}) (*type_plant.InputTypePlantRequest, error) {
+func (ec *executionContext) unmarshalOInputTypePlantRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputTypePlantRequest(ctx context.Context, v interface{}) (*api.InputTypePlantRequest, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13861,7 +13868,7 @@ func (ec *executionContext) unmarshalOPagesRequest2ᚖgithubᚗcomᚋsergey23144
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOSignInUserInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋauthᚐSignInUserInput(ctx context.Context, v interface{}) (*auth.SignInUserInput, error) {
+func (ec *executionContext) unmarshalOSignInUserInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐSignInUserInput(ctx context.Context, v interface{}) (*api.SignInUserInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13869,14 +13876,14 @@ func (ec *executionContext) unmarshalOSignInUserInput2ᚖgithubᚗcomᚋsergey23
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOSignInUserResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋauthᚐSignInUserResponse(ctx context.Context, sel ast.SelectionSet, v *auth.SignInUserResponse) graphql.Marshaler {
+func (ec *executionContext) marshalOSignInUserResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐSignInUserResponse(ctx context.Context, sel ast.SelectionSet, v *api.SignInUserResponse) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._SignInUserResponse(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOSignUpUserInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋauthᚐSignUpUserInput(ctx context.Context, v interface{}) (*auth.SignUpUserInput, error) {
+func (ec *executionContext) unmarshalOSignUpUserInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐSignUpUserInput(ctx context.Context, v interface{}) (*api.SignUpUserInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -13955,7 +13962,7 @@ func (ec *executionContext) marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobu
 	return ec._Timestamp(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOTransect2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtransectᚐTransect(ctx context.Context, sel ast.SelectionSet, v []*transect.Transect) graphql.Marshaler {
+func (ec *executionContext) marshalOTransect2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTransect(ctx context.Context, sel ast.SelectionSet, v []*api.Transect) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -13982,7 +13989,7 @@ func (ec *executionContext) marshalOTransect2ᚕᚖgithubᚗcomᚋsergey23144V�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOTransect2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtransectᚐTransect(ctx, sel, v[i])
+			ret[i] = ec.marshalOTransect2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTransect(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -13996,35 +14003,35 @@ func (ec *executionContext) marshalOTransect2ᚕᚖgithubᚗcomᚋsergey23144V�
 	return ret
 }
 
-func (ec *executionContext) marshalOTransect2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtransectᚐTransect(ctx context.Context, sel ast.SelectionSet, v *transect.Transect) graphql.Marshaler {
+func (ec *executionContext) marshalOTransect2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTransect(ctx context.Context, sel ast.SelectionSet, v *api.Transect) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Transect(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOTransectList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtransectᚐTransectList(ctx context.Context, sel ast.SelectionSet, v *transect.TransectList) graphql.Marshaler {
+func (ec *executionContext) marshalOTransectList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTransectList(ctx context.Context, sel ast.SelectionSet, v *api.TransectList) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._TransectList(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOTransectMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐTransectMutation(ctx context.Context, sel ast.SelectionSet, v *model.TransectMutation) graphql.Marshaler {
+func (ec *executionContext) marshalOTransectMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTransectMutation(ctx context.Context, sel ast.SelectionSet, v *model.TransectMutation) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._TransectMutation(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOTransectQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐTransectQuery(ctx context.Context, sel ast.SelectionSet, v *model.TransectQuery) graphql.Marshaler {
+func (ec *executionContext) marshalOTransectQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTransectQuery(ctx context.Context, sel ast.SelectionSet, v *model.TransectQuery) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._TransectQuery(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOTrialSite2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐTrialSite(ctx context.Context, sel ast.SelectionSet, v []*trial_site.TrialSite) graphql.Marshaler {
+func (ec *executionContext) marshalOTrialSite2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTrialSite(ctx context.Context, sel ast.SelectionSet, v []*api.TrialSite) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -14051,7 +14058,7 @@ func (ec *executionContext) marshalOTrialSite2ᚕᚖgithubᚗcomᚋsergey23144V�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOTrialSite2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐTrialSite(ctx, sel, v[i])
+			ret[i] = ec.marshalOTrialSite2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTrialSite(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -14065,14 +14072,14 @@ func (ec *executionContext) marshalOTrialSite2ᚕᚖgithubᚗcomᚋsergey23144V�
 	return ret
 }
 
-func (ec *executionContext) marshalOTrialSite2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐTrialSite(ctx context.Context, sel ast.SelectionSet, v *trial_site.TrialSite) graphql.Marshaler {
+func (ec *executionContext) marshalOTrialSite2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTrialSite(ctx context.Context, sel ast.SelectionSet, v *api.TrialSite) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._TrialSite(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOTrialSiteInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐTrialSite(ctx context.Context, v interface{}) ([]*trial_site.TrialSite, error) {
+func (ec *executionContext) unmarshalOTrialSiteInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTrialSite(ctx context.Context, v interface{}) ([]*api.TrialSite, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -14081,10 +14088,10 @@ func (ec *executionContext) unmarshalOTrialSiteInput2ᚕᚖgithubᚗcomᚋsergey
 		vSlice = graphql.CoerceList(v)
 	}
 	var err error
-	res := make([]*trial_site.TrialSite, len(vSlice))
+	res := make([]*api.TrialSite, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOTrialSiteInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐTrialSite(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOTrialSiteInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTrialSite(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -14092,7 +14099,7 @@ func (ec *executionContext) unmarshalOTrialSiteInput2ᚕᚖgithubᚗcomᚋsergey
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOTrialSiteInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐTrialSite(ctx context.Context, v interface{}) (*trial_site.TrialSite, error) {
+func (ec *executionContext) unmarshalOTrialSiteInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTrialSite(ctx context.Context, v interface{}) (*api.TrialSite, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -14100,28 +14107,28 @@ func (ec *executionContext) unmarshalOTrialSiteInput2ᚖgithubᚗcomᚋsergey231
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOTrialSiteList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtrialᚑsiteᚐTrialSiteList(ctx context.Context, sel ast.SelectionSet, v *trial_site.TrialSiteList) graphql.Marshaler {
+func (ec *executionContext) marshalOTrialSiteList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTrialSiteList(ctx context.Context, sel ast.SelectionSet, v *api.TrialSiteList) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._TrialSiteList(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOTrialSiteMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐTrialSiteMutation(ctx context.Context, sel ast.SelectionSet, v *model.TrialSiteMutation) graphql.Marshaler {
+func (ec *executionContext) marshalOTrialSiteMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTrialSiteMutation(ctx context.Context, sel ast.SelectionSet, v *model.TrialSiteMutation) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._TrialSiteMutation(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOTrialSiteQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐTrialSiteQuery(ctx context.Context, sel ast.SelectionSet, v *model.TrialSiteQuery) graphql.Marshaler {
+func (ec *executionContext) marshalOTrialSiteQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTrialSiteQuery(ctx context.Context, sel ast.SelectionSet, v *model.TrialSiteQuery) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._TrialSiteQuery(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOTypePlant2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx context.Context, sel ast.SelectionSet, v []*type_plant.TypePlant) graphql.Marshaler {
+func (ec *executionContext) marshalOTypePlant2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx context.Context, sel ast.SelectionSet, v []*api.TypePlant) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -14148,7 +14155,7 @@ func (ec *executionContext) marshalOTypePlant2ᚕᚖgithubᚗcomᚋsergey23144V�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, sel, v[i])
+			ret[i] = ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -14162,14 +14169,14 @@ func (ec *executionContext) marshalOTypePlant2ᚕᚖgithubᚗcomᚋsergey23144V�
 	return ret
 }
 
-func (ec *executionContext) marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx context.Context, sel ast.SelectionSet, v *type_plant.TypePlant) graphql.Marshaler {
+func (ec *executionContext) marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx context.Context, sel ast.SelectionSet, v *api.TypePlant) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._TypePlant(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOTypePlantInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx context.Context, v interface{}) ([]*type_plant.TypePlant, error) {
+func (ec *executionContext) unmarshalOTypePlantInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx context.Context, v interface{}) ([]*api.TypePlant, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -14178,10 +14185,10 @@ func (ec *executionContext) unmarshalOTypePlantInput2ᚕᚖgithubᚗcomᚋsergey
 		vSlice = graphql.CoerceList(v)
 	}
 	var err error
-	res := make([]*type_plant.TypePlant, len(vSlice))
+	res := make([]*api.TypePlant, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -14189,7 +14196,7 @@ func (ec *executionContext) unmarshalOTypePlantInput2ᚕᚖgithubᚗcomᚋsergey
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlant(ctx context.Context, v interface{}) (*type_plant.TypePlant, error) {
+func (ec *executionContext) unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx context.Context, v interface{}) (*api.TypePlant, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -14197,21 +14204,21 @@ func (ec *executionContext) unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey231
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOTypePlantList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚋtypeᚑplantᚐTypePlantList(ctx context.Context, sel ast.SelectionSet, v *type_plant.TypePlantList) graphql.Marshaler {
+func (ec *executionContext) marshalOTypePlantList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlantList(ctx context.Context, sel ast.SelectionSet, v *api.TypePlantList) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._TypePlantList(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOTypePlantMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐTypePlantMutation(ctx context.Context, sel ast.SelectionSet, v *model.TypePlantMutation) graphql.Marshaler {
+func (ec *executionContext) marshalOTypePlantMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTypePlantMutation(ctx context.Context, sel ast.SelectionSet, v *model.TypePlantMutation) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._TypePlantMutation(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOTypePlantQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgrapgqlᚋgraphᚋmodelᚐTypePlantQuery(ctx context.Context, sel ast.SelectionSet, v *model.TypePlantQuery) graphql.Marshaler {
+func (ec *executionContext) marshalOTypePlantQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTypePlantQuery(ctx context.Context, sel ast.SelectionSet, v *model.TypePlantQuery) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

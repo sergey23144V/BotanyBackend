@@ -4,18 +4,18 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/go-chi/chi"
-	"github.com/jinzhu/gorm"
 	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/pkg/service"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/auth"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"github.com/sergey23144V/BotanyBackend/servers/graphql/graph"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 )
 
 const defaultPort = "8080"
 
-func StartGraphQl(db *gorm.DB, authServerImpl *auth.AuthServerImpl, newService *service.Service) {
+func StartGraphQl(db *gorm.DB, authServerImpl *api.AuthServerImpl, newService *service.Service) {
 	go func() {
 		port := defaultPort
 

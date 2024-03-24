@@ -2,12 +2,8 @@ package implementation
 
 import (
 	context "context"
-	"github.com/infobloxopen/atlas-app-toolkit/atlas/resource"
-	"github.com/sergey23144V/BotanyBackend/pkg"
-	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/pkg/service"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph"
 )
 
 // EcomorphsServetImpl
@@ -19,21 +15,21 @@ func NewEcomorphsServetImplImpl(repository *service.Service) EcomorphsServetImpl
 	return EcomorphsServetImpl{repository}
 }
 
-func (e EcomorphsServetImpl) UpdateEcomorph(ctx context.Context, in *ecomorph.InputEcomorph) (*ecomorph.Ecomorph, error) {
+func (e EcomorphsServetImpl) UpdateEcomorph(ctx context.Context, in *api.InputEcomorph) (*api.Ecomorph, error) {
 	return e.service.UpdateEcomorph(ctx, in)
 
 }
 
-func (e EcomorphsServetImpl) GetListEcomorph(ctx context.Context, request *api.PagesRequest) (*ecomorph.EcomorphsList, error) {
+func (e EcomorphsServetImpl) GetListEcomorph(ctx context.Context, request *api.PagesRequest) (*api.EcomorphsList, error) {
 	return e.service.GetListEcomorph(ctx, request)
 }
 
-func (e EcomorphsServetImpl) InsertEcomorph(ctx context.Context, in *ecomorph.InputEcomorph) (*ecomorph.Ecomorph, error) {
+func (e EcomorphsServetImpl) InsertEcomorph(ctx context.Context, in *api.InputEcomorph) (*api.Ecomorph, error) {
 	return e.service.CreateEcomorph(ctx, in)
 
 }
 
-func (e EcomorphsServetImpl) GetEcomorphById(ctx context.Context, request *api.IdRequest) (*ecomorph.Ecomorph, error) {
+func (e EcomorphsServetImpl) GetEcomorphById(ctx context.Context, request *api.IdRequest) (*api.Ecomorph, error) {
 	return e.service.GetEcomorphById(ctx, request)
 }
 
@@ -45,22 +41,4 @@ func (e EcomorphsServetImpl) DeleteEcomorphById(ctx context.Context, request *ap
 func (e EcomorphsServetImpl) MustEmbedUnimplementedEcomorphServiceServer() {
 	//TODO implement me
 	panic("implement me")
-}
-
-func ToPB(ctx context.Context, in *ecomorph.InputEcomorph) *ecomorph.Ecomorph {
-	var id *resource.Identifier
-
-	if in.Id != nil {
-		id = in.Id
-	} else {
-		id = &resource.Identifier{ResourceId: pkg.GenerateUUID()}
-	}
-
-	userId := middlewares.GetUserIdFromContext(ctx)
-	return &ecomorph.Ecomorph{
-		Id:          id,
-		Title:       in.Payload.Title,
-		Description: in.Payload.Description,
-		UserId:      userId,
-	}
 }

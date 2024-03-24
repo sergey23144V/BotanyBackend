@@ -4,11 +4,10 @@
 // - protoc             v4.24.3
 // source: user.proto
 
-package user
+package api
 
 import (
 	context "context"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -23,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
-	GetMe(ctx context.Context, in *api.EmptyRequest, opts ...grpc.CallOption) (*UserResponse, error)
+	GetMe(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*UserResponse, error)
 }
 
 type userServiceClient struct {
@@ -34,7 +33,7 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 	return &userServiceClient{cc}
 }
 
-func (c *userServiceClient) GetMe(ctx context.Context, in *api.EmptyRequest, opts ...grpc.CallOption) (*UserResponse, error) {
+func (c *userServiceClient) GetMe(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*UserResponse, error) {
 	out := new(UserResponse)
 	err := c.cc.Invoke(ctx, "/auth.UserService/GetMe", in, out, opts...)
 	if err != nil {
@@ -47,24 +46,24 @@ func (c *userServiceClient) GetMe(ctx context.Context, in *api.EmptyRequest, opt
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
 type UserServiceServer interface {
-	GetMe(context.Context, *api.EmptyRequest) (*UserResponse, error)
-	mustEmbedUnimplementedUserServiceServer()
+	GetMe(context.Context, *EmptyRequest) (*UserResponse, error)
+	MustEmbedUnimplementedUserServiceServer()
 }
 
 // UnimplementedUserServiceServer must be embedded to have forward compatible implementations.
 type UnimplementedUserServiceServer struct {
 }
 
-func (UnimplementedUserServiceServer) GetMe(context.Context, *api.EmptyRequest) (*UserResponse, error) {
+func (UnimplementedUserServiceServer) GetMe(context.Context, *EmptyRequest) (*UserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMe not implemented")
 }
-func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
+func (UnimplementedUserServiceServer) MustEmbedUnimplementedUserServiceServer() {}
 
 // UnsafeUserServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to UserServiceServer will
 // result in compilation errors.
 type UnsafeUserServiceServer interface {
-	mustEmbedUnimplementedUserServiceServer()
+	MustEmbedUnimplementedUserServiceServer()
 }
 
 func RegisterUserServiceServer(s grpc.ServiceRegistrar, srv UserServiceServer) {
@@ -72,7 +71,7 @@ func RegisterUserServiceServer(s grpc.ServiceRegistrar, srv UserServiceServer) {
 }
 
 func _UserService_GetMe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(api.EmptyRequest)
+	in := new(EmptyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -84,7 +83,7 @@ func _UserService_GetMe_Handler(srv interface{}, ctx context.Context, dec func(i
 		FullMethod: "/auth.UserService/GetMe",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).GetMe(ctx, req.(*api.EmptyRequest))
+		return srv.(UserServiceServer).GetMe(ctx, req.(*EmptyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

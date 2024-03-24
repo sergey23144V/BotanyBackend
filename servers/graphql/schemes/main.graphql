@@ -11,7 +11,7 @@ type Query{
 type Mutation{
     ecomorph: EcomorphMutation @goField(forceResolver: true)
     auth: AuthMutation   @goField(forceResolver: true)
-    ecomorphsEntity: EcomorphMutation  @goField(forceResolver: true)
+    ecomorphsEntity: EcomorphsEntityMutation  @goField(forceResolver: true)
     typePlant: TypePlantMutation  @goField(forceResolver: true)
     trialSite: TrialSiteMutation @goField(forceResolver: true)
     transect: TransectMutation @goField(forceResolver: true)

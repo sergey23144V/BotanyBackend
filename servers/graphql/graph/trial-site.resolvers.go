@@ -8,22 +8,28 @@ import (
 	"context"
 	"github.com/sergey23144V/BotanyBackend/pkg/errors"
 
+	"fmt"
+
 	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
-	trial_site "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/trial-site"
 	"github.com/sergey23144V/BotanyBackend/servers/graphql/graph/model"
 )
 
+// TypePlant is the resolver for the typePlant field.
+func (r *trialSiteResolver) TypePlant(ctx context.Context, obj *api.TrialSite) ([]*api.TypePlant, error) {
+	panic(fmt.Errorf("not implemented: TypePlant - typePlant"))
+}
+
 // CreateTrialSite is the resolver for the createTrialSite field.
-func (r *trialSiteMutationResolver) CreateTrialSite(ctx context.Context, obj *model.TrialSiteMutation, input *trial_site.InputFormTrialSiteRequest) (*trial_site.TrialSite, error) {
+func (r *trialSiteMutationResolver) CreateTrialSite(ctx context.Context, obj *model.TrialSiteMutation, input *api.InputFormTrialSiteRequest) (*api.TrialSite, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.NotAuthorization
 	}
-	return r.service.CreateTrialSite(ctx, &trial_site.InputTrialSiteRequest{Input: input})
+	return r.service.CreateTrialSite(ctx, &api.InputTrialSiteRequest{Input: input})
 }
 
 // UpTrialSite is the resolver for the upTrialSite field.
-func (r *trialSiteMutationResolver) UpTrialSite(ctx context.Context, obj *model.TrialSiteMutation, input *trial_site.InputTrialSiteRequest) (*trial_site.TrialSite, error) {
+func (r *trialSiteMutationResolver) UpTrialSite(ctx context.Context, obj *model.TrialSiteMutation, input *api.InputTrialSiteRequest) (*api.TrialSite, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.NotAuthorization
 	}
@@ -39,7 +45,7 @@ func (r *trialSiteMutationResolver) DeleteTrialSite(ctx context.Context, obj *mo
 }
 
 // GetTrialSite is the resolver for the getTrialSite field.
-func (r *trialSiteQueryResolver) GetTrialSite(ctx context.Context, obj *model.TrialSiteQuery, id string) (*trial_site.TrialSite, error) {
+func (r *trialSiteQueryResolver) GetTrialSite(ctx context.Context, obj *model.TrialSiteQuery, id string) (*api.TrialSite, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.NotAuthorization
 	}
@@ -47,12 +53,20 @@ func (r *trialSiteQueryResolver) GetTrialSite(ctx context.Context, obj *model.Tr
 }
 
 // GetAllTrialSite is the resolver for the getAllTrialSite field.
-func (r *trialSiteQueryResolver) GetAllTrialSite(ctx context.Context, obj *model.TrialSiteQuery, pages *api.PagesRequest) (*trial_site.TrialSiteList, error) {
+func (r *trialSiteQueryResolver) GetAllTrialSite(ctx context.Context, obj *model.TrialSiteQuery, pages *api.PagesRequest) (*api.TrialSiteList, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.NotAuthorization
 	}
 	return r.service.GetListTrialSite(ctx, pages)
 }
+
+// TypePlant is the resolver for the typePlant field.
+func (r *trialSiteInputResolver) TypePlant(ctx context.Context, obj *api.TrialSite, data []*api.TypePlant) error {
+	panic(fmt.Errorf("not implemented: TypePlant - typePlant"))
+}
+
+// TrialSite returns TrialSiteResolver implementation.
+func (r *Resolver) TrialSite() TrialSiteResolver { return &trialSiteResolver{r} }
 
 // TrialSiteMutation returns TrialSiteMutationResolver implementation.
 func (r *Resolver) TrialSiteMutation() TrialSiteMutationResolver {
@@ -62,5 +76,10 @@ func (r *Resolver) TrialSiteMutation() TrialSiteMutationResolver {
 // TrialSiteQuery returns TrialSiteQueryResolver implementation.
 func (r *Resolver) TrialSiteQuery() TrialSiteQueryResolver { return &trialSiteQueryResolver{r} }
 
+// TrialSiteInput returns TrialSiteInputResolver implementation.
+func (r *Resolver) TrialSiteInput() TrialSiteInputResolver { return &trialSiteInputResolver{r} }
+
+type trialSiteResolver struct{ *Resolver }
 type trialSiteMutationResolver struct{ *Resolver }
 type trialSiteQueryResolver struct{ *Resolver }
+type trialSiteInputResolver struct{ *Resolver }

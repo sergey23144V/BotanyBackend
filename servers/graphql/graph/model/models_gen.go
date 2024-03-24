@@ -4,39 +4,33 @@ package model
 
 import (
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/auth"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph"
-	ecomorph_entity "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph-entity"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/transect"
-	trial_site "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/trial-site"
-	type_plant "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/type-plant"
 )
 
 type AuthMutation struct {
-	SignUpUser *auth.SignInUserResponse `json:"signUpUser,omitempty"`
-	SignInUser *auth.SignInUserResponse `json:"signInUser,omitempty"`
+	SignUpUser *api.SignInUserResponse `json:"signUpUser,omitempty"`
+	SignInUser *api.SignInUserResponse `json:"signInUser,omitempty"`
 }
 
 type EcomorphMutation struct {
-	InsertEcomorph     *ecomorph.Ecomorph `json:"insertEcomorph"`
-	UpdateEcomorph     *ecomorph.Ecomorph `json:"updateEcomorph"`
-	DeleteEcomorphByID *api.BoolResponse  `json:"deleteEcomorphById"`
+	InsertEcomorph     *api.Ecomorph     `json:"insertEcomorph"`
+	UpdateEcomorph     *api.Ecomorph     `json:"updateEcomorph"`
+	DeleteEcomorphByID *api.BoolResponse `json:"deleteEcomorphById"`
 }
 
 type EcomorphQuery struct {
-	GetEcomorphByID *ecomorph.Ecomorph      `json:"getEcomorphById"`
-	GetListEcomorph *ecomorph.EcomorphsList `json:"getListEcomorph"`
+	GetEcomorphByID *api.Ecomorph      `json:"getEcomorphById"`
+	GetListEcomorph *api.EcomorphsList `json:"getListEcomorph"`
 }
 
 type EcomorphsEntityMutation struct {
-	InsertEcomorphEntity     *ecomorph_entity.EcomorphsEntity `json:"insertEcomorphEntity,omitempty"`
-	UpdateEcomorphEntity     *ecomorph_entity.EcomorphsEntity `json:"updateEcomorphEntity,omitempty"`
-	DeleteEcomorphEntityByID *api.BoolResponse                `json:"deleteEcomorphEntityByID,omitempty"`
+	InsertEcomorphEntity     *api.EcomorphsEntity `json:"insertEcomorphEntity,omitempty"`
+	UpdateEcomorphEntity     *api.EcomorphsEntity `json:"updateEcomorphEntity,omitempty"`
+	DeleteEcomorphEntityByID *api.BoolResponse    `json:"deleteEcomorphEntityByID,omitempty"`
 }
 
 type EcomorphsEntityQuery struct {
-	GetEcomorphEntityByID *ecomorph_entity.EcomorphsEntity     `json:"getEcomorphEntityByID,omitempty"`
-	GetAllEcomorphEntity  *ecomorph_entity.EcomorphsEntityList `json:"getAllEcomorphEntity,omitempty"`
+	GetEcomorphEntityByID *api.EcomorphsEntity     `json:"getEcomorphEntityByID,omitempty"`
+	GetAllEcomorphEntity  *api.EcomorphsEntityList `json:"getAllEcomorphEntity,omitempty"`
 }
 
 type IDRequest struct {
@@ -50,34 +44,34 @@ type Query struct {
 }
 
 type TransectMutation struct {
-	CreateTransect *transect.Transect `json:"createTransect,omitempty"`
-	UpTransect     *transect.Transect `json:"upTransect,omitempty"`
-	DeleteTransect *api.BoolResponse  `json:"deleteTransect,omitempty"`
+	CreateTransect *api.Transect     `json:"createTransect,omitempty"`
+	UpTransect     *api.Transect     `json:"upTransect,omitempty"`
+	DeleteTransect *api.BoolResponse `json:"deleteTransect,omitempty"`
 }
 
 type TransectQuery struct {
-	GetTransect    *transect.Transect     `json:"getTransect,omitempty"`
-	GetAllTransect *transect.TransectList `json:"getAllTransect,omitempty"`
+	GetTransect    *api.Transect     `json:"getTransect,omitempty"`
+	GetAllTransect *api.TransectList `json:"getAllTransect,omitempty"`
 }
 
 type TrialSiteMutation struct {
-	CreateTrialSite *trial_site.TrialSite `json:"createTrialSite,omitempty"`
-	UpTrialSite     *trial_site.TrialSite `json:"upTrialSite,omitempty"`
-	DeleteTrialSite *api.BoolResponse     `json:"deleteTrialSite,omitempty"`
+	CreateTrialSite *api.TrialSite    `json:"createTrialSite,omitempty"`
+	UpTrialSite     *api.TrialSite    `json:"upTrialSite,omitempty"`
+	DeleteTrialSite *api.BoolResponse `json:"deleteTrialSite,omitempty"`
 }
 
 type TrialSiteQuery struct {
-	GetTrialSite    *trial_site.TrialSite     `json:"getTrialSite,omitempty"`
-	GetAllTrialSite *trial_site.TrialSiteList `json:"getAllTrialSite,omitempty"`
+	GetTrialSite    *api.TrialSite     `json:"getTrialSite,omitempty"`
+	GetAllTrialSite *api.TrialSiteList `json:"getAllTrialSite,omitempty"`
 }
 
 type TypePlantMutation struct {
-	CreateTypePlant *type_plant.TypePlant `json:"createTypePlant,omitempty"`
-	UpdateTypePlant *type_plant.TypePlant `json:"updateTypePlant,omitempty"`
-	DeleteTypePlant *api.BoolResponse     `json:"deleteTypePlant,omitempty"`
+	CreateTypePlant *api.TypePlant    `json:"createTypePlant,omitempty"`
+	UpdateTypePlant *api.TypePlant    `json:"updateTypePlant,omitempty"`
+	DeleteTypePlant *api.BoolResponse `json:"deleteTypePlant,omitempty"`
 }
 
 type TypePlantQuery struct {
-	GetTypePlant    *type_plant.TypePlant     `json:"getTypePlant,omitempty"`
-	GetAllTypePlant *type_plant.TypePlantList `json:"getAllTypePlant,omitempty"`
+	GetTypePlant    *api.TypePlant     `json:"getTypePlant,omitempty"`
+	GetAllTypePlant *api.TypePlantList `json:"getAllTypePlant,omitempty"`
 }

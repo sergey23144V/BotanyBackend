@@ -1,8 +1,8 @@
 syntax = "proto3";
 
 
-import "github.com/infobloxopen/protoc-gen-gorm@v1.1.2/third_party/proto/atlas/resource/v1/resource.proto";
-option go_package = "api/";
+import "github.com/infobloxopen/protoc-gen-gorm@v1.1.4/third_party/proto/atlas/resource/v1/resource.proto";
+option go_package = "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api";
 
 package botany;
 

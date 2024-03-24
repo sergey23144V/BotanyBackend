@@ -1,26 +1,29 @@
-package ecomorph
+package ecomorph_entity
 
 import (
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
+	"github.com/sergey23144V/BotanyBackend/test/g-rpc/ecomorph"
 	"github.com/stretchr/testify/assert"
+	"log"
 	"testing"
 )
 
-func TestCreateEcomorph(t *testing.T) {
+func TestCreateEcomorphsEntity(t *testing.T) {
 	client, ctx := g_rpc.GetClient()
 
 	testTable := []struct {
 		name     string
-		Ecomorph *api.InputEcomorph
+		Ecomorph *api.InputEcomorphsEntity
 		expected bool
 	}{
 		{
 			name: "Done",
-			Ecomorph: &api.InputEcomorph{
-				Payload: &api.InputFormEcomorph{
+			Ecomorph: &api.InputEcomorphsEntity{
+				Input: &api.InputFormEcomorphsEntity{
 					Title:       "Семейство",
 					Description: "Ну про вид",
+					Ecomorphs:   &api.Ecomorph{Id: ecomorph.CreateEcomorph(ctx, client.Ecomorph)},
 				},
 			},
 			expected: true,
@@ -29,10 +32,10 @@ func TestCreateEcomorph(t *testing.T) {
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-
-			result, err := client.Ecomorph.InsertEcomorph(ctx, testCase.Ecomorph)
+			result, err := client.Ecomorph_Emtity.InsertEcomorphEntity(ctx, testCase.Ecomorph)
+			log.Println(result.Ecomorphs.Title)
 			if testCase.expected {
-				err := DeleteEcomorphById(ctx, client.Ecomorph, result.Id)
+				err := DeleteEcomorphsEntity(ctx, *client, result.Id)
 				assert.NoError(t, err, "Done")
 			} else {
 				assert.Error(t, err, "Error")
@@ -41,7 +44,7 @@ func TestCreateEcomorph(t *testing.T) {
 	}
 }
 
-func TestGetEcomorphById(t *testing.T) {
+func TestGetEcomorphEntityById(t *testing.T) {
 	client, ctx := g_rpc.GetClient()
 
 	testTable := []struct {
@@ -50,17 +53,18 @@ func TestGetEcomorphById(t *testing.T) {
 		expected   bool
 	}{
 		{
-			name:       "GetEcomorph",
-			idEcomorph: &api.IdRequest{Id: CreateEcomorph(ctx, client.Ecomorph)},
+			name:       "GetEcomorphEntity",
+			idEcomorph: &api.IdRequest{Id: CreateEcomorphsEntity(ctx, *client)},
 			expected:   true,
 		},
 	}
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-			_, err := client.Ecomorph.GetEcomorphById(ctx, testCase.idEcomorph)
+			result, err := client.Ecomorph_Emtity.GetEcomorphEntityByID(ctx, testCase.idEcomorph)
+			g_rpc.Log(result.Ecomorphs.Title)
 			if testCase.expected {
-				err := DeleteEcomorphById(ctx, client.Ecomorph, testCase.idEcomorph.Id)
+				err := DeleteEcomorphsEntity(ctx, *client, testCase.idEcomorph.Id)
 				assert.NoError(t, err, "Done")
 			} else {
 				assert.Error(t, err, "Error")
@@ -69,19 +73,19 @@ func TestGetEcomorphById(t *testing.T) {
 	}
 }
 
-func TestUpdateEcomorphById(t *testing.T) {
+func TestUpdateEcomorphEntityById(t *testing.T) {
 	client, ctx := g_rpc.GetClient()
 
 	testTable := []struct {
 		name       string
-		idEcomorph *api.InputEcomorph
+		idEcomorph *api.InputEcomorphsEntity
 		expected   bool
 	}{
 		{
-			name: "GetEcomorph",
-			idEcomorph: &api.InputEcomorph{
-				Id: CreateEcomorph(ctx, client.Ecomorph),
-				Payload: &api.InputFormEcomorph{
+			name: "GetEcomorphEntity",
+			idEcomorph: &api.InputEcomorphsEntity{
+				Id: CreateEcomorphsEntity(ctx, *client),
+				Input: &api.InputFormEcomorphsEntity{
 					Title: "Не семейство",
 				},
 			},
@@ -91,7 +95,7 @@ func TestUpdateEcomorphById(t *testing.T) {
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-			_, err := client.Ecomorph.UpdateEcomorph(ctx, testCase.idEcomorph)
+			_, err := client.Ecomorph_Emtity.UpdateEcomorphEntity(ctx, testCase.idEcomorph)
 			if testCase.expected {
 				assert.NoError(t, err, "Done")
 			} else {
@@ -101,7 +105,7 @@ func TestUpdateEcomorphById(t *testing.T) {
 	}
 }
 
-func TestGetListEcomorph(t *testing.T) {
+func TestGetListEcomorphEntity(t *testing.T) {
 	client, ctx := g_rpc.GetClient()
 
 	testTable := []struct {
@@ -110,14 +114,14 @@ func TestGetListEcomorph(t *testing.T) {
 		expected bool
 	}{
 		{
-			name:     "GetEcomorph",
+			name:     "GetListEcomorphEntity",
 			expected: true,
 		},
 	}
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-			_, err := client.Ecomorph.GetListEcomorph(ctx, &api.PagesRequest{Page: 1, Limit: 2})
+			_, err := client.Ecomorph_Emtity.GetAllEcomorphEntity(ctx, &api.PagesRequest{Page: 1, Limit: 2})
 			if testCase.expected {
 				assert.NoError(t, err, "Done")
 			} else {

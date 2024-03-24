@@ -1,24 +1,25 @@
-package user
+package api
 
 import (
 	context "context"
 	fmt "fmt"
-	gorm1 "github.com/infobloxopen/atlas-app-toolkit/gorm"
-	resource "github.com/infobloxopen/atlas-app-toolkit/gorm/resource"
+	gorm1 "github.com/infobloxopen/atlas-app-toolkit/v2/gorm"
+	resource "github.com/infobloxopen/atlas-app-toolkit/v2/gorm/resource"
 	errors "github.com/infobloxopen/protoc-gen-gorm/errors"
-	gorm "github.com/jinzhu/gorm"
 	field_mask "google.golang.org/genproto/protobuf/field_mask"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	gorm "gorm.io/gorm"
 	strings "strings"
 	time "time"
 )
 
 type UserORM struct {
+	gorm.Model
 	CreatedAt *time.Time
 	Email     string `gorm:"unique"`
-	Id        string `gorm:"type:uuid;primary_key"`
+	Id        string `gorm:"type:uuid;primaryKey"`
 	Name      string
-	Password  string `gorm:"unique"`
+	Password  string
 	Role      string
 	UpdatedAt *time.Time
 }
@@ -129,7 +130,7 @@ func DefaultCreateUser(ctx context.Context, in *User, db *gorm.DB) (*User, error
 			return nil, err
 		}
 	}
-	if err = db.Create(&ormObj).Error; err != nil {
+	if err = db.Omit().Create(&ormObj).Error; err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormObj).(UserORMWithAfterCreate_); ok {
@@ -163,9 +164,6 @@ func DefaultReadUser(ctx context.Context, in *User, db *gorm.DB) (*User, error) 
 		if db, err = hook.BeforeReadApplyQuery(ctx, db); err != nil {
 			return nil, err
 		}
-	}
-	if db, err = gorm1.ApplyFieldSelection(ctx, db, nil, &UserORM{}); err != nil {
-		return nil, err
 	}
 	if hook, ok := interface{}(&ormObj).(UserORMWithBeforeReadFind); ok {
 		if db, err = hook.BeforeReadFind(ctx, db); err != nil {
@@ -287,7 +285,7 @@ func DefaultStrictUpdateUser(ctx context.Context, in *User, db *gorm.DB) (*User,
 			return nil, err
 		}
 	}
-	if err = db.Save(&ormObj).Error; err != nil {
+	if err = db.Omit().Save(&ormObj).Error; err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormObj).(UserORMWithAfterStrictUpdateSave); ok {
@@ -481,10 +479,6 @@ func DefaultListUser(ctx context.Context, db *gorm.DB) ([]*User, error) {
 		if db, err = hook.BeforeListApplyQuery(ctx, db); err != nil {
 			return nil, err
 		}
-	}
-	db, err = gorm1.ApplyCollectionOperators(ctx, db, &UserORM{}, &User{}, nil, nil, nil, nil)
-	if err != nil {
-		return nil, err
 	}
 	if hook, ok := interface{}(&ormObj).(UserORMWithBeforeListFind); ok {
 		if db, err = hook.BeforeListFind(ctx, db); err != nil {

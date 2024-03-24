@@ -4,7 +4,6 @@ import (
 	context "context"
 	"github.com/sergey23144V/BotanyBackend/pkg/service"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph-entity"
 )
 
 type EcomorphsEntityServetImpl struct {
@@ -15,15 +14,15 @@ func NewEcomorphsEntityServetImpl(repository *service.Service) EcomorphsEntitySe
 	return EcomorphsEntityServetImpl{repository}
 }
 
-func (e EcomorphsEntityServetImpl) InsertEcomorphEntity(ctx context.Context, entity *ecomorph_entity.InputEcomorphsEntity) (*ecomorph_entity.EcomorphsEntity, error) {
+func (e EcomorphsEntityServetImpl) InsertEcomorphEntity(ctx context.Context, entity *api.InputEcomorphsEntity) (*api.EcomorphsEntity, error) {
 	return e.service.CreateEcomorphsEntity(ctx, entity)
 }
 
-func (e EcomorphsEntityServetImpl) UpdateEcomorphEntity(ctx context.Context, entity *ecomorph_entity.InputEcomorphsEntity) (*ecomorph_entity.EcomorphsEntity, error) {
+func (e EcomorphsEntityServetImpl) UpdateEcomorphEntity(ctx context.Context, entity *api.InputEcomorphsEntity) (*api.EcomorphsEntity, error) {
 	return e.service.EcomorphsEntityService.UpdateEcomorphsEntity(ctx, entity)
 }
 
-func (e EcomorphsEntityServetImpl) GetEcomorphEntityByID(ctx context.Context, request *api.IdRequest) (*ecomorph_entity.EcomorphsEntity, error) {
+func (e EcomorphsEntityServetImpl) GetEcomorphEntityByID(ctx context.Context, request *api.IdRequest) (*api.EcomorphsEntity, error) {
 	return e.service.EcomorphsEntityService.GetEcomorphsEntityById(ctx, request)
 }
 
@@ -31,7 +30,7 @@ func (e EcomorphsEntityServetImpl) DeleteEcomorphEntityByID(ctx context.Context,
 	return e.service.EcomorphsEntityService.DeleteEcomorphsEntity(ctx, request)
 }
 
-func (e EcomorphsEntityServetImpl) GetAllEcomorphEntity(ctx context.Context, request *api.PagesRequest) (*ecomorph_entity.EcomorphsEntityList, error) {
+func (e EcomorphsEntityServetImpl) GetAllEcomorphEntity(ctx context.Context, request *api.PagesRequest) (*api.EcomorphsEntityList, error) {
 	return e.service.EcomorphsEntityService.GetListEcomorphsEntity(ctx, request)
 }
 

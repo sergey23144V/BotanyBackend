@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/infobloxopen/atlas-app-toolkit/atlas/resource"
+	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	auth_helper "github.com/sergey23144V/BotanyBackend/pkg/auth-helper"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"

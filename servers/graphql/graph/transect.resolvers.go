@@ -8,22 +8,13 @@ import (
 	"context"
 	"github.com/sergey23144V/BotanyBackend/pkg/errors"
 
-	"fmt"
-
 	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/transect"
-	trial_site "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/trial-site"
 	"github.com/sergey23144V/BotanyBackend/servers/graphql/graph/model"
 )
 
-// TrialSite is the resolver for the trialSite field.
-func (r *transectResolver) TrialSite(ctx context.Context, obj *transect.Transect) ([]*trial_site.TrialSite, error) {
-	panic(fmt.Errorf("not implemented: TrialSite - trialSite"))
-}
-
 // CreateTransect is the resolver for the createTransect field.
-func (r *transectMutationResolver) CreateTransect(ctx context.Context, obj *model.TransectMutation, input *transect.InputTransectRequest) (*transect.Transect, error) {
+func (r *transectMutationResolver) CreateTransect(ctx context.Context, obj *model.TransectMutation, input *api.InputTransectRequest) (*api.Transect, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.NotAuthorization
 	}
@@ -31,7 +22,7 @@ func (r *transectMutationResolver) CreateTransect(ctx context.Context, obj *mode
 }
 
 // UpTransect is the resolver for the upTransect field.
-func (r *transectMutationResolver) UpTransect(ctx context.Context, obj *model.TransectMutation, input *transect.InputTransectRequest) (*transect.Transect, error) {
+func (r *transectMutationResolver) UpTransect(ctx context.Context, obj *model.TransectMutation, input *api.InputTransectRequest) (*api.Transect, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.NotAuthorization
 	}
@@ -47,7 +38,7 @@ func (r *transectMutationResolver) DeleteTransect(ctx context.Context, obj *mode
 }
 
 // GetTransect is the resolver for the getTransect field.
-func (r *transectQueryResolver) GetTransect(ctx context.Context, obj *model.TransectQuery, id string) (*transect.Transect, error) {
+func (r *transectQueryResolver) GetTransect(ctx context.Context, obj *model.TransectQuery, id string) (*api.Transect, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.NotAuthorization
 	}
@@ -55,20 +46,12 @@ func (r *transectQueryResolver) GetTransect(ctx context.Context, obj *model.Tran
 }
 
 // GetAllTransect is the resolver for the getAllTransect field.
-func (r *transectQueryResolver) GetAllTransect(ctx context.Context, obj *model.TransectQuery, pages *api.PagesRequest) (*transect.TransectList, error) {
+func (r *transectQueryResolver) GetAllTransect(ctx context.Context, obj *model.TransectQuery, pages *api.PagesRequest) (*api.TransectList, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.NotAuthorization
 	}
 	return r.service.GetListTransect(ctx, pages)
 }
-
-// TrialSite is the resolver for the trialSite field.
-func (r *transectInputResolver) TrialSite(ctx context.Context, obj *transect.Transect, data []*trial_site.TrialSite) error {
-	panic(fmt.Errorf("not implemented: TrialSite - trialSite"))
-}
-
-// Transect returns TransectResolver implementation.
-func (r *Resolver) Transect() TransectResolver { return &transectResolver{r} }
 
 // TransectMutation returns TransectMutationResolver implementation.
 func (r *Resolver) TransectMutation() TransectMutationResolver { return &transectMutationResolver{r} }
@@ -76,10 +59,5 @@ func (r *Resolver) TransectMutation() TransectMutationResolver { return &transec
 // TransectQuery returns TransectQueryResolver implementation.
 func (r *Resolver) TransectQuery() TransectQueryResolver { return &transectQueryResolver{r} }
 
-// TransectInput returns TransectInputResolver implementation.
-func (r *Resolver) TransectInput() TransectInputResolver { return &transectInputResolver{r} }
-
-type transectResolver struct{ *Resolver }
 type transectMutationResolver struct{ *Resolver }
 type transectQueryResolver struct{ *Resolver }
-type transectInputResolver struct{ *Resolver }

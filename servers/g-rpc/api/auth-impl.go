@@ -1,4 +1,4 @@
-package auth
+package api
 
 import (
 	context "context"
@@ -6,12 +6,12 @@ import (
 	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/infobloxopen/atlas-app-toolkit/atlas/resource"
+	resource "github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
+	"gorm.io/gorm"
 
-	"github.com/jinzhu/gorm"
 	"github.com/sergey23144V/BotanyBackend/pkg"
 	auth_helper "github.com/sergey23144V/BotanyBackend/pkg/auth-helper"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/user"
+
 	"time"
 	"unicode"
 )
@@ -58,13 +58,13 @@ func (a AuthServerImpl) SignInUser(ctx context.Context, input *SignInUserInput) 
 	}, nil
 }
 
-func (a AuthServerImpl) mustEmbedUnimplementedAuthServiceServer() {
+func (a AuthServerImpl) MustEmbedUnimplementedAuthServiceServer() {
 	//TODO implement me
 	panic("implement me")
 }
 
 func (s *AuthServerImpl) GenerateToken(ctx context.Context, input *SignInUserInput) (string, error) {
-	userResult, err := user.ReadUserByEmailAndPassword(ctx, &user.User{Email: input.Email, Password: generatePasswordHash(input.Password)}, s.db)
+	userResult, err := ReadUserByEmailAndPassword(ctx, &User{Email: input.Email, Password: generatePasswordHash(input.Password)}, s.db)
 	if err != nil {
 		return "", err
 	}
@@ -87,8 +87,8 @@ func generatePasswordHash(password string) string {
 	return fmt.Sprintf("%x", hash.Sum([]byte(auth_helper.Salt)))
 }
 
-func (s *AuthServerImpl) CreateUser(ctx context.Context, input *SignUpUserInput) (*user.User, error) {
-	dubl, err := user.CheckingForDuplicateEmails(ctx, &user.User{Email: input.Email}, s.db)
+func (s *AuthServerImpl) CreateUser(ctx context.Context, input *SignUpUserInput) (*User, error) {
+	dubl, err := CheckingForDuplicateEmails(ctx, &User{Email: input.Email}, s.db)
 	if err != nil {
 		return nil, err
 	} else if !dubl {
@@ -100,7 +100,7 @@ func (s *AuthServerImpl) CreateUser(ctx context.Context, input *SignUpUserInput)
 		return nil, err
 	}
 
-	userInput := &user.User{
+	userInput := &User{
 		Id:        &resource.Identifier{ResourceId: pkg.GenerateUUID()},
 		Name:      input.Name,
 		Email:     input.Email,
@@ -109,7 +109,7 @@ func (s *AuthServerImpl) CreateUser(ctx context.Context, input *SignUpUserInput)
 		CreatedAt: nil,
 		UpdatedAt: nil,
 	}
-	return user.DefaultCreateUser(ctx, userInput, s.db)
+	return DefaultCreateUser(ctx, userInput, s.db)
 }
 
 func ValidatePassword(password string) error {

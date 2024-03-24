@@ -4,7 +4,6 @@ import (
 	context "context"
 	"github.com/sergey23144V/BotanyBackend/pkg/service"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/transect"
 )
 
 type TransectServetImpl struct {
@@ -15,15 +14,15 @@ func NewTransectServetImpl(service *service.Service) TransectServetImpl {
 	return TransectServetImpl{service}
 }
 
-func (t TransectServetImpl) CreateTransect(ctx context.Context, request *transect.InputTransectRequest) (*transect.Transect, error) {
+func (t TransectServetImpl) CreateTransect(ctx context.Context, request *api.InputTransectRequest) (*api.Transect, error) {
 	return t.service.CreateTransect(ctx, request)
 }
 
-func (t TransectServetImpl) GetTransect(ctx context.Context, request *api.IdRequest) (*transect.Transect, error) {
+func (t TransectServetImpl) GetTransect(ctx context.Context, request *api.IdRequest) (*api.Transect, error) {
 	return t.service.TransectService.GetTransectById(ctx, request)
 }
 
-func (t TransectServetImpl) UpTransect(ctx context.Context, request *transect.InputTransectRequest) (*transect.Transect, error) {
+func (t TransectServetImpl) UpTransect(ctx context.Context, request *api.InputTransectRequest) (*api.Transect, error) {
 	return t.service.TransectService.UpdateTransect(ctx, request)
 }
 
@@ -31,7 +30,7 @@ func (t TransectServetImpl) DeleteTransect(ctx context.Context, request *api.IdR
 	return t.service.TransectService.DeleteTransect(ctx, request)
 }
 
-func (t TransectServetImpl) GetAllTransect(ctx context.Context, request *api.PagesRequest) (*transect.TransectList, error) {
+func (t TransectServetImpl) GetAllTransect(ctx context.Context, request *api.PagesRequest) (*api.TransectList, error) {
 	return t.service.TransectService.GetListTransect(ctx, request)
 }
 

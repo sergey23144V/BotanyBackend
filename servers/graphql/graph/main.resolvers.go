@@ -23,8 +23,8 @@ func (r *mutationResolver) Auth(ctx context.Context) (*model.AuthMutation, error
 }
 
 // EcomorphsEntity is the resolver for the ecomorphsEntity field.
-func (r *mutationResolver) EcomorphsEntity(ctx context.Context) (*model.EcomorphMutation, error) {
-	v := model.EcomorphMutation{}
+func (r *mutationResolver) EcomorphsEntity(ctx context.Context) (*model.EcomorphsEntityMutation, error) {
+	v := model.EcomorphsEntityMutation{}
 	return &v, nil
 }
 

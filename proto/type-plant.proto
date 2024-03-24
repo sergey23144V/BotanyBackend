@@ -3,9 +3,9 @@ syntax = "proto3";
 
 
 
-option go_package = "api/type-plant";
-import "github.com/infobloxopen/protoc-gen-gorm@v1.1.2/proto/options/gorm.proto";
-import "github.com/infobloxopen/protoc-gen-gorm@v1.1.2/third_party/proto/atlas/resource/v1/resource.proto";
+option go_package = "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api";
+import "github.com/infobloxopen/protoc-gen-gorm@v1.1.4/proto/options/gorm.proto";
+import "github.com/infobloxopen/protoc-gen-gorm@v1.1.4/third_party/proto/atlas/resource/v1/resource.proto";
 import "google/protobuf/timestamp.proto";
 import "elementary-type.proto";
 import "ecomorphs-entity.proto";
@@ -39,9 +39,10 @@ message TypePlant {
   atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
   string title = 2;
   string subtitle = 3 ;
-  repeated EcomorphsEntity ecomorphsEntity = 4 [(gorm.field).many_to_many = {association_autoupdate: true, association_autocreate: false , preload: true}];
+  repeated EcomorphsEntity ecomorphsEntity = 4 [(gorm.field).many_to_many = {disable_association_autocreate: false, disable_association_autoupdate: false, preload: true}];
   google.protobuf.Timestamp created_at = 5;
   google.protobuf.Timestamp updated_at = 6;
+  google.protobuf.Timestamp deleted_at  = 8;
   atlas.rpc.Identifier user_id = 7 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
 }
 

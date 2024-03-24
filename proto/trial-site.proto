@@ -1,12 +1,12 @@
 syntax = "proto3";
 
 
-option go_package = "api/trial-site";
+option go_package = "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api";
 
 package botany;
 
-import "github.com/infobloxopen/protoc-gen-gorm@v1.1.2/proto/options/gorm.proto";
-import "github.com/infobloxopen/protoc-gen-gorm@v1.1.2/third_party/proto/atlas/resource/v1/resource.proto";
+import "github.com/infobloxopen/protoc-gen-gorm@v1.1.4/proto/options/gorm.proto";
+import "github.com/infobloxopen/protoc-gen-gorm@v1.1.4/third_party/proto/atlas/resource/v1/resource.proto";
 import "google/protobuf/timestamp.proto";
 import "elementary-type.proto";
 import "type-plant.proto";
@@ -39,10 +39,10 @@ message AddPlantTrialSiteRequest{
   option (gorm.opts) = {
     ormable: true,
   };
-  atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
-  atlas.rpc.Identifier idTrialSite = 2;
-  atlas.rpc.Identifier idPlant = 3;
-  int32 covered = 4;
+  atlas.rpc.Identifier idTrialSite = 1;
+  atlas.rpc.Identifier idPlant = 2;
+  int32 covered = 3;
+  int32 count = 4;
 }
 
 
@@ -57,11 +57,18 @@ message TrialSite {
   int32 count_types = 4;
   TypePlant  dominant = 7 [(gorm.field).belongs_to = {preload: true}];
   TypePlant  subDominant = 8 [(gorm.field).belongs_to = {preload: true}];
-  repeated TypePlant typePlant = 9 [(gorm.field).many_to_many = {association_autocreate:true, association_autoupdate: true, preload: true, append:true}];
   google.protobuf.Timestamp created_at = 5;
   google.protobuf.Timestamp updated_at = 6;
+  google.protobuf.Timestamp deleted_at  = 13;
   atlas.rpc.Identifier user_id = 11 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
   atlas.rpc.Identifier transectId = 12 [(gorm.field).tag = {type: "uuid"  foreignkey:"Transect.transectId"}];
+
+  message TrialSite_TypePlant{
+    atlas.rpc.Identifier typePlantId = 1 [(gorm.field).tag = {type: "uuid" foreignkey: 'TypePlant' disable_association_autocreate: true, disable_association_autoupdate: true, preload: true}];
+    atlas.rpc.Identifier ecomorphsEntityId = 2 [(gorm.field).tag = {type: "uuid" foreignkey: 'EcomorphsEntity' disable_association_autocreate: true, disable_association_autoupdate: true, preload: true}];
+    int32 count = 3;
+    int32 coverage = 4;
+  }
 }
 
 message TrialSiteList {

@@ -1,11 +1,11 @@
 package graph
 
 import (
-	"github.com/infobloxopen/atlas-app-toolkit/atlas/resource"
-	"github.com/jinzhu/gorm"
+	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
+	"gorm.io/gorm"
+
 	"github.com/sergey23144V/BotanyBackend/pkg/service"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/auth"
 )
 
 // This file will not be regenerated automatically.
@@ -14,11 +14,11 @@ import (
 
 type Resolver struct {
 	Db             *gorm.DB
-	AuthServerImpl *auth.AuthServerImpl
+	AuthServerImpl *api.AuthServerImpl
 	service        *service.Service
 }
 
-func NewResolver(Db *gorm.DB, AuthServerImpl *auth.AuthServerImpl, Service *service.Service) *Resolver {
+func NewResolver(Db *gorm.DB, AuthServerImpl *api.AuthServerImpl, Service *service.Service) *Resolver {
 	return &Resolver{
 		Db:             Db,
 		AuthServerImpl: AuthServerImpl,

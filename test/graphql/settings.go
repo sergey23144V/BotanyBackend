@@ -3,16 +3,9 @@ package graphql
 import (
 	"github.com/sergey23144V/BotanyBackend/pkg/repository"
 	"github.com/sergey23144V/BotanyBackend/pkg/service"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/auth"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph"
-	ecomorph_entity "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph-entity"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/transect"
-	trial_site "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/trial-site"
-	type_plant "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/type-plant"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/user"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"github.com/sergey23144V/BotanyBackend/servers/graphql"
 	"log"
-	"os"
 )
 
 func StartServerGraphQl() {
@@ -30,13 +23,10 @@ func StartServerGraphQl() {
 		log.Fatal(err)
 	}
 
-	db.LogMode(true)
-	db.AutoMigrate(ecomorph.EcomorphORM{}, ecomorph_entity.EcomorphsEntityORM{}, user.UserORM{}, type_plant.TypePlantORM{}, trial_site.TrialSiteORM{}, transect.TransectORM{})
+	err = db.AutoMigrate(api.EcomorphORM{}, api.EcomorphsEntityORM{}, api.UserORM{}, api.TypePlantORM{}, api.TrialSiteORM{}, api.TransectORM{})
 	log.Println("migrant")
 
-	db.SetLogger(log.New(os.Stdout, "\r\n", 0))
-
-	authServet := auth.NewAuthServer(db)
+	authServet := api.NewAuthServer(db)
 
 	newRepository := repository.NewRepository(db)
 	newService := service.NewService(newRepository)

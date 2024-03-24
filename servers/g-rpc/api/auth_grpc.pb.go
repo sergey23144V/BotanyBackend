@@ -4,7 +4,7 @@
 // - protoc             v4.24.3
 // source: auth.proto
 
-package auth
+package api
 
 import (
 	context "context"
@@ -58,7 +58,7 @@ func (c *authServiceClient) SignInUser(ctx context.Context, in *SignInUserInput,
 type AuthServiceServer interface {
 	SignUpUser(context.Context, *SignUpUserInput) (*SignInUserResponse, error)
 	SignInUser(context.Context, *SignInUserInput) (*SignInUserResponse, error)
-	mustEmbedUnimplementedAuthServiceServer()
+	MustEmbedUnimplementedAuthServiceServer()
 }
 
 // UnimplementedAuthServiceServer must be embedded to have forward compatible implementations.
@@ -71,13 +71,13 @@ func (UnimplementedAuthServiceServer) SignUpUser(context.Context, *SignUpUserInp
 func (UnimplementedAuthServiceServer) SignInUser(context.Context, *SignInUserInput) (*SignInUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignInUser not implemented")
 }
-func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
+func (UnimplementedAuthServiceServer) MustEmbedUnimplementedAuthServiceServer() {}
 
 // UnsafeAuthServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to AuthServiceServer will
 // result in compilation errors.
 type UnsafeAuthServiceServer interface {
-	mustEmbedUnimplementedAuthServiceServer()
+	MustEmbedUnimplementedAuthServiceServer()
 }
 
 func RegisterAuthServiceServer(s grpc.ServiceRegistrar, srv AuthServiceServer) {

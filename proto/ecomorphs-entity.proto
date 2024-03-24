@@ -1,11 +1,11 @@
 syntax = "proto3";
 
 
-import "github.com/infobloxopen/protoc-gen-gorm@v1.1.2/proto/options/gorm.proto";
-import "github.com/infobloxopen/protoc-gen-gorm@v1.1.2/third_party/proto/atlas/resource/v1/resource.proto";
+import "github.com/infobloxopen/protoc-gen-gorm@v1.1.4/proto/options/gorm.proto";
+import "github.com/infobloxopen/protoc-gen-gorm@v1.1.4/third_party/proto/atlas/resource/v1/resource.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "api/ecomorph-entity";
+option go_package = "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api";
 
 import "elementary-type.proto";
 import "ecomorphs.proto";
@@ -43,9 +43,10 @@ message EcomorphsEntity {
   atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
   google.protobuf.Timestamp created_at = 2;
   google.protobuf.Timestamp updated_at = 3;
+  google.protobuf.Timestamp deleted_at  = 8;
   string title = 4;
   string description = 5;
-  repeated Ecomorph ecomorphs = 6 [(gorm.field).many_to_many = {association_autocreate: true, association_autoupdate: true, preload: true}];
+  Ecomorph ecomorphs = 6 [(gorm.field).belongs_to = {disable_association_autocreate: false, disable_association_autoupdate: false, preload: true}];
   atlas.rpc.Identifier user_id = 7 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
 }
 
@@ -58,7 +59,7 @@ message EcomorphsEntityList {
 message InputFormEcomorphsEntity {
   string title = 1;
   string description = 2;
-  repeated Ecomorph ecomorphs = 3;
+  Ecomorph ecomorphs = 3;
 }
 
 message InputEcomorphsEntity{

@@ -4,7 +4,7 @@ type EcomorphsEntity {
     updatedAt: Timestamp
     title: String
     description: String
-    ecomorphs: [Ecomorph]
+    ecomorphs: Ecomorph
     userId: IdentifierType
 }
 
@@ -12,7 +12,7 @@ input EcomorphsEntityInput {
     id: IdentifierInput!
     title: String
     description: String
-    ecomorphs: [EcomorphInput]
+    ecomorphs: EcomorphInput
 }
 
 

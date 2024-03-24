@@ -90,9 +90,9 @@ models:
   Timestamp:
     model: google.golang.org/protobuf/types/known/timestamppb.Timestamp
   IdentifierInput:
-    model: github.com/infobloxopen/atlas-app-toolkit/atlas/resource.Identifier
+    model: github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource.Identifier
   IdentifierType:
-    model: github.com/infobloxopen/atlas-app-toolkit/atlas/resource.Identifier
+    model: github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource.Identifier
   PagesRequest:
     model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.PagesRequest
   PagesResponse:
@@ -100,70 +100,70 @@ models:
 
 #Ecomorph
   Ecomorph:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph.Ecomorph
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.Ecomorph
   EcomorphInput:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph.Ecomorph
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.Ecomorph
   InputFormEcomorph:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph.InputFormEcomorph
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.InputFormEcomorph
   InputEcomorph:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph.InputEcomorph
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.InputEcomorph
   ListEcomorph:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph.EcomorphsList
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.EcomorphsList
   BoolResponse:
     model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.BoolResponse
 
 #Auth
   SignInUserResponse:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/auth.SignInUserResponse
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.SignInUserResponse
   SignInUserInput:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/auth.SignInUserInput
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.SignInUserInput
   SignUpUserInput:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/auth.SignUpUserInput
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.SignUpUserInput
 
 #EcomorphsEntity
   EcomorphsEntityInput:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph-entity.EcomorphsEntity
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.EcomorphsEntity
   EcomorphsEntity:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph-entity.EcomorphsEntity
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.EcomorphsEntity
   EcomorphsEntityList:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph-entity.EcomorphsEntityList
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.EcomorphsEntityList
   InputFormEcomorphsEntity:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph-entity.InputFormEcomorphsEntity
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.InputFormEcomorphsEntity
   InputEcomorphsEntity:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/ecomorph-entity.InputEcomorphsEntity
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.InputEcomorphsEntity
 
 #TypePlant
   TypePlant:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/type-plant.TypePlant
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.TypePlant
   TypePlantInput:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/type-plant.TypePlant
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.TypePlant
   TypePlantList:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/type-plant.TypePlantList
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.TypePlantList
   InputFormTypePlantRequest:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/type-plant.InputFormTypePlantRequest
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.InputFormTypePlantRequest
   InputTypePlantRequest:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/type-plant.InputTypePlantRequest
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.InputTypePlantRequest
 
 #TrialSite
   TrialSite:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/trial-site.TrialSite
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.TrialSite
   TrialSiteInput:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/trial-site.TrialSite
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.TrialSite
   TrialSiteList:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/trial-site.TrialSiteList
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.TrialSiteList
   InputFormTrialSiteRequest:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/trial-site.InputFormTrialSiteRequest
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.InputFormTrialSiteRequest
   InputTrialSiteRequest:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/trial-site.InputTrialSiteRequest
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.InputTrialSiteRequest
 
 #Transect
   Transect:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/transect.Transect
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.Transect
   TransectInput:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/transect.Transect
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.Transect
   TransectList:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/transect.TransectList
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.TransectList
   InputFormTransectRequest:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/transect.InputFormTransectRequest
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.InputFormTransectRequest
   InputTransectRequest:
-    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/transect.InputTransectRequest
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.InputTransectRequest

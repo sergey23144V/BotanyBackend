@@ -2,74 +2,25 @@ package auth
 
 import (
 	"context"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/auth"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"github.com/sergey23144V/BotanyBackend/test/g-rpc"
-	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/metadata"
 	"testing"
-	"time"
 )
-
-const titleToken = "Bearer "
-
-func GetAuthClient() (auth.AuthServiceClient, *grpc.ClientConn) {
-	g_rpc.StartServerGRPC()
-
-	time.Sleep(2 * time.Second)
-
-	conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
-	if err != nil {
-		log.Error("Could not connect: ", err)
-	}
-
-	client := auth.NewAuthServiceClient(conn)
-
-	return client, conn
-
-}
-
-func Authorisation(ctx context.Context, authClient auth.AuthServiceClient, input *auth.SignInUserInput) (*auth.SignInUserResponse, context.Context, error) {
-	user, err := authClient.SignInUser(ctx, input)
-	if err != nil {
-		log.Error("Error")
-		return nil, nil, err
-	}
-
-	md := metadata.Pairs("authorization", titleToken+user.AccessToken)
-
-	ctx = metadata.NewOutgoingContext(ctx, md)
-
-	return user, ctx, err
-}
-
-func Registration(ctx context.Context, authClient auth.AuthServiceClient, input *auth.SignUpUserInput) (*auth.SignInUserResponse, context.Context, error) {
-	user, err := authClient.SignUpUser(ctx, input)
-	if err != nil {
-		log.Error("Registration ERROR", err)
-		return nil, ctx, err
-	}
-
-	md := metadata.Pairs("authorization", titleToken+user.AccessToken)
-	ctx = metadata.NewOutgoingContext(ctx, md)
-
-	return user, ctx, err
-}
 
 func TestAuthorisation(t *testing.T) {
 	done := make(chan struct{})
 	defer close(done)
-	authClient, conn := GetAuthClient()
+	authClient, conn := g_rpc.GetAuthClient()
 
 	testTable := []struct {
 		name     string
-		user     *auth.SignInUserInput
+		user     *api.SignInUserInput
 		expected bool
 	}{
 		{
 			name: "Done",
-			user: &auth.SignInUserInput{
+			user: &api.SignInUserInput{
 				Email:    "serg2",
 				Password: "Sergey2222",
 			},
@@ -77,7 +28,7 @@ func TestAuthorisation(t *testing.T) {
 		},
 		{
 			name: "Error",
-			user: &auth.SignInUserInput{
+			user: &api.SignInUserInput{
 				Email:    "sergeykalinin@gmail.con",
 				Password: "Serg",
 			},
@@ -88,7 +39,7 @@ func TestAuthorisation(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			ctx := context.Background()
-			_, ctx, err := Authorisation(ctx, authClient, testCase.user)
+			_, ctx, err := g_rpc.Authorisation(ctx, authClient, testCase.user)
 			if testCase.expected {
 				assert.NoError(t, err, "Done")
 			} else {
@@ -110,25 +61,25 @@ func TestAuthorisation(t *testing.T) {
 func TestRegistration(t *testing.T) {
 	done := make(chan struct{})
 	defer close(done)
-	authClient, conn := GetAuthClient()
+	authClient, conn := g_rpc.GetAuthClient()
 
 	testTable := []struct {
 		name     string
-		user     *auth.SignUpUserInput
+		user     *api.SignUpUserInput
 		expected bool
 	}{
 		{
 			name: "Done",
-			user: &auth.SignUpUserInput{
-				Email:    "sergeyklinin@gmail.com",
-				Password: "Sergey24222",
+			user: &api.SignUpUserInput{
+				Email:    "serg2",
+				Password: "Sergey2222",
 				Name:     "Sergey Kalinin",
 			},
 			expected: true,
 		},
 		{
 			name: "Error",
-			user: &auth.SignUpUserInput{
+			user: &api.SignUpUserInput{
 				Email:    "sergeykalinin@gmail",
 				Password: "Ser",
 				Name:     "Sergey Kalinin",
@@ -140,7 +91,7 @@ func TestRegistration(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			ctx := context.Background()
-			_, ctx, err := Registration(ctx, authClient, testCase.user)
+			_, ctx, err := g_rpc.Registration(ctx, authClient, testCase.user)
 			if testCase.expected {
 				assert.NoError(t, err, "Done")
 			} else {

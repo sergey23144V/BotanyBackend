@@ -1,7 +1,9 @@
 package repository
 
 import (
-	"github.com/jinzhu/gorm"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"log"
 	"time"
 )
@@ -17,19 +19,19 @@ type Config struct {
 }
 
 func ConnectDB(cfg Config) (*gorm.DB, error) {
-	var (
-		db  *gorm.DB
-		err error
-	)
-	dst := "host=" + cfg.Host + " user=" + cfg.Username + " password=" + cfg.Password + " dbname=" + cfg.DBName + " port=" + cfg.Port + " sslmode=" + cfg.SSLMode + " TimeZone=Asia/Shanghai"
+
+	dsn := "host=" + cfg.Host + " user=" + cfg.Username + " password=" + cfg.Password + " dbname=" + cfg.DBName + " port=" + cfg.Port + " sslmode=" + cfg.SSLMode
 
 	for {
-		db, err = gorm.Open("postgres", dst)
+		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+			Logger: logger.Default.LogMode(logger.Info), // Включаем логирование с уровнем Info
+		})
 
-		dbSQL := db.DB()
+		dbSQL, err := db.DB()
 
 		err = dbSQL.Ping()
 		if err == nil {
+			db.Logger.LogMode(logger.Info)
 			log.Println("Соединение с базой данных установлено!")
 			return db, nil
 		}

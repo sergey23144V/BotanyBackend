@@ -14,7 +14,6 @@ import (
 )
 
 type AddPlantTrialSiteRequestORM struct {
-	gorm.Model
 	Count       int32
 	Covered     int32
 	IdPlant     interface{}
@@ -106,6 +105,7 @@ type AddPlantTrialSiteRequestWithAfterToPB interface {
 }
 
 type TrialSiteORM struct {
+	gorm.Model
 	CountTypes    int32
 	Covered       int32
 	CreatedAt     *time.Time
@@ -117,7 +117,7 @@ type TrialSiteORM struct {
 	SubDominant   *TypePlantORM `gorm:"foreignKey:SubDominantId;references:Id"`
 	SubDominantId *string
 	Title         string
-	TransectId    *string `gorm:"type:uuid;foreignKey:Transect.transectId"`
+	TransectId    *string
 	UpdatedAt     *time.Time
 	UserId        *string `gorm:"type:uuid;foreignKey:auth.User"`
 }
@@ -180,14 +180,6 @@ func (m *TrialSite) ToORM(ctx context.Context) (TrialSiteORM, error) {
 			to.UserId = &vv
 		}
 	}
-	if m.TransectId != nil {
-		if v, err := resource.Decode(&Transect{}, m.TransectId); err != nil {
-			return to, err
-		} else if v != nil {
-			vv := v.(string)
-			to.TransectId = &vv
-		}
-	}
 	if posthook, ok := interface{}(m).(TrialSiteWithAfterToORM); ok {
 		err = posthook.AfterToORM(ctx, &to)
 	}
@@ -241,13 +233,6 @@ func (m *TrialSiteORM) ToPB(ctx context.Context) (TrialSite, error) {
 			return to, err
 		} else {
 			to.UserId = v
-		}
-	}
-	if m.TransectId != nil {
-		if v, err := resource.Encode(&Transect{}, *m.TransectId); err != nil {
-			return to, err
-		} else {
-			to.TransectId = v
 		}
 	}
 	if posthook, ok := interface{}(m).(TrialSiteWithAfterToPB); ok {
@@ -406,7 +391,7 @@ func DefaultCreateTrialSite(ctx context.Context, in *TrialSite, db *gorm.DB) (*T
 			return nil, err
 		}
 	}
-	if err = db.Omit().Preload("Dominant").Preload("SubDominant").Create(&ormObj).Error; err != nil {
+	if err = db.Omit().Preload("SubDominant").Preload("Dominant").Create(&ormObj).Error; err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormObj).(TrialSiteORMWithAfterCreate_); ok {
@@ -807,10 +792,6 @@ func DefaultApplyFieldMaskTrialSite(ctx context.Context, patchee *TrialSite, pat
 		}
 		if f == prefix+"UserId" {
 			patchee.UserId = patcher.UserId
-			continue
-		}
-		if f == prefix+"TransectId" {
-			patchee.TransectId = patcher.TransectId
 			continue
 		}
 	}

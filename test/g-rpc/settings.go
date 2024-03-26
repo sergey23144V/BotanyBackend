@@ -110,6 +110,7 @@ func GetAuthClient() (api.AuthServiceClient, *grpc.ClientConn) {
 }
 
 func GetClient() (*ClientService, context.Context) {
+	StartServerGRPC()
 
 	time.Sleep(2 * time.Second)
 

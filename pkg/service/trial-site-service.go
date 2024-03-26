@@ -62,8 +62,7 @@ func (t TrialSiteServiceImpl) AddPlant(ctx context.Context, in *api.AddPlantTria
 }
 
 func (t TrialSiteServiceImpl) UpdateTrialSite(ctx context.Context, in *api.InputTrialSiteRequest) (*api.TrialSite, error) {
-	return t.repository.TrialSiteRepository.UpdateTrialSite(ctx, t.ToPB(ctx, in), &field_mask.FieldMask{Paths: []string{"Title",
-		"Description", "TypePlant", "SubDominant", "Dominant", "CountTypes", " Rating ", "Covered"}})
+	return t.repository.TrialSiteRepository.UpdateTrialSite(ctx, t.ToPB(ctx, in), &field_mask.FieldMask{Paths: getMask(in)})
 }
 
 func (t TrialSiteServiceImpl) GetListTrialSite(ctx context.Context, request *api.PagesRequest) (*api.TrialSiteList, error) {
@@ -99,9 +98,35 @@ func (t TrialSiteServiceImpl) ToPB(ctx context.Context, request *api.InputTrialS
 		CountTypes:  request.Input.CountTypes,
 		Dominant:    request.Input.Dominant,
 		SubDominant: request.Input.SubDominant,
-		TransectId:  request.Input.TransectId,
 		UserId:      userId,
 	}
+}
+
+func getMask(in *api.InputTrialSiteRequest) []string {
+	fieldMask := []string{}
+	if in.Input.Title != "" {
+		fieldMask = append(fieldMask, "Title")
+	}
+	if in.Input.Covered != 0 {
+		fieldMask = append(fieldMask, "Covered")
+	}
+	if in.Input.Rating != 0 {
+		fieldMask = append(fieldMask, "Rating")
+	}
+	if in.Input.CountTypes != 0 {
+		fieldMask = append(fieldMask, "CountTypes")
+	}
+	if in.Input.SubDominant != nil {
+		fieldMask = append(fieldMask, "SubDominant")
+	}
+	if in.Input.Dominant != nil {
+		fieldMask = append(fieldMask, "Dominant")
+	}
+	if in.Input.TypePlant != nil {
+		fieldMask = append(fieldMask, "TypePlant")
+	}
+
+	return fieldMask
 }
 
 //func (t TrialSiteServiceImpl) ToAddPlant(request *api.AddPlantTrialSiteRequest, trialSite *api.TrialSite) *api.TrialSite {

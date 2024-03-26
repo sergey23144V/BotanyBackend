@@ -61,7 +61,7 @@ message TrialSite {
   google.protobuf.Timestamp updated_at = 6;
   google.protobuf.Timestamp deleted_at  = 13;
   atlas.rpc.Identifier user_id = 11 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
-  atlas.rpc.Identifier transectId = 12 [(gorm.field).tag = {type: "uuid"  foreignkey:"Transect.transectId"}];
+
 
   message TrialSite_TypePlant{
     atlas.rpc.Identifier typePlantId = 1 [(gorm.field).tag = {type: "uuid" foreignkey: 'TypePlant' disable_association_autocreate: true, disable_association_autoupdate: true, preload: true}];
@@ -82,11 +82,9 @@ message InputFormTrialSiteRequest {
   int32 covered = 3;
   int32 rating = 10;
   int32 count_types = 4;
-  atlas.rpc.Identifier transectId = 12;
   repeated TypePlant typePlant = 5;
    TypePlant dominant = 7;
    TypePlant subDominant = 8;
-  atlas.rpc.Identifier transect = 9;
 }
 
 message InputTrialSiteRequest{

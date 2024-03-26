@@ -52,8 +52,7 @@ func (t TransectServiceImpl) StrictUpdateTransect(ctx context.Context, in *api.I
 }
 
 func (t TransectServiceImpl) UpdateTransect(ctx context.Context, in *api.InputTransectRequest) (*api.Transect, error) {
-	return t.repository.TransectRepository.UpdateTransect(ctx, t.ToPB(ctx, in), &field_mask.FieldMask{Paths: []string{"Title",
-		"TrialSite", "SubDominant", "Dominant", "CountTypes", "SquareTrialSite", "Square", "Rating", "Covered"}})
+	return t.repository.TransectRepository.UpdateTransect(ctx, t.ToPB(ctx, in), &field_mask.FieldMask{Paths: t.getMask(in.Input)})
 }
 
 func (t TransectServiceImpl) GetListTransect(ctx context.Context, request *api.PagesRequest) (*api.TransectList, error) {
@@ -96,4 +95,36 @@ func (t TransectServiceImpl) ToPB(ctx context.Context, request *api.InputTransec
 		TrialSite:       request.Input.TrialSite,
 		UserId:          userId,
 	}
+}
+
+func (t TransectServiceImpl) getMask(in *api.InputFormTransectRequest) []string {
+	fieldMask := []string{}
+	if in.Title != "" {
+		fieldMask = append(fieldMask, "Title")
+	}
+	if in.Covered != 0 {
+		fieldMask = append(fieldMask, "Covered")
+	}
+	if in.SquareTrialSite != 0 {
+		fieldMask = append(fieldMask, "SquareTrialSite")
+	}
+	if in.Square != 0 {
+		fieldMask = append(fieldMask, "Square")
+	}
+	if in.Rating != 0 {
+		fieldMask = append(fieldMask, "Rating")
+	}
+	if in.CountTypes != 0 {
+		fieldMask = append(fieldMask, "CountTypes")
+	}
+	if in.SubDominant != nil {
+		fieldMask = append(fieldMask, "SubDominant")
+	}
+	if in.Dominant != nil {
+		fieldMask = append(fieldMask, "Dominant")
+	}
+	if in.TrialSite != nil {
+		fieldMask = append(fieldMask, "TrialSite")
+	}
+	return fieldMask
 }

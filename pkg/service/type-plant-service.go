@@ -17,6 +17,7 @@ type TypePlantService interface {
 	DeleteTypePlant(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error)
 	StrictUpdateTypePlant(ctx context.Context, in *api.InputTypePlantRequest) (*api.TypePlant, error)
 	UpdateTypePlant(ctx context.Context, in *api.InputTypePlantRequest) (*api.TypePlant, error)
+	AddEcomorphsEntity(ctx context.Context, request *api.InputTypePlant_EcomorphsEntityRequest) (*api.TypePlant, error)
 	GetListTypePlant(ctx context.Context, request *api.PagesRequest) (*api.TypePlantList, error)
 }
 
@@ -61,6 +62,11 @@ func (t TypePlantServiceImpl) UpdateTypePlant(ctx context.Context, in *api.Input
 		fieldMask = append(fieldMask, "Subtitle")
 	}
 	return t.repository.TypePlantRepository.UpdateTypePlant(ctx, t.ToPB(ctx, in), &field_mask.FieldMask{Paths: fieldMask})
+}
+
+func (t TypePlantServiceImpl) AddEcomorphsEntity(ctx context.Context, in *api.InputTypePlant_EcomorphsEntityRequest) (*api.TypePlant, error) {
+	userId := middlewares.GetUserIdFromContext(ctx)
+	return t.repository.TypePlantRepository.UpdateTypePlant(ctx, &api.TypePlant{Id: in.Id, EcomorphsEntity: in.EcomorphsEntity, UserId: userId}, &field_mask.FieldMask{Paths: []string{}})
 }
 
 func (t TypePlantServiceImpl) GetListTypePlant(ctx context.Context, request *api.PagesRequest) (*api.TypePlantList, error) {

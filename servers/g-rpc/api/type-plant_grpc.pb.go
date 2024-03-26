@@ -27,6 +27,8 @@ type TypePlantServiceClient interface {
 	GetTypePlant(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*TypePlant, error)
 	// Обновление сущности по id
 	UpdateTypePlant(ctx context.Context, in *InputTypePlantRequest, opts ...grpc.CallOption) (*TypePlant, error)
+	// Обновление сущности по id
+	AddEcomorphsEntity(ctx context.Context, in *InputTypePlant_EcomorphsEntityRequest, opts ...grpc.CallOption) (*TypePlant, error)
 	// Удаление сущности по заголовку
 	DeleteTypePlant(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*BoolResponse, error)
 	// Получение списка всех сущностей
@@ -68,6 +70,15 @@ func (c *typePlantServiceClient) UpdateTypePlant(ctx context.Context, in *InputT
 	return out, nil
 }
 
+func (c *typePlantServiceClient) AddEcomorphsEntity(ctx context.Context, in *InputTypePlant_EcomorphsEntityRequest, opts ...grpc.CallOption) (*TypePlant, error) {
+	out := new(TypePlant)
+	err := c.cc.Invoke(ctx, "/botany.TypePlantService/addEcomorphsEntity", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *typePlantServiceClient) DeleteTypePlant(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*BoolResponse, error) {
 	out := new(BoolResponse)
 	err := c.cc.Invoke(ctx, "/botany.TypePlantService/DeleteTypePlant", in, out, opts...)
@@ -95,6 +106,8 @@ type TypePlantServiceServer interface {
 	GetTypePlant(context.Context, *IdRequest) (*TypePlant, error)
 	// Обновление сущности по id
 	UpdateTypePlant(context.Context, *InputTypePlantRequest) (*TypePlant, error)
+	// Обновление сущности по id
+	AddEcomorphsEntity(context.Context, *InputTypePlant_EcomorphsEntityRequest) (*TypePlant, error)
 	// Удаление сущности по заголовку
 	DeleteTypePlant(context.Context, *IdRequest) (*BoolResponse, error)
 	// Получение списка всех сущностей
@@ -115,6 +128,9 @@ func (UnimplementedTypePlantServiceServer) GetTypePlant(context.Context, *IdRequ
 func (UnimplementedTypePlantServiceServer) UpdateTypePlant(context.Context, *InputTypePlantRequest) (*TypePlant, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateTypePlant not implemented")
 }
+func (UnimplementedTypePlantServiceServer) AddEcomorphsEntity(context.Context, *InputTypePlant_EcomorphsEntityRequest) (*TypePlant, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddEcomorphsEntity not implemented")
+}
 func (UnimplementedTypePlantServiceServer) DeleteTypePlant(context.Context, *IdRequest) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteTypePlant not implemented")
 }
@@ -127,7 +143,7 @@ func (UnimplementedTypePlantServiceServer) MustEmbedUnimplementedTypePlantServic
 // Use of this interface is not recommended, as added methods to TypePlantServiceServer will
 // result in compilation errors.
 type UnsafeTypePlantServiceServer interface {
-	MustEmbedUnimplementedTypePlantServiceServer()
+	mustEmbedUnimplementedTypePlantServiceServer()
 }
 
 func RegisterTypePlantServiceServer(s grpc.ServiceRegistrar, srv TypePlantServiceServer) {
@@ -188,6 +204,24 @@ func _TypePlantService_UpdateTypePlant_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TypePlantService_AddEcomorphsEntity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InputTypePlant_EcomorphsEntityRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TypePlantServiceServer).AddEcomorphsEntity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/botany.TypePlantService/addEcomorphsEntity",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TypePlantServiceServer).AddEcomorphsEntity(ctx, req.(*InputTypePlant_EcomorphsEntityRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _TypePlantService_DeleteTypePlant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(IdRequest)
 	if err := dec(in); err != nil {
@@ -242,6 +276,10 @@ var TypePlantService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateTypePlant",
 			Handler:    _TypePlantService_UpdateTypePlant_Handler,
+		},
+		{
+			MethodName: "addEcomorphsEntity",
+			Handler:    _TypePlantService_AddEcomorphsEntity_Handler,
 		},
 		{
 			MethodName: "DeleteTypePlant",

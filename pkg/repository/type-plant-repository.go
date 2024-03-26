@@ -144,7 +144,11 @@ func (t TypePlantRepositoryImpl) StrictUpdateTypePlant(ctx context.Context, in *
 			return nil, err
 		}
 	}
-	pbResponse, err := ormObj.ToPB(ctx)
+	ormResponse := api.TypePlantORM{}
+	if err = t.db.Where(&ormObj).Preload("EcomorphsEntity").First(&ormResponse).Error; err != nil {
+		return nil, err
+	}
+	pbResponse, err := ormResponse.ToPB(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -187,7 +191,7 @@ func (t TypePlantRepositoryImpl) UpdateTypePlant(ctx context.Context, in *api.Ty
 			return nil, err
 		}
 	}
-	pbResponse, err := api.DefaultStrictUpdateTypePlant(ctx, &pbObj, t.db)
+	pbResponse, err := t.StrictUpdateTypePlant(ctx, &pbObj)
 	if err != nil {
 		return nil, err
 	}

@@ -107,6 +107,41 @@ func TestUpdateTypePlantById(t *testing.T) {
 	}
 }
 
+func TestAddEcomorphsEntityById(t *testing.T) {
+	client, ctx := g_rpc.GetClient()
+
+	testTable := []struct {
+		name           string
+		InputTypePlant *api.InputTypePlant_EcomorphsEntityRequest
+		expected       bool
+	}{
+		{
+			name: "Done",
+			InputTypePlant: &api.InputTypePlant_EcomorphsEntityRequest{
+				Id: CreateTypePlant(ctx, *client),
+				EcomorphsEntity: []*api.EcomorphsEntity{
+					{Id: ecomorph_entity.CreateEcomorphsEntity(ctx, *client)},
+					{Id: ecomorph_entity.CreateEcomorphsEntity(ctx, *client)},
+					{Id: ecomorph_entity.CreateEcomorphsEntity(ctx, *client)},
+				},
+			},
+			expected: true,
+		},
+	}
+
+	for _, testCase := range testTable {
+		t.Run(testCase.name, func(t *testing.T) {
+			result, err := client.TypePlant.AddEcomorphsEntity(ctx, testCase.InputTypePlant)
+			g_rpc.Log(result.EcomorphsEntity)
+			if testCase.expected {
+				assert.NoError(t, err, "Done")
+			} else {
+				assert.Error(t, err, "Error")
+			}
+		})
+	}
+}
+
 func TestGetListTypePlant(t *testing.T) {
 	client, ctx := g_rpc.GetClient()
 

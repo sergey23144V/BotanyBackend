@@ -21,6 +21,9 @@ service TypePlantService {
   // Обновление сущности по id
   rpc UpdateTypePlant (InputTypePlantRequest) returns (TypePlant);
 
+  // Обновление сущности по id
+  rpc addEcomorphsEntity (InputTypePlant_EcomorphsEntityRequest) returns (TypePlant);
+
   // Удаление сущности по заголовку
   rpc DeleteTypePlant (IdRequest) returns (BoolResponse){
     option (gorm.method).object_type = "TypePlant";
@@ -61,6 +64,11 @@ message InputFormTypePlantRequest {
 message InputTypePlantRequest{
   atlas.rpc.Identifier id = 1;
   InputFormTypePlantRequest input = 2;
+}
+
+message InputTypePlant_EcomorphsEntityRequest{
+  atlas.rpc.Identifier id = 1;
+  repeated EcomorphsEntity ecomorphsEntity = 4;
 }
 
 

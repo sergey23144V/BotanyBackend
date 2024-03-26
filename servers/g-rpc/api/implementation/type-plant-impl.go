@@ -26,6 +26,10 @@ func (t TypePlantServetImpl) UpdateTypePlant(ctx context.Context, request *api.I
 	return t.service.TypePlantService.UpdateTypePlant(ctx, request)
 }
 
+func (t TypePlantServetImpl) AddEcomorphsEntity(ctx context.Context, request *api.InputTypePlant_EcomorphsEntityRequest) (*api.TypePlant, error) {
+	return t.service.TypePlantService.AddEcomorphsEntity(ctx, request)
+}
+
 func (t TypePlantServetImpl) DeleteTypePlant(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error) {
 	return t.service.TypePlantService.DeleteTypePlant(ctx, request)
 }

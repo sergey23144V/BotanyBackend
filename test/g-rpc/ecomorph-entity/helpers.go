@@ -12,7 +12,7 @@ import (
 func CreateEcomorphsEntity(ctx context.Context, client g_rpc.ClientService) *resource.Identifier {
 	Ecomorph := &api.InputEcomorphsEntity{
 		Input: &api.InputFormEcomorphsEntity{
-			Title:       "Трава",
+			Title:       "Семейство",
 			Ecomorphs:   &api.Ecomorph{Id: ecomorph.CreateEcomorph(ctx, client.Ecomorph)},
 			Description: "Ну про вид",
 		},

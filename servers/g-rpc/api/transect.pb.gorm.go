@@ -215,7 +215,7 @@ func DefaultCreateTransect(ctx context.Context, in *Transect, db *gorm.DB) (*Tra
 			return nil, err
 		}
 	}
-	if err = db.Omit("SubDominant", "TrialSite", "Dominant").Preload("SubDominant").Preload("TrialSite").Preload("Dominant").Create(&ormObj).Error; err != nil {
+	if err = db.Omit("Dominant", "SubDominant", "TrialSite").Preload("TrialSite").Preload("Dominant").Preload("SubDominant").Create(&ormObj).Error; err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormObj).(TransectORMWithAfterCreate_); ok {
@@ -379,7 +379,7 @@ func DefaultStrictUpdateTransect(ctx context.Context, in *Transect, db *gorm.DB)
 			return nil, err
 		}
 	}
-	if err = db.Omit("SubDominant", "TrialSite", "Dominant").Preload("SubDominant").Preload("TrialSite").Preload("Dominant").Save(&ormObj).Error; err != nil {
+	if err = db.Omit("TrialSite", "Dominant", "SubDominant").Preload("TrialSite").Preload("Dominant").Preload("SubDominant").Save(&ormObj).Error; err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormObj).(TransectORMWithAfterStrictUpdateSave); ok {

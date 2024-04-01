@@ -16,6 +16,16 @@ type TrialSiteRepository interface {
 	StrictUpdateTrialSite(ctx context.Context, in *api.TrialSite) (*api.TrialSite, error)
 	DeleteTrialSite(ctx context.Context, in *api.TrialSite) error
 	CreateTrialSite(ctx context.Context, in *api.TrialSite) (*api.TrialSite, error)
+	CreatePlant(context.Context, *api.Plant) (*api.Plant, error)
+	// Получение сущности по id
+	GetPlant(context.Context, *api.Plant) (*api.Plant, error)
+	// Обновление сущности по id
+	UpdatePlant(ctx context.Context, in *api.Plant, updateMask *field_mask.FieldMask) (*api.Plant, error)
+	// Удаление сущности по заголовку
+	DeletePlant(context.Context, *api.Plant) error
+	// Получение списка всех сущностей
+	GetAllPlant(context.Context, *api.Plant, *api.PagesRequest) ([]*api.Plant, error)
+	GetAllPlantORM(ctx context.Context, ormObj *api.PlantORM, request *api.PagesRequest) ([]*api.Plant, error)
 }
 
 type TrialSiteRepositoryImpl struct {
@@ -24,6 +34,214 @@ type TrialSiteRepositoryImpl struct {
 
 func NewTrialSiteRepositoryImpl(db *gorm.DB) TrialSiteRepository {
 	return TrialSiteRepositoryImpl{db}
+}
+
+func (t TrialSiteRepositoryImpl) CreatePlant(ctx context.Context, in *api.Plant) (*api.Plant, error) {
+	if in == nil {
+		return nil, errors.NilArgumentError
+	}
+	ormObj, err := in.ToORM(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if hook, ok := interface{}(&ormObj).(api.PlantORMWithBeforeCreate_); ok {
+		if t.db, err = hook.BeforeCreate_(ctx, t.db); err != nil {
+			return nil, err
+		}
+	}
+	if err = t.db.Omit().Preload("TypePlantId").Create(&ormObj).Error; err != nil {
+		return nil, err
+	}
+	if hook, ok := interface{}(&ormObj).(api.PlantORMWithAfterCreate_); ok {
+		if err = hook.AfterCreate_(ctx, t.db); err != nil {
+			return nil, err
+		}
+	}
+	pbResponse, err := ormObj.ToPB(ctx)
+	return &pbResponse, err
+}
+
+func (t TrialSiteRepositoryImpl) GetPlant(ctx context.Context, in *api.Plant) (*api.Plant, error) {
+	if in == nil {
+		return nil, errors.NilArgumentError
+	}
+	ormObj, err := in.ToORM(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if ormObj.Id == "" {
+		return nil, errors.EmptyIdError
+	}
+	if hook, ok := interface{}(&ormObj).(api.PlantORMWithBeforeReadApplyQuery); ok {
+		if t.db, err = hook.BeforeReadApplyQuery(ctx, t.db); err != nil {
+			return nil, err
+		}
+	}
+	if hook, ok := interface{}(&ormObj).(api.PlantORMWithBeforeReadFind); ok {
+		if t.db, err = hook.BeforeReadFind(ctx, t.db); err != nil {
+			return nil, err
+		}
+	}
+	ormResponse := api.PlantORM{}
+	if err = t.db.Where(&ormObj).First(&ormResponse).Error; err != nil {
+		return nil, err
+	}
+	if hook, ok := interface{}(&ormResponse).(api.PlantORMWithAfterReadFind); ok {
+		if err = hook.AfterReadFind(ctx, t.db); err != nil {
+			return nil, err
+		}
+	}
+	pbResponse, err := ormResponse.ToPB(ctx)
+	return &pbResponse, err
+}
+
+func (t TrialSiteRepositoryImpl) UpdatePlant(ctx context.Context, in *api.Plant, updateMask *field_mask.FieldMask) (*api.Plant, error) {
+	if in == nil {
+		return nil, errors.NilArgumentError
+	}
+	var pbObj api.Plant
+	var err error
+	if hook, ok := interface{}(&pbObj).(api.PlantWithBeforePatchRead); ok {
+		if t.db, err = hook.BeforePatchRead(ctx, in, updateMask, t.db); err != nil {
+			return nil, err
+		}
+	}
+	pbReadRes, err := api.DefaultReadPlant(ctx, &api.Plant{Id: in.GetId()}, t.db)
+	if err != nil {
+		return nil, err
+	}
+	pbObj = *pbReadRes
+	if hook, ok := interface{}(&pbObj).(api.PlantWithBeforePatchApplyFieldMask); ok {
+		if t.db, err = hook.BeforePatchApplyFieldMask(ctx, in, updateMask, t.db); err != nil {
+			return nil, err
+		}
+	}
+	if _, err := api.DefaultApplyFieldMaskPlant(ctx, &pbObj, in, updateMask, "", t.db); err != nil {
+		return nil, err
+	}
+	if hook, ok := interface{}(&pbObj).(api.PlantWithBeforePatchSave); ok {
+		if t.db, err = hook.BeforePatchSave(ctx, in, updateMask, t.db); err != nil {
+			return nil, err
+		}
+	}
+	pbResponse, err := api.DefaultStrictUpdatePlant(ctx, &pbObj, t.db)
+	if err != nil {
+		return nil, err
+	}
+	if hook, ok := interface{}(pbResponse).(api.PlantWithAfterPatchSave); ok {
+		if err = hook.AfterPatchSave(ctx, in, updateMask, t.db); err != nil {
+			return nil, err
+		}
+	}
+	return pbResponse, nil
+}
+
+func (t TrialSiteRepositoryImpl) DeletePlant(ctx context.Context, in *api.Plant) error {
+	if in == nil {
+		return errors.NilArgumentError
+	}
+	ormObj, err := in.ToORM(ctx)
+	if err != nil {
+		return err
+	}
+	if ormObj.Id == "" {
+		return errors.EmptyIdError
+	}
+	if hook, ok := interface{}(&ormObj).(api.PlantORMWithBeforeDelete_); ok {
+		if t.db, err = hook.BeforeDelete_(ctx, t.db); err != nil {
+			return err
+		}
+	}
+	err = t.db.Where(&ormObj).Delete(&api.PlantORM{}).Error
+	if err != nil {
+		return err
+	}
+	if hook, ok := interface{}(&ormObj).(api.PlantORMWithAfterDelete_); ok {
+		err = hook.AfterDelete_(ctx, t.db)
+	}
+	return err
+}
+
+func (t TrialSiteRepositoryImpl) GetAllPlant(ctx context.Context, in *api.Plant, request *api.PagesRequest) ([]*api.Plant, error) {
+	ormObj, err := in.ToORM(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if hook, ok := interface{}(&ormObj).(api.PlantORMWithBeforeListApplyQuery); ok {
+		if t.db, err = hook.BeforeListApplyQuery(ctx, t.db); err != nil {
+			return nil, err
+		}
+	}
+	if hook, ok := interface{}(&ormObj).(api.PlantORMWithBeforeListFind); ok {
+		if t.db, err = hook.BeforeListFind(ctx, t.db); err != nil {
+			return nil, err
+		}
+	}
+	if request != nil && request.Page != 0 && request.Limit != 0 {
+		offset := (request.Page - 1) * request.Limit
+		t.db = t.db.Where(&ormObj).Offset(int(offset)).Limit(int(request.Limit))
+	} else {
+		t.db = t.db.Where(&ormObj)
+	}
+	t.db = t.db.Order("id")
+	ormResponse := []api.PlantORM{}
+	if err := t.db.Find(&ormResponse).Error; err != nil {
+		return nil, err
+	}
+	if hook, ok := interface{}(&ormObj).(api.PlantORMWithAfterListFind); ok {
+		if err = hook.AfterListFind(ctx, t.db, &ormResponse); err != nil {
+			return nil, err
+		}
+	}
+	pbResponse := []*api.Plant{}
+	for _, responseEntry := range ormResponse {
+		temp, err := responseEntry.ToPB(ctx)
+		if err != nil {
+			return nil, err
+		}
+		pbResponse = append(pbResponse, &temp)
+	}
+	return pbResponse, nil
+}
+
+func (t TrialSiteRepositoryImpl) GetAllPlantORM(ctx context.Context, ormObj *api.PlantORM, request *api.PagesRequest) ([]*api.Plant, error) {
+	var err error
+
+	if hook, ok := interface{}(&ormObj).(api.PlantORMWithBeforeListApplyQuery); ok {
+		if t.db, err = hook.BeforeListApplyQuery(ctx, t.db); err != nil {
+			return nil, err
+		}
+	}
+	if hook, ok := interface{}(&ormObj).(api.PlantORMWithBeforeListFind); ok {
+		if t.db, err = hook.BeforeListFind(ctx, t.db); err != nil {
+			return nil, err
+		}
+	}
+	if request != nil && request.Page != 0 && request.Limit != 0 {
+		offset := (request.Page - 1) * request.Limit
+		t.db = t.db.Where(&ormObj).Offset(int(offset)).Limit(int(request.Limit))
+	} else {
+		t.db = t.db.Where(&ormObj)
+	}
+	t.db = t.db.Order("id")
+	ormResponse := []api.PlantORM{}
+	if err := t.db.Preload("TypePlant").Find(&ormResponse).Error; err != nil {
+		return nil, err
+	}
+	if hook, ok := interface{}(&ormObj).(api.PlantORMWithAfterListFind); ok {
+		if err = hook.AfterListFind(ctx, t.db, &ormResponse); err != nil {
+			return nil, err
+		}
+	}
+	pbResponse := []*api.Plant{}
+	for _, responseEntry := range ormResponse {
+		temp, err := responseEntry.ToPB(ctx)
+		if err != nil {
+			return nil, err
+		}
+		pbResponse = append(pbResponse, &temp)
+	}
+	return pbResponse, nil
 }
 
 func (t TrialSiteRepositoryImpl) CreateTrialSite(ctx context.Context, in *api.TrialSite) (*api.TrialSite, error) {
@@ -73,7 +291,7 @@ func (t TrialSiteRepositoryImpl) GetTrialSiteById(ctx context.Context, in *api.T
 		}
 	}
 	ormResponse := api.TrialSiteORM{}
-	if err = t.db.Where(&ormObj).First(&ormResponse).Error; err != nil {
+	if err = t.db.Where(&ormObj).Preload("Plant").First(&ormResponse).Error; err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormResponse).(api.TrialSiteORMWithAfterReadFind); ok {

@@ -143,7 +143,7 @@ func (UnimplementedTypePlantServiceServer) MustEmbedUnimplementedTypePlantServic
 // Use of this interface is not recommended, as added methods to TypePlantServiceServer will
 // result in compilation errors.
 type UnsafeTypePlantServiceServer interface {
-	mustEmbedUnimplementedTypePlantServiceServer()
+	MustEmbedUnimplementedTypePlantServiceServer()
 }
 
 func RegisterTypePlantServiceServer(s grpc.ServiceRegistrar, srv TypePlantServiceServer) {

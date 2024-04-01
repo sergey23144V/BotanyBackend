@@ -1,7 +1,6 @@
 package type_plant
 
 import (
-	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
 	ecomorph_entity "github.com/sergey23144V/BotanyBackend/test/g-rpc/ecomorph-entity"
@@ -84,7 +83,7 @@ func TestUpdateTypePlantById(t *testing.T) {
 		{
 			name: "Done",
 			InputTypePlant: &api.InputTypePlantRequest{
-				Id: &resource.Identifier{ResourceId: "cc518ea6-c38d-481c-ec0e-2e2c2d91dbb0"},
+				Id: CreateTypePlant(ctx, *client),
 				Input: &api.InputFormTypePlantRequest{
 					Title:           "не Семейство",
 					EcomorphsEntity: []*api.EcomorphsEntity{{Id: ecomorph_entity.CreateEcomorphsEntity(ctx, *client)}},
@@ -158,7 +157,7 @@ func TestGetListTypePlant(t *testing.T) {
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-			_, err := client.TypePlant.GetAllTypePlant(ctx, &api.PagesRequest{Page: 1, Limit: 2})
+			_, err := client.TypePlant.GetAllTypePlant(ctx, &api.PagesRequest{Page: 2, Limit: 2})
 			if testCase.expected {
 				assert.NoError(t, err, "Done")
 			} else {

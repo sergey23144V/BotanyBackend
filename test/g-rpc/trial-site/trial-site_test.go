@@ -19,13 +19,27 @@ func TestCreateTrialSite(t *testing.T) {
 			name: "Done",
 			TrialSite: &api.InputTrialSiteRequest{
 				Input: &api.InputFormTrialSiteRequest{
-					Title:      "Трава",
+					Title:      "N2",
 					CountTypes: 20,
 					Rating:     2,
-					Covered:    4,
+					Covered:    40,
+					Plant:      []*api.Plant{{Id: CreatePlant(ctx, *client)}, {Id: CreatePlant(ctx, *client)}},
 				},
 			},
 			expected: true,
+		},
+		{
+			name: "Error ",
+			TrialSite: &api.InputTrialSiteRequest{
+				Input: &api.InputFormTrialSiteRequest{
+					Title:      "N2",
+					CountTypes: 20,
+					Rating:     2,
+					Covered:    40,
+					Plant:      []*api.Plant{{Id: CreatePlant(ctx, *client)}, {Id: CreatePlant(ctx, *client)}, {Id: CreatePlant(ctx, *client)}},
+				},
+			},
+			expected: false,
 		},
 	}
 

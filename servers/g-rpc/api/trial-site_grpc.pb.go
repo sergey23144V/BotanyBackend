@@ -23,15 +23,23 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TrialSiteServiceClient interface {
 	CreateTrialSite(ctx context.Context, in *InputTrialSiteRequest, opts ...grpc.CallOption) (*TrialSite, error)
-	// Получение сущности по
+	// Получение сущности по id
 	GetTrialSite(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*TrialSite, error)
 	// Обновление сущности по id
 	UpTrialSite(ctx context.Context, in *InputTrialSiteRequest, opts ...grpc.CallOption) (*TrialSite, error)
-	AddPlant(ctx context.Context, in *AddPlantTrialSiteRequest, opts ...grpc.CallOption) (*TrialSite, error)
 	// Удаление сущности по заголовку
 	DeleteTrialSite(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*BoolResponse, error)
 	// Получение списка всех сущностей
 	GetAllTrialSite(ctx context.Context, in *PagesRequest, opts ...grpc.CallOption) (*TrialSiteList, error)
+	CreatePlant(ctx context.Context, in *InputPlantRequest, opts ...grpc.CallOption) (*Plant, error)
+	// Получение сущности по id
+	GetPlant(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*Plant, error)
+	// Обновление сущности по id
+	UpdatePlant(ctx context.Context, in *InputPlantRequest, opts ...grpc.CallOption) (*Plant, error)
+	// Удаление сущности по заголовку
+	DeletePlant(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*BoolResponse, error)
+	// Получение списка всех сущностей
+	GetAllPlant(ctx context.Context, in *PagesRequest, opts ...grpc.CallOption) (*PlantList, error)
 }
 
 type trialSiteServiceClient struct {
@@ -69,15 +77,6 @@ func (c *trialSiteServiceClient) UpTrialSite(ctx context.Context, in *InputTrial
 	return out, nil
 }
 
-func (c *trialSiteServiceClient) AddPlant(ctx context.Context, in *AddPlantTrialSiteRequest, opts ...grpc.CallOption) (*TrialSite, error) {
-	out := new(TrialSite)
-	err := c.cc.Invoke(ctx, "/botany.TrialSiteService/AddPlant", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *trialSiteServiceClient) DeleteTrialSite(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*BoolResponse, error) {
 	out := new(BoolResponse)
 	err := c.cc.Invoke(ctx, "/botany.TrialSiteService/DeleteTrialSite", in, out, opts...)
@@ -96,20 +95,73 @@ func (c *trialSiteServiceClient) GetAllTrialSite(ctx context.Context, in *PagesR
 	return out, nil
 }
 
+func (c *trialSiteServiceClient) CreatePlant(ctx context.Context, in *InputPlantRequest, opts ...grpc.CallOption) (*Plant, error) {
+	out := new(Plant)
+	err := c.cc.Invoke(ctx, "/botany.TrialSiteService/CreatePlant", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *trialSiteServiceClient) GetPlant(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*Plant, error) {
+	out := new(Plant)
+	err := c.cc.Invoke(ctx, "/botany.TrialSiteService/GetPlant", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *trialSiteServiceClient) UpdatePlant(ctx context.Context, in *InputPlantRequest, opts ...grpc.CallOption) (*Plant, error) {
+	out := new(Plant)
+	err := c.cc.Invoke(ctx, "/botany.TrialSiteService/UpdatePlant", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *trialSiteServiceClient) DeletePlant(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*BoolResponse, error) {
+	out := new(BoolResponse)
+	err := c.cc.Invoke(ctx, "/botany.TrialSiteService/DeletePlant", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *trialSiteServiceClient) GetAllPlant(ctx context.Context, in *PagesRequest, opts ...grpc.CallOption) (*PlantList, error) {
+	out := new(PlantList)
+	err := c.cc.Invoke(ctx, "/botany.TrialSiteService/GetAllPlant", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TrialSiteServiceServer is the server API for TrialSiteService service.
 // All implementations must embed UnimplementedTrialSiteServiceServer
 // for forward compatibility
 type TrialSiteServiceServer interface {
 	CreateTrialSite(context.Context, *InputTrialSiteRequest) (*TrialSite, error)
-	// Получение сущности по
+	// Получение сущности по id
 	GetTrialSite(context.Context, *IdRequest) (*TrialSite, error)
 	// Обновление сущности по id
 	UpTrialSite(context.Context, *InputTrialSiteRequest) (*TrialSite, error)
-	AddPlant(context.Context, *AddPlantTrialSiteRequest) (*TrialSite, error)
 	// Удаление сущности по заголовку
 	DeleteTrialSite(context.Context, *IdRequest) (*BoolResponse, error)
 	// Получение списка всех сущностей
 	GetAllTrialSite(context.Context, *PagesRequest) (*TrialSiteList, error)
+	CreatePlant(context.Context, *InputPlantRequest) (*Plant, error)
+	// Получение сущности по id
+	GetPlant(context.Context, *IdRequest) (*Plant, error)
+	// Обновление сущности по id
+	UpdatePlant(context.Context, *InputPlantRequest) (*Plant, error)
+	// Удаление сущности по заголовку
+	DeletePlant(context.Context, *IdRequest) (*BoolResponse, error)
+	// Получение списка всех сущностей
+	GetAllPlant(context.Context, *PagesRequest) (*PlantList, error)
 	MustEmbedUnimplementedTrialSiteServiceServer()
 }
 
@@ -126,14 +178,26 @@ func (UnimplementedTrialSiteServiceServer) GetTrialSite(context.Context, *IdRequ
 func (UnimplementedTrialSiteServiceServer) UpTrialSite(context.Context, *InputTrialSiteRequest) (*TrialSite, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpTrialSite not implemented")
 }
-func (UnimplementedTrialSiteServiceServer) AddPlant(context.Context, *AddPlantTrialSiteRequest) (*TrialSite, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddPlant not implemented")
-}
 func (UnimplementedTrialSiteServiceServer) DeleteTrialSite(context.Context, *IdRequest) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteTrialSite not implemented")
 }
 func (UnimplementedTrialSiteServiceServer) GetAllTrialSite(context.Context, *PagesRequest) (*TrialSiteList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllTrialSite not implemented")
+}
+func (UnimplementedTrialSiteServiceServer) CreatePlant(context.Context, *InputPlantRequest) (*Plant, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreatePlant not implemented")
+}
+func (UnimplementedTrialSiteServiceServer) GetPlant(context.Context, *IdRequest) (*Plant, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPlant not implemented")
+}
+func (UnimplementedTrialSiteServiceServer) UpdatePlant(context.Context, *InputPlantRequest) (*Plant, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePlant not implemented")
+}
+func (UnimplementedTrialSiteServiceServer) DeletePlant(context.Context, *IdRequest) (*BoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeletePlant not implemented")
+}
+func (UnimplementedTrialSiteServiceServer) GetAllPlant(context.Context, *PagesRequest) (*PlantList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllPlant not implemented")
 }
 func (UnimplementedTrialSiteServiceServer) MustEmbedUnimplementedTrialSiteServiceServer() {}
 
@@ -202,24 +266,6 @@ func _TrialSiteService_UpTrialSite_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TrialSiteService_AddPlant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddPlantTrialSiteRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(TrialSiteServiceServer).AddPlant(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/botany.TrialSiteService/AddPlant",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TrialSiteServiceServer).AddPlant(ctx, req.(*AddPlantTrialSiteRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _TrialSiteService_DeleteTrialSite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(IdRequest)
 	if err := dec(in); err != nil {
@@ -256,6 +302,96 @@ func _TrialSiteService_GetAllTrialSite_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TrialSiteService_CreatePlant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InputPlantRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TrialSiteServiceServer).CreatePlant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/botany.TrialSiteService/CreatePlant",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TrialSiteServiceServer).CreatePlant(ctx, req.(*InputPlantRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TrialSiteService_GetPlant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TrialSiteServiceServer).GetPlant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/botany.TrialSiteService/GetPlant",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TrialSiteServiceServer).GetPlant(ctx, req.(*IdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TrialSiteService_UpdatePlant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InputPlantRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TrialSiteServiceServer).UpdatePlant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/botany.TrialSiteService/UpdatePlant",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TrialSiteServiceServer).UpdatePlant(ctx, req.(*InputPlantRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TrialSiteService_DeletePlant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TrialSiteServiceServer).DeletePlant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/botany.TrialSiteService/DeletePlant",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TrialSiteServiceServer).DeletePlant(ctx, req.(*IdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TrialSiteService_GetAllPlant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PagesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TrialSiteServiceServer).GetAllPlant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/botany.TrialSiteService/GetAllPlant",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TrialSiteServiceServer).GetAllPlant(ctx, req.(*PagesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TrialSiteService_ServiceDesc is the grpc.ServiceDesc for TrialSiteService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -276,16 +412,32 @@ var TrialSiteService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _TrialSiteService_UpTrialSite_Handler,
 		},
 		{
-			MethodName: "AddPlant",
-			Handler:    _TrialSiteService_AddPlant_Handler,
-		},
-		{
 			MethodName: "DeleteTrialSite",
 			Handler:    _TrialSiteService_DeleteTrialSite_Handler,
 		},
 		{
 			MethodName: "GetAllTrialSite",
 			Handler:    _TrialSiteService_GetAllTrialSite_Handler,
+		},
+		{
+			MethodName: "CreatePlant",
+			Handler:    _TrialSiteService_CreatePlant_Handler,
+		},
+		{
+			MethodName: "GetPlant",
+			Handler:    _TrialSiteService_GetPlant_Handler,
+		},
+		{
+			MethodName: "UpdatePlant",
+			Handler:    _TrialSiteService_UpdatePlant_Handler,
+		},
+		{
+			MethodName: "DeletePlant",
+			Handler:    _TrialSiteService_DeletePlant_Handler,
+		},
+		{
+			MethodName: "GetAllPlant",
+			Handler:    _TrialSiteService_GetAllPlant_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

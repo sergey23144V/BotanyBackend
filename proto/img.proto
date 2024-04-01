@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option go_package = "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api";
+
+package botany;
+import "github.com/infobloxopen/protoc-gen-gorm@v1.1.4/proto/options/gorm.proto";
+import "github.com/infobloxopen/protoc-gen-gorm@v1.1.4/third_party/proto/atlas/resource/v1/resource.proto";
+import "google/protobuf/timestamp.proto";
+import "elementary-type.proto";
+
+service ImgService {
+  rpc GetImgByID(IdRequest) returns (Img) {}
+  rpc GetListImg(PagesRequest) returns (ImgList) {}
+}
+
+message Img{
+  option (gorm.opts) = {
+    ormable: true,
+  };
+  atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
+  string name = 2;
+  string path = 3;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+  google.protobuf.Timestamp deleted_at  = 8[(gorm.field).tag = { index: "soft_delete"}];
+  atlas.rpc.Identifier user_id = 12 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
+}
+
+
+message ImgList {
+  PagesResponse page = 1;
+  repeated Img list = 2;
+}
+

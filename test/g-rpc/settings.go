@@ -28,7 +28,7 @@ func StartServerGRPC() {
 			log.Fatal(err)
 		}
 
-		err = db.AutoMigrate(api.EcomorphORM{}, api.EcomorphsEntityORM{}, api.UserORM{}, api.TypePlantORM{}, api.TrialSiteORM{}, api.TransectORM{})
+		err = db.AutoMigrate(api.EcomorphORM{}, api.EcomorphsEntityORM{}, api.UserORM{}, api.TypePlantORM{}, api.TransectORM{}, api.TrialSiteORM{}, api.PlantORM{})
 		if err != nil {
 			return
 		}

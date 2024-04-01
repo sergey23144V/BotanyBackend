@@ -9,6 +9,7 @@ import "github.com/infobloxopen/protoc-gen-gorm@v1.1.4/third_party/proto/atlas/r
 import "google/protobuf/timestamp.proto";
 import "elementary-type.proto";
 import "ecomorphs-entity.proto";
+import "img.proto";
 
 package botany;
 
@@ -45,8 +46,9 @@ message TypePlant {
   repeated EcomorphsEntity ecomorphsEntity = 4 [(gorm.field).many_to_many = {disable_association_autocreate: false, disable_association_autoupdate: false, preload: true}];
   google.protobuf.Timestamp created_at = 5;
   google.protobuf.Timestamp updated_at = 6;
-  google.protobuf.Timestamp deleted_at  = 8;
-  atlas.rpc.Identifier user_id = 7 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
+  google.protobuf.Timestamp deleted_at  = 7;
+  Img img = 8 [(gorm.field).belongs_to = {preload: true, disable_association_autoupdate: false, disable_association_autocreate: false}];
+  atlas.rpc.Identifier user_id = 9[(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
 }
 
 message TypePlantList {

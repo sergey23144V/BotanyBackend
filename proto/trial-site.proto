@@ -17,14 +17,11 @@ import "type-plant.proto";
 service TrialSiteService {
   rpc CreateTrialSite(InputTrialSiteRequest) returns (TrialSite);
 
-  // Получение сущности по
+  // Получение сущности по id
   rpc GetTrialSite (IdRequest) returns (TrialSite);
 
   // Обновление сущности по id
   rpc UpTrialSite (InputTrialSiteRequest) returns (TrialSite);
-
-
-  rpc AddPlant (AddPlantTrialSiteRequest) returns (TrialSite);
 
   // Удаление сущности по заголовку
   rpc DeleteTrialSite (IdRequest) returns (BoolResponse){
@@ -33,17 +30,26 @@ service TrialSiteService {
 
   // Получение списка всех сущностей
   rpc GetAllTrialSite (PagesRequest) returns (TrialSiteList);
+
+
+
+  rpc CreatePlant(InputPlantRequest) returns (Plant);
+
+  // Получение сущности по id
+  rpc GetPlant (IdRequest) returns (Plant);
+
+  // Обновление сущности по id
+  rpc UpdatePlant (InputPlantRequest) returns (Plant);
+
+  // Удаление сущности по заголовку
+  rpc DeletePlant (IdRequest) returns (BoolResponse){
+    option (gorm.method).object_type = "Plant";
+  } ;
+
+  // Получение списка всех сущностей
+  rpc GetAllPlant (PagesRequest) returns (PlantList);
 }
 
-message AddPlantTrialSiteRequest{
-  option (gorm.opts) = {
-    ormable: true,
-  };
-  atlas.rpc.Identifier idTrialSite = 1;
-  atlas.rpc.Identifier idPlant = 2;
-  int32 covered = 3;
-  int32 count = 4;
-}
 
 
 message TrialSite {
@@ -52,24 +58,18 @@ message TrialSite {
   };
   atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
   string title = 2;
-  int32 covered = 3;
-  int32 rating = 10;
+  int32 covered = 3 [(gorm.field).tag = {size: 100}];;
   int32 count_types = 4;
-  TypePlant  dominant = 7 [(gorm.field).belongs_to = {preload: true}];
-  TypePlant  subDominant = 8 [(gorm.field).belongs_to = {preload: true}];
-  google.protobuf.Timestamp created_at = 5;
-  google.protobuf.Timestamp updated_at = 6;
-  google.protobuf.Timestamp deleted_at  = 13;
-  atlas.rpc.Identifier user_id = 11 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
-
-
-  message TrialSite_TypePlant{
-    atlas.rpc.Identifier typePlantId = 1 [(gorm.field).tag = {type: "uuid" foreignkey: 'TypePlant' disable_association_autocreate: true, disable_association_autoupdate: true, preload: true}];
-    atlas.rpc.Identifier ecomorphsEntityId = 2 [(gorm.field).tag = {type: "uuid" foreignkey: 'EcomorphsEntity' disable_association_autocreate: true, disable_association_autoupdate: true, preload: true}];
-    int32 count = 3;
-    int32 coverage = 4;
-  }
+  int32 rating = 5;
+  repeated Plant Plant = 6;
+  TypePlant  dominant =7 [(gorm.field).belongs_to = {preload: true, disable_association_autoupdate: false, disable_association_autocreate: false}];
+  TypePlant  subDominant =8 [(gorm.field).belongs_to = {preload: true, disable_association_autoupdate: false, disable_association_autocreate: false}];
+  google.protobuf.Timestamp created_at =9;
+  google.protobuf.Timestamp updated_at = 10;
+  google.protobuf.Timestamp deleted_at  = 11;
+  atlas.rpc.Identifier user_id = 12 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
 }
+
 
 message TrialSiteList {
   PagesResponse page = 1;
@@ -82,7 +82,7 @@ message InputFormTrialSiteRequest {
   int32 covered = 3;
   int32 rating = 10;
   int32 count_types = 4;
-  repeated TypePlant typePlant = 5;
+  repeated Plant Plant = 5;
    TypePlant dominant = 7;
    TypePlant subDominant = 8;
 }
@@ -91,3 +91,33 @@ message InputTrialSiteRequest{
   atlas.rpc.Identifier id = 1;
   InputFormTrialSiteRequest input = 2;
 }
+
+message Plant{
+  option (gorm.opts) = {
+    ormable: true,
+  };
+  atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
+  TypePlant typePlant = 3 [(gorm.field).belongs_to = {preload: true, disable_association_autoupdate: true, disable_association_autocreate: false }];;
+  int32 count = 4;
+  int32 coverage = 5  [(gorm.field).tag = {size: 100}];
+  atlas.rpc.Identifier user_id = 12 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
+}
+
+message PlantList {
+  PagesResponse page = 1;
+  repeated Plant list = 2;
+}
+
+
+message InputFormPlant{
+  TypePlant typePlantId = 2 ;
+  int32 count = 3;
+  int32 coverage = 4;
+}
+
+message InputPlantRequest{
+  atlas.rpc.Identifier id = 1;
+  InputFormPlant input = 2;
+}
+
+

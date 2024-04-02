@@ -28,8 +28,8 @@ func NewTransectServiceImpl(repository *repository.Repository) TransectService {
 	return TransectServiceImpl{repository}
 }
 
-func (t TransectServiceImpl) CreateTransect(ctx context.Context, ecomorph *api.InputTransectRequest) (*api.Transect, error) {
-	transect, err := t.repository.TransectRepository.CreateTransect(ctx, t.ToPB(ctx, ecomorph))
+func (t TransectServiceImpl) CreateTransect(ctx context.Context, input *api.InputTransectRequest) (*api.Transect, error) {
+	transect, err := t.repository.TransectRepository.CreateTransect(ctx, t.ToPB(ctx, input))
 	if err != nil {
 		return nil, err
 	}
@@ -56,6 +56,7 @@ func (t TransectServiceImpl) DetectionPlant(ctx context.Context, in *api.Transec
 	var (
 		dominants    *api.TypePlant
 		subDominants *api.TypePlant
+		typePlant    []*api.Plant
 	)
 	output, err := t.GetTransectById(ctx, &api.IdRequest{Id: in.Id})
 	if err != nil {
@@ -66,6 +67,9 @@ func (t TransectServiceImpl) DetectionPlant(ctx context.Context, in *api.Transec
 	countsSubDominants := make(map[string]int)
 
 	for _, item := range trialSites {
+		for _, plant := range item.Plant {
+			typePlant = append(typePlant, plant)
+		}
 
 		countsDominants[item.Dominant.Id.ResourceId]++
 		countsSubDominants[item.SubDominant.Id.ResourceId]++
@@ -96,6 +100,7 @@ func (t TransectServiceImpl) DetectionPlant(ctx context.Context, in *api.Transec
 
 	output.Dominant = dominants
 	output.SubDominant = subDominants
+	output.CountTypes = int32(t.repository.CountPlant(typePlant))
 
 	return t.repository.StrictUpdateTransect(ctx, output)
 }
@@ -105,7 +110,11 @@ func (t TransectServiceImpl) StrictUpdateTransect(ctx context.Context, in *api.I
 }
 
 func (t TransectServiceImpl) UpdateTransect(ctx context.Context, in *api.InputTransectRequest) (*api.Transect, error) {
-	return t.repository.TransectRepository.UpdateTransect(ctx, t.ToPB(ctx, in), &field_mask.FieldMask{Paths: t.getMask(in.Input)})
+	transect, err := t.repository.TransectRepository.UpdateTransect(ctx, t.ToPB(ctx, in), &field_mask.FieldMask{Paths: t.getMask(in.Input)})
+	if err != nil {
+		return nil, err
+	}
+	return t.DetectionPlant(ctx, transect)
 }
 
 func (t TransectServiceImpl) GetListTransect(ctx context.Context, request *api.PagesRequest) (*api.TransectList, error) {

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"gorm.io/gorm"
 )
 
@@ -22,4 +23,20 @@ func NewRepository(db *gorm.DB) *Repository {
 		TransectRepository:        NewTransectRepositoryImpl(db),
 		ImgRepositoryImpl:         NewImgRepositoryImpl(db),
 	}
+}
+
+func (t Repository) CountPlant(plantList []*api.Plant) int {
+	countPlant := 0
+	seen := make(map[string]bool)
+	if len(plantList) > 0 {
+		for _, item := range plantList {
+			if seen[item.TypePlant.Id.ResourceId] {
+				continue
+			}
+			seen[item.TypePlant.Id.ResourceId] = true
+			countPlant++
+		}
+		return countPlant
+	}
+	return 0
 }

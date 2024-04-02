@@ -70,6 +70,7 @@ func (t TrialSiteServiceImpl) DetectionPlant(ctx context.Context, in *api.TrialS
 				dtn.SubDominant = plantList[1].TypePlant
 			}
 		}
+		dtn.CountTypes = int32(t.repository.CountPlant(plantList))
 		return t.repository.TrialSiteRepository.StrictUpdateTrialSite(ctx, dtn)
 	}
 	return in, err

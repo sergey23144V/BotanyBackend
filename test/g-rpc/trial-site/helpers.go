@@ -10,17 +10,17 @@ import (
 )
 
 func CreateTrialSite(ctx context.Context, client g_rpc.ClientService) *resource.Identifier {
-	Transect := &api.InputTrialSiteRequest{
+
+	plants := &api.Plant{Id: CreatePlant(ctx, client)}
+	var Transect = &api.InputTrialSiteRequest{
 		Input: &api.InputFormTrialSiteRequest{
-			Title:      "Трава",
-			CountTypes: 20,
-			Rating:     2,
-			Covered:    4,
-			Plant:      []*api.Plant{{Id: CreatePlant(ctx, client)}, {Id: CreatePlant(ctx, client)}},
-			Img:        &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
+			Title:   "Трава",
+			Rating:  2,
+			Covered: 4,
+			Plant:   []*api.Plant{plants, plants, {Id: CreatePlant(ctx, client)}, {Id: CreatePlant(ctx, client)}},
+			Img:     &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
 		},
 	}
-
 	result, err := client.TrialSite.CreateTrialSite(ctx, Transect)
 	if err != nil {
 		log.Error("Не создался TrialSite")
@@ -63,7 +63,7 @@ func CreatePlant(ctx context.Context, client g_rpc.ClientService) *resource.Iden
 		Input: &api.InputFormPlant{
 			TypePlantId: &api.TypePlant{Id: type_plant.CreateTypePlant(ctx, client)},
 			Count:       2,
-			Coverage:    40,
+			Coverage:    20,
 		},
 	}
 

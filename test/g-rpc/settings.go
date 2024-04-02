@@ -109,6 +109,33 @@ func GetAuthClient() (api.AuthServiceClient, *grpc.ClientConn) {
 
 }
 
+func GetService() *service.Service {
+	cfgDB := repository.Config{
+		Host:     "localhost",
+		Port:     "5432",
+		Username: "postgres",
+		DBName:   "botany",
+		SSLMode:  "disable",
+		Password: "123321",
+	}
+
+	db, err := repository.ConnectDB(cfgDB)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = db.AutoMigrate(api.EcomorphORM{}, api.EcomorphsEntityORM{}, api.UserORM{}, api.TypePlantORM{}, api.TransectORM{}, api.TrialSiteORM{}, api.PlantORM{})
+	if err != nil {
+		return nil
+	}
+	log.Println("migrant")
+
+	newRepository := repository.NewRepository(db)
+	newService := service.NewService(newRepository)
+
+	return newService
+}
+
 func GetClient() (*ClientService, context.Context) {
 	StartServerGRPC()
 

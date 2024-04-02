@@ -291,7 +291,8 @@ func (t TrialSiteRepositoryImpl) GetTrialSiteById(ctx context.Context, in *api.T
 		}
 	}
 	ormResponse := api.TrialSiteORM{}
-	if err = t.db.Where(&ormObj).Preload("Plant").Preload("Img").First(&ormResponse).Error; err != nil {
+	if err = t.db.Where(&ormObj).Preload("Dominant").Preload("SubDominant").
+		Preload("Plant").Preload("Img").First(&ormResponse).Error; err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormResponse).(api.TrialSiteORMWithAfterReadFind); ok {

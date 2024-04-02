@@ -29,6 +29,26 @@ func CreateTrialSite(ctx context.Context, client g_rpc.ClientService) *resource.
 	return result.Id
 }
 
+func CreateTrialSiteForTransect(ctx context.Context, client g_rpc.ClientService, plants []*api.Plant) *resource.Identifier {
+	Transect := &api.InputTrialSiteRequest{
+		Input: &api.InputFormTrialSiteRequest{
+			Title:      "Трава",
+			CountTypes: 20,
+			Rating:     2,
+			Covered:    4,
+			Plant:      plants,
+			Img:        &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
+		},
+	}
+
+	result, err := client.TrialSite.CreateTrialSite(ctx, Transect)
+	if err != nil {
+		log.Error("Не создался TrialSite")
+		return nil
+	}
+	return result.Id
+}
+
 func DeleteTrialSite(ctx context.Context, client g_rpc.ClientService, id *resource.Identifier) error {
 	_, err := client.TrialSite.DeleteTrialSite(ctx, &api.IdRequest{Id: id})
 	if err != nil {

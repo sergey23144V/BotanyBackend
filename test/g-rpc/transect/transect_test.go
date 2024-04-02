@@ -25,7 +25,7 @@ func TestCreateTransect(t *testing.T) {
 					Title:           "Семейство",
 					Square:          20,
 					SquareTrialSite: 1,
-					TrialSite:       []*api.TrialSite{{Id: trial_site.CreateTrialSite(ctx, *client)}},
+					TrialSite:       []*api.TrialSite{{Id: trial_site.CreateTrialSite(ctx, *client)}, {Id: trial_site.CreateTrialSite(ctx, *client)}, {Id: trial_site.CreateTrialSite(ctx, *client)}},
 					Img:             &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
 				},
 			},

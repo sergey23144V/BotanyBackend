@@ -73,7 +73,9 @@ func (t TransectRepositoryImpl) GetTransectById(ctx context.Context, in *api.Tra
 		}
 	}
 	ormResponse := api.TransectORM{}
-	if err = t.db.Where(&ormObj).Preload("TrialSite").Preload("Img").First(&ormResponse).Error; err != nil {
+	if err = t.db.Where(&ormObj).Preload("TrialSite").
+		Preload("TrialSite.Dominant").Preload("TrialSite.SubDominant").
+		Preload("Img").First(&ormResponse).Error; err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormResponse).(api.TransectORMWithAfterReadFind); ok {

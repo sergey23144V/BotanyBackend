@@ -93,6 +93,7 @@ func (t TransectServiceImpl) ToPB(ctx context.Context, request *api.InputTransec
 		Dominant:        request.Input.Dominant,
 		SubDominant:     request.Input.SubDominant,
 		TrialSite:       request.Input.TrialSite,
+		Img:             request.Input.Img,
 		UserId:          userId,
 	}
 }

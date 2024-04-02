@@ -14,6 +14,7 @@ import (
 )
 
 type ImgORM struct {
+	gorm.Model
 	CreatedAt *time.Time
 	DeletedAt *time.Time `gorm:"index:soft_delete"`
 	Id        string     `gorm:"type:uuid;primaryKey"`

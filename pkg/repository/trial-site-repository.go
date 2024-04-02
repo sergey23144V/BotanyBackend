@@ -83,7 +83,7 @@ func (t TrialSiteRepositoryImpl) GetPlant(ctx context.Context, in *api.Plant) (*
 		}
 	}
 	ormResponse := api.PlantORM{}
-	if err = t.db.Where(&ormObj).First(&ormResponse).Error; err != nil {
+	if err = t.db.Where(&ormObj).Preload("TypePlant").First(&ormResponse).Error; err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormResponse).(api.PlantORMWithAfterReadFind); ok {
@@ -185,7 +185,7 @@ func (t TrialSiteRepositoryImpl) GetAllPlant(ctx context.Context, in *api.Plant,
 	}
 	t.db = t.db.Order("id")
 	ormResponse := []api.PlantORM{}
-	if err := t.db.Find(&ormResponse).Error; err != nil {
+	if err := t.db.Preload("TypePlant").Find(&ormResponse).Error; err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormObj).(api.PlantORMWithAfterListFind); ok {
@@ -291,7 +291,7 @@ func (t TrialSiteRepositoryImpl) GetTrialSiteById(ctx context.Context, in *api.T
 		}
 	}
 	ormResponse := api.TrialSiteORM{}
-	if err = t.db.Where(&ormObj).Preload("Plant").First(&ormResponse).Error; err != nil {
+	if err = t.db.Where(&ormObj).Preload("Plant").Preload("Img").First(&ormResponse).Error; err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormResponse).(api.TrialSiteORMWithAfterReadFind); ok {
@@ -431,7 +431,7 @@ func (t TrialSiteRepositoryImpl) GetListTrialSite(ctx context.Context, in *api.T
 	}
 	t.db = t.db.Order("id")
 	ormResponse := []api.TrialSiteORM{}
-	if err := t.db.Find(&ormResponse).Error; err != nil {
+	if err := t.db.Preload("Plant").Preload("Img").Find(&ormResponse).Error; err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormObj).(api.TrialSiteORMWithAfterListFind); ok {

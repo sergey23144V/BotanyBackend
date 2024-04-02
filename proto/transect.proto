@@ -5,7 +5,7 @@ option go_package = "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api";
 
 package botany;
 
-
+import "img.proto";
 import "github.com/infobloxopen/protoc-gen-gorm@v1.1.4/proto/options/gorm.proto";
 import "github.com/infobloxopen/protoc-gen-gorm@v1.1.4/third_party/proto/atlas/resource/v1/resource.proto";
 import "google/protobuf/timestamp.proto";
@@ -41,17 +41,18 @@ message Transect {
   atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
   string title = 2;
   int32 covered = 3;
-  int32 rating = 10;
-  int32 square = 11;
-  int32 squareTrialSite = 12;
-  int32 count_types = 4;
-  repeated TrialSite trialSite = 14 [(gorm.field).has_many = { association_save_reference:true, disable_association_autocreate: true, disable_association_autoupdate: true, preload: true}];
-  TypePlant  dominant = 7 [(gorm.field).belongs_to = {disable_association_autocreate: true, disable_association_autoupdate: true, preload: true}];
-  TypePlant  subDominant = 8 [(gorm.field).belongs_to = {disable_association_autocreate: true, disable_association_autoupdate: true, preload: true}];
-  google.protobuf.Timestamp created_at = 5;
-  google.protobuf.Timestamp updated_at = 6;
-  google.protobuf.Timestamp deleted_at  = 15;
-  atlas.rpc.Identifier user_id = 13 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
+  int32 rating = 4;
+  int32 square = 5;
+  int32 squareTrialSite = 6;
+  int32 count_types = 7;
+  repeated TrialSite trialSite = 8 [(gorm.field).has_many = { association_save_reference:true, disable_association_autocreate: true, disable_association_autoupdate: true, preload: true}];
+  TypePlant  dominant = 9 [(gorm.field).belongs_to = {disable_association_autocreate: true, disable_association_autoupdate: true, preload: true}];
+  TypePlant  subDominant = 10 [(gorm.field).belongs_to = {disable_association_autocreate: true, disable_association_autoupdate: true, preload: true}];
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
+  google.protobuf.Timestamp deleted_at  = 13;
+  Img img = 14 [(gorm.field).belongs_to = {preload: true, disable_association_autoupdate: false, disable_association_autocreate: false}];
+  atlas.rpc.Identifier user_id = 15 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
 }
 
 message TransectList {
@@ -68,6 +69,7 @@ message InputFormTransectRequest {
   int32 squareTrialSite = 12;
   int32 count_types = 4;
   repeated TrialSite trialSite = 1;
+  Img img = 14;
   TypePlant dominant = 7;
   TypePlant subDominant = 8;
 

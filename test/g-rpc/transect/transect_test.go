@@ -1,6 +1,7 @@
 package transect
 
 import (
+	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
 	trial_site "github.com/sergey23144V/BotanyBackend/test/g-rpc/trial-site"
@@ -25,6 +26,7 @@ func TestCreateTransect(t *testing.T) {
 					Square:          20,
 					SquareTrialSite: 1,
 					TrialSite:       []*api.TrialSite{{Id: trial_site.CreateTrialSite(ctx, *client)}},
+					Img:             &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
 				},
 			},
 			expected: true,

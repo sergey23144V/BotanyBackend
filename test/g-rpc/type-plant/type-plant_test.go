@@ -1,6 +1,7 @@
 package type_plant
 
 import (
+	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
 	ecomorph_entity "github.com/sergey23144V/BotanyBackend/test/g-rpc/ecomorph-entity"
@@ -24,6 +25,7 @@ func TestCreatesTypePlant(t *testing.T) {
 					Title:           "Водоросли",
 					Subtitle:        "Ну про вид",
 					EcomorphsEntity: []*api.EcomorphsEntity{{Id: ecomorph_entity.CreateEcomorphsEntity(ctx, *client)}},
+					Img:             &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
 				},
 			},
 			expected: true,
@@ -34,6 +36,7 @@ func TestCreatesTypePlant(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 
 			result, err := client.TypePlant.CreateTypePlant(ctx, testCase.Ecomorph)
+			g_rpc.Log(result)
 			if testCase.expected {
 				err := DeleteTypePlant(ctx, *client, result.Id)
 				assert.NoError(t, err, "Done")
@@ -61,7 +64,8 @@ func TestGetTypePlantById(t *testing.T) {
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-			_, err := client.TypePlant.GetTypePlant(ctx, testCase.id)
+			result, err := client.TypePlant.GetTypePlant(ctx, testCase.id)
+			g_rpc.Log(result)
 			if testCase.expected {
 				err := DeleteTypePlant(ctx, *client, testCase.id.Id)
 				assert.NoError(t, err, "Done")

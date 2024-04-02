@@ -224,6 +224,7 @@ func (t TrialSiteServiceImpl) ToPB(ctx context.Context, request *api.InputTrialS
 		Dominant:    request.Input.Dominant,
 		SubDominant: request.Input.SubDominant,
 		Plant:       request.Input.Plant,
+		Img:         request.Input.Img,
 		UserId:      userId,
 	}, err
 }

@@ -73,7 +73,7 @@ func (t TransectRepositoryImpl) GetTransectById(ctx context.Context, in *api.Tra
 		}
 	}
 	ormResponse := api.TransectORM{}
-	if err = t.db.Where(&ormObj).Preload("TrialSite").First(&ormResponse).Error; err != nil {
+	if err = t.db.Where(&ormObj).Preload("TrialSite").Preload("Img").First(&ormResponse).Error; err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormResponse).(api.TransectORMWithAfterReadFind); ok {
@@ -213,7 +213,7 @@ func (t TransectRepositoryImpl) GetListTransect(ctx context.Context, in *api.Tra
 	}
 	t.db = t.db.Order("id")
 	ormResponse := []api.TransectORM{}
-	if err := t.db.Find(&ormResponse).Error; err != nil {
+	if err := t.db.Preload("Img").Find(&ormResponse).Error; err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormObj).(api.TransectORMWithAfterListFind); ok {

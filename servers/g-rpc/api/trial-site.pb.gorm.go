@@ -21,7 +21,9 @@ type TrialSiteORM struct {
 	DeletedAt     *time.Time
 	Dominant      *TypePlantORM `gorm:"foreignKey:DominantId;references:Id"`
 	DominantId    *string
-	Id            string      `gorm:"type:uuid;primaryKey"`
+	Id            string  `gorm:"type:uuid;primaryKey"`
+	Img           *ImgORM `gorm:"foreignKey:ImgId;references:Id"`
+	ImgId         *string
 	Plant         []*PlantORM `gorm:"foreignKey:TrialSiteId;references:Id"`
 	Rating        int32
 	SubDominant   *TypePlantORM `gorm:"foreignKey:SubDominantId;references:Id"`
@@ -93,6 +95,13 @@ func (m *TrialSite) ToORM(ctx context.Context) (TrialSiteORM, error) {
 		t := m.DeletedAt.AsTime()
 		to.DeletedAt = &t
 	}
+	if m.Img != nil {
+		tempImg, err := m.Img.ToORM(ctx)
+		if err != nil {
+			return to, err
+		}
+		to.Img = &tempImg
+	}
 	if m.UserId != nil {
 		if v, err := resource.Decode(nil, m.UserId); err != nil {
 			return to, err
@@ -159,6 +168,13 @@ func (m *TrialSiteORM) ToPB(ctx context.Context) (TrialSite, error) {
 	}
 	if m.DeletedAt != nil {
 		to.DeletedAt = timestamppb.New(*m.DeletedAt)
+	}
+	if m.Img != nil {
+		tempImg, err := m.Img.ToPB(ctx)
+		if err != nil {
+			return to, err
+		}
+		to.Img = &tempImg
 	}
 	if m.UserId != nil {
 		if v, err := resource.Encode(nil, *m.UserId); err != nil {
@@ -323,7 +339,7 @@ func DefaultCreateTrialSite(ctx context.Context, in *TrialSite, db *gorm.DB) (*T
 			return nil, err
 		}
 	}
-	if err = db.Omit().Preload("Dominant").Preload("SubDominant").Preload("TypePlant").Create(&ormObj).Error; err != nil {
+	if err = db.Omit().Preload("Img").Preload("Dominant").Preload("TypePlant").Preload("SubDominant").Create(&ormObj).Error; err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormObj).(TrialSiteORMWithAfterCreate_); ok {
@@ -487,7 +503,7 @@ func DefaultStrictUpdateTrialSite(ctx context.Context, in *TrialSite, db *gorm.D
 			return nil, err
 		}
 	}
-	if err = db.Omit("TypePlant").Preload("TypePlant").Preload("Dominant").Preload("SubDominant").Save(&ormObj).Error; err != nil {
+	if err = db.Omit("TypePlant").Preload("Dominant").Preload("TypePlant").Preload("SubDominant").Preload("Img").Save(&ormObj).Error; err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormObj).(TrialSiteORMWithAfterStrictUpdateSave); ok {
@@ -599,6 +615,7 @@ func DefaultApplyFieldMaskTrialSite(ctx context.Context, patchee *TrialSite, pat
 	var updatedCreatedAt bool
 	var updatedUpdatedAt bool
 	var updatedDeletedAt bool
+	var updatedImg bool
 	for i, f := range updateMask.Paths {
 		if f == prefix+"Id" {
 			patchee.Id = patcher.Id
@@ -733,6 +750,27 @@ func DefaultApplyFieldMaskTrialSite(ctx context.Context, patchee *TrialSite, pat
 		if f == prefix+"DeletedAt" {
 			updatedDeletedAt = true
 			patchee.DeletedAt = patcher.DeletedAt
+			continue
+		}
+		if !updatedImg && strings.HasPrefix(f, prefix+"Img.") {
+			updatedImg = true
+			if patcher.Img == nil {
+				patchee.Img = nil
+				continue
+			}
+			if patchee.Img == nil {
+				patchee.Img = &Img{}
+			}
+			if o, err := DefaultApplyFieldMaskImg(ctx, patchee.Img, patcher.Img, &field_mask.FieldMask{Paths: updateMask.Paths[i:]}, prefix+"Img.", db); err != nil {
+				return nil, err
+			} else {
+				patchee.Img = o
+			}
+			continue
+		}
+		if f == prefix+"Img" {
+			updatedImg = true
+			patchee.Img = patcher.Img
 			continue
 		}
 		if f == prefix+"UserId" {

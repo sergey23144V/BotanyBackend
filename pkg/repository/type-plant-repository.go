@@ -74,7 +74,7 @@ func (t TypePlantRepositoryImpl) GetTypePlantById(ctx context.Context, in *api.T
 		}
 	}
 	ormResponse := api.TypePlantORM{}
-	if err = t.db.Where(&ormObj).Preload("EcomorphsEntity").First(&ormResponse).Error; err != nil {
+	if err = t.db.Where(&ormObj).Preload("EcomorphsEntity").Preload("Img").First(&ormResponse).Error; err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormResponse).(api.TypePlantORMWithAfterReadFind); ok {
@@ -229,7 +229,7 @@ func (t TypePlantRepositoryImpl) GetListTypePlant(ctx context.Context, in *api.T
 	}
 	t.db = t.db.Order("id")
 	ormResponse := []api.TypePlantORM{}
-	if err := t.db.Find(&ormResponse).Error; err != nil {
+	if err := t.db.Preload("Img").Preload("EcomorphsEntity").Find(&ormResponse).Error; err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormObj).(api.TypePlantORMWithAfterListFind); ok {

@@ -1,6 +1,7 @@
 package trial_site
 
 import (
+	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
 	"github.com/stretchr/testify/assert"
@@ -24,6 +25,7 @@ func TestCreateTrialSite(t *testing.T) {
 					Rating:     2,
 					Covered:    40,
 					Plant:      []*api.Plant{{Id: CreatePlant(ctx, *client)}, {Id: CreatePlant(ctx, *client)}},
+					Img:        &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
 				},
 			},
 			expected: true,

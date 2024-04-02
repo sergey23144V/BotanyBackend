@@ -98,6 +98,7 @@ func (t TypePlantServiceImpl) ToPB(ctx context.Context, request *api.InputTypePl
 		Title:           request.Input.Title,
 		Subtitle:        request.Input.Subtitle,
 		EcomorphsEntity: request.Input.EcomorphsEntity,
+		Img:             request.Input.Img,
 		UserId:          userId,
 	}
 }

@@ -61,6 +61,7 @@ message InputFormTypePlantRequest {
   string title = 2;
   string subtitle = 3;
   repeated EcomorphsEntity ecomorphsEntity = 4;
+  Img img = 14;
 }
 
 message InputTypePlantRequest{

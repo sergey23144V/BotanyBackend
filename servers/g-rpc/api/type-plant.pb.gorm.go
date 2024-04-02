@@ -14,6 +14,7 @@ import (
 )
 
 type TypePlantORM struct {
+	gorm.Model
 	CreatedAt       *time.Time
 	DeletedAt       *time.Time
 	EcomorphsEntity []*EcomorphsEntityORM `gorm:"foreignKey:Id;references:Id;many2many:type_plant_ecomorphs_entities;joinForeignKey:TypePlantId;joinReferences:EcomorphsEntityId"`

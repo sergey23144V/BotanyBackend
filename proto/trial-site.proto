@@ -10,7 +10,7 @@ import "github.com/infobloxopen/protoc-gen-gorm@v1.1.4/third_party/proto/atlas/r
 import "google/protobuf/timestamp.proto";
 import "elementary-type.proto";
 import "type-plant.proto";
-
+import "img.proto";
 
 
 
@@ -67,7 +67,8 @@ message TrialSite {
   google.protobuf.Timestamp created_at =9;
   google.protobuf.Timestamp updated_at = 10;
   google.protobuf.Timestamp deleted_at  = 11;
-  atlas.rpc.Identifier user_id = 12 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
+  Img img = 12 [(gorm.field).belongs_to = {preload: true, disable_association_autoupdate: false, disable_association_autocreate: false}];
+  atlas.rpc.Identifier user_id = 13 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
 }
 
 
@@ -83,6 +84,7 @@ message InputFormTrialSiteRequest {
   int32 rating = 10;
   int32 count_types = 4;
   repeated Plant Plant = 5;
+  Img img = 14;
    TypePlant dominant = 7;
    TypePlant subDominant = 8;
 }

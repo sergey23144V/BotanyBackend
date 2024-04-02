@@ -62,11 +62,11 @@ message TrialSite {
   int32 count_types = 4;
   int32 rating = 5;
   repeated Plant Plant = 6;
-  TypePlant  dominant =7 [(gorm.field).belongs_to = {preload: true, disable_association_autoupdate: false, disable_association_autocreate: false}];
-  TypePlant  subDominant =8 [(gorm.field).belongs_to = {preload: true, disable_association_autoupdate: false, disable_association_autocreate: false}];
-  google.protobuf.Timestamp created_at =9;
+  TypePlant  dominant = 7 [(gorm.field).belongs_to = {preload: true, disable_association_autoupdate: false, disable_association_autocreate: false}];
+  TypePlant  subDominant = 8 [(gorm.field).belongs_to = {preload: true, disable_association_autoupdate: false, disable_association_autocreate: false}];
+  google.protobuf.Timestamp created_at = 9;
   google.protobuf.Timestamp updated_at = 10;
-  google.protobuf.Timestamp deleted_at  = 11;
+  google.protobuf.Timestamp deleted_at = 11;
   Img img = 12 [(gorm.field).belongs_to = {preload: true, disable_association_autoupdate: false, disable_association_autocreate: false}];
   atlas.rpc.Identifier user_id = 13 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
 }
@@ -85,8 +85,8 @@ message InputFormTrialSiteRequest {
   int32 count_types = 4;
   repeated Plant Plant = 5;
   Img img = 14;
-   TypePlant dominant = 7;
-   TypePlant subDominant = 8;
+  TypePlant dominant = 7;
+  TypePlant subDominant = 8;
 }
 
 message InputTrialSiteRequest{
@@ -99,7 +99,7 @@ message Plant{
     ormable: true,
   };
   atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
-  TypePlant typePlant = 3 [(gorm.field).belongs_to = {preload: true, disable_association_autoupdate: true, disable_association_autocreate: false }];;
+  TypePlant typePlant = 3 [(gorm.field).belongs_to = {preload: true, disable_association_autoupdate: true, disable_association_autocreate: false}];;
   int32 count = 4;
   int32 coverage = 5  [(gorm.field).tag = {size: 100}];
   atlas.rpc.Identifier user_id = 12 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];

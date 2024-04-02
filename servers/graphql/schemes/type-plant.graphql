@@ -16,6 +16,8 @@ type TypePlant {
     ecomorphsEntity: [EcomorphsEntity]
     createdAt: Timestamp
     updatedAt: Timestamp
+    deletedAt : Timestamp
+    img: Img
     userId: IdentifierType
 }
 
@@ -36,6 +38,7 @@ input InputFormTypePlantRequest  {
     title: String
     subtitle: String
     ecomorphsEntity: [EcomorphsEntityInput]
+    img: ImgInput
 }
 
 input InputTypePlantRequest  {

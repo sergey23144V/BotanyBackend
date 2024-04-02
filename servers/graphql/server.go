@@ -13,7 +13,7 @@ import (
 	"net/http"
 )
 
-const defaultPort = "8080"
+const defaultPort = "80"
 
 func StartGraphQl(db *gorm.DB, authServerImpl *api.AuthServerImpl, newService *service.Service) {
 	go func() {

@@ -20,8 +20,10 @@ type Transect {
     dominant: TypePlant
     subDominant: TypePlant
     trialSite: [TrialSite]
+    img: Img
     createdAt: Timestamp
     updatedAt: Timestamp
+    deletedAt : Timestamp
     userId: IdentifierType
 }
 
@@ -36,6 +38,7 @@ input TransectInput {
     dominant: TypePlantInput
     subDominant: TypePlantInput
     trialSite: [TrialSiteInput]
+    img: ImgInput
     userId: IdentifierInput
 }
 
@@ -51,6 +54,7 @@ input InputFormTransectRequest {
     square: Int
     squareTrialSite: Int
     countTypes: Int
+    img: ImgInput
     trialSite: [TrialSiteInput]
     dominant: TypePlantInput
     subDominant: TypePlantInput

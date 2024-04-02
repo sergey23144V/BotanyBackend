@@ -3,6 +3,7 @@ type Ecomorph {
     id: IdentifierType!
     createdAt: Timestamp!
     updatedAt: Timestamp!
+    deletedAt : Timestamp!
     title: String!
     description: String!
     userID: IdentifierType!

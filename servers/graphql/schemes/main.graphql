@@ -6,6 +6,7 @@ type Query{
     typePlant: TypePlantQuery @goField(forceResolver: true)
     trialSite: TrialSiteQuery @goField(forceResolver: true)
     transect: TransectQuery @goField(forceResolver: true)
+    img: ImgQuery @goField(forceResolver: true)
 }
 
 type Mutation{

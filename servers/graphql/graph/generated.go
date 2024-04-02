@@ -46,17 +46,16 @@ type ResolverRoot interface {
 	EcomorphQuery() EcomorphQueryResolver
 	EcomorphsEntityMutation() EcomorphsEntityMutationResolver
 	EcomorphsEntityQuery() EcomorphsEntityQueryResolver
+	ImgQuery() ImgQueryResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
 	TransectMutation() TransectMutationResolver
 	TransectQuery() TransectQueryResolver
-	TrialSite() TrialSiteResolver
 	TrialSiteMutation() TrialSiteMutationResolver
 	TrialSiteQuery() TrialSiteQueryResolver
 	TypePlantMutation() TypePlantMutationResolver
 	TypePlantQuery() TypePlantQueryResolver
 	InputFormEcomorphsEntity() InputFormEcomorphsEntityResolver
-	TrialSiteInput() TrialSiteInputResolver
 }
 
 type DirectiveRoot struct {
@@ -74,6 +73,7 @@ type ComplexityRoot struct {
 
 	Ecomorph struct {
 		CreatedAt   func(childComplexity int) int
+		DeletedAt   func(childComplexity int) int
 		Description func(childComplexity int) int
 		Id          func(childComplexity int) int
 		Title       func(childComplexity int) int
@@ -94,6 +94,7 @@ type ComplexityRoot struct {
 
 	EcomorphsEntity struct {
 		CreatedAt   func(childComplexity int) int
+		DeletedAt   func(childComplexity int) int
 		Description func(childComplexity int) int
 		Ecomorphs   func(childComplexity int) int
 		Id          func(childComplexity int) int
@@ -128,6 +129,26 @@ type ComplexityRoot struct {
 		ResourceType    func(childComplexity int) int
 	}
 
+	Img struct {
+		CreatedAt func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		Id        func(childComplexity int) int
+		Name      func(childComplexity int) int
+		Path      func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		UserId    func(childComplexity int) int
+	}
+
+	ImgList struct {
+		List func(childComplexity int) int
+		Page func(childComplexity int) int
+	}
+
+	ImgQuery struct {
+		GetImgByID func(childComplexity int, id string) int
+		GetListImg func(childComplexity int, pages *api.PagesRequest) int
+	}
+
 	ListEcomorph struct {
 		List func(childComplexity int) int
 		Page func(childComplexity int) int
@@ -148,9 +169,23 @@ type ComplexityRoot struct {
 		Total func(childComplexity int) int
 	}
 
+	Plant struct {
+		Count     func(childComplexity int) int
+		Coverage  func(childComplexity int) int
+		Id        func(childComplexity int) int
+		TypePlant func(childComplexity int) int
+		UserId    func(childComplexity int) int
+	}
+
+	PlantList struct {
+		List func(childComplexity int) int
+		Page func(childComplexity int) int
+	}
+
 	Query struct {
 		Ecomorph        func(childComplexity int) int
 		EcomorphsEntity func(childComplexity int) int
+		Img             func(childComplexity int) int
 		Transect        func(childComplexity int) int
 		TrialSite       func(childComplexity int) int
 		TypePlant       func(childComplexity int) int
@@ -171,8 +206,10 @@ type ComplexityRoot struct {
 		CountTypes      func(childComplexity int) int
 		Covered         func(childComplexity int) int
 		CreatedAt       func(childComplexity int) int
+		DeletedAt       func(childComplexity int) int
 		Dominant        func(childComplexity int) int
 		Id              func(childComplexity int) int
+		Img             func(childComplexity int) int
 		Rating          func(childComplexity int) int
 		Square          func(childComplexity int) int
 		SquareTrialSite func(childComplexity int) int
@@ -203,12 +240,14 @@ type ComplexityRoot struct {
 		CountTypes  func(childComplexity int) int
 		Covered     func(childComplexity int) int
 		CreatedAt   func(childComplexity int) int
+		DeletedAt   func(childComplexity int) int
 		Dominant    func(childComplexity int) int
 		Id          func(childComplexity int) int
+		Img         func(childComplexity int) int
+		Plant       func(childComplexity int) int
 		Rating      func(childComplexity int) int
 		SubDominant func(childComplexity int) int
 		Title       func(childComplexity int) int
-		TypePlant   func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
 		UserId      func(childComplexity int) int
 	}
@@ -219,20 +258,27 @@ type ComplexityRoot struct {
 	}
 
 	TrialSiteMutation struct {
+		CreatePlant     func(childComplexity int, input *api.InputPlantRequest) int
 		CreateTrialSite func(childComplexity int, input *api.InputFormTrialSiteRequest) int
+		DeletePlant     func(childComplexity int, id string) int
 		DeleteTrialSite func(childComplexity int, id string) int
 		UpTrialSite     func(childComplexity int, input *api.InputTrialSiteRequest) int
+		UpdatePlant     func(childComplexity int, input *api.InputPlantRequest) int
 	}
 
 	TrialSiteQuery struct {
+		GetAllPlant     func(childComplexity int, pages *api.PagesRequest) int
 		GetAllTrialSite func(childComplexity int, pages *api.PagesRequest) int
+		GetPlant        func(childComplexity int, id string) int
 		GetTrialSite    func(childComplexity int, id string) int
 	}
 
 	TypePlant struct {
 		CreatedAt       func(childComplexity int) int
+		DeletedAt       func(childComplexity int) int
 		EcomorphsEntity func(childComplexity int) int
 		Id              func(childComplexity int) int
+		Img             func(childComplexity int) int
 		Subtitle        func(childComplexity int) int
 		Title           func(childComplexity int) int
 		UpdatedAt       func(childComplexity int) int
@@ -278,6 +324,10 @@ type EcomorphsEntityQueryResolver interface {
 	GetEcomorphEntityByID(ctx context.Context, obj *model.EcomorphsEntityQuery, id string) (*api.EcomorphsEntity, error)
 	GetAllEcomorphEntity(ctx context.Context, obj *model.EcomorphsEntityQuery, pages *api.PagesRequest) (*api.EcomorphsEntityList, error)
 }
+type ImgQueryResolver interface {
+	GetImgByID(ctx context.Context, obj *model.ImgQuery, id string) (*api.Img, error)
+	GetListImg(ctx context.Context, obj *model.ImgQuery, pages *api.PagesRequest) (*api.ImgList, error)
+}
 type MutationResolver interface {
 	Ecomorph(ctx context.Context) (*model.EcomorphMutation, error)
 	Auth(ctx context.Context) (*model.AuthMutation, error)
@@ -292,6 +342,7 @@ type QueryResolver interface {
 	TypePlant(ctx context.Context) (*model.TypePlantQuery, error)
 	TrialSite(ctx context.Context) (*model.TrialSiteQuery, error)
 	Transect(ctx context.Context) (*model.TransectQuery, error)
+	Img(ctx context.Context) (*model.ImgQuery, error)
 }
 type TransectMutationResolver interface {
 	CreateTransect(ctx context.Context, obj *model.TransectMutation, input *api.InputTransectRequest) (*api.Transect, error)
@@ -302,17 +353,19 @@ type TransectQueryResolver interface {
 	GetTransect(ctx context.Context, obj *model.TransectQuery, id string) (*api.Transect, error)
 	GetAllTransect(ctx context.Context, obj *model.TransectQuery, pages *api.PagesRequest) (*api.TransectList, error)
 }
-type TrialSiteResolver interface {
-	TypePlant(ctx context.Context, obj *api.TrialSite) ([]*api.TypePlant, error)
-}
 type TrialSiteMutationResolver interface {
 	CreateTrialSite(ctx context.Context, obj *model.TrialSiteMutation, input *api.InputFormTrialSiteRequest) (*api.TrialSite, error)
 	UpTrialSite(ctx context.Context, obj *model.TrialSiteMutation, input *api.InputTrialSiteRequest) (*api.TrialSite, error)
 	DeleteTrialSite(ctx context.Context, obj *model.TrialSiteMutation, id string) (*api.BoolResponse, error)
+	CreatePlant(ctx context.Context, obj *model.TrialSiteMutation, input *api.InputPlantRequest) (*api.Plant, error)
+	UpdatePlant(ctx context.Context, obj *model.TrialSiteMutation, input *api.InputPlantRequest) (*api.Plant, error)
+	DeletePlant(ctx context.Context, obj *model.TrialSiteMutation, id string) (*api.BoolResponse, error)
 }
 type TrialSiteQueryResolver interface {
 	GetTrialSite(ctx context.Context, obj *model.TrialSiteQuery, id string) (*api.TrialSite, error)
 	GetAllTrialSite(ctx context.Context, obj *model.TrialSiteQuery, pages *api.PagesRequest) (*api.TrialSiteList, error)
+	GetPlant(ctx context.Context, obj *model.TrialSiteQuery, id string) (*api.Plant, error)
+	GetAllPlant(ctx context.Context, obj *model.TrialSiteQuery, pages *api.PagesRequest) (*api.PlantList, error)
 }
 type TypePlantMutationResolver interface {
 	CreateTypePlant(ctx context.Context, obj *model.TypePlantMutation, input *api.InputFormTypePlantRequest) (*api.TypePlant, error)
@@ -326,9 +379,6 @@ type TypePlantQueryResolver interface {
 
 type InputFormEcomorphsEntityResolver interface {
 	Ecomorphs(ctx context.Context, obj *api.InputFormEcomorphsEntity, data []*api.Ecomorph) error
-}
-type TrialSiteInputResolver interface {
-	TypePlant(ctx context.Context, obj *api.TrialSite, data []*api.TypePlant) error
 }
 
 type executableSchema struct {
@@ -387,6 +437,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Ecomorph.CreatedAt(childComplexity), true
+
+	case "Ecomorph.deletedAt":
+		if e.complexity.Ecomorph.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.Ecomorph.DeletedAt(childComplexity), true
 
 	case "Ecomorph.description":
 		if e.complexity.Ecomorph.Description == nil {
@@ -489,6 +546,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.EcomorphsEntity.CreatedAt(childComplexity), true
+
+	case "EcomorphsEntity.deletedAt":
+		if e.complexity.EcomorphsEntity.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.EcomorphsEntity.DeletedAt(childComplexity), true
 
 	case "EcomorphsEntity.description":
 		if e.complexity.EcomorphsEntity.Description == nil {
@@ -634,6 +698,93 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.IdentifierType.ResourceType(childComplexity), true
 
+	case "Img.createdAt":
+		if e.complexity.Img.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Img.CreatedAt(childComplexity), true
+
+	case "Img.deletedAt":
+		if e.complexity.Img.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.Img.DeletedAt(childComplexity), true
+
+	case "Img.id":
+		if e.complexity.Img.Id == nil {
+			break
+		}
+
+		return e.complexity.Img.Id(childComplexity), true
+
+	case "Img.name":
+		if e.complexity.Img.Name == nil {
+			break
+		}
+
+		return e.complexity.Img.Name(childComplexity), true
+
+	case "Img.path":
+		if e.complexity.Img.Path == nil {
+			break
+		}
+
+		return e.complexity.Img.Path(childComplexity), true
+
+	case "Img.updatedAt":
+		if e.complexity.Img.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Img.UpdatedAt(childComplexity), true
+
+	case "Img.userId":
+		if e.complexity.Img.UserId == nil {
+			break
+		}
+
+		return e.complexity.Img.UserId(childComplexity), true
+
+	case "ImgList.list":
+		if e.complexity.ImgList.List == nil {
+			break
+		}
+
+		return e.complexity.ImgList.List(childComplexity), true
+
+	case "ImgList.page":
+		if e.complexity.ImgList.Page == nil {
+			break
+		}
+
+		return e.complexity.ImgList.Page(childComplexity), true
+
+	case "ImgQuery.getImgByID":
+		if e.complexity.ImgQuery.GetImgByID == nil {
+			break
+		}
+
+		args, err := ec.field_ImgQuery_getImgByID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.ImgQuery.GetImgByID(childComplexity, args["id"].(string)), true
+
+	case "ImgQuery.getListImg":
+		if e.complexity.ImgQuery.GetListImg == nil {
+			break
+		}
+
+		args, err := ec.field_ImgQuery_getListImg_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.ImgQuery.GetListImg(childComplexity, args["pages"].(*api.PagesRequest)), true
+
 	case "ListEcomorph.list":
 		if e.complexity.ListEcomorph.List == nil {
 			break
@@ -711,6 +862,55 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.PagesResponse.Total(childComplexity), true
 
+	case "Plant.count":
+		if e.complexity.Plant.Count == nil {
+			break
+		}
+
+		return e.complexity.Plant.Count(childComplexity), true
+
+	case "Plant.coverage":
+		if e.complexity.Plant.Coverage == nil {
+			break
+		}
+
+		return e.complexity.Plant.Coverage(childComplexity), true
+
+	case "Plant.id":
+		if e.complexity.Plant.Id == nil {
+			break
+		}
+
+		return e.complexity.Plant.Id(childComplexity), true
+
+	case "Plant.typePlant":
+		if e.complexity.Plant.TypePlant == nil {
+			break
+		}
+
+		return e.complexity.Plant.TypePlant(childComplexity), true
+
+	case "Plant.userId":
+		if e.complexity.Plant.UserId == nil {
+			break
+		}
+
+		return e.complexity.Plant.UserId(childComplexity), true
+
+	case "PlantList.list":
+		if e.complexity.PlantList.List == nil {
+			break
+		}
+
+		return e.complexity.PlantList.List(childComplexity), true
+
+	case "PlantList.page":
+		if e.complexity.PlantList.Page == nil {
+			break
+		}
+
+		return e.complexity.PlantList.Page(childComplexity), true
+
 	case "Query.ecomorph":
 		if e.complexity.Query.Ecomorph == nil {
 			break
@@ -724,6 +924,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.EcomorphsEntity(childComplexity), true
+
+	case "Query.img":
+		if e.complexity.Query.Img == nil {
+			break
+		}
+
+		return e.complexity.Query.Img(childComplexity), true
 
 	case "Query.transect":
 		if e.complexity.Query.Transect == nil {
@@ -802,6 +1009,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Transect.CreatedAt(childComplexity), true
 
+	case "Transect.deletedAt":
+		if e.complexity.Transect.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.Transect.DeletedAt(childComplexity), true
+
 	case "Transect.dominant":
 		if e.complexity.Transect.Dominant == nil {
 			break
@@ -815,6 +1029,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Transect.Id(childComplexity), true
+
+	case "Transect.img":
+		if e.complexity.Transect.Img == nil {
+			break
+		}
+
+		return e.complexity.Transect.Img(childComplexity), true
 
 	case "Transect.rating":
 		if e.complexity.Transect.Rating == nil {
@@ -967,6 +1188,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.TrialSite.CreatedAt(childComplexity), true
 
+	case "TrialSite.deletedAt":
+		if e.complexity.TrialSite.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.TrialSite.DeletedAt(childComplexity), true
+
 	case "TrialSite.dominant":
 		if e.complexity.TrialSite.Dominant == nil {
 			break
@@ -980,6 +1208,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.TrialSite.Id(childComplexity), true
+
+	case "TrialSite.img":
+		if e.complexity.TrialSite.Img == nil {
+			break
+		}
+
+		return e.complexity.TrialSite.Img(childComplexity), true
+
+	case "TrialSite.plant":
+		if e.complexity.TrialSite.Plant == nil {
+			break
+		}
+
+		return e.complexity.TrialSite.Plant(childComplexity), true
 
 	case "TrialSite.rating":
 		if e.complexity.TrialSite.Rating == nil {
@@ -1001,13 +1243,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.TrialSite.Title(childComplexity), true
-
-	case "TrialSite.typePlant":
-		if e.complexity.TrialSite.TypePlant == nil {
-			break
-		}
-
-		return e.complexity.TrialSite.TypePlant(childComplexity), true
 
 	case "TrialSite.updatedAt":
 		if e.complexity.TrialSite.UpdatedAt == nil {
@@ -1037,6 +1272,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.TrialSiteList.Page(childComplexity), true
 
+	case "TrialSiteMutation.createPlant":
+		if e.complexity.TrialSiteMutation.CreatePlant == nil {
+			break
+		}
+
+		args, err := ec.field_TrialSiteMutation_createPlant_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.TrialSiteMutation.CreatePlant(childComplexity, args["input"].(*api.InputPlantRequest)), true
+
 	case "TrialSiteMutation.createTrialSite":
 		if e.complexity.TrialSiteMutation.CreateTrialSite == nil {
 			break
@@ -1048,6 +1295,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.TrialSiteMutation.CreateTrialSite(childComplexity, args["input"].(*api.InputFormTrialSiteRequest)), true
+
+	case "TrialSiteMutation.deletePlant":
+		if e.complexity.TrialSiteMutation.DeletePlant == nil {
+			break
+		}
+
+		args, err := ec.field_TrialSiteMutation_deletePlant_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.TrialSiteMutation.DeletePlant(childComplexity, args["id"].(string)), true
 
 	case "TrialSiteMutation.deleteTrialSite":
 		if e.complexity.TrialSiteMutation.DeleteTrialSite == nil {
@@ -1073,6 +1332,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.TrialSiteMutation.UpTrialSite(childComplexity, args["input"].(*api.InputTrialSiteRequest)), true
 
+	case "TrialSiteMutation.updatePlant":
+		if e.complexity.TrialSiteMutation.UpdatePlant == nil {
+			break
+		}
+
+		args, err := ec.field_TrialSiteMutation_updatePlant_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.TrialSiteMutation.UpdatePlant(childComplexity, args["input"].(*api.InputPlantRequest)), true
+
+	case "TrialSiteQuery.getAllPlant":
+		if e.complexity.TrialSiteQuery.GetAllPlant == nil {
+			break
+		}
+
+		args, err := ec.field_TrialSiteQuery_getAllPlant_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.TrialSiteQuery.GetAllPlant(childComplexity, args["pages"].(*api.PagesRequest)), true
+
 	case "TrialSiteQuery.getAllTrialSite":
 		if e.complexity.TrialSiteQuery.GetAllTrialSite == nil {
 			break
@@ -1084,6 +1367,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.TrialSiteQuery.GetAllTrialSite(childComplexity, args["pages"].(*api.PagesRequest)), true
+
+	case "TrialSiteQuery.getPlant":
+		if e.complexity.TrialSiteQuery.GetPlant == nil {
+			break
+		}
+
+		args, err := ec.field_TrialSiteQuery_getPlant_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.TrialSiteQuery.GetPlant(childComplexity, args["id"].(string)), true
 
 	case "TrialSiteQuery.getTrialSite":
 		if e.complexity.TrialSiteQuery.GetTrialSite == nil {
@@ -1104,6 +1399,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.TypePlant.CreatedAt(childComplexity), true
 
+	case "TypePlant.deletedAt":
+		if e.complexity.TypePlant.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.TypePlant.DeletedAt(childComplexity), true
+
 	case "TypePlant.ecomorphsEntity":
 		if e.complexity.TypePlant.EcomorphsEntity == nil {
 			break
@@ -1117,6 +1419,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.TypePlant.Id(childComplexity), true
+
+	case "TypePlant.img":
+		if e.complexity.TypePlant.Img == nil {
+			break
+		}
+
+		return e.complexity.TypePlant.Img(childComplexity), true
 
 	case "TypePlant.subtitle":
 		if e.complexity.TypePlant.Subtitle == nil {
@@ -1231,17 +1540,21 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputEcomorphInput,
 		ec.unmarshalInputEcomorphsEntityInput,
 		ec.unmarshalInputIdentifierInput,
+		ec.unmarshalInputImgInput,
 		ec.unmarshalInputInputEcomorph,
 		ec.unmarshalInputInputEcomorphsEntity,
 		ec.unmarshalInputInputFormEcomorph,
 		ec.unmarshalInputInputFormEcomorphsEntity,
+		ec.unmarshalInputInputFormPlant,
 		ec.unmarshalInputInputFormTransectRequest,
 		ec.unmarshalInputInputFormTrialSiteRequest,
 		ec.unmarshalInputInputFormTypePlantRequest,
+		ec.unmarshalInputInputPlantRequest,
 		ec.unmarshalInputInputTransectRequest,
 		ec.unmarshalInputInputTrialSiteRequest,
 		ec.unmarshalInputInputTypePlantRequest,
 		ec.unmarshalInputPagesRequest,
+		ec.unmarshalInputPlantInput,
 		ec.unmarshalInputSignInUserInput,
 		ec.unmarshalInputSignUpUserInput,
 		ec.unmarshalInputTransectInput,
@@ -1388,6 +1701,7 @@ directive @goField(forceResolver: Boolean, name: String) on INPUT_FIELD_DEFINITI
     id: IdentifierType!
     createdAt: Timestamp
     updatedAt: Timestamp
+    deletedAt : Timestamp
     title: String
     description: String
     ecomorphs: Ecomorph
@@ -1433,6 +1747,7 @@ type Ecomorph {
     id: IdentifierType!
     createdAt: Timestamp!
     updatedAt: Timestamp!
+    deletedAt : Timestamp!
     title: String!
     description: String!
     userID: IdentifierType!
@@ -1510,6 +1825,34 @@ type Timestamp {
 }
 
 `, BuiltIn: false},
+	{Name: "../schemes/img.graphql", Input: `
+type ImgQuery {
+    getImgByID(id: ID!): Img @goField(forceResolver: true)
+    getListImg(pages: PagesRequest ): ImgList @goField(forceResolver: true)
+}
+
+type Img {
+    id: IdentifierType!
+    name: String
+    path: String
+    createdAt: Timestamp
+    updatedAt: Timestamp
+    deletedAt : Timestamp
+    userId: IdentifierType
+}
+
+input ImgInput {
+    id: IdentifierInput!
+    name: String
+    path: String
+    userId: IdentifierInput
+}
+
+type ImgList {
+    page: PagesResponse
+    list: [Img]
+}
+`, BuiltIn: false},
 	{Name: "../schemes/main.graphql", Input: `
 
 type Query{
@@ -1518,6 +1861,7 @@ type Query{
     typePlant: TypePlantQuery @goField(forceResolver: true)
     trialSite: TrialSiteQuery @goField(forceResolver: true)
     transect: TransectQuery @goField(forceResolver: true)
+    img: ImgQuery @goField(forceResolver: true)
 }
 
 type Mutation{
@@ -1550,8 +1894,10 @@ type Transect {
     dominant: TypePlant
     subDominant: TypePlant
     trialSite: [TrialSite]
+    img: Img
     createdAt: Timestamp
     updatedAt: Timestamp
+    deletedAt : Timestamp
     userId: IdentifierType
 }
 
@@ -1566,6 +1912,7 @@ input TransectInput {
     dominant: TypePlantInput
     subDominant: TypePlantInput
     trialSite: [TrialSiteInput]
+    img: ImgInput
     userId: IdentifierInput
 }
 
@@ -1581,6 +1928,7 @@ input InputFormTransectRequest {
     square: Int
     squareTrialSite: Int
     countTypes: Int
+    img: ImgInput
     trialSite: [TrialSiteInput]
     dominant: TypePlantInput
     subDominant: TypePlantInput
@@ -1593,12 +1941,17 @@ input InputTransectRequest {
 	{Name: "../schemes/trial-site.graphql", Input: `type TrialSiteQuery {
     getTrialSite(id: ID!): TrialSite @goField(forceResolver: true)
     getAllTrialSite(pages: PagesRequest ): TrialSiteList @goField(forceResolver: true)
+    getPlant(id: ID!): Plant @goField(forceResolver: true)
+    getAllPlant(pages: PagesRequest ): PlantList @goField(forceResolver: true)
 }
 
 type TrialSiteMutation {
     createTrialSite(input: InputFormTrialSiteRequest): TrialSite @goField(forceResolver: true)
     upTrialSite(input: InputTrialSiteRequest): TrialSite @goField(forceResolver: true)
     deleteTrialSite(id: ID!): BoolResponse @goField(forceResolver: true)
+    createPlant(input: InputPlantRequest): Plant @goField(forceResolver: true)
+    updatePlant(input: InputPlantRequest): Plant @goField(forceResolver: true)
+    deletePlant(id: ID!): BoolResponse @goField(forceResolver: true)
 }
 
 type TrialSite {
@@ -1609,11 +1962,14 @@ type TrialSite {
     countTypes: Int
     dominant: TypePlant
     subDominant: TypePlant
-    typePlant: [TypePlant]
+    img: Img
+    plant: [Plant]
     createdAt: Timestamp
     updatedAt: Timestamp
+    deletedAt : Timestamp
     userId: IdentifierType
 }
+
 
 input TrialSiteInput {
     id: IdentifierInput!
@@ -1621,9 +1977,10 @@ input TrialSiteInput {
     covered: Int
     rating: Int
     countTypes: Int
+    img: ImgInput
     dominant: TypePlantInput
     subDominant: TypePlantInput
-    typePlant: [TypePlantInput]
+    plant: [PlantInput]
     userId: IdentifierInput
 }
 
@@ -1637,7 +1994,8 @@ input InputFormTrialSiteRequest {
     covered: Int
     rating: Int
     countTypes: Int
-    typePlant: [TypePlantInput]
+    img: ImgInput
+    plant: [PlantInput]
     dominant: TypePlantInput
     subDominant: TypePlantInput
 }
@@ -1645,7 +2003,41 @@ input InputFormTrialSiteRequest {
 input InputTrialSiteRequest {
     id: IdentifierInput!
     input: InputFormTrialSiteRequest
-}`, BuiltIn: false},
+}
+
+
+type Plant {
+    id: IdentifierType!
+    coverage: Int
+    count: Int
+    typePlant: TypePlant
+    userId: IdentifierType
+}
+
+input PlantInput {
+    id: IdentifierInput!
+    coverage: Int
+    count: Int
+    typePlant: TypePlantInput
+    userId: IdentifierInput
+}
+
+type PlantList{
+    page: PagesResponse!
+    list: [Plant]
+}
+
+input InputFormPlant {
+    coverage: Int
+    count: Int
+    typePlantId: TypePlantInput
+}
+
+input InputPlantRequest {
+    id: IdentifierInput!
+    input: InputFormPlant
+}
+`, BuiltIn: false},
 	{Name: "../schemes/type-plant.graphql", Input: `type TypePlantQuery {
     getTypePlant(id: ID!): TypePlant @goField(forceResolver: true)
     getAllTypePlant(pages: PagesRequest ): TypePlantList @goField(forceResolver: true)
@@ -1664,6 +2056,8 @@ type TypePlant {
     ecomorphsEntity: [EcomorphsEntity]
     createdAt: Timestamp
     updatedAt: Timestamp
+    deletedAt : Timestamp
+    img: Img
     userId: IdentifierType
 }
 
@@ -1684,6 +2078,7 @@ input InputFormTypePlantRequest  {
     title: String
     subtitle: String
     ecomorphsEntity: [EcomorphsEntityInput]
+    img: ImgInput
 }
 
 input InputTypePlantRequest  {
@@ -1877,6 +2272,36 @@ func (ec *executionContext) field_EcomorphsEntityQuery_getEcomorphEntityByID_arg
 	return args, nil
 }
 
+func (ec *executionContext) field_ImgQuery_getImgByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_ImgQuery_getListImg_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *api.PagesRequest
+	if tmp, ok := rawArgs["pages"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pages"))
+		arg0, err = ec.unmarshalOPagesRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPagesRequest(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pages"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1967,6 +2392,21 @@ func (ec *executionContext) field_TransectQuery_getTransect_args(ctx context.Con
 	return args, nil
 }
 
+func (ec *executionContext) field_TrialSiteMutation_createPlant_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *api.InputPlantRequest
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalOInputPlantRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputPlantRequest(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_TrialSiteMutation_createTrialSite_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1979,6 +2419,21 @@ func (ec *executionContext) field_TrialSiteMutation_createTrialSite_args(ctx con
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_TrialSiteMutation_deletePlant_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -2012,6 +2467,36 @@ func (ec *executionContext) field_TrialSiteMutation_upTrialSite_args(ctx context
 	return args, nil
 }
 
+func (ec *executionContext) field_TrialSiteMutation_updatePlant_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *api.InputPlantRequest
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalOInputPlantRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputPlantRequest(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_TrialSiteQuery_getAllPlant_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *api.PagesRequest
+	if tmp, ok := rawArgs["pages"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pages"))
+		arg0, err = ec.unmarshalOPagesRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPagesRequest(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pages"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_TrialSiteQuery_getAllTrialSite_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -2024,6 +2509,21 @@ func (ec *executionContext) field_TrialSiteQuery_getAllTrialSite_args(ctx contex
 		}
 	}
 	args["pages"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_TrialSiteQuery_getPlant_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -2471,6 +2971,56 @@ func (ec *executionContext) fieldContext_Ecomorph_updatedAt(ctx context.Context,
 	return fc, nil
 }
 
+func (ec *executionContext) _Ecomorph_deletedAt(ctx context.Context, field graphql.CollectedField, obj *api.Ecomorph) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Ecomorph_deletedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*timestamppb.Timestamp)
+	fc.Result = res
+	return ec.marshalNTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Ecomorph_deletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Ecomorph",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "seconds":
+				return ec.fieldContext_Timestamp_seconds(ctx, field)
+			case "nanos":
+				return ec.fieldContext_Timestamp_nanos(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Timestamp", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Ecomorph_title(ctx context.Context, field graphql.CollectedField, obj *api.Ecomorph) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Ecomorph_title(ctx, field)
 	if err != nil {
@@ -2656,6 +3206,8 @@ func (ec *executionContext) fieldContext_EcomorphMutation_insertEcomorph(ctx con
 				return ec.fieldContext_Ecomorph_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_Ecomorph_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Ecomorph_deletedAt(ctx, field)
 			case "title":
 				return ec.fieldContext_Ecomorph_title(ctx, field)
 			case "description":
@@ -2725,6 +3277,8 @@ func (ec *executionContext) fieldContext_EcomorphMutation_updateEcomorph(ctx con
 				return ec.fieldContext_Ecomorph_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_Ecomorph_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Ecomorph_deletedAt(ctx, field)
 			case "title":
 				return ec.fieldContext_Ecomorph_title(ctx, field)
 			case "description":
@@ -2853,6 +3407,8 @@ func (ec *executionContext) fieldContext_EcomorphQuery_getEcomorphById(ctx conte
 				return ec.fieldContext_Ecomorph_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_Ecomorph_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Ecomorph_deletedAt(ctx, field)
 			case "title":
 				return ec.fieldContext_Ecomorph_title(ctx, field)
 			case "description":
@@ -3084,6 +3640,53 @@ func (ec *executionContext) fieldContext_EcomorphsEntity_updatedAt(ctx context.C
 	return fc, nil
 }
 
+func (ec *executionContext) _EcomorphsEntity_deletedAt(ctx context.Context, field graphql.CollectedField, obj *api.EcomorphsEntity) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_EcomorphsEntity_deletedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*timestamppb.Timestamp)
+	fc.Result = res
+	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_EcomorphsEntity_deletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "EcomorphsEntity",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "seconds":
+				return ec.fieldContext_Timestamp_seconds(ctx, field)
+			case "nanos":
+				return ec.fieldContext_Timestamp_nanos(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Timestamp", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _EcomorphsEntity_title(ctx context.Context, field graphql.CollectedField, obj *api.EcomorphsEntity) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_EcomorphsEntity_title(ctx, field)
 	if err != nil {
@@ -3208,6 +3811,8 @@ func (ec *executionContext) fieldContext_EcomorphsEntity_ecomorphs(ctx context.C
 				return ec.fieldContext_Ecomorph_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_Ecomorph_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Ecomorph_deletedAt(ctx, field)
 			case "title":
 				return ec.fieldContext_Ecomorph_title(ctx, field)
 			case "description":
@@ -3364,6 +3969,8 @@ func (ec *executionContext) fieldContext_EcomorphsEntityList_list(ctx context.Co
 				return ec.fieldContext_EcomorphsEntity_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_EcomorphsEntity_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_EcomorphsEntity_deletedAt(ctx, field)
 			case "title":
 				return ec.fieldContext_EcomorphsEntity_title(ctx, field)
 			case "description":
@@ -3421,6 +4028,8 @@ func (ec *executionContext) fieldContext_EcomorphsEntityMutation_insertEcomorphE
 				return ec.fieldContext_EcomorphsEntity_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_EcomorphsEntity_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_EcomorphsEntity_deletedAt(ctx, field)
 			case "title":
 				return ec.fieldContext_EcomorphsEntity_title(ctx, field)
 			case "description":
@@ -3489,6 +4098,8 @@ func (ec *executionContext) fieldContext_EcomorphsEntityMutation_updateEcomorphE
 				return ec.fieldContext_EcomorphsEntity_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_EcomorphsEntity_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_EcomorphsEntity_deletedAt(ctx, field)
 			case "title":
 				return ec.fieldContext_EcomorphsEntity_title(ctx, field)
 			case "description":
@@ -3613,6 +4224,8 @@ func (ec *executionContext) fieldContext_EcomorphsEntityQuery_getEcomorphEntityB
 				return ec.fieldContext_EcomorphsEntity_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_EcomorphsEntity_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_EcomorphsEntity_deletedAt(ctx, field)
 			case "title":
 				return ec.fieldContext_EcomorphsEntity_title(ctx, field)
 			case "description":
@@ -3867,6 +4480,562 @@ func (ec *executionContext) fieldContext_IdentifierType_resourceId(ctx context.C
 	return fc, nil
 }
 
+func (ec *executionContext) _Img_id(ctx context.Context, field graphql.CollectedField, obj *api.Img) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Img_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Id, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*resource.Identifier)
+	fc.Result = res
+	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Img_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Img",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "applicationName":
+				return ec.fieldContext_IdentifierType_applicationName(ctx, field)
+			case "resourceType":
+				return ec.fieldContext_IdentifierType_resourceType(ctx, field)
+			case "resourceId":
+				return ec.fieldContext_IdentifierType_resourceId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type IdentifierType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Img_name(ctx context.Context, field graphql.CollectedField, obj *api.Img) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Img_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Img_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Img",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Img_path(ctx context.Context, field graphql.CollectedField, obj *api.Img) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Img_path(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Path, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Img_path(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Img",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Img_createdAt(ctx context.Context, field graphql.CollectedField, obj *api.Img) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Img_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*timestamppb.Timestamp)
+	fc.Result = res
+	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Img_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Img",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "seconds":
+				return ec.fieldContext_Timestamp_seconds(ctx, field)
+			case "nanos":
+				return ec.fieldContext_Timestamp_nanos(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Timestamp", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Img_updatedAt(ctx context.Context, field graphql.CollectedField, obj *api.Img) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Img_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*timestamppb.Timestamp)
+	fc.Result = res
+	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Img_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Img",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "seconds":
+				return ec.fieldContext_Timestamp_seconds(ctx, field)
+			case "nanos":
+				return ec.fieldContext_Timestamp_nanos(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Timestamp", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Img_deletedAt(ctx context.Context, field graphql.CollectedField, obj *api.Img) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Img_deletedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*timestamppb.Timestamp)
+	fc.Result = res
+	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Img_deletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Img",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "seconds":
+				return ec.fieldContext_Timestamp_seconds(ctx, field)
+			case "nanos":
+				return ec.fieldContext_Timestamp_nanos(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Timestamp", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Img_userId(ctx context.Context, field graphql.CollectedField, obj *api.Img) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Img_userId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UserId, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*resource.Identifier)
+	fc.Result = res
+	return ec.marshalOIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Img_userId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Img",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "applicationName":
+				return ec.fieldContext_IdentifierType_applicationName(ctx, field)
+			case "resourceType":
+				return ec.fieldContext_IdentifierType_resourceType(ctx, field)
+			case "resourceId":
+				return ec.fieldContext_IdentifierType_resourceId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type IdentifierType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ImgList_page(ctx context.Context, field graphql.CollectedField, obj *api.ImgList) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ImgList_page(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Page, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*api.PagesResponse)
+	fc.Result = res
+	return ec.marshalOPagesResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPagesResponse(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ImgList_page(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ImgList",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "total":
+				return ec.fieldContext_PagesResponse_total(ctx, field)
+			case "page":
+				return ec.fieldContext_PagesResponse_page(ctx, field)
+			case "limit":
+				return ec.fieldContext_PagesResponse_limit(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PagesResponse", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ImgList_list(ctx context.Context, field graphql.CollectedField, obj *api.ImgList) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ImgList_list(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.List, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*api.Img)
+	fc.Result = res
+	return ec.marshalOImg2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImg(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ImgList_list(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ImgList",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Img_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Img_name(ctx, field)
+			case "path":
+				return ec.fieldContext_Img_path(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Img_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Img_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Img_deletedAt(ctx, field)
+			case "userId":
+				return ec.fieldContext_Img_userId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Img", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ImgQuery_getImgByID(ctx context.Context, field graphql.CollectedField, obj *model.ImgQuery) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ImgQuery_getImgByID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.ImgQuery().GetImgByID(rctx, obj, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*api.Img)
+	fc.Result = res
+	return ec.marshalOImg2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImg(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ImgQuery_getImgByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ImgQuery",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Img_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Img_name(ctx, field)
+			case "path":
+				return ec.fieldContext_Img_path(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Img_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Img_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Img_deletedAt(ctx, field)
+			case "userId":
+				return ec.fieldContext_Img_userId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Img", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_ImgQuery_getImgByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ImgQuery_getListImg(ctx context.Context, field graphql.CollectedField, obj *model.ImgQuery) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ImgQuery_getListImg(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.ImgQuery().GetListImg(rctx, obj, fc.Args["pages"].(*api.PagesRequest))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*api.ImgList)
+	fc.Result = res
+	return ec.marshalOImgList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImgList(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ImgQuery_getListImg(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ImgQuery",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "page":
+				return ec.fieldContext_ImgList_page(ctx, field)
+			case "list":
+				return ec.fieldContext_ImgList_list(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ImgList", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_ImgQuery_getListImg_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _ListEcomorph_page(ctx context.Context, field graphql.CollectedField, obj *api.EcomorphsList) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_ListEcomorph_page(ctx, field)
 	if err != nil {
@@ -3961,6 +5130,8 @@ func (ec *executionContext) fieldContext_ListEcomorph_list(ctx context.Context, 
 				return ec.fieldContext_Ecomorph_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_Ecomorph_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Ecomorph_deletedAt(ctx, field)
 			case "title":
 				return ec.fieldContext_Ecomorph_title(ctx, field)
 			case "description":
@@ -4210,6 +5381,12 @@ func (ec *executionContext) fieldContext_Mutation_trialSite(ctx context.Context,
 				return ec.fieldContext_TrialSiteMutation_upTrialSite(ctx, field)
 			case "deleteTrialSite":
 				return ec.fieldContext_TrialSiteMutation_deleteTrialSite(ctx, field)
+			case "createPlant":
+				return ec.fieldContext_TrialSiteMutation_createPlant(ctx, field)
+			case "updatePlant":
+				return ec.fieldContext_TrialSiteMutation_updatePlant(ctx, field)
+			case "deletePlant":
+				return ec.fieldContext_TrialSiteMutation_deletePlant(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type TrialSiteMutation", field.Name)
 		},
@@ -4398,6 +5575,355 @@ func (ec *executionContext) fieldContext_PagesResponse_limit(ctx context.Context
 	return fc, nil
 }
 
+func (ec *executionContext) _Plant_id(ctx context.Context, field graphql.CollectedField, obj *api.Plant) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Plant_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Id, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*resource.Identifier)
+	fc.Result = res
+	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Plant_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Plant",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "applicationName":
+				return ec.fieldContext_IdentifierType_applicationName(ctx, field)
+			case "resourceType":
+				return ec.fieldContext_IdentifierType_resourceType(ctx, field)
+			case "resourceId":
+				return ec.fieldContext_IdentifierType_resourceId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type IdentifierType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Plant_coverage(ctx context.Context, field graphql.CollectedField, obj *api.Plant) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Plant_coverage(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Coverage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int32)
+	fc.Result = res
+	return ec.marshalOInt2int32(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Plant_coverage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Plant",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Plant_count(ctx context.Context, field graphql.CollectedField, obj *api.Plant) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Plant_count(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Count, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int32)
+	fc.Result = res
+	return ec.marshalOInt2int32(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Plant_count(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Plant",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Plant_typePlant(ctx context.Context, field graphql.CollectedField, obj *api.Plant) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Plant_typePlant(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TypePlant, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*api.TypePlant)
+	fc.Result = res
+	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Plant_typePlant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Plant",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_TypePlant_id(ctx, field)
+			case "title":
+				return ec.fieldContext_TypePlant_title(ctx, field)
+			case "subtitle":
+				return ec.fieldContext_TypePlant_subtitle(ctx, field)
+			case "ecomorphsEntity":
+				return ec.fieldContext_TypePlant_ecomorphsEntity(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_TypePlant_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_TypePlant_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_TypePlant_deletedAt(ctx, field)
+			case "img":
+				return ec.fieldContext_TypePlant_img(ctx, field)
+			case "userId":
+				return ec.fieldContext_TypePlant_userId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type TypePlant", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Plant_userId(ctx context.Context, field graphql.CollectedField, obj *api.Plant) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Plant_userId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UserId, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*resource.Identifier)
+	fc.Result = res
+	return ec.marshalOIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Plant_userId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Plant",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "applicationName":
+				return ec.fieldContext_IdentifierType_applicationName(ctx, field)
+			case "resourceType":
+				return ec.fieldContext_IdentifierType_resourceType(ctx, field)
+			case "resourceId":
+				return ec.fieldContext_IdentifierType_resourceId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type IdentifierType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PlantList_page(ctx context.Context, field graphql.CollectedField, obj *api.PlantList) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PlantList_page(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Page, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*api.PagesResponse)
+	fc.Result = res
+	return ec.marshalNPagesResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPagesResponse(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PlantList_page(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PlantList",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "total":
+				return ec.fieldContext_PagesResponse_total(ctx, field)
+			case "page":
+				return ec.fieldContext_PagesResponse_page(ctx, field)
+			case "limit":
+				return ec.fieldContext_PagesResponse_limit(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PagesResponse", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PlantList_list(ctx context.Context, field graphql.CollectedField, obj *api.PlantList) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PlantList_list(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.List, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*api.Plant)
+	fc.Result = res
+	return ec.marshalOPlant2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPlant(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PlantList_list(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PlantList",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Plant_id(ctx, field)
+			case "coverage":
+				return ec.fieldContext_Plant_coverage(ctx, field)
+			case "count":
+				return ec.fieldContext_Plant_count(ctx, field)
+			case "typePlant":
+				return ec.fieldContext_Plant_typePlant(ctx, field)
+			case "userId":
+				return ec.fieldContext_Plant_userId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Plant", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_ecomorph(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_ecomorph(ctx, field)
 	if err != nil {
@@ -4579,6 +6105,10 @@ func (ec *executionContext) fieldContext_Query_trialSite(ctx context.Context, fi
 				return ec.fieldContext_TrialSiteQuery_getTrialSite(ctx, field)
 			case "getAllTrialSite":
 				return ec.fieldContext_TrialSiteQuery_getAllTrialSite(ctx, field)
+			case "getPlant":
+				return ec.fieldContext_TrialSiteQuery_getPlant(ctx, field)
+			case "getAllPlant":
+				return ec.fieldContext_TrialSiteQuery_getAllPlant(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type TrialSiteQuery", field.Name)
 		},
@@ -4628,6 +6158,53 @@ func (ec *executionContext) fieldContext_Query_transect(ctx context.Context, fie
 				return ec.fieldContext_TransectQuery_getAllTransect(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type TransectQuery", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_img(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_img(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Img(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.ImgQuery)
+	fc.Result = res
+	return ec.marshalOImgQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐImgQuery(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_img(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "getImgByID":
+				return ec.fieldContext_ImgQuery_getImgByID(ctx, field)
+			case "getListImg":
+				return ec.fieldContext_ImgQuery_getListImg(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ImgQuery", field.Name)
 		},
 	}
 	return fc, nil
@@ -5322,6 +6899,10 @@ func (ec *executionContext) fieldContext_Transect_dominant(ctx context.Context, 
 				return ec.fieldContext_TypePlant_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_TypePlant_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_TypePlant_deletedAt(ctx, field)
+			case "img":
+				return ec.fieldContext_TypePlant_img(ctx, field)
 			case "userId":
 				return ec.fieldContext_TypePlant_userId(ctx, field)
 			}
@@ -5379,6 +6960,10 @@ func (ec *executionContext) fieldContext_Transect_subDominant(ctx context.Contex
 				return ec.fieldContext_TypePlant_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_TypePlant_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_TypePlant_deletedAt(ctx, field)
+			case "img":
+				return ec.fieldContext_TypePlant_img(ctx, field)
 			case "userId":
 				return ec.fieldContext_TypePlant_userId(ctx, field)
 			}
@@ -5438,16 +7023,77 @@ func (ec *executionContext) fieldContext_Transect_trialSite(ctx context.Context,
 				return ec.fieldContext_TrialSite_dominant(ctx, field)
 			case "subDominant":
 				return ec.fieldContext_TrialSite_subDominant(ctx, field)
-			case "typePlant":
-				return ec.fieldContext_TrialSite_typePlant(ctx, field)
+			case "img":
+				return ec.fieldContext_TrialSite_img(ctx, field)
+			case "plant":
+				return ec.fieldContext_TrialSite_plant(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_TrialSite_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_TrialSite_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_TrialSite_deletedAt(ctx, field)
 			case "userId":
 				return ec.fieldContext_TrialSite_userId(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type TrialSite", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Transect_img(ctx context.Context, field graphql.CollectedField, obj *api.Transect) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Transect_img(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Img, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*api.Img)
+	fc.Result = res
+	return ec.marshalOImg2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImg(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Transect_img(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Transect",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Img_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Img_name(ctx, field)
+			case "path":
+				return ec.fieldContext_Img_path(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Img_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Img_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Img_deletedAt(ctx, field)
+			case "userId":
+				return ec.fieldContext_Img_userId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Img", field.Name)
 		},
 	}
 	return fc, nil
@@ -5529,6 +7175,53 @@ func (ec *executionContext) _Transect_updatedAt(ctx context.Context, field graph
 }
 
 func (ec *executionContext) fieldContext_Transect_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Transect",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "seconds":
+				return ec.fieldContext_Timestamp_seconds(ctx, field)
+			case "nanos":
+				return ec.fieldContext_Timestamp_nanos(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Timestamp", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Transect_deletedAt(ctx context.Context, field graphql.CollectedField, obj *api.Transect) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Transect_deletedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*timestamppb.Timestamp)
+	fc.Result = res
+	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Transect_deletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Transect",
 		Field:      field,
@@ -5704,10 +7397,14 @@ func (ec *executionContext) fieldContext_TransectList_list(ctx context.Context, 
 				return ec.fieldContext_Transect_subDominant(ctx, field)
 			case "trialSite":
 				return ec.fieldContext_Transect_trialSite(ctx, field)
+			case "img":
+				return ec.fieldContext_Transect_img(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Transect_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_Transect_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Transect_deletedAt(ctx, field)
 			case "userId":
 				return ec.fieldContext_Transect_userId(ctx, field)
 			}
@@ -5773,10 +7470,14 @@ func (ec *executionContext) fieldContext_TransectMutation_createTransect(ctx con
 				return ec.fieldContext_Transect_subDominant(ctx, field)
 			case "trialSite":
 				return ec.fieldContext_Transect_trialSite(ctx, field)
+			case "img":
+				return ec.fieldContext_Transect_img(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Transect_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_Transect_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Transect_deletedAt(ctx, field)
 			case "userId":
 				return ec.fieldContext_Transect_userId(ctx, field)
 			}
@@ -5853,10 +7554,14 @@ func (ec *executionContext) fieldContext_TransectMutation_upTransect(ctx context
 				return ec.fieldContext_Transect_subDominant(ctx, field)
 			case "trialSite":
 				return ec.fieldContext_Transect_trialSite(ctx, field)
+			case "img":
+				return ec.fieldContext_Transect_img(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Transect_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_Transect_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Transect_deletedAt(ctx, field)
 			case "userId":
 				return ec.fieldContext_Transect_userId(ctx, field)
 			}
@@ -5989,10 +7694,14 @@ func (ec *executionContext) fieldContext_TransectQuery_getTransect(ctx context.C
 				return ec.fieldContext_Transect_subDominant(ctx, field)
 			case "trialSite":
 				return ec.fieldContext_Transect_trialSite(ctx, field)
+			case "img":
+				return ec.fieldContext_Transect_img(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Transect_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_Transect_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Transect_deletedAt(ctx, field)
 			case "userId":
 				return ec.fieldContext_Transect_userId(ctx, field)
 			}
@@ -6335,6 +8044,10 @@ func (ec *executionContext) fieldContext_TrialSite_dominant(ctx context.Context,
 				return ec.fieldContext_TypePlant_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_TypePlant_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_TypePlant_deletedAt(ctx, field)
+			case "img":
+				return ec.fieldContext_TypePlant_img(ctx, field)
 			case "userId":
 				return ec.fieldContext_TypePlant_userId(ctx, field)
 			}
@@ -6392,6 +8105,10 @@ func (ec *executionContext) fieldContext_TrialSite_subDominant(ctx context.Conte
 				return ec.fieldContext_TypePlant_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_TypePlant_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_TypePlant_deletedAt(ctx, field)
+			case "img":
+				return ec.fieldContext_TypePlant_img(ctx, field)
 			case "userId":
 				return ec.fieldContext_TypePlant_userId(ctx, field)
 			}
@@ -6401,8 +8118,8 @@ func (ec *executionContext) fieldContext_TrialSite_subDominant(ctx context.Conte
 	return fc, nil
 }
 
-func (ec *executionContext) _TrialSite_typePlant(ctx context.Context, field graphql.CollectedField, obj *api.TrialSite) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_TrialSite_typePlant(ctx, field)
+func (ec *executionContext) _TrialSite_img(ctx context.Context, field graphql.CollectedField, obj *api.TrialSite) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TrialSite_img(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -6415,7 +8132,7 @@ func (ec *executionContext) _TrialSite_typePlant(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.TrialSite().TypePlant(rctx, obj)
+		return obj.Img, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6424,35 +8141,88 @@ func (ec *executionContext) _TrialSite_typePlant(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*api.TypePlant)
+	res := resTmp.(*api.Img)
 	fc.Result = res
-	return ec.marshalOTypePlant2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, field.Selections, res)
+	return ec.marshalOImg2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImg(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TrialSite_typePlant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TrialSite_img(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TrialSite",
 		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_TypePlant_id(ctx, field)
-			case "title":
-				return ec.fieldContext_TypePlant_title(ctx, field)
-			case "subtitle":
-				return ec.fieldContext_TypePlant_subtitle(ctx, field)
-			case "ecomorphsEntity":
-				return ec.fieldContext_TypePlant_ecomorphsEntity(ctx, field)
+				return ec.fieldContext_Img_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Img_name(ctx, field)
+			case "path":
+				return ec.fieldContext_Img_path(ctx, field)
 			case "createdAt":
-				return ec.fieldContext_TypePlant_createdAt(ctx, field)
+				return ec.fieldContext_Img_createdAt(ctx, field)
 			case "updatedAt":
-				return ec.fieldContext_TypePlant_updatedAt(ctx, field)
+				return ec.fieldContext_Img_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Img_deletedAt(ctx, field)
 			case "userId":
-				return ec.fieldContext_TypePlant_userId(ctx, field)
+				return ec.fieldContext_Img_userId(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type TypePlant", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type Img", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TrialSite_plant(ctx context.Context, field graphql.CollectedField, obj *api.TrialSite) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TrialSite_plant(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Plant, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*api.Plant)
+	fc.Result = res
+	return ec.marshalOPlant2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPlant(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TrialSite_plant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TrialSite",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Plant_id(ctx, field)
+			case "coverage":
+				return ec.fieldContext_Plant_coverage(ctx, field)
+			case "count":
+				return ec.fieldContext_Plant_count(ctx, field)
+			case "typePlant":
+				return ec.fieldContext_Plant_typePlant(ctx, field)
+			case "userId":
+				return ec.fieldContext_Plant_userId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Plant", field.Name)
 		},
 	}
 	return fc, nil
@@ -6534,6 +8304,53 @@ func (ec *executionContext) _TrialSite_updatedAt(ctx context.Context, field grap
 }
 
 func (ec *executionContext) fieldContext_TrialSite_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TrialSite",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "seconds":
+				return ec.fieldContext_Timestamp_seconds(ctx, field)
+			case "nanos":
+				return ec.fieldContext_Timestamp_nanos(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Timestamp", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TrialSite_deletedAt(ctx context.Context, field graphql.CollectedField, obj *api.TrialSite) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TrialSite_deletedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*timestamppb.Timestamp)
+	fc.Result = res
+	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TrialSite_deletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TrialSite",
 		Field:      field,
@@ -6703,12 +8520,16 @@ func (ec *executionContext) fieldContext_TrialSiteList_list(ctx context.Context,
 				return ec.fieldContext_TrialSite_dominant(ctx, field)
 			case "subDominant":
 				return ec.fieldContext_TrialSite_subDominant(ctx, field)
-			case "typePlant":
-				return ec.fieldContext_TrialSite_typePlant(ctx, field)
+			case "img":
+				return ec.fieldContext_TrialSite_img(ctx, field)
+			case "plant":
+				return ec.fieldContext_TrialSite_plant(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_TrialSite_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_TrialSite_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_TrialSite_deletedAt(ctx, field)
 			case "userId":
 				return ec.fieldContext_TrialSite_userId(ctx, field)
 			}
@@ -6768,12 +8589,16 @@ func (ec *executionContext) fieldContext_TrialSiteMutation_createTrialSite(ctx c
 				return ec.fieldContext_TrialSite_dominant(ctx, field)
 			case "subDominant":
 				return ec.fieldContext_TrialSite_subDominant(ctx, field)
-			case "typePlant":
-				return ec.fieldContext_TrialSite_typePlant(ctx, field)
+			case "img":
+				return ec.fieldContext_TrialSite_img(ctx, field)
+			case "plant":
+				return ec.fieldContext_TrialSite_plant(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_TrialSite_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_TrialSite_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_TrialSite_deletedAt(ctx, field)
 			case "userId":
 				return ec.fieldContext_TrialSite_userId(ctx, field)
 			}
@@ -6844,12 +8669,16 @@ func (ec *executionContext) fieldContext_TrialSiteMutation_upTrialSite(ctx conte
 				return ec.fieldContext_TrialSite_dominant(ctx, field)
 			case "subDominant":
 				return ec.fieldContext_TrialSite_subDominant(ctx, field)
-			case "typePlant":
-				return ec.fieldContext_TrialSite_typePlant(ctx, field)
+			case "img":
+				return ec.fieldContext_TrialSite_img(ctx, field)
+			case "plant":
+				return ec.fieldContext_TrialSite_plant(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_TrialSite_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_TrialSite_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_TrialSite_deletedAt(ctx, field)
 			case "userId":
 				return ec.fieldContext_TrialSite_userId(ctx, field)
 			}
@@ -6926,6 +8755,190 @@ func (ec *executionContext) fieldContext_TrialSiteMutation_deleteTrialSite(ctx c
 	return fc, nil
 }
 
+func (ec *executionContext) _TrialSiteMutation_createPlant(ctx context.Context, field graphql.CollectedField, obj *model.TrialSiteMutation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TrialSiteMutation_createPlant(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.TrialSiteMutation().CreatePlant(rctx, obj, fc.Args["input"].(*api.InputPlantRequest))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*api.Plant)
+	fc.Result = res
+	return ec.marshalOPlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPlant(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TrialSiteMutation_createPlant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TrialSiteMutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Plant_id(ctx, field)
+			case "coverage":
+				return ec.fieldContext_Plant_coverage(ctx, field)
+			case "count":
+				return ec.fieldContext_Plant_count(ctx, field)
+			case "typePlant":
+				return ec.fieldContext_Plant_typePlant(ctx, field)
+			case "userId":
+				return ec.fieldContext_Plant_userId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Plant", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_TrialSiteMutation_createPlant_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TrialSiteMutation_updatePlant(ctx context.Context, field graphql.CollectedField, obj *model.TrialSiteMutation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TrialSiteMutation_updatePlant(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.TrialSiteMutation().UpdatePlant(rctx, obj, fc.Args["input"].(*api.InputPlantRequest))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*api.Plant)
+	fc.Result = res
+	return ec.marshalOPlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPlant(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TrialSiteMutation_updatePlant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TrialSiteMutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Plant_id(ctx, field)
+			case "coverage":
+				return ec.fieldContext_Plant_coverage(ctx, field)
+			case "count":
+				return ec.fieldContext_Plant_count(ctx, field)
+			case "typePlant":
+				return ec.fieldContext_Plant_typePlant(ctx, field)
+			case "userId":
+				return ec.fieldContext_Plant_userId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Plant", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_TrialSiteMutation_updatePlant_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TrialSiteMutation_deletePlant(ctx context.Context, field graphql.CollectedField, obj *model.TrialSiteMutation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TrialSiteMutation_deletePlant(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.TrialSiteMutation().DeletePlant(rctx, obj, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*api.BoolResponse)
+	fc.Result = res
+	return ec.marshalOBoolResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐBoolResponse(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TrialSiteMutation_deletePlant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TrialSiteMutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "result":
+				return ec.fieldContext_BoolResponse_result(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type BoolResponse", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_TrialSiteMutation_deletePlant_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _TrialSiteQuery_getTrialSite(ctx context.Context, field graphql.CollectedField, obj *model.TrialSiteQuery) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TrialSiteQuery_getTrialSite(ctx, field)
 	if err != nil {
@@ -6976,12 +8989,16 @@ func (ec *executionContext) fieldContext_TrialSiteQuery_getTrialSite(ctx context
 				return ec.fieldContext_TrialSite_dominant(ctx, field)
 			case "subDominant":
 				return ec.fieldContext_TrialSite_subDominant(ctx, field)
-			case "typePlant":
-				return ec.fieldContext_TrialSite_typePlant(ctx, field)
+			case "img":
+				return ec.fieldContext_TrialSite_img(ctx, field)
+			case "plant":
+				return ec.fieldContext_TrialSite_plant(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_TrialSite_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_TrialSite_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_TrialSite_deletedAt(ctx, field)
 			case "userId":
 				return ec.fieldContext_TrialSite_userId(ctx, field)
 			}
@@ -7054,6 +9071,128 @@ func (ec *executionContext) fieldContext_TrialSiteQuery_getAllTrialSite(ctx cont
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_TrialSiteQuery_getAllTrialSite_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TrialSiteQuery_getPlant(ctx context.Context, field graphql.CollectedField, obj *model.TrialSiteQuery) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TrialSiteQuery_getPlant(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.TrialSiteQuery().GetPlant(rctx, obj, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*api.Plant)
+	fc.Result = res
+	return ec.marshalOPlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPlant(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TrialSiteQuery_getPlant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TrialSiteQuery",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Plant_id(ctx, field)
+			case "coverage":
+				return ec.fieldContext_Plant_coverage(ctx, field)
+			case "count":
+				return ec.fieldContext_Plant_count(ctx, field)
+			case "typePlant":
+				return ec.fieldContext_Plant_typePlant(ctx, field)
+			case "userId":
+				return ec.fieldContext_Plant_userId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Plant", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_TrialSiteQuery_getPlant_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TrialSiteQuery_getAllPlant(ctx context.Context, field graphql.CollectedField, obj *model.TrialSiteQuery) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TrialSiteQuery_getAllPlant(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.TrialSiteQuery().GetAllPlant(rctx, obj, fc.Args["pages"].(*api.PagesRequest))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*api.PlantList)
+	fc.Result = res
+	return ec.marshalOPlantList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPlantList(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TrialSiteQuery_getAllPlant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TrialSiteQuery",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "page":
+				return ec.fieldContext_PlantList_page(ctx, field)
+			case "list":
+				return ec.fieldContext_PlantList_list(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PlantList", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_TrialSiteQuery_getAllPlant_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -7236,6 +9375,8 @@ func (ec *executionContext) fieldContext_TypePlant_ecomorphsEntity(ctx context.C
 				return ec.fieldContext_EcomorphsEntity_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_EcomorphsEntity_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_EcomorphsEntity_deletedAt(ctx, field)
 			case "title":
 				return ec.fieldContext_EcomorphsEntity_title(ctx, field)
 			case "description":
@@ -7340,6 +9481,110 @@ func (ec *executionContext) fieldContext_TypePlant_updatedAt(ctx context.Context
 				return ec.fieldContext_Timestamp_nanos(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Timestamp", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TypePlant_deletedAt(ctx context.Context, field graphql.CollectedField, obj *api.TypePlant) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TypePlant_deletedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*timestamppb.Timestamp)
+	fc.Result = res
+	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TypePlant_deletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TypePlant",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "seconds":
+				return ec.fieldContext_Timestamp_seconds(ctx, field)
+			case "nanos":
+				return ec.fieldContext_Timestamp_nanos(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Timestamp", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TypePlant_img(ctx context.Context, field graphql.CollectedField, obj *api.TypePlant) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TypePlant_img(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Img, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*api.Img)
+	fc.Result = res
+	return ec.marshalOImg2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImg(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TypePlant_img(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TypePlant",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Img_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Img_name(ctx, field)
+			case "path":
+				return ec.fieldContext_Img_path(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Img_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Img_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Img_deletedAt(ctx, field)
+			case "userId":
+				return ec.fieldContext_Img_userId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Img", field.Name)
 		},
 	}
 	return fc, nil
@@ -7494,6 +9739,10 @@ func (ec *executionContext) fieldContext_TypePlantList_list(ctx context.Context,
 				return ec.fieldContext_TypePlant_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_TypePlant_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_TypePlant_deletedAt(ctx, field)
+			case "img":
+				return ec.fieldContext_TypePlant_img(ctx, field)
 			case "userId":
 				return ec.fieldContext_TypePlant_userId(ctx, field)
 			}
@@ -7551,6 +9800,10 @@ func (ec *executionContext) fieldContext_TypePlantMutation_createTypePlant(ctx c
 				return ec.fieldContext_TypePlant_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_TypePlant_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_TypePlant_deletedAt(ctx, field)
+			case "img":
+				return ec.fieldContext_TypePlant_img(ctx, field)
 			case "userId":
 				return ec.fieldContext_TypePlant_userId(ctx, field)
 			}
@@ -7619,6 +9872,10 @@ func (ec *executionContext) fieldContext_TypePlantMutation_updateTypePlant(ctx c
 				return ec.fieldContext_TypePlant_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_TypePlant_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_TypePlant_deletedAt(ctx, field)
+			case "img":
+				return ec.fieldContext_TypePlant_img(ctx, field)
 			case "userId":
 				return ec.fieldContext_TypePlant_userId(ctx, field)
 			}
@@ -7743,6 +10000,10 @@ func (ec *executionContext) fieldContext_TypePlantQuery_getTypePlant(ctx context
 				return ec.fieldContext_TypePlant_createdAt(ctx, field)
 			case "updatedAt":
 				return ec.fieldContext_TypePlant_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_TypePlant_deletedAt(ctx, field)
+			case "img":
+				return ec.fieldContext_TypePlant_img(ctx, field)
 			case "userId":
 				return ec.fieldContext_TypePlant_userId(ctx, field)
 			}
@@ -9731,6 +11992,54 @@ func (ec *executionContext) unmarshalInputIdentifierInput(ctx context.Context, o
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputImgInput(ctx context.Context, obj interface{}) (api.Img, error) {
+	var it api.Img
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"id", "name", "path", "userId"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "id":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Id = data
+		case "name":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			data, err := ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Name = data
+		case "path":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("path"))
+			data, err := ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Path = data
+		case "userId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+			data, err := ec.unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserId = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputInputEcomorph(ctx context.Context, obj interface{}) (api.InputEcomorph, error) {
 	var it api.InputEcomorph
 	asMap := map[string]interface{}{}
@@ -9876,6 +12185,47 @@ func (ec *executionContext) unmarshalInputInputFormEcomorphsEntity(ctx context.C
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputInputFormPlant(ctx context.Context, obj interface{}) (api.InputFormPlant, error) {
+	var it api.InputFormPlant
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"coverage", "count", "typePlantId"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "coverage":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("coverage"))
+			data, err := ec.unmarshalOInt2int32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Coverage = data
+		case "count":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("count"))
+			data, err := ec.unmarshalOInt2int32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Count = data
+		case "typePlantId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typePlantId"))
+			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TypePlantId = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputInputFormTransectRequest(ctx context.Context, obj interface{}) (api.InputFormTransectRequest, error) {
 	var it api.InputFormTransectRequest
 	asMap := map[string]interface{}{}
@@ -9883,7 +12233,7 @@ func (ec *executionContext) unmarshalInputInputFormTransectRequest(ctx context.C
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"title", "covered", "rating", "square", "squareTrialSite", "countTypes", "trialSite", "dominant", "subDominant"}
+	fieldsInOrder := [...]string{"title", "covered", "rating", "square", "squareTrialSite", "countTypes", "img", "trialSite", "dominant", "subDominant"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -9932,6 +12282,13 @@ func (ec *executionContext) unmarshalInputInputFormTransectRequest(ctx context.C
 				return it, err
 			}
 			it.CountTypes = data
+		case "img":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("img"))
+			data, err := ec.unmarshalOImgInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImg(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Img = data
 		case "trialSite":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("trialSite"))
 			data, err := ec.unmarshalOTrialSiteInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTrialSite(ctx, v)
@@ -9966,7 +12323,7 @@ func (ec *executionContext) unmarshalInputInputFormTrialSiteRequest(ctx context.
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"title", "covered", "rating", "countTypes", "typePlant", "dominant", "subDominant"}
+	fieldsInOrder := [...]string{"title", "covered", "rating", "countTypes", "img", "plant", "dominant", "subDominant"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -10001,13 +12358,20 @@ func (ec *executionContext) unmarshalInputInputFormTrialSiteRequest(ctx context.
 				return it, err
 			}
 			it.CountTypes = data
-		case "typePlant":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typePlant"))
-			data, err := ec.unmarshalOTypePlantInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, v)
+		case "img":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("img"))
+			data, err := ec.unmarshalOImgInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImg(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.TypePlant = data
+			it.Img = data
+		case "plant":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("plant"))
+			data, err := ec.unmarshalOPlantInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPlant(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Plant = data
 		case "dominant":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("dominant"))
 			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, v)
@@ -10035,7 +12399,7 @@ func (ec *executionContext) unmarshalInputInputFormTypePlantRequest(ctx context.
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"title", "subtitle", "ecomorphsEntity"}
+	fieldsInOrder := [...]string{"title", "subtitle", "ecomorphsEntity", "img"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -10063,6 +12427,47 @@ func (ec *executionContext) unmarshalInputInputFormTypePlantRequest(ctx context.
 				return it, err
 			}
 			it.EcomorphsEntity = data
+		case "img":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("img"))
+			data, err := ec.unmarshalOImgInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImg(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Img = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputInputPlantRequest(ctx context.Context, obj interface{}) (api.InputPlantRequest, error) {
+	var it api.InputPlantRequest
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"id", "input"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "id":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Id = data
+		case "input":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+			data, err := ec.unmarshalOInputFormPlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormPlant(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Input = data
 		}
 	}
 
@@ -10205,6 +12610,61 @@ func (ec *executionContext) unmarshalInputPagesRequest(ctx context.Context, obj 
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputPlantInput(ctx context.Context, obj interface{}) (api.Plant, error) {
+	var it api.Plant
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"id", "coverage", "count", "typePlant", "userId"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "id":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Id = data
+		case "coverage":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("coverage"))
+			data, err := ec.unmarshalOInt2int32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Coverage = data
+		case "count":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("count"))
+			data, err := ec.unmarshalOInt2int32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Count = data
+		case "typePlant":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typePlant"))
+			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TypePlant = data
+		case "userId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+			data, err := ec.unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserId = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputSignInUserInput(ctx context.Context, obj interface{}) (api.SignInUserInput, error) {
 	var it api.SignInUserInput
 	asMap := map[string]interface{}{}
@@ -10287,7 +12747,7 @@ func (ec *executionContext) unmarshalInputTransectInput(ctx context.Context, obj
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"id", "title", "covered", "rating", "square", "squareTrialSite", "countTypes", "dominant", "subDominant", "trialSite", "userId"}
+	fieldsInOrder := [...]string{"id", "title", "covered", "rating", "square", "squareTrialSite", "countTypes", "dominant", "subDominant", "trialSite", "img", "userId"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -10364,6 +12824,13 @@ func (ec *executionContext) unmarshalInputTransectInput(ctx context.Context, obj
 				return it, err
 			}
 			it.TrialSite = data
+		case "img":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("img"))
+			data, err := ec.unmarshalOImgInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImg(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Img = data
 		case "userId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
 			data, err := ec.unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
@@ -10384,7 +12851,7 @@ func (ec *executionContext) unmarshalInputTrialSiteInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"id", "title", "covered", "rating", "countTypes", "dominant", "subDominant", "typePlant", "userId"}
+	fieldsInOrder := [...]string{"id", "title", "covered", "rating", "countTypes", "img", "dominant", "subDominant", "plant", "userId"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -10426,6 +12893,13 @@ func (ec *executionContext) unmarshalInputTrialSiteInput(ctx context.Context, ob
 				return it, err
 			}
 			it.CountTypes = data
+		case "img":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("img"))
+			data, err := ec.unmarshalOImgInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImg(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Img = data
 		case "dominant":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("dominant"))
 			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, v)
@@ -10440,15 +12914,13 @@ func (ec *executionContext) unmarshalInputTrialSiteInput(ctx context.Context, ob
 				return it, err
 			}
 			it.SubDominant = data
-		case "typePlant":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typePlant"))
-			data, err := ec.unmarshalOTypePlantInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, v)
+		case "plant":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("plant"))
+			data, err := ec.unmarshalOPlantInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPlant(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			if err = ec.resolvers.TrialSiteInput().TypePlant(ctx, &it, data); err != nil {
-				return it, err
-			}
+			it.Plant = data
 		case "userId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
 			data, err := ec.unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
@@ -10687,6 +13159,11 @@ func (ec *executionContext) _Ecomorph(ctx context.Context, sel ast.SelectionSet,
 			}
 		case "updatedAt":
 			out.Values[i] = ec._Ecomorph_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "deletedAt":
+			out.Values[i] = ec._Ecomorph_deletedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -10996,6 +13473,8 @@ func (ec *executionContext) _EcomorphsEntity(ctx context.Context, sel ast.Select
 			out.Values[i] = ec._EcomorphsEntity_createdAt(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._EcomorphsEntity_updatedAt(ctx, field, obj)
+		case "deletedAt":
+			out.Values[i] = ec._EcomorphsEntity_deletedAt(ctx, field, obj)
 		case "title":
 			out.Values[i] = ec._EcomorphsEntity_title(ctx, field, obj)
 		case "description":
@@ -11383,6 +13862,195 @@ func (ec *executionContext) _IdentifierType(ctx context.Context, sel ast.Selecti
 	return out
 }
 
+var imgImplementors = []string{"Img"}
+
+func (ec *executionContext) _Img(ctx context.Context, sel ast.SelectionSet, obj *api.Img) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, imgImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Img")
+		case "id":
+			out.Values[i] = ec._Img_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "name":
+			out.Values[i] = ec._Img_name(ctx, field, obj)
+		case "path":
+			out.Values[i] = ec._Img_path(ctx, field, obj)
+		case "createdAt":
+			out.Values[i] = ec._Img_createdAt(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._Img_updatedAt(ctx, field, obj)
+		case "deletedAt":
+			out.Values[i] = ec._Img_deletedAt(ctx, field, obj)
+		case "userId":
+			out.Values[i] = ec._Img_userId(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var imgListImplementors = []string{"ImgList"}
+
+func (ec *executionContext) _ImgList(ctx context.Context, sel ast.SelectionSet, obj *api.ImgList) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, imgListImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ImgList")
+		case "page":
+			out.Values[i] = ec._ImgList_page(ctx, field, obj)
+		case "list":
+			out.Values[i] = ec._ImgList_list(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var imgQueryImplementors = []string{"ImgQuery"}
+
+func (ec *executionContext) _ImgQuery(ctx context.Context, sel ast.SelectionSet, obj *model.ImgQuery) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, imgQueryImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ImgQuery")
+		case "getImgByID":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ImgQuery_getImgByID(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "getListImg":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ImgQuery_getListImg(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var listEcomorphImplementors = []string{"ListEcomorph"}
 
 func (ec *executionContext) _ListEcomorph(ctx context.Context, sel ast.SelectionSet, obj *api.EcomorphsList) graphql.Marshaler {
@@ -11539,6 +14207,94 @@ func (ec *executionContext) _PagesResponse(ctx context.Context, sel ast.Selectio
 	return out
 }
 
+var plantImplementors = []string{"Plant"}
+
+func (ec *executionContext) _Plant(ctx context.Context, sel ast.SelectionSet, obj *api.Plant) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, plantImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Plant")
+		case "id":
+			out.Values[i] = ec._Plant_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "coverage":
+			out.Values[i] = ec._Plant_coverage(ctx, field, obj)
+		case "count":
+			out.Values[i] = ec._Plant_count(ctx, field, obj)
+		case "typePlant":
+			out.Values[i] = ec._Plant_typePlant(ctx, field, obj)
+		case "userId":
+			out.Values[i] = ec._Plant_userId(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var plantListImplementors = []string{"PlantList"}
+
+func (ec *executionContext) _PlantList(ctx context.Context, sel ast.SelectionSet, obj *api.PlantList) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, plantListImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("PlantList")
+		case "page":
+			out.Values[i] = ec._PlantList_page(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "list":
+			out.Values[i] = ec._PlantList_list(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var queryImplementors = []string{"Query"}
 
 func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -11644,6 +14400,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_transect(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "img":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_img(ctx, field)
 				return res
 			}
 
@@ -11805,10 +14580,14 @@ func (ec *executionContext) _Transect(ctx context.Context, sel ast.SelectionSet,
 			out.Values[i] = ec._Transect_subDominant(ctx, field, obj)
 		case "trialSite":
 			out.Values[i] = ec._Transect_trialSite(ctx, field, obj)
+		case "img":
+			out.Values[i] = ec._Transect_img(ctx, field, obj)
 		case "createdAt":
 			out.Values[i] = ec._Transect_createdAt(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._Transect_updatedAt(ctx, field, obj)
+		case "deletedAt":
+			out.Values[i] = ec._Transect_deletedAt(ctx, field, obj)
 		case "userId":
 			out.Values[i] = ec._Transect_userId(ctx, field, obj)
 		default:
@@ -12122,7 +14901,7 @@ func (ec *executionContext) _TrialSite(ctx context.Context, sel ast.SelectionSet
 		case "id":
 			out.Values[i] = ec._TrialSite_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
+				out.Invalids++
 			}
 		case "title":
 			out.Values[i] = ec._TrialSite_title(ctx, field, obj)
@@ -12136,43 +14915,16 @@ func (ec *executionContext) _TrialSite(ctx context.Context, sel ast.SelectionSet
 			out.Values[i] = ec._TrialSite_dominant(ctx, field, obj)
 		case "subDominant":
 			out.Values[i] = ec._TrialSite_subDominant(ctx, field, obj)
-		case "typePlant":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._TrialSite_typePlant(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "img":
+			out.Values[i] = ec._TrialSite_img(ctx, field, obj)
+		case "plant":
+			out.Values[i] = ec._TrialSite_plant(ctx, field, obj)
 		case "createdAt":
 			out.Values[i] = ec._TrialSite_createdAt(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._TrialSite_updatedAt(ctx, field, obj)
+		case "deletedAt":
+			out.Values[i] = ec._TrialSite_deletedAt(ctx, field, obj)
 		case "userId":
 			out.Values[i] = ec._TrialSite_userId(ctx, field, obj)
 		default:
@@ -12349,6 +15101,105 @@ func (ec *executionContext) _TrialSiteMutation(ctx context.Context, sel ast.Sele
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "createPlant":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._TrialSiteMutation_createPlant(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "updatePlant":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._TrialSiteMutation_updatePlant(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "deletePlant":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._TrialSiteMutation_deletePlant(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -12449,6 +15300,72 @@ func (ec *executionContext) _TrialSiteQuery(ctx context.Context, sel ast.Selecti
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "getPlant":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._TrialSiteQuery_getPlant(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "getAllPlant":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._TrialSiteQuery_getAllPlant(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -12498,6 +15415,10 @@ func (ec *executionContext) _TypePlant(ctx context.Context, sel ast.SelectionSet
 			out.Values[i] = ec._TypePlant_createdAt(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._TypePlant_updatedAt(ctx, field, obj)
+		case "deletedAt":
+			out.Values[i] = ec._TypePlant_deletedAt(ctx, field, obj)
+		case "img":
+			out.Values[i] = ec._TypePlant_img(ctx, field, obj)
 		case "userId":
 			out.Values[i] = ec._TypePlant_userId(ctx, field, obj)
 		default:
@@ -13760,6 +16681,76 @@ func (ec *executionContext) marshalOIdentifierType2ᚖgithubᚗcomᚋinfobloxope
 	return ec._IdentifierType(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalOImg2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImg(ctx context.Context, sel ast.SelectionSet, v []*api.Img) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOImg2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImg(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOImg2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImg(ctx context.Context, sel ast.SelectionSet, v *api.Img) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Img(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOImgInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImg(ctx context.Context, v interface{}) (*api.Img, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputImgInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOImgList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImgList(ctx context.Context, sel ast.SelectionSet, v *api.ImgList) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ImgList(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOImgQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐImgQuery(ctx context.Context, sel ast.SelectionSet, v *model.ImgQuery) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ImgQuery(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalOInputEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputEcomorph(ctx context.Context, v interface{}) (*api.InputEcomorph, error) {
 	if v == nil {
 		return nil, nil
@@ -13792,6 +16783,14 @@ func (ec *executionContext) unmarshalOInputFormEcomorphsEntity2ᚖgithubᚗcom�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalOInputFormPlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormPlant(ctx context.Context, v interface{}) (*api.InputFormPlant, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputInputFormPlant(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalOInputFormTransectRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormTransectRequest(ctx context.Context, v interface{}) (*api.InputFormTransectRequest, error) {
 	if v == nil {
 		return nil, nil
@@ -13813,6 +16812,14 @@ func (ec *executionContext) unmarshalOInputFormTypePlantRequest2ᚖgithubᚗcom�
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputInputFormTypePlantRequest(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOInputPlantRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputPlantRequest(ctx context.Context, v interface{}) (*api.InputPlantRequest, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputInputPlantRequest(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -13866,6 +16873,96 @@ func (ec *executionContext) unmarshalOPagesRequest2ᚖgithubᚗcomᚋsergey23144
 	}
 	res, err := ec.unmarshalInputPagesRequest(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOPagesResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPagesResponse(ctx context.Context, sel ast.SelectionSet, v *api.PagesResponse) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._PagesResponse(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOPlant2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPlant(ctx context.Context, sel ast.SelectionSet, v []*api.Plant) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOPlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPlant(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOPlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPlant(ctx context.Context, sel ast.SelectionSet, v *api.Plant) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Plant(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOPlantInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPlant(ctx context.Context, v interface{}) ([]*api.Plant, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*api.Plant, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOPlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPlant(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOPlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPlant(ctx context.Context, v interface{}) (*api.Plant, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputPlantInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOPlantList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPlantList(ctx context.Context, sel ast.SelectionSet, v *api.PlantList) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._PlantList(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOSignInUserInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐSignInUserInput(ctx context.Context, v interface{}) (*api.SignInUserInput, error) {
@@ -14174,26 +17271,6 @@ func (ec *executionContext) marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋB
 		return graphql.Null
 	}
 	return ec._TypePlant(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOTypePlantInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx context.Context, v interface{}) ([]*api.TypePlant, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]*api.TypePlant, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
 }
 
 func (ec *executionContext) unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx context.Context, v interface{}) (*api.TypePlant, error) {

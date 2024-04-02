@@ -2,6 +2,7 @@ type EcomorphsEntity {
     id: IdentifierType!
     createdAt: Timestamp
     updatedAt: Timestamp
+    deletedAt : Timestamp
     title: String
     description: String
     ecomorphs: Ecomorph

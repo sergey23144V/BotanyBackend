@@ -1,12 +1,17 @@
 type TrialSiteQuery {
     getTrialSite(id: ID!): TrialSite @goField(forceResolver: true)
     getAllTrialSite(pages: PagesRequest ): TrialSiteList @goField(forceResolver: true)
+    getPlant(id: ID!): Plant @goField(forceResolver: true)
+    getAllPlant(pages: PagesRequest ): PlantList @goField(forceResolver: true)
 }
 
 type TrialSiteMutation {
     createTrialSite(input: InputFormTrialSiteRequest): TrialSite @goField(forceResolver: true)
     upTrialSite(input: InputTrialSiteRequest): TrialSite @goField(forceResolver: true)
     deleteTrialSite(id: ID!): BoolResponse @goField(forceResolver: true)
+    createPlant(input: InputPlantRequest): Plant @goField(forceResolver: true)
+    updatePlant(input: InputPlantRequest): Plant @goField(forceResolver: true)
+    deletePlant(id: ID!): BoolResponse @goField(forceResolver: true)
 }
 
 type TrialSite {
@@ -17,11 +22,14 @@ type TrialSite {
     countTypes: Int
     dominant: TypePlant
     subDominant: TypePlant
-    typePlant: [TypePlant]
+    img: Img
+    plant: [Plant]
     createdAt: Timestamp
     updatedAt: Timestamp
+    deletedAt : Timestamp
     userId: IdentifierType
 }
+
 
 input TrialSiteInput {
     id: IdentifierInput!
@@ -29,9 +37,10 @@ input TrialSiteInput {
     covered: Int
     rating: Int
     countTypes: Int
+    img: ImgInput
     dominant: TypePlantInput
     subDominant: TypePlantInput
-    typePlant: [TypePlantInput]
+    plant: [PlantInput]
     userId: IdentifierInput
 }
 
@@ -45,7 +54,8 @@ input InputFormTrialSiteRequest {
     covered: Int
     rating: Int
     countTypes: Int
-    typePlant: [TypePlantInput]
+    img: ImgInput
+    plant: [PlantInput]
     dominant: TypePlantInput
     subDominant: TypePlantInput
 }
@@ -53,4 +63,37 @@ input InputFormTrialSiteRequest {
 input InputTrialSiteRequest {
     id: IdentifierInput!
     input: InputFormTrialSiteRequest
+}
+
+
+type Plant {
+    id: IdentifierType!
+    coverage: Int
+    count: Int
+    typePlant: TypePlant
+    userId: IdentifierType
+}
+
+input PlantInput {
+    id: IdentifierInput!
+    coverage: Int
+    count: Int
+    typePlant: TypePlantInput
+    userId: IdentifierInput
+}
+
+type PlantList{
+    page: PagesResponse!
+    list: [Plant]
+}
+
+input InputFormPlant {
+    coverage: Int
+    count: Int
+    typePlantId: TypePlantInput
+}
+
+input InputPlantRequest {
+    id: IdentifierInput!
+    input: InputFormPlant
 }

@@ -33,3 +33,7 @@ func StartServerGraphQl() {
 
 	graphql.StartGraphQl(db, &authServet, newService)
 }
+
+func GetClient() {
+
+}

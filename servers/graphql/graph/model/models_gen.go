@@ -37,6 +37,11 @@ type IDRequest struct {
 	ID string `json:"id"`
 }
 
+type ImgQuery struct {
+	GetImgByID *api.Img     `json:"getImgByID,omitempty"`
+	GetListImg *api.ImgList `json:"getListImg,omitempty"`
+}
+
 type Mutation struct {
 }
 
@@ -58,11 +63,16 @@ type TrialSiteMutation struct {
 	CreateTrialSite *api.TrialSite    `json:"createTrialSite,omitempty"`
 	UpTrialSite     *api.TrialSite    `json:"upTrialSite,omitempty"`
 	DeleteTrialSite *api.BoolResponse `json:"deleteTrialSite,omitempty"`
+	CreatePlant     *api.Plant        `json:"createPlant,omitempty"`
+	UpdatePlant     *api.Plant        `json:"updatePlant,omitempty"`
+	DeletePlant     *api.BoolResponse `json:"deletePlant,omitempty"`
 }
 
 type TrialSiteQuery struct {
 	GetTrialSite    *api.TrialSite     `json:"getTrialSite,omitempty"`
 	GetAllTrialSite *api.TrialSiteList `json:"getAllTrialSite,omitempty"`
+	GetPlant        *api.Plant         `json:"getPlant,omitempty"`
+	GetAllPlant     *api.PlantList     `json:"getAllPlant,omitempty"`
 }
 
 type TypePlantMutation struct {

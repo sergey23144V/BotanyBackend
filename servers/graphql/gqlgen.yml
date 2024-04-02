@@ -97,6 +97,12 @@ models:
     model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.PagesRequest
   PagesResponse:
     model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.PagesResponse
+  Img:
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.Img
+  ImgInput:
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.Img
+  ImgList:
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.ImgList
 
 #Ecomorph
   Ecomorph:
@@ -111,6 +117,18 @@ models:
     model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.EcomorphsList
   BoolResponse:
     model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.BoolResponse
+
+#Plant
+  Plant:
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.Plant
+  PlantInput:
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.Plant
+  PlantList:
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.PlantList
+  InputFormPlant:
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.InputFormPlant
+  InputPlantRequest:
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.InputPlantRequest
 
 #Auth
   SignInUserResponse:

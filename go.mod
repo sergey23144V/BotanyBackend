@@ -9,6 +9,7 @@ require (
 	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/infobloxopen/atlas-app-toolkit/v2 v2.2.1-0.20240313220428-5449c0c2a27f
 	github.com/infobloxopen/protoc-gen-gorm v1.1.4
+	github.com/rs/cors v1.10.1
 	github.com/sirupsen/logrus v1.8.0
 	github.com/stretchr/testify v1.8.4
 	github.com/vektah/gqlparser/v2 v2.5.11
@@ -35,12 +36,12 @@ require (
 	github.com/jackc/pgx/v5 v5.4.3 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
+	github.com/machinebox/graphql v0.2.2 // indirect
 	github.com/magefile/mage v1.10.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
-	github.com/rs/cors v1.10.1 // indirect
 	github.com/sosodev/duration v1.1.0 // indirect
 	golang.org/x/crypto v0.18.0 // indirect
 	golang.org/x/sys v0.16.0 // indirect

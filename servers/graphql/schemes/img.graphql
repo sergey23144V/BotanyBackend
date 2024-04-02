@@ -1,0 +1,27 @@
+
+type ImgQuery {
+    getImgByID(id: ID!): Img @goField(forceResolver: true)
+    getListImg(pages: PagesRequest ): ImgList @goField(forceResolver: true)
+}
+
+type Img {
+    id: IdentifierType!
+    name: String
+    path: String
+    createdAt: Timestamp
+    updatedAt: Timestamp
+    deletedAt : Timestamp
+    userId: IdentifierType
+}
+
+input ImgInput {
+    id: IdentifierInput!
+    name: String
+    path: String
+    userId: IdentifierInput
+}
+
+type ImgList {
+    page: PagesResponse
+    list: [Img]
+}

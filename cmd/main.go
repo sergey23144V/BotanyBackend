@@ -5,6 +5,7 @@ import (
 	"github.com/sergey23144V/BotanyBackend/pkg/service"
 	g_rpc "github.com/sergey23144V/BotanyBackend/servers/g-rpc"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
+	"github.com/sergey23144V/BotanyBackend/servers/graphql"
 	"github.com/sergey23144V/BotanyBackend/servers/rest"
 	"log"
 )
@@ -25,7 +26,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	db.AutoMigrate(api.EcomorphORM{}, api.EcomorphsEntityORM{}, api.UserORM{}, api.TypePlantORM{}, api.PlantORM{}, api.TransectORM{}, api.TrialSiteORM{})
+	db.AutoMigrate(api.Img{}, api.EcomorphORM{}, api.EcomorphsEntityORM{}, api.UserORM{}, api.TypePlantORM{}, api.PlantORM{}, api.TransectORM{}, api.TrialSiteORM{})
 	log.Println("migrant")
 
 	authServet := api.NewAuthServer(db)
@@ -35,7 +36,7 @@ func main() {
 
 	g_rpc.StartGrpc(&authServet, newService)
 	rest.StartRest(newService)
-	//graphql.StartGraphQl(db, &authServet, newService)
+	graphql.StartGraphQl(db, &authServet, newService)
 
 	select {}
 }

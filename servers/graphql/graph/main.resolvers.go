@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/sergey23144V/BotanyBackend/servers/graphql/graph/model"
 )
@@ -74,6 +75,11 @@ func (r *queryResolver) TrialSite(ctx context.Context) (*model.TrialSiteQuery, e
 func (r *queryResolver) Transect(ctx context.Context) (*model.TransectQuery, error) {
 	v := model.TransectQuery{}
 	return &v, nil
+}
+
+// Img is the resolver for the img field.
+func (r *queryResolver) Img(ctx context.Context) (*model.ImgQuery, error) {
+	panic(fmt.Errorf("not implemented: Img - img"))
 }
 
 // Mutation returns MutationResolver implementation.

@@ -6,7 +6,7 @@ package graph
 
 import (
 	"context"
-	"github.com/sergey23144V/BotanyBackend/pkg/errors"
+	"errors"
 
 	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
@@ -16,7 +16,7 @@ import (
 // CreateTrialSite is the resolver for the createTrialSite field.
 func (r *trialSiteMutationResolver) CreateTrialSite(ctx context.Context, obj *model.TrialSiteMutation, input *api.InputFormTrialSiteRequest) (*api.TrialSite, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.CreateTrialSite(ctx, &api.InputTrialSiteRequest{Input: input})
 }
@@ -24,7 +24,7 @@ func (r *trialSiteMutationResolver) CreateTrialSite(ctx context.Context, obj *mo
 // UpTrialSite is the resolver for the upTrialSite field.
 func (r *trialSiteMutationResolver) UpTrialSite(ctx context.Context, obj *model.TrialSiteMutation, input *api.InputTrialSiteRequest) (*api.TrialSite, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.UpdateTrialSite(ctx, input)
 }
@@ -32,23 +32,23 @@ func (r *trialSiteMutationResolver) UpTrialSite(ctx context.Context, obj *model.
 // DeleteTrialSite is the resolver for the deleteTrialSite field.
 func (r *trialSiteMutationResolver) DeleteTrialSite(ctx context.Context, obj *model.TrialSiteMutation, id string) (*api.BoolResponse, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.DeleteTrialSite(ctx, ToIdRequest(id))
 }
 
 // CreatePlant is the resolver for the createPlant field.
-func (r *trialSiteMutationResolver) CreatePlant(ctx context.Context, obj *model.TrialSiteMutation, input *api.InputPlantRequest) (*api.Plant, error) {
+func (r *trialSiteMutationResolver) CreatePlant(ctx context.Context, obj *model.TrialSiteMutation, input *api.InputFormPlant) (*api.Plant, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
-	return r.service.CreatePlant(ctx, input)
+	return r.service.CreatePlant(ctx, &api.InputPlantRequest{Input: input})
 }
 
 // UpdatePlant is the resolver for the updatePlant field.
 func (r *trialSiteMutationResolver) UpdatePlant(ctx context.Context, obj *model.TrialSiteMutation, input *api.InputPlantRequest) (*api.Plant, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.UpdatePlant(ctx, input)
 }
@@ -56,7 +56,7 @@ func (r *trialSiteMutationResolver) UpdatePlant(ctx context.Context, obj *model.
 // DeletePlant is the resolver for the deletePlant field.
 func (r *trialSiteMutationResolver) DeletePlant(ctx context.Context, obj *model.TrialSiteMutation, id string) (*api.BoolResponse, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.DeletePlant(ctx, ToIdRequest(id))
 }
@@ -64,7 +64,7 @@ func (r *trialSiteMutationResolver) DeletePlant(ctx context.Context, obj *model.
 // GetTrialSite is the resolver for the getTrialSite field.
 func (r *trialSiteQueryResolver) GetTrialSite(ctx context.Context, obj *model.TrialSiteQuery, id string) (*api.TrialSite, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.GetTrialSiteById(ctx, ToIdRequest(id))
 }
@@ -72,7 +72,7 @@ func (r *trialSiteQueryResolver) GetTrialSite(ctx context.Context, obj *model.Tr
 // GetAllTrialSite is the resolver for the getAllTrialSite field.
 func (r *trialSiteQueryResolver) GetAllTrialSite(ctx context.Context, obj *model.TrialSiteQuery, pages *api.PagesRequest) (*api.TrialSiteList, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.GetListTrialSite(ctx, pages)
 }
@@ -80,7 +80,7 @@ func (r *trialSiteQueryResolver) GetAllTrialSite(ctx context.Context, obj *model
 // GetPlant is the resolver for the getPlant field.
 func (r *trialSiteQueryResolver) GetPlant(ctx context.Context, obj *model.TrialSiteQuery, id string) (*api.Plant, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.GetPlant(ctx, ToIdRequest(id))
 }

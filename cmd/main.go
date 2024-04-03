@@ -26,7 +26,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	db.AutoMigrate(api.Img{}, api.EcomorphORM{}, api.EcomorphsEntityORM{}, api.UserORM{}, api.TypePlantORM{}, api.PlantORM{}, api.TransectORM{}, api.TrialSiteORM{})
+	db.AutoMigrate(api.ImgORM{}, api.EcomorphORM{}, api.EcomorphsEntityORM{}, api.UserORM{}, api.TypePlantORM{}, api.PlantORM{}, api.TransectORM{}, api.TrialSiteORM{})
 	log.Println("migrant")
 
 	authServet := api.NewAuthServer(db)

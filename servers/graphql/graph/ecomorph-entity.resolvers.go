@@ -6,9 +6,7 @@ package graph
 
 import (
 	"context"
-	"github.com/sergey23144V/BotanyBackend/pkg/errors"
-
-	"fmt"
+	"errors"
 
 	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
@@ -18,7 +16,7 @@ import (
 // InsertEcomorphEntity is the resolver for the insertEcomorphEntity field.
 func (r *ecomorphsEntityMutationResolver) InsertEcomorphEntity(ctx context.Context, obj *model.EcomorphsEntityMutation, input *api.InputFormEcomorphsEntity) (*api.EcomorphsEntity, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.EcomorphsEntityService.CreateEcomorphsEntity(ctx, &api.InputEcomorphsEntity{Input: input})
 }
@@ -26,7 +24,7 @@ func (r *ecomorphsEntityMutationResolver) InsertEcomorphEntity(ctx context.Conte
 // UpdateEcomorphEntity is the resolver for the updateEcomorphEntity field.
 func (r *ecomorphsEntityMutationResolver) UpdateEcomorphEntity(ctx context.Context, obj *model.EcomorphsEntityMutation, input *api.InputEcomorphsEntity) (*api.EcomorphsEntity, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.EcomorphsEntityService.StrictUpdateEcomorphsEntity(ctx, input)
 }
@@ -34,7 +32,7 @@ func (r *ecomorphsEntityMutationResolver) UpdateEcomorphEntity(ctx context.Conte
 // DeleteEcomorphEntityByID is the resolver for the deleteEcomorphEntityByID field.
 func (r *ecomorphsEntityMutationResolver) DeleteEcomorphEntityByID(ctx context.Context, obj *model.EcomorphsEntityMutation, id string) (*api.BoolResponse, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.EcomorphsEntityService.DeleteEcomorphsEntity(ctx, ToIdRequest(id))
 }
@@ -42,7 +40,7 @@ func (r *ecomorphsEntityMutationResolver) DeleteEcomorphEntityByID(ctx context.C
 // GetEcomorphEntityByID is the resolver for the getEcomorphEntityByID field.
 func (r *ecomorphsEntityQueryResolver) GetEcomorphEntityByID(ctx context.Context, obj *model.EcomorphsEntityQuery, id string) (*api.EcomorphsEntity, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.EcomorphsEntityService.GetEcomorphsEntityById(ctx, ToIdRequest(id))
 }
@@ -50,14 +48,9 @@ func (r *ecomorphsEntityQueryResolver) GetEcomorphEntityByID(ctx context.Context
 // GetAllEcomorphEntity is the resolver for the getAllEcomorphEntity field.
 func (r *ecomorphsEntityQueryResolver) GetAllEcomorphEntity(ctx context.Context, obj *model.EcomorphsEntityQuery, pages *api.PagesRequest) (*api.EcomorphsEntityList, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.EcomorphsEntityService.GetListEcomorphsEntity(ctx, pages)
-}
-
-// Ecomorphs is the resolver for the ecomorphs field.
-func (r *inputFormEcomorphsEntityResolver) Ecomorphs(ctx context.Context, obj *api.InputFormEcomorphsEntity, data []*api.Ecomorph) error {
-	panic(fmt.Errorf("not implemented: Ecomorphs - ecomorphs"))
 }
 
 // EcomorphsEntityMutation returns EcomorphsEntityMutationResolver implementation.
@@ -70,11 +63,5 @@ func (r *Resolver) EcomorphsEntityQuery() EcomorphsEntityQueryResolver {
 	return &ecomorphsEntityQueryResolver{r}
 }
 
-// InputFormEcomorphsEntity returns InputFormEcomorphsEntityResolver implementation.
-func (r *Resolver) InputFormEcomorphsEntity() InputFormEcomorphsEntityResolver {
-	return &inputFormEcomorphsEntityResolver{r}
-}
-
 type ecomorphsEntityMutationResolver struct{ *Resolver }
 type ecomorphsEntityQueryResolver struct{ *Resolver }
-type inputFormEcomorphsEntityResolver struct{ *Resolver }

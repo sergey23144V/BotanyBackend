@@ -6,7 +6,7 @@ package graph
 
 import (
 	"context"
-	"github.com/sergey23144V/BotanyBackend/pkg/errors"
+	"errors"
 
 	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
@@ -14,17 +14,17 @@ import (
 )
 
 // CreateTransect is the resolver for the createTransect field.
-func (r *transectMutationResolver) CreateTransect(ctx context.Context, obj *model.TransectMutation, input *api.InputTransectRequest) (*api.Transect, error) {
+func (r *transectMutationResolver) CreateTransect(ctx context.Context, obj *model.TransectMutation, input *api.InputFormTransectRequest) (*api.Transect, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
-	return r.service.CreateTransect(ctx, input)
+	return r.service.CreateTransect(ctx, &api.InputTransectRequest{Input: input})
 }
 
 // UpTransect is the resolver for the upTransect field.
 func (r *transectMutationResolver) UpTransect(ctx context.Context, obj *model.TransectMutation, input *api.InputTransectRequest) (*api.Transect, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.UpdateTransect(ctx, input)
 }
@@ -32,7 +32,7 @@ func (r *transectMutationResolver) UpTransect(ctx context.Context, obj *model.Tr
 // DeleteTransect is the resolver for the deleteTransect field.
 func (r *transectMutationResolver) DeleteTransect(ctx context.Context, obj *model.TransectMutation, id string) (*api.BoolResponse, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.DeleteTransect(ctx, ToIdRequest(id))
 }
@@ -40,7 +40,7 @@ func (r *transectMutationResolver) DeleteTransect(ctx context.Context, obj *mode
 // GetTransect is the resolver for the getTransect field.
 func (r *transectQueryResolver) GetTransect(ctx context.Context, obj *model.TransectQuery, id string) (*api.Transect, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.GetTransectById(ctx, ToIdRequest(id))
 }
@@ -48,7 +48,7 @@ func (r *transectQueryResolver) GetTransect(ctx context.Context, obj *model.Tran
 // GetAllTransect is the resolver for the getAllTransect field.
 func (r *transectQueryResolver) GetAllTransect(ctx context.Context, obj *model.TransectQuery, pages *api.PagesRequest) (*api.TransectList, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.GetListTransect(ctx, pages)
 }

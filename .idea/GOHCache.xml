@@ -221,6 +221,13 @@
             </set>
           </value>
         </entry>
+        <entry key="ImgQuery">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/graphql/graph/model/models_gen.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="ImgRepositoryImpl">
           <value>
             <set>
@@ -400,13 +407,6 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/graphql/graph/resolver.go" />
-            </set>
-          </value>
-        </entry>
-        <entry key="Server">
-          <value>
-            <set>
-              <option value="file://$PROJECT_DIR$/servers/rest/server.go" />
             </set>
           </value>
         </entry>
@@ -739,6 +739,13 @@
             </set>
           </value>
         </entry>
+        <entry key="ecomorphsEntityInputResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/graphql/graph/ecomorph-entity.resolvers.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="ecomorphsEntityMutationResolver">
           <value>
             <set>
@@ -781,6 +788,13 @@
             </set>
           </value>
         </entry>
+        <entry key="inputEcomorphsEntityResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/graphql/graph/ecomorph-entity.resolvers.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="inputFormEcomorphsEntityResolver">
           <value>
             <set>
@@ -788,10 +802,31 @@
             </set>
           </value>
         </entry>
-        <entry key="inputFormPlantResolver">
+        <entry key="inputPlantRequestResolver">
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/graphql/graph/trial-site.resolvers.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="inputTransectRequestResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/graphql/graph/transect.resolvers.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="inputTrialSiteRequestResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/graphql/graph/trial-site.resolvers.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="inputTypePlantRequestResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/graphql/graph/type-plant.resolvers.go" />
             </set>
           </value>
         </entry>
@@ -823,17 +858,17 @@
             </set>
           </value>
         </entry>
-        <entry key="plantResolver">
-          <value>
-            <set>
-              <option value="file://$PROJECT_DIR$/servers/graphql/graph/trial-site.resolvers.go" />
-            </set>
-          </value>
-        </entry>
         <entry key="queryResolver">
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/graphql/graph/main.resolvers.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="transectInputResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/graphql/graph/transect.resolvers.go" />
             </set>
           </value>
         </entry>
@@ -879,17 +914,17 @@
             </set>
           </value>
         </entry>
-        <entry key="trialSiteResolver">
-          <value>
-            <set>
-              <option value="file://$PROJECT_DIR$/servers/graphql/graph/trial-site.resolvers.go" />
-            </set>
-          </value>
-        </entry>
         <entry key="trialSiteServiceClient">
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/trial-site_grpc.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="typePlantInputResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/graphql/graph/type-plant.resolvers.go" />
             </set>
           </value>
         </entry>
@@ -943,7 +978,7 @@
         <entry key="file://$PROJECT_DIR$/cmd/main.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712074529203" />
+              <option name="lastModified" value="1712163998755" />
             </ScannedPath>
           </value>
         </entry>
@@ -1056,7 +1091,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/repository/transect-repository.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712067424111" />
+              <option name="lastModified" value="1712164801695" />
               <option name="schema">
                 <list>
                   <option value="TransectRepositoryImpl" />
@@ -1609,7 +1644,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/auth.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1711284667378" />
+              <option name="lastModified" value="1712146175848" />
               <option name="schema">
                 <list>
                   <option value="authMutationResolver" />
@@ -1621,12 +1656,11 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/ecomorph-entity.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712074309988" />
+              <option name="lastModified" value="1712146185106" />
               <option name="schema">
                 <list>
                   <option value="ecomorphsEntityMutationResolver" />
                   <option value="ecomorphsEntityQueryResolver" />
-                  <option value="inputFormEcomorphsEntityResolver" />
                 </list>
               </option>
             </ScannedPath>
@@ -1635,7 +1669,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/ecomorph.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1711284667380" />
+              <option name="lastModified" value="1712146175849" />
               <option name="schema">
                 <list>
                   <option value="ecomorphMutationResolver" />
@@ -1661,7 +1695,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/generated.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1711284667519" />
+              <option name="lastModified" value="1712146176010" />
               <option name="schema">
                 <list>
                   <option value="Config" />
@@ -1677,7 +1711,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/img.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712074367165" />
+              <option name="lastModified" value="1712146175851" />
               <option name="schema">
                 <list>
                   <option value="imgQueryResolver" />
@@ -1689,7 +1723,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/main.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1711284667383" />
+              <option name="lastModified" value="1712146175853" />
               <option name="schema">
                 <list>
                   <option value="mutationResolver" />
@@ -1702,7 +1736,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/model/models_gen.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1711284660462" />
+              <option name="lastModified" value="1712146171093" />
               <option name="schema">
                 <list>
                   <option value="AuthMutation" />
@@ -1711,6 +1745,7 @@
                   <option value="EcomorphsEntityMutation" />
                   <option value="EcomorphsEntityQuery" />
                   <option value="IDRequest" />
+                  <option value="ImgQuery" />
                   <option value="Mutation" />
                   <option value="Query" />
                   <option value="TransectMutation" />
@@ -1739,7 +1774,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/transect.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712074291829" />
+              <option name="lastModified" value="1712162273804" />
               <option name="schema">
                 <list>
                   <option value="transectMutationResolver" />
@@ -1752,7 +1787,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/trial-site.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712074367149" />
+              <option name="lastModified" value="1712160353585" />
               <option name="schema">
                 <list>
                   <option value="trialSiteMutationResolver" />
@@ -1765,7 +1800,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/type-plant.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712074300873" />
+              <option name="lastModified" value="1712146175847" />
               <option name="schema">
                 <list>
                   <option value="typePlantMutationResolver" />
@@ -1801,22 +1836,10 @@
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/servers/rest/server.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712002111193" />
-              <option name="schema">
-                <list>
-                  <option value="Server" />
-                </list>
-              </option>
-            </ScannedPath>
-          </value>
-        </entry>
         <entry key="file://$PROJECT_DIR$/test/g-rpc/settings.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712079523639" />
+              <option name="lastModified" value="1712163984582" />
               <option name="schema">
                 <list>
                   <option value="ClientService" />
@@ -1825,66 +1848,94 @@
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/transect/helpers.go">
+        <entry key="file://$PROJECT_DIR$/test/graphqlTest/auth/auth_test.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712043866833" />
+              <option name="lastModified" value="1712084769790" />
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/transect/transect_test.go">
+        <entry key="file://$PROJECT_DIR$/test/graphqlTest/ecomorph-entity/ecomorph-entity_test.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712049026337" />
+              <option name="lastModified" value="1712149079690" />
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/transect/transect_unit_test.go">
+        <entry key="file://$PROJECT_DIR$/test/graphqlTest/ecomorph-entity/helpers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712048564573" />
+              <option name="lastModified" value="1712148870059" />
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/trial-site/helpers.go">
+        <entry key="file://$PROJECT_DIR$/test/graphqlTest/ecomorph/ecomorph_test.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712061851818" />
+              <option name="lastModified" value="1712140325787" />
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/trial-site/trial-site_test.go">
+        <entry key="file://$PROJECT_DIR$/test/graphqlTest/ecomorph/halpers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712043828184" />
+              <option name="lastModified" value="1712140325782" />
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/type-plant/halpers.go">
+        <entry key="file://$PROJECT_DIR$/test/graphqlTest/settings.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712043371496" />
+              <option name="lastModified" value="1712150453911" />
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/type-plant/type-plant_test.go">
+        <entry key="file://$PROJECT_DIR$/test/graphqlTest/transect/helpers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712043394294" />
+              <option name="lastModified" value="1712162552971" />
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/test/graphql/auth/auth_test.go">
+        <entry key="file://$PROJECT_DIR$/test/graphqlTest/transect/transect_test.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712068642541" />
+              <option name="lastModified" value="1712162661174" />
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/test/graphql/settings.go">
+        <entry key="file://$PROJECT_DIR$/test/graphqlTest/trial-site/helpers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712079417402" />
+              <option name="lastModified" value="1712161956916" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/test/graphqlTest/trial-site/plant_test.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712161324058" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/test/graphqlTest/trial-site/trial-site_test.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712161781841" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/test/graphqlTest/type-plant/halpers.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712154088458" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/test/graphqlTest/type-plant/type-plant_test.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712149733577" />
             </ScannedPath>
           </value>
         </entry>
@@ -1913,6 +1964,7 @@
         <entry key="ecomorph_service_client" value="ecomorphServiceClient" />
         <entry key="ecomorph_service_impl" value="EcomorphServiceImpl" />
         <entry key="ecomorphs_entity" value="EcomorphsEntity" />
+        <entry key="ecomorphs_entity_input_resolver" value="ecomorphsEntityInputResolver" />
         <entry key="ecomorphs_entity_list" value="EcomorphsEntityList" />
         <entry key="ecomorphs_entity_mutation" value="EcomorphsEntityMutation" />
         <entry key="ecomorphs_entity_mutation_resolver" value="ecomorphsEntityMutationResolver" />
@@ -1932,6 +1984,7 @@
         <entry key="img" value="Img" />
         <entry key="img_list" value="ImgList" />
         <entry key="img_orm" value="ImgORM" />
+        <entry key="img_query" value="ImgQuery" />
         <entry key="img_query_resolver" value="imgQueryResolver" />
         <entry key="img_repository_impl" value="ImgRepositoryImpl" />
         <entry key="img_servet_impl" value="ImgServetImpl" />
@@ -1940,19 +1993,23 @@
         <entry key="input_ecomorph" value="InputEcomorph" />
         <entry key="input_ecomorph_orm" value="InputEcomorphORM" />
         <entry key="input_ecomorphs_entity" value="InputEcomorphsEntity" />
+        <entry key="input_ecomorphs_entity_resolver" value="inputEcomorphsEntityResolver" />
         <entry key="input_form_ecomorph" value="InputFormEcomorph" />
         <entry key="input_form_ecomorphs_entity" value="InputFormEcomorphsEntity" />
         <entry key="input_form_ecomorphs_entity_resolver" value="inputFormEcomorphsEntityResolver" />
         <entry key="input_form_plant" value="InputFormPlant" />
-        <entry key="input_form_plant_resolver" value="inputFormPlantResolver" />
         <entry key="input_form_transect_request" value="InputFormTransectRequest" />
         <entry key="input_form_trial_site_request" value="InputFormTrialSiteRequest" />
         <entry key="input_form_type_plant_request" value="InputFormTypePlantRequest" />
         <entry key="input_plant_request" value="InputPlantRequest" />
+        <entry key="input_plant_request_resolver" value="inputPlantRequestResolver" />
         <entry key="input_transect_request" value="InputTransectRequest" />
+        <entry key="input_transect_request_resolver" value="inputTransectRequestResolver" />
         <entry key="input_trial_site_request" value="InputTrialSiteRequest" />
+        <entry key="input_trial_site_request_resolver" value="inputTrialSiteRequestResolver" />
         <entry key="input_type_plant__ecomorphs_entity_request" value="InputTypePlant_EcomorphsEntityRequest" />
         <entry key="input_type_plant_request" value="InputTypePlantRequest" />
+        <entry key="input_type_plant_request_resolver" value="inputTypePlantRequestResolver" />
         <entry key="mutation" value="Mutation" />
         <entry key="mutation_resolver" value="mutationResolver" />
         <entry key="pages_request" value="PagesRequest" />
@@ -1963,12 +2020,10 @@
         <entry key="plant_input_resolver" value="plantInputResolver" />
         <entry key="plant_list" value="PlantList" />
         <entry key="plant_orm" value="PlantORM" />
-        <entry key="plant_resolver" value="plantResolver" />
         <entry key="query" value="Query" />
         <entry key="query_resolver" value="queryResolver" />
         <entry key="repository" value="Repository" />
         <entry key="resolver" value="Resolver" />
-        <entry key="server" value="Server" />
         <entry key="service" value="Service" />
         <entry key="sign_in_user_input" value="SignInUserInput" />
         <entry key="sign_in_user_response" value="SignInUserResponse" />
@@ -1976,6 +2031,7 @@
         <entry key="token_auth" value="TokenAuth" />
         <entry key="token_claims" value="TokenClaims" />
         <entry key="transect" value="Transect" />
+        <entry key="transect_input_resolver" value="transectInputResolver" />
         <entry key="transect_list" value="TransectList" />
         <entry key="transect_mutation" value="TransectMutation" />
         <entry key="transect_mutation_resolver" value="transectMutationResolver" />
@@ -1995,11 +2051,11 @@
         <entry key="trial_site_query" value="TrialSiteQuery" />
         <entry key="trial_site_query_resolver" value="trialSiteQueryResolver" />
         <entry key="trial_site_repository_impl" value="TrialSiteRepositoryImpl" />
-        <entry key="trial_site_resolver" value="trialSiteResolver" />
         <entry key="trial_site_servet_impl" value="TrialSiteServetImpl" />
         <entry key="trial_site_service_client" value="trialSiteServiceClient" />
         <entry key="trial_site_service_impl" value="TrialSiteServiceImpl" />
         <entry key="type_plant" value="TypePlant" />
+        <entry key="type_plant_input_resolver" value="typePlantInputResolver" />
         <entry key="type_plant_list" value="TypePlantList" />
         <entry key="type_plant_mutation" value="TypePlantMutation" />
         <entry key="type_plant_mutation_resolver" value="typePlantMutationResolver" />
@@ -2025,6 +2081,6 @@
         <entry key="x" value="x" />
       </map>
     </option>
-    <option name="lastTimeChecked" value="1711987412809" />
+    <option name="lastTimeChecked" value="1712083671461" />
   </component>
 </project>

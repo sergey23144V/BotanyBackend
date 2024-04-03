@@ -73,7 +73,7 @@ func (t TransectRepositoryImpl) GetTransectById(ctx context.Context, in *api.Tra
 		}
 	}
 	ormResponse := api.TransectORM{}
-	if err = t.db.Where(&ormObj).Preload("TrialSite").
+	if err = t.db.Where(&ormObj).Preload("TrialSite").Preload("Dominant").Preload("Dominant").
 		Preload("TrialSite.Dominant").Preload("TrialSite.SubDominant").Preload("TrialSite.Plant").
 		Preload("TrialSite.Plant.TypePlant").
 		Preload("Img").First(&ormResponse).Error; err != nil {
@@ -160,7 +160,7 @@ func (t TransectRepositoryImpl) UpdateTransect(ctx context.Context, in *api.Tran
 			return nil, err
 		}
 	}
-	pbReadRes, err := api.DefaultReadTransect(ctx, &api.Transect{Id: in.GetId()}, t.db)
+	pbReadRes, err := t.GetTransectById(ctx, &api.Transect{Id: in.GetId()})
 	if err != nil {
 		return nil, err
 	}
@@ -178,7 +178,7 @@ func (t TransectRepositoryImpl) UpdateTransect(ctx context.Context, in *api.Tran
 			return nil, err
 		}
 	}
-	pbResponse, err := api.DefaultStrictUpdateTransect(ctx, &pbObj, t.db)
+	pbResponse, err := t.StrictUpdateTransect(ctx, &pbObj)
 	if err != nil {
 		return nil, err
 	}

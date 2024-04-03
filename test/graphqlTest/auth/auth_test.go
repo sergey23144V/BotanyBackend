@@ -2,14 +2,17 @@ package auth
 
 import (
 	"context"
+	"github.com/machinebox/graphql"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"github.com/sergey23144V/BotanyBackend/test/g-rpc"
+	"github.com/sergey23144V/BotanyBackend/test/graphqlTest"
+	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestAuthorisation(t *testing.T) {
-	authClient, conn := g_rpc.GetAuthClient()
+	client, _ := graphqlTest.GetClient()
 
 	testTable := []struct {
 		name     string
@@ -37,7 +40,19 @@ func TestAuthorisation(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			ctx := context.Background()
-			_, ctx, err := g_rpc.Authorisation(ctx, authClient, testCase.user)
+			req := graphql.NewRequest(`
+		mutation auth($data : SignInUserInput ){
+			auth{
+    			signInUser(data:$data){
+      			access_token
+    			}
+  			}
+		}
+			`)
+			var respData interface{}
+			req.Var("data", testCase.user)
+			err := client.Run(ctx, req, &respData)
+			g_rpc.Log(respData)
 			if testCase.expected {
 				assert.NoError(t, err, "Done")
 			} else {
@@ -45,17 +60,10 @@ func TestAuthorisation(t *testing.T) {
 			}
 		})
 	}
-
-	err := conn.Close()
-	if err != nil {
-		return
-	}
-
-	return
 }
 
 func TestRegistration(t *testing.T) {
-	authClient, conn := g_rpc.GetAuthClient()
+	client, _ := graphqlTest.GetClient()
 
 	testTable := []struct {
 		name     string
@@ -65,7 +73,7 @@ func TestRegistration(t *testing.T) {
 		{
 			name: "Done",
 			user: &api.SignUpUserInput{
-				Email:    "serg2",
+				Email:    "serg22",
 				Password: "Sergey2222",
 				Name:     "Sergey Kalinin",
 			},
@@ -85,7 +93,20 @@ func TestRegistration(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			ctx := context.Background()
-			_, ctx, err := g_rpc.Registration(ctx, authClient, testCase.user)
+			req := graphql.NewRequest(`
+mutation reg($data : SignUpUserInput ){
+  auth{
+    signUpUser(data:$data){
+      access_token
+    }
+  }
+	}
+			`)
+			var respData interface{}
+			req.Var("data", testCase.user)
+			err := client.Run(ctx, req, &respData)
+			g_rpc.Log(respData)
+			log.Error(err)
 			if testCase.expected {
 				assert.NoError(t, err, "Done")
 			} else {
@@ -93,11 +114,4 @@ func TestRegistration(t *testing.T) {
 			}
 		})
 	}
-	err := conn.Close()
-	if err != nil {
-		return
-	}
-
-	return
-
 }

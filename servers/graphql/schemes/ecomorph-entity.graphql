@@ -25,7 +25,7 @@ type EcomorphsEntityList {
 input InputFormEcomorphsEntity {
     title: String
     description: String
-    ecomorphs: [EcomorphInput]
+    ecomorphs: EcomorphInput
 }
 
 input InputEcomorphsEntity {

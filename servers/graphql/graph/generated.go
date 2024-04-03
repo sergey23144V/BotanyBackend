@@ -55,7 +55,6 @@ type ResolverRoot interface {
 	TrialSiteQuery() TrialSiteQueryResolver
 	TypePlantMutation() TypePlantMutationResolver
 	TypePlantQuery() TypePlantQueryResolver
-	InputFormEcomorphsEntity() InputFormEcomorphsEntityResolver
 }
 
 type DirectiveRoot struct {
@@ -226,7 +225,7 @@ type ComplexityRoot struct {
 	}
 
 	TransectMutation struct {
-		CreateTransect func(childComplexity int, input *api.InputTransectRequest) int
+		CreateTransect func(childComplexity int, input *api.InputFormTransectRequest) int
 		DeleteTransect func(childComplexity int, id string) int
 		UpTransect     func(childComplexity int, input *api.InputTransectRequest) int
 	}
@@ -258,7 +257,7 @@ type ComplexityRoot struct {
 	}
 
 	TrialSiteMutation struct {
-		CreatePlant     func(childComplexity int, input *api.InputPlantRequest) int
+		CreatePlant     func(childComplexity int, input *api.InputFormPlant) int
 		CreateTrialSite func(childComplexity int, input *api.InputFormTrialSiteRequest) int
 		DeletePlant     func(childComplexity int, id string) int
 		DeleteTrialSite func(childComplexity int, id string) int
@@ -345,7 +344,7 @@ type QueryResolver interface {
 	Img(ctx context.Context) (*model.ImgQuery, error)
 }
 type TransectMutationResolver interface {
-	CreateTransect(ctx context.Context, obj *model.TransectMutation, input *api.InputTransectRequest) (*api.Transect, error)
+	CreateTransect(ctx context.Context, obj *model.TransectMutation, input *api.InputFormTransectRequest) (*api.Transect, error)
 	UpTransect(ctx context.Context, obj *model.TransectMutation, input *api.InputTransectRequest) (*api.Transect, error)
 	DeleteTransect(ctx context.Context, obj *model.TransectMutation, id string) (*api.BoolResponse, error)
 }
@@ -357,7 +356,7 @@ type TrialSiteMutationResolver interface {
 	CreateTrialSite(ctx context.Context, obj *model.TrialSiteMutation, input *api.InputFormTrialSiteRequest) (*api.TrialSite, error)
 	UpTrialSite(ctx context.Context, obj *model.TrialSiteMutation, input *api.InputTrialSiteRequest) (*api.TrialSite, error)
 	DeleteTrialSite(ctx context.Context, obj *model.TrialSiteMutation, id string) (*api.BoolResponse, error)
-	CreatePlant(ctx context.Context, obj *model.TrialSiteMutation, input *api.InputPlantRequest) (*api.Plant, error)
+	CreatePlant(ctx context.Context, obj *model.TrialSiteMutation, input *api.InputFormPlant) (*api.Plant, error)
 	UpdatePlant(ctx context.Context, obj *model.TrialSiteMutation, input *api.InputPlantRequest) (*api.Plant, error)
 	DeletePlant(ctx context.Context, obj *model.TrialSiteMutation, id string) (*api.BoolResponse, error)
 }
@@ -375,10 +374,6 @@ type TypePlantMutationResolver interface {
 type TypePlantQueryResolver interface {
 	GetTypePlant(ctx context.Context, obj *model.TypePlantQuery, id string) (*api.TypePlant, error)
 	GetAllTypePlant(ctx context.Context, obj *model.TypePlantQuery, pages *api.PagesRequest) (*api.TypePlantList, error)
-}
-
-type InputFormEcomorphsEntityResolver interface {
-	Ecomorphs(ctx context.Context, obj *api.InputFormEcomorphsEntity, data []*api.Ecomorph) error
 }
 
 type executableSchema struct {
@@ -1117,7 +1112,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.TransectMutation.CreateTransect(childComplexity, args["input"].(*api.InputTransectRequest)), true
+		return e.complexity.TransectMutation.CreateTransect(childComplexity, args["input"].(*api.InputFormTransectRequest)), true
 
 	case "TransectMutation.deleteTransect":
 		if e.complexity.TransectMutation.DeleteTransect == nil {
@@ -1282,7 +1277,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.TrialSiteMutation.CreatePlant(childComplexity, args["input"].(*api.InputPlantRequest)), true
+		return e.complexity.TrialSiteMutation.CreatePlant(childComplexity, args["input"].(*api.InputFormPlant)), true
 
 	case "TrialSiteMutation.createTrialSite":
 		if e.complexity.TrialSiteMutation.CreateTrialSite == nil {
@@ -1724,7 +1719,7 @@ type EcomorphsEntityList {
 input InputFormEcomorphsEntity {
     title: String
     description: String
-    ecomorphs: [EcomorphInput]
+    ecomorphs: EcomorphInput
 }
 
 input InputEcomorphsEntity {
@@ -1754,10 +1749,10 @@ type Ecomorph {
 }
 
 input EcomorphInput {
-    id: IdentifierInput!
-    title: String!
-    description: String!
-    userID: IdentifierInput!
+    id: IdentifierInput
+    title: String
+    description: String
+    userID: IdentifierInput
 }
 
 type ListEcomorph {
@@ -1767,8 +1762,8 @@ type ListEcomorph {
 
 
 input InputFormEcomorph {
-    title: String!
-    description: String!
+    title: String
+    description: String
 }
 
 input InputEcomorph {
@@ -1878,7 +1873,7 @@ type Mutation{
 }
 
 type TransectMutation {
-    createTransect(input: InputTransectRequest): Transect @goField(forceResolver: true)
+    createTransect(input: InputFormTransectRequest): Transect @goField(forceResolver: true)
     upTransect(input: InputTransectRequest): Transect @goField(forceResolver: true)
     deleteTransect(id: ID!): BoolResponse @goField(forceResolver: true)
 }
@@ -1949,7 +1944,7 @@ type TrialSiteMutation {
     createTrialSite(input: InputFormTrialSiteRequest): TrialSite @goField(forceResolver: true)
     upTrialSite(input: InputTrialSiteRequest): TrialSite @goField(forceResolver: true)
     deleteTrialSite(id: ID!): BoolResponse @goField(forceResolver: true)
-    createPlant(input: InputPlantRequest): Plant @goField(forceResolver: true)
+    createPlant(input: InputFormPlant): Plant @goField(forceResolver: true)
     updatePlant(input: InputPlantRequest): Plant @goField(forceResolver: true)
     deletePlant(id: ID!): BoolResponse @goField(forceResolver: true)
 }
@@ -2320,10 +2315,10 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 func (ec *executionContext) field_TransectMutation_createTransect_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *api.InputTransectRequest
+	var arg0 *api.InputFormTransectRequest
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOInputTransectRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputTransectRequest(ctx, tmp)
+		arg0, err = ec.unmarshalOInputFormTransectRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormTransectRequest(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2395,10 +2390,10 @@ func (ec *executionContext) field_TransectQuery_getTransect_args(ctx context.Con
 func (ec *executionContext) field_TrialSiteMutation_createPlant_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *api.InputPlantRequest
+	var arg0 *api.InputFormPlant
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalOInputPlantRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputPlantRequest(ctx, tmp)
+		arg0, err = ec.unmarshalOInputFormPlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputFormPlant(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -7428,7 +7423,7 @@ func (ec *executionContext) _TransectMutation_createTransect(ctx context.Context
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.TransectMutation().CreateTransect(rctx, obj, fc.Args["input"].(*api.InputTransectRequest))
+		return ec.resolvers.TransectMutation().CreateTransect(rctx, obj, fc.Args["input"].(*api.InputFormTransectRequest))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8769,7 +8764,7 @@ func (ec *executionContext) _TrialSiteMutation_createPlant(ctx context.Context, 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.TrialSiteMutation().CreatePlant(rctx, obj, fc.Args["input"].(*api.InputPlantRequest))
+		return ec.resolvers.TrialSiteMutation().CreatePlant(rctx, obj, fc.Args["input"].(*api.InputFormPlant))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11871,28 +11866,28 @@ func (ec *executionContext) unmarshalInputEcomorphInput(ctx context.Context, obj
 		switch k {
 		case "id":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
+			data, err := ec.unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Id = data
 		case "title":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("title"))
-			data, err := ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Title = data
 		case "description":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("description"))
-			data, err := ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Description = data
 		case "userID":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
-			data, err := ec.unmarshalNIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
+			data, err := ec.unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -12124,14 +12119,14 @@ func (ec *executionContext) unmarshalInputInputFormEcomorph(ctx context.Context,
 		switch k {
 		case "title":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("title"))
-			data, err := ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Title = data
 		case "description":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("description"))
-			data, err := ec.unmarshalNString2string(ctx, v)
+			data, err := ec.unmarshalOString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -12172,13 +12167,11 @@ func (ec *executionContext) unmarshalInputInputFormEcomorphsEntity(ctx context.C
 			it.Description = data
 		case "ecomorphs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ecomorphs"))
-			data, err := ec.unmarshalOEcomorphInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, v)
+			data, err := ec.unmarshalOEcomorphInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			if err = ec.resolvers.InputFormEcomorphsEntity().Ecomorphs(ctx, &it, data); err != nil {
-				return it, err
-			}
+			it.Ecomorphs = data
 		}
 	}
 
@@ -16525,26 +16518,6 @@ func (ec *executionContext) marshalOEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBo
 		return graphql.Null
 	}
 	return ec._Ecomorph(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOEcomorphInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx context.Context, v interface{}) ([]*api.Ecomorph, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]*api.Ecomorph, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOEcomorphInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
 }
 
 func (ec *executionContext) unmarshalOEcomorphInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx context.Context, v interface{}) (*api.Ecomorph, error) {

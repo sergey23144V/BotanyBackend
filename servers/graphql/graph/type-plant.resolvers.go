@@ -6,7 +6,7 @@ package graph
 
 import (
 	"context"
-	"github.com/sergey23144V/BotanyBackend/pkg/errors"
+	"errors"
 
 	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
@@ -16,7 +16,7 @@ import (
 // CreateTypePlant is the resolver for the createTypePlant field.
 func (r *typePlantMutationResolver) CreateTypePlant(ctx context.Context, obj *model.TypePlantMutation, input *api.InputFormTypePlantRequest) (*api.TypePlant, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.TypePlantService.CreateTypePlant(ctx, &api.InputTypePlantRequest{Input: input})
 }
@@ -24,7 +24,7 @@ func (r *typePlantMutationResolver) CreateTypePlant(ctx context.Context, obj *mo
 // UpdateTypePlant is the resolver for the updateTypePlant field.
 func (r *typePlantMutationResolver) UpdateTypePlant(ctx context.Context, obj *model.TypePlantMutation, input *api.InputTypePlantRequest) (*api.TypePlant, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.TypePlantService.UpdateTypePlant(ctx, input)
 }
@@ -32,7 +32,7 @@ func (r *typePlantMutationResolver) UpdateTypePlant(ctx context.Context, obj *mo
 // DeleteTypePlant is the resolver for the deleteTypePlant field.
 func (r *typePlantMutationResolver) DeleteTypePlant(ctx context.Context, obj *model.TypePlantMutation, id string) (*api.BoolResponse, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.TypePlantService.DeleteTypePlant(ctx, ToIdRequest(id))
 }
@@ -40,7 +40,7 @@ func (r *typePlantMutationResolver) DeleteTypePlant(ctx context.Context, obj *mo
 // GetTypePlant is the resolver for the getTypePlant field.
 func (r *typePlantQueryResolver) GetTypePlant(ctx context.Context, obj *model.TypePlantQuery, id string) (*api.TypePlant, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.TypePlantService.GetTypePlantById(ctx, ToIdRequest(id))
 }
@@ -48,7 +48,7 @@ func (r *typePlantQueryResolver) GetTypePlant(ctx context.Context, obj *model.Ty
 // GetAllTypePlant is the resolver for the getAllTypePlant field.
 func (r *typePlantQueryResolver) GetAllTypePlant(ctx context.Context, obj *model.TypePlantQuery, pages *api.PagesRequest) (*api.TypePlantList, error) {
 	if !middlewares.ValidToken(ctx) {
-		return nil, errors.NotAuthorization
+		return nil, errors.New("not authorization")
 	}
 	return r.service.TypePlantService.GetListTypePlant(ctx, pages)
 }

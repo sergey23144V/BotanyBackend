@@ -10,10 +10,10 @@ type Ecomorph {
 }
 
 input EcomorphInput {
-    id: IdentifierInput!
-    title: String!
-    description: String!
-    userID: IdentifierInput!
+    id: IdentifierInput
+    title: String
+    description: String
+    userID: IdentifierInput
 }
 
 type ListEcomorph {
@@ -23,8 +23,8 @@ type ListEcomorph {
 
 
 input InputFormEcomorph {
-    title: String!
-    description: String!
+    title: String
+    description: String
 }
 
 input InputEcomorph {

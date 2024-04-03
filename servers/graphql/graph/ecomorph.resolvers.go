@@ -27,7 +27,7 @@ func (r *ecomorphMutationResolver) UpdateEcomorph(ctx context.Context, obj *mode
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.New("not authorization")
 	}
-	return r.service.EcomorphService.StrictUpdateEcomorph(ctx, input)
+	return r.service.EcomorphService.UpdateEcomorph(ctx, input)
 }
 
 // DeleteEcomorphByID is the resolver for the deleteEcomorphById field.

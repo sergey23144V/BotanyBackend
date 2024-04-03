@@ -4,11 +4,13 @@ go 1.21.0
 
 require (
 	github.com/99designs/gqlgen v0.17.43
+	github.com/PaesslerAG/jsonpath v0.1.1
 	github.com/dgrijalva/jwt-go v3.2.1-0.20200107013213-dc14462fd587+incompatible
 	github.com/go-chi/chi v1.5.5
 	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/infobloxopen/atlas-app-toolkit/v2 v2.2.1-0.20240313220428-5449c0c2a27f
 	github.com/infobloxopen/protoc-gen-gorm v1.1.4
+	github.com/machinebox/graphql v0.2.2
 	github.com/rs/cors v1.10.1
 	github.com/sirupsen/logrus v1.8.0
 	github.com/stretchr/testify v1.8.4
@@ -22,6 +24,7 @@ require (
 )
 
 require (
+	github.com/PaesslerAG/gval v1.0.0 // indirect
 	github.com/agnivade/levenshtein v1.1.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
@@ -36,8 +39,8 @@ require (
 	github.com/jackc/pgx/v5 v5.4.3 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/machinebox/graphql v0.2.2 // indirect
 	github.com/magefile/mage v1.10.0 // indirect
+	github.com/matryer/is v1.4.1 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect

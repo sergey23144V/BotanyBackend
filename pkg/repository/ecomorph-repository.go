@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/infobloxopen/protoc-gen-gorm/errors"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"google.golang.org/genproto/protobuf/field_mask"
@@ -17,6 +18,8 @@ type EcomorphRepository interface {
 	StrictUpdateEcomorph(ctx context.Context, in *api.Ecomorph) (*api.Ecomorph, error)
 	UpdateEcomorph(ctx context.Context, in *api.Ecomorph, updateMask *field_mask.FieldMask) (*api.Ecomorph, error)
 	GetListEcomorph(ctx context.Context, in *api.Ecomorph, request *api.PagesRequest) ([]*api.Ecomorph, error)
+	GetWhereList(filter []*api.Ecomorph) []clause.Expression
+	GetListEcomorphById(ctx context.Context, in []clause.Expression) ([]*api.Ecomorph, error)
 }
 
 type EcomorphRepositoryImpl struct {
@@ -84,6 +87,27 @@ func (e EcomorphRepositoryImpl) GetEcomorphById(ctx context.Context, in *api.Eco
 	}
 	pbResponse, err := ormResponse.ToPB(ctx)
 	return &pbResponse, err
+}
+
+func (e EcomorphRepositoryImpl) GetListEcomorphById(ctx context.Context, in []clause.Expression) ([]*api.Ecomorph, error) {
+	if in == nil {
+		return nil, errors.NilArgumentError
+	}
+	ormResponse := []*api.EcomorphORM{}
+	result := e.db.Clauses(in...).Find(&ormResponse)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	pbResponse := []*api.Ecomorph{}
+	for _, orm := range ormResponse {
+		pb, err := orm.ToPB(ctx)
+		if err != nil {
+			return nil, err
+		}
+		pbResponse = append(pbResponse, &pb)
+	}
+
+	return pbResponse, nil
 }
 
 func (e EcomorphRepositoryImpl) DeleteEcomorph(ctx context.Context, in *api.Ecomorph) error {
@@ -233,4 +257,26 @@ func (e EcomorphRepositoryImpl) GetListEcomorph(ctx context.Context, in *api.Eco
 		pbResponse = append(pbResponse, &temp)
 	}
 	return pbResponse, nil
+}
+
+func (s EcomorphRepositoryImpl) GetWhereList(filter []*api.Ecomorph) []clause.Expression {
+	// Объявление переменных
+	var conditions []clause.Expression
+
+	// Проверка наличия фильтра по Ids
+	if filter != nil {
+		// Преобразование Ids в массив интерфейсов
+		var interfaceIds []interface{}
+		for _, ecomorph := range filter {
+			interfaceIds = append(interfaceIds, ecomorph.Id.ResourceId)
+		}
+
+		// Добавление фильтра по Ids к условиям
+		conditions = append(conditions, clause.IN{
+			Column: clause.Column{Name: "id"},
+			Values: interfaceIds,
+		})
+	}
+
+	return conditions
 }

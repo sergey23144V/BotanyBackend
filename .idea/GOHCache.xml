@@ -3,6 +3,20 @@
   <component name="GoORMHelperCache">
     <option name="schemaMapping">
       <map>
+        <entry key="Analysis">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/analysis.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="AnalysisList">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/analysis.pb.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="AnalysisORM">
           <value>
             <set>
@@ -49,13 +63,6 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/elementary-type.pb.go" />
-            </set>
-          </value>
-        </entry>
-        <entry key="ClientService">
-          <value>
-            <set>
-              <option value="file://$PROJECT_DIR$/test/g-rpc/settings.go" />
             </set>
           </value>
         </entry>
@@ -277,6 +284,13 @@
             </set>
           </value>
         </entry>
+        <entry key="InputCreateAnalysis">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/analysis.pb.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="InputEcomorph">
           <value>
             <set>
@@ -372,6 +386,13 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/type-plant.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="InputUpdateAnalysis">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/analysis.pb.go" />
             </set>
           </value>
         </entry>
@@ -924,6 +945,7 @@
         <entry key="x">
           <value>
             <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/analysis.pb.go" />
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/auth.pb.go" />
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorphs-entity.pb.go" />
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorphs.pb.go" />
@@ -1020,7 +1042,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/repository/ecomorph-repository.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1711271781597" />
+              <option name="lastModified" value="1712319324372" />
               <option name="schema">
                 <list>
                   <option value="EcomorphRepositoryImpl" />
@@ -1104,7 +1126,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/service/analysis-service.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712239787280" />
+              <option name="lastModified" value="1712322025215" />
               <option name="schema">
                 <list>
                   <option value="AnalysisServiceImpl" />
@@ -1128,7 +1150,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/service/ecomorph-service.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1711206602035" />
+              <option name="lastModified" value="1712318318354" />
               <option name="schema">
                 <list>
                   <option value="EcomorphServiceImpl" />
@@ -1192,6 +1214,22 @@
               <option name="schema">
                 <list>
                   <option value="TypePlantServiceImpl" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/analysis.pb.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712235394613" />
+              <option name="schema">
+                <list>
+                  <option value="Analysis" />
+                  <option value="AnalysisList" />
+                  <option value="InputCreateAnalysis" />
+                  <option value="InputUpdateAnalysis" />
+                  <option value="x" />
                 </list>
               </option>
             </ScannedPath>
@@ -1265,7 +1303,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/ecomorphs-entity.pb.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1711283585981" />
+              <option name="lastModified" value="1712232780542" />
               <option name="schema">
                 <list>
                   <option value="EcomorphsEntity" />
@@ -1865,110 +1903,21 @@
         <entry key="file://$PROJECT_DIR$/test/g-rpc/analysis/analysis_test.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712239995114" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/ecomorph-entity/helpers.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712237944578" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/ecomorph/ecomorph_test.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712237481847" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/ecomorph/halpers.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712237654470" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/settings.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712239320639" />
-              <option name="schema">
-                <list>
-                  <option value="ClientService" />
-                </list>
-              </option>
+              <option name="lastModified" value="1712319358000" />
             </ScannedPath>
           </value>
         </entry>
         <entry key="file://$PROJECT_DIR$/test/g-rpc/transect/transect_test.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712239050497" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/trial-site/plant_test.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712238631917" />
+              <option name="lastModified" value="1712313047637" />
             </ScannedPath>
           </value>
         </entry>
         <entry key="file://$PROJECT_DIR$/test/g-rpc/trial-site/trial-site_test.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712238836988" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/type-plant/halpers.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712238167141" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/type-plant/type-plant_test.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712238582333" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/test/graphqlTest/settings.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712223975803" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/test/service/analysis.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712223769349" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/test/service/analysis_test.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712237654474" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/test/service/settings.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712223976432" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/../exel/main.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712237165282" />
+              <option name="lastModified" value="1712312854644" />
             </ScannedPath>
           </value>
         </entry>
@@ -1976,6 +1925,8 @@
     </option>
     <option name="tableStructMapping">
       <map>
+        <entry key="analysis" value="Analysis" />
+        <entry key="analysis_list" value="AnalysisList" />
         <entry key="analysis_orm" value="AnalysisORM" />
         <entry key="analysis_repository_impl" value="AnalysisRepositoryImpl" />
         <entry key="analysis_servet_impl" value="AnalysisServetImpl" />
@@ -1986,7 +1937,6 @@
         <entry key="auth_server_impl" value="AuthServerImpl" />
         <entry key="auth_service_client" value="authServiceClient" />
         <entry key="bool_response" value="BoolResponse" />
-        <entry key="client_service" value="ClientService" />
         <entry key="complexity_root" value="ComplexityRoot" />
         <entry key="config" value="Config" />
         <entry key="credentials_auth" value="CredentialsAuth" />
@@ -2027,6 +1977,7 @@
         <entry key="img_servet_impl" value="ImgServetImpl" />
         <entry key="img_service_client" value="imgServiceClient" />
         <entry key="img_service_impl" value="ImgServiceImpl" />
+        <entry key="input_create_analysis" value="InputCreateAnalysis" />
         <entry key="input_ecomorph" value="InputEcomorph" />
         <entry key="input_ecomorph_orm" value="InputEcomorphORM" />
         <entry key="input_ecomorphs_entity" value="InputEcomorphsEntity" />
@@ -2041,6 +1992,7 @@
         <entry key="input_trial_site_request" value="InputTrialSiteRequest" />
         <entry key="input_type_plant__ecomorphs_entity_request" value="InputTypePlant_EcomorphsEntityRequest" />
         <entry key="input_type_plant_request" value="InputTypePlantRequest" />
+        <entry key="input_update_analysis" value="InputUpdateAnalysis" />
         <entry key="mutation" value="Mutation" />
         <entry key="mutation_resolver" value="mutationResolver" />
         <entry key="pages_request" value="PagesRequest" />
@@ -2109,6 +2061,6 @@
         <entry key="x" value="x" />
       </map>
     </option>
-    <option name="lastTimeChecked" value="1712170930668" />
+    <option name="lastTimeChecked" value="1712312160230" />
   </component>
 </project>

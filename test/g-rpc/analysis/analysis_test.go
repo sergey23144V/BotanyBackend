@@ -20,9 +20,9 @@ func TestCreateTransect(t *testing.T) {
 			name: "Done",
 			Transect: &api.InputCreateAnalysis{
 				Title:        "Хз",
-				TypeAnalysis: api.TypeAnalysis_TypeAnalysisTransect,
+				TypeAnalysis: api.TypeAnalysis_TypeAnalysisPlant,
 				Transect:     &api.Transect{Id: &resource.Identifier{ResourceId: "fdb18250-bdcd-6671-b119-b5cc3f427c60"}},
-				Ecomorph:     []*api.Ecomorph{{Id: &resource.Identifier{ResourceId: "d7ba7908-2ae1-9abd-e1ff-6bed503d80c9"}}},
+				Ecomorph:     []*api.Ecomorph{{Id: &resource.Identifier{ResourceId: "d7ba7908-2ae1-9abd-e1ff-6bed503d80c9"}}, {Id: &resource.Identifier{ResourceId: "c15c4ebd-d583-6c3d-81fe-af286a2b72e1"}}},
 			},
 			expected: true,
 		},

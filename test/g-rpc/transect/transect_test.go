@@ -85,9 +85,11 @@ func TestUpdateTransectById(t *testing.T) {
 		{
 			name: "GetTransect",
 			Transect: &api.InputTransectRequest{
-				Id: CreateTransect(ctx, *client),
+				Id: &resource.Identifier{ResourceId: "fdb18250-bdcd-6671-b119-b5cc3f427c60"},
 				Input: &api.InputFormTransectRequest{
 					Title: "не Семейство",
+					TrialSite: []*api.TrialSite{{Id: &resource.Identifier{ResourceId: "51d485bb-ec34-284b-d8a1-13e2f1608669"}}, {Id: &resource.Identifier{ResourceId: "380c728b-5b2c-1f5b-c68c-d164ddc7d2a5"}},
+						{Id: &resource.Identifier{ResourceId: "ba1f1a30-9e78-c0f1-7cf9-1c9eba460ccf"}}, {Id: &resource.Identifier{ResourceId: "59a28d5f-10a4-44d4-fcf4-6c768e511f7c"}}},
 				},
 			},
 			expected: true,

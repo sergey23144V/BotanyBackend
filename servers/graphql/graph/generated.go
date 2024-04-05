@@ -59,6 +59,7 @@ type ResolverRoot interface {
 	TypePlantMutation() TypePlantMutationResolver
 	TypePlantQuery() TypePlantQueryResolver
 	AnalysisInput() AnalysisInputResolver
+	InputCreateAnalysis() InputCreateAnalysisResolver
 }
 
 type DirectiveRoot struct {
@@ -186,6 +187,7 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
+		Analysis        func(childComplexity int) int
 		Auth            func(childComplexity int) int
 		Ecomorph        func(childComplexity int) int
 		EcomorphsEntity func(childComplexity int) int
@@ -214,6 +216,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
+		Analysis        func(childComplexity int) int
 		Ecomorph        func(childComplexity int) int
 		EcomorphsEntity func(childComplexity int) int
 		Img             func(childComplexity int) int
@@ -337,13 +340,13 @@ type AnalysisResolver interface {
 	TypeAnalysis(ctx context.Context, obj *api.Analysis) (model.TypeAnalysis, error)
 }
 type AnalysisMutationResolver interface {
-	CreatAnalysis(ctx context.Context, obj *model.AnalysisMutation, input *api.InputCreateAnalysis) (*api.Ecomorph, error)
-	RepeatedAnalysis(ctx context.Context, obj *model.AnalysisMutation, input *api.InputUpdateAnalysis) (*api.Ecomorph, error)
+	CreatAnalysis(ctx context.Context, obj *model.AnalysisMutation, input *api.InputCreateAnalysis) (*api.Analysis, error)
+	RepeatedAnalysis(ctx context.Context, obj *model.AnalysisMutation, input *api.InputUpdateAnalysis) (*api.Analysis, error)
 	DeleteAnalysis(ctx context.Context, obj *model.AnalysisMutation, id string) (*api.BoolResponse, error)
 }
 type AnalysisQueryResolver interface {
-	GetAnalysis(ctx context.Context, obj *model.AnalysisQuery, id string) (*api.Ecomorph, error)
-	GetListAnalysis(ctx context.Context, obj *model.AnalysisQuery, pages *api.PagesRequest) (*api.EcomorphsList, error)
+	GetAnalysis(ctx context.Context, obj *model.AnalysisQuery, id string) (*api.Analysis, error)
+	GetListAnalysis(ctx context.Context, obj *model.AnalysisQuery, pages *api.PagesRequest) (*api.AnalysisList, error)
 }
 type AuthMutationResolver interface {
 	SignUpUser(ctx context.Context, obj *model.AuthMutation, data *api.SignUpUserInput) (*api.SignInUserResponse, error)
@@ -378,6 +381,7 @@ type MutationResolver interface {
 	TypePlant(ctx context.Context) (*model.TypePlantMutation, error)
 	TrialSite(ctx context.Context) (*model.TrialSiteMutation, error)
 	Transect(ctx context.Context) (*model.TransectMutation, error)
+	Analysis(ctx context.Context) (*model.AnalysisMutation, error)
 }
 type QueryResolver interface {
 	Ecomorph(ctx context.Context) (*model.EcomorphQuery, error)
@@ -386,6 +390,7 @@ type QueryResolver interface {
 	TrialSite(ctx context.Context) (*model.TrialSiteQuery, error)
 	Transect(ctx context.Context) (*model.TransectQuery, error)
 	Img(ctx context.Context) (*model.ImgQuery, error)
+	Analysis(ctx context.Context) (*model.AnalysisQuery, error)
 }
 type TransectMutationResolver interface {
 	CreateTransect(ctx context.Context, obj *model.TransectMutation, input *api.InputFormTransectRequest) (*api.Transect, error)
@@ -422,6 +427,9 @@ type TypePlantQueryResolver interface {
 
 type AnalysisInputResolver interface {
 	TypeAnalysis(ctx context.Context, obj *api.Analysis, data model.TypeAnalysis) error
+}
+type InputCreateAnalysisResolver interface {
+	TypeAnalysis(ctx context.Context, obj *api.InputCreateAnalysis, data model.TypeAnalysis) error
 }
 
 type executableSchema struct {
@@ -979,6 +987,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.ListEcomorph.Page(childComplexity), true
 
+	case "Mutation.analysis":
+		if e.complexity.Mutation.Analysis == nil {
+			break
+		}
+
+		return e.complexity.Mutation.Analysis(childComplexity), true
+
 	case "Mutation.auth":
 		if e.complexity.Mutation.Auth == nil {
 			break
@@ -1090,6 +1105,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.PlantList.Page(childComplexity), true
+
+	case "Query.analysis":
+		if e.complexity.Query.Analysis == nil {
+			break
+		}
+
+		return e.complexity.Query.Analysis(childComplexity), true
 
 	case "Query.ecomorph":
 		if e.complexity.Query.Ecomorph == nil {
@@ -1874,6 +1896,7 @@ enum TypeAnalysis{
 input InputCreateAnalysis {
     title: String!
     transect: TransectInput
+    typeAnalysis: TypeAnalysis!
     ecomorph: [EcomorphInput]!
 }
 
@@ -1884,13 +1907,13 @@ input InputUpdateAnalysis {
 }
 
 type AnalysisQuery {
-    getAnalysis(id: ID!): Ecomorph! @goField(forceResolver: true)
-    getListAnalysis(pages: PagesRequest ): ListEcomorph! @goField(forceResolver: true)
+    getAnalysis(id: ID!): Analysis! @goField(forceResolver: true)
+    getListAnalysis(pages: PagesRequest ): AnalysisList! @goField(forceResolver: true)
 }
 
 type AnalysisMutation {
-    creatAnalysis(input: InputCreateAnalysis): Ecomorph! @goField(forceResolver: true)
-    repeatedAnalysis(input: InputUpdateAnalysis): Ecomorph! @goField(forceResolver: true)
+    creatAnalysis(input: InputCreateAnalysis): Analysis! @goField(forceResolver: true)
+    repeatedAnalysis(input: InputUpdateAnalysis): Analysis! @goField(forceResolver: true)
     deleteAnalysis(id: ID!): BoolResponse! @goField(forceResolver: true)
 }
 `, BuiltIn: false},
@@ -2099,6 +2122,7 @@ type Query{
     trialSite: TrialSiteQuery @goField(forceResolver: true)
     transect: TransectQuery @goField(forceResolver: true)
     img: ImgQuery @goField(forceResolver: true)
+    analysis: AnalysisQuery @goField(forceResolver: true)
 }
 
 type Mutation{
@@ -2108,6 +2132,7 @@ type Mutation{
     typePlant: TypePlantMutation  @goField(forceResolver: true)
     trialSite: TrialSiteMutation @goField(forceResolver: true)
     transect: TransectMutation @goField(forceResolver: true)
+    analysis: AnalysisMutation @goField(forceResolver: true)
 }`, BuiltIn: false},
 	{Name: "../schemes/transect.graphql", Input: `type TransectQuery {
     getTransect(id: ID!): Transect @goField(forceResolver: true)
@@ -3565,9 +3590,9 @@ func (ec *executionContext) _AnalysisMutation_creatAnalysis(ctx context.Context,
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*api.Ecomorph)
+	res := resTmp.(*api.Analysis)
 	fc.Result = res
-	return ec.marshalNEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, field.Selections, res)
+	return ec.marshalNAnalysis2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐAnalysis(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AnalysisMutation_creatAnalysis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3579,21 +3604,25 @@ func (ec *executionContext) fieldContext_AnalysisMutation_creatAnalysis(ctx cont
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_Ecomorph_id(ctx, field)
+				return ec.fieldContext_Analysis_id(ctx, field)
 			case "createdAt":
-				return ec.fieldContext_Ecomorph_createdAt(ctx, field)
+				return ec.fieldContext_Analysis_createdAt(ctx, field)
 			case "updatedAt":
-				return ec.fieldContext_Ecomorph_updatedAt(ctx, field)
+				return ec.fieldContext_Analysis_updatedAt(ctx, field)
 			case "deletedAt":
-				return ec.fieldContext_Ecomorph_deletedAt(ctx, field)
+				return ec.fieldContext_Analysis_deletedAt(ctx, field)
 			case "title":
-				return ec.fieldContext_Ecomorph_title(ctx, field)
-			case "description":
-				return ec.fieldContext_Ecomorph_description(ctx, field)
+				return ec.fieldContext_Analysis_title(ctx, field)
+			case "typeAnalysis":
+				return ec.fieldContext_Analysis_typeAnalysis(ctx, field)
+			case "transect":
+				return ec.fieldContext_Analysis_transect(ctx, field)
+			case "path":
+				return ec.fieldContext_Analysis_path(ctx, field)
 			case "userID":
-				return ec.fieldContext_Ecomorph_userID(ctx, field)
+				return ec.fieldContext_Analysis_userID(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Ecomorph", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type Analysis", field.Name)
 		},
 	}
 	defer func() {
@@ -3636,9 +3665,9 @@ func (ec *executionContext) _AnalysisMutation_repeatedAnalysis(ctx context.Conte
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*api.Ecomorph)
+	res := resTmp.(*api.Analysis)
 	fc.Result = res
-	return ec.marshalNEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, field.Selections, res)
+	return ec.marshalNAnalysis2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐAnalysis(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AnalysisMutation_repeatedAnalysis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3650,21 +3679,25 @@ func (ec *executionContext) fieldContext_AnalysisMutation_repeatedAnalysis(ctx c
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_Ecomorph_id(ctx, field)
+				return ec.fieldContext_Analysis_id(ctx, field)
 			case "createdAt":
-				return ec.fieldContext_Ecomorph_createdAt(ctx, field)
+				return ec.fieldContext_Analysis_createdAt(ctx, field)
 			case "updatedAt":
-				return ec.fieldContext_Ecomorph_updatedAt(ctx, field)
+				return ec.fieldContext_Analysis_updatedAt(ctx, field)
 			case "deletedAt":
-				return ec.fieldContext_Ecomorph_deletedAt(ctx, field)
+				return ec.fieldContext_Analysis_deletedAt(ctx, field)
 			case "title":
-				return ec.fieldContext_Ecomorph_title(ctx, field)
-			case "description":
-				return ec.fieldContext_Ecomorph_description(ctx, field)
+				return ec.fieldContext_Analysis_title(ctx, field)
+			case "typeAnalysis":
+				return ec.fieldContext_Analysis_typeAnalysis(ctx, field)
+			case "transect":
+				return ec.fieldContext_Analysis_transect(ctx, field)
+			case "path":
+				return ec.fieldContext_Analysis_path(ctx, field)
 			case "userID":
-				return ec.fieldContext_Ecomorph_userID(ctx, field)
+				return ec.fieldContext_Analysis_userID(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Ecomorph", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type Analysis", field.Name)
 		},
 	}
 	defer func() {
@@ -3766,9 +3799,9 @@ func (ec *executionContext) _AnalysisQuery_getAnalysis(ctx context.Context, fiel
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*api.Ecomorph)
+	res := resTmp.(*api.Analysis)
 	fc.Result = res
-	return ec.marshalNEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, field.Selections, res)
+	return ec.marshalNAnalysis2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐAnalysis(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AnalysisQuery_getAnalysis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3780,21 +3813,25 @@ func (ec *executionContext) fieldContext_AnalysisQuery_getAnalysis(ctx context.C
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_Ecomorph_id(ctx, field)
+				return ec.fieldContext_Analysis_id(ctx, field)
 			case "createdAt":
-				return ec.fieldContext_Ecomorph_createdAt(ctx, field)
+				return ec.fieldContext_Analysis_createdAt(ctx, field)
 			case "updatedAt":
-				return ec.fieldContext_Ecomorph_updatedAt(ctx, field)
+				return ec.fieldContext_Analysis_updatedAt(ctx, field)
 			case "deletedAt":
-				return ec.fieldContext_Ecomorph_deletedAt(ctx, field)
+				return ec.fieldContext_Analysis_deletedAt(ctx, field)
 			case "title":
-				return ec.fieldContext_Ecomorph_title(ctx, field)
-			case "description":
-				return ec.fieldContext_Ecomorph_description(ctx, field)
+				return ec.fieldContext_Analysis_title(ctx, field)
+			case "typeAnalysis":
+				return ec.fieldContext_Analysis_typeAnalysis(ctx, field)
+			case "transect":
+				return ec.fieldContext_Analysis_transect(ctx, field)
+			case "path":
+				return ec.fieldContext_Analysis_path(ctx, field)
 			case "userID":
-				return ec.fieldContext_Ecomorph_userID(ctx, field)
+				return ec.fieldContext_Analysis_userID(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Ecomorph", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type Analysis", field.Name)
 		},
 	}
 	defer func() {
@@ -3837,9 +3874,9 @@ func (ec *executionContext) _AnalysisQuery_getListAnalysis(ctx context.Context, 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*api.EcomorphsList)
+	res := resTmp.(*api.AnalysisList)
 	fc.Result = res
-	return ec.marshalNListEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsList(ctx, field.Selections, res)
+	return ec.marshalNAnalysisList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐAnalysisList(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_AnalysisQuery_getListAnalysis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3851,11 +3888,11 @@ func (ec *executionContext) fieldContext_AnalysisQuery_getListAnalysis(ctx conte
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "page":
-				return ec.fieldContext_ListEcomorph_page(ctx, field)
+				return ec.fieldContext_AnalysisList_page(ctx, field)
 			case "list":
-				return ec.fieldContext_ListEcomorph_list(ctx, field)
+				return ec.fieldContext_AnalysisList_list(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type ListEcomorph", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type AnalysisList", field.Name)
 		},
 	}
 	defer func() {
@@ -6660,6 +6697,55 @@ func (ec *executionContext) fieldContext_Mutation_transect(ctx context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_analysis(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_analysis(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().Analysis(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.AnalysisMutation)
+	fc.Result = res
+	return ec.marshalOAnalysisMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐAnalysisMutation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_analysis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "creatAnalysis":
+				return ec.fieldContext_AnalysisMutation_creatAnalysis(ctx, field)
+			case "repeatedAnalysis":
+				return ec.fieldContext_AnalysisMutation_repeatedAnalysis(ctx, field)
+			case "deleteAnalysis":
+				return ec.fieldContext_AnalysisMutation_deleteAnalysis(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AnalysisMutation", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _PagesResponse_total(ctx context.Context, field graphql.CollectedField, obj *api.PagesResponse) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_PagesResponse_total(ctx, field)
 	if err != nil {
@@ -7422,6 +7508,53 @@ func (ec *executionContext) fieldContext_Query_img(ctx context.Context, field gr
 				return ec.fieldContext_ImgQuery_getListImg(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ImgQuery", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_analysis(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_analysis(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Analysis(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.AnalysisQuery)
+	fc.Result = res
+	return ec.marshalOAnalysisQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐAnalysisQuery(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_analysis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "getAnalysis":
+				return ec.fieldContext_AnalysisQuery_getAnalysis(ctx, field)
+			case "getListAnalysis":
+				return ec.fieldContext_AnalysisQuery_getListAnalysis(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AnalysisQuery", field.Name)
 		},
 	}
 	return fc, nil
@@ -13328,7 +13461,7 @@ func (ec *executionContext) unmarshalInputInputCreateAnalysis(ctx context.Contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"title", "transect", "ecomorph"}
+	fieldsInOrder := [...]string{"title", "transect", "typeAnalysis", "ecomorph"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -13349,6 +13482,15 @@ func (ec *executionContext) unmarshalInputInputCreateAnalysis(ctx context.Contex
 				return it, err
 			}
 			it.Transect = data
+		case "typeAnalysis":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeAnalysis"))
+			data, err := ec.unmarshalNTypeAnalysis2githubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTypeAnalysis(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.InputCreateAnalysis().TypeAnalysis(ctx, &it, data); err != nil {
+				return it, err
+			}
 		case "ecomorph":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ecomorph"))
 			data, err := ec.unmarshalNEcomorphInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, v)
@@ -15892,6 +16034,10 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_transect(ctx, field)
 			})
+		case "analysis":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_analysis(ctx, field)
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -16176,6 +16322,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_img(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "analysis":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_analysis(ctx, field)
 				return res
 			}
 
@@ -17801,6 +17966,34 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
+func (ec *executionContext) marshalNAnalysis2githubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐAnalysis(ctx context.Context, sel ast.SelectionSet, v api.Analysis) graphql.Marshaler {
+	return ec._Analysis(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNAnalysis2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐAnalysis(ctx context.Context, sel ast.SelectionSet, v *api.Analysis) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Analysis(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNAnalysisList2githubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐAnalysisList(ctx context.Context, sel ast.SelectionSet, v api.AnalysisList) graphql.Marshaler {
+	return ec._AnalysisList(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNAnalysisList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐAnalysisList(ctx context.Context, sel ast.SelectionSet, v *api.AnalysisList) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._AnalysisList(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalNBoolResponse2githubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐBoolResponse(ctx context.Context, sel ast.SelectionSet, v api.BoolResponse) graphql.Marshaler {
 	return ec._BoolResponse(ctx, sel, &v)
 }
@@ -18269,6 +18462,20 @@ func (ec *executionContext) marshalOAnalysis2ᚖgithubᚗcomᚋsergey23144VᚋBo
 		return graphql.Null
 	}
 	return ec._Analysis(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOAnalysisMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐAnalysisMutation(ctx context.Context, sel ast.SelectionSet, v *model.AnalysisMutation) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._AnalysisMutation(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOAnalysisQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐAnalysisQuery(ctx context.Context, sel ast.SelectionSet, v *model.AnalysisQuery) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._AnalysisQuery(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOAuthMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐAuthMutation(ctx context.Context, sel ast.SelectionSet, v *model.AuthMutation) graphql.Marshaler {

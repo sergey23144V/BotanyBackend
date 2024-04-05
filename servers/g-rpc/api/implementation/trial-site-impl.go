@@ -10,6 +10,11 @@ type TrialSiteServetImpl struct {
 	service *service.Service
 }
 
+func (t TrialSiteServetImpl) AddPlantsToTrialSite(ctx context.Context, request *api.InputTrialSiteRequest) (*api.TrialSite, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func NewTrialSiteServetImpl(service *service.Service) TrialSiteServetImpl {
 	return TrialSiteServetImpl{service}
 }

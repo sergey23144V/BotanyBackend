@@ -10,6 +10,11 @@ type TransectServetImpl struct {
 	service *service.Service
 }
 
+func (t TransectServetImpl) AddTrialSiteToTransect(ctx context.Context, request *api.InputTransectRequest) (*api.Transect, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func NewTransectServetImpl(service *service.Service) TransectServetImpl {
 	return TransectServetImpl{service}
 }

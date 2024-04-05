@@ -11,14 +11,14 @@ import (
 )
 
 type AnalysisMutation struct {
-	CreatAnalysis    *api.Ecomorph     `json:"creatAnalysis"`
-	RepeatedAnalysis *api.Ecomorph     `json:"repeatedAnalysis"`
+	CreatAnalysis    *api.Analysis     `json:"creatAnalysis"`
+	RepeatedAnalysis *api.Analysis     `json:"repeatedAnalysis"`
 	DeleteAnalysis   *api.BoolResponse `json:"deleteAnalysis"`
 }
 
 type AnalysisQuery struct {
-	GetAnalysis     *api.Ecomorph      `json:"getAnalysis"`
-	GetListAnalysis *api.EcomorphsList `json:"getListAnalysis"`
+	GetAnalysis     *api.Analysis     `json:"getAnalysis"`
+	GetListAnalysis *api.AnalysisList `json:"getListAnalysis"`
 }
 
 type AuthMutation struct {

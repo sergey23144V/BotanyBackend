@@ -26,6 +26,7 @@ func (h *Handler) InitRoutes(router *chi.Mux) *chi.Mux {
 	router.Post("/save", h.services.SaveImg)
 
 	router.Handle("/img/*", http.StripPrefix("/img/", http.FileServer(http.Dir("img"))))
+	router.Handle("/analysis/*", http.StripPrefix("/analysis/", http.FileServer(http.Dir("analysis"))))
 
 	return router
 }

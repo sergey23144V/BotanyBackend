@@ -6,8 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
-
 	"github.com/sergey23144V/BotanyBackend/servers/graphql/graph/model"
 )
 
@@ -47,6 +45,12 @@ func (r *mutationResolver) Transect(ctx context.Context) (*model.TransectMutatio
 	return &v, nil
 }
 
+// Analysis is the resolver for the analysis field.
+func (r *mutationResolver) Analysis(ctx context.Context) (*model.AnalysisMutation, error) {
+	v := model.AnalysisMutation{}
+	return &v, nil
+}
+
 // Ecomorph is the resolver for the ecomorph field.
 func (r *queryResolver) Ecomorph(ctx context.Context) (*model.EcomorphQuery, error) {
 	v := model.EcomorphQuery{}
@@ -79,7 +83,14 @@ func (r *queryResolver) Transect(ctx context.Context) (*model.TransectQuery, err
 
 // Img is the resolver for the img field.
 func (r *queryResolver) Img(ctx context.Context) (*model.ImgQuery, error) {
-	panic(fmt.Errorf("not implemented: Img - img"))
+	v := model.ImgQuery{}
+	return &v, nil
+}
+
+// Analysis is the resolver for the analysis field.
+func (r *queryResolver) Analysis(ctx context.Context) (*model.AnalysisQuery, error) {
+	v := model.AnalysisQuery{}
+	return &v, nil
 }
 
 // Mutation returns MutationResolver implementation.

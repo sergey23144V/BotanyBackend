@@ -10,6 +10,11 @@ type TypePlantServetImpl struct {
 	service *service.Service
 }
 
+func (t TypePlantServetImpl) AddEcomorphsEntityToTypePlant(ctx context.Context, request *api.InputTypePlant_EcomorphsEntityRequest) (*api.TypePlant, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func NewTypePlantServetImpl(service *service.Service) TypePlantServetImpl {
 	return TypePlantServetImpl{service}
 }

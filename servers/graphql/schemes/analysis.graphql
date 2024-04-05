@@ -32,6 +32,7 @@ enum TypeAnalysis{
 input InputCreateAnalysis {
     title: String!
     transect: TransectInput
+    typeAnalysis: TypeAnalysis!
     ecomorph: [EcomorphInput]!
 }
 
@@ -42,12 +43,12 @@ input InputUpdateAnalysis {
 }
 
 type AnalysisQuery {
-    getAnalysis(id: ID!): Ecomorph! @goField(forceResolver: true)
-    getListAnalysis(pages: PagesRequest ): ListEcomorph! @goField(forceResolver: true)
+    getAnalysis(id: ID!): Analysis! @goField(forceResolver: true)
+    getListAnalysis(pages: PagesRequest ): AnalysisList! @goField(forceResolver: true)
 }
 
 type AnalysisMutation {
-    creatAnalysis(input: InputCreateAnalysis): Ecomorph! @goField(forceResolver: true)
-    repeatedAnalysis(input: InputUpdateAnalysis): Ecomorph! @goField(forceResolver: true)
+    creatAnalysis(input: InputCreateAnalysis): Analysis! @goField(forceResolver: true)
+    repeatedAnalysis(input: InputUpdateAnalysis): Analysis! @goField(forceResolver: true)
     deleteAnalysis(id: ID!): BoolResponse! @goField(forceResolver: true)
 }

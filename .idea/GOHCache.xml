@@ -17,10 +17,24 @@
             </set>
           </value>
         </entry>
+        <entry key="AnalysisMutation">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/graphql/graph/model/models_gen.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="AnalysisORM">
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/analysis.pb.gorm.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="AnalysisQuery">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/graphql/graph/model/models_gen.go" />
             </set>
           </value>
         </entry>
@@ -753,6 +767,34 @@
             </set>
           </value>
         </entry>
+        <entry key="analysisInputResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/graphql/graph/analysis.resolvers.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="analysisMutationResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/graphql/graph/analysis.resolvers.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="analysisQueryResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/graphql/graph/analysis.resolvers.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="analysisResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/graphql/graph/analysis.resolvers.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="analysisServiceClient">
           <value>
             <set>
@@ -841,6 +883,13 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/img_grpc.pb.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="inputCreateAnalysisResolver">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/graphql/graph/analysis.resolvers.go" />
             </set>
           </value>
         </entry>
@@ -1126,7 +1175,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/service/analysis-service.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712325506124" />
+              <option name="lastModified" value="1712336785259" />
               <option name="schema">
                 <list>
                   <option value="AnalysisServiceImpl" />
@@ -1490,7 +1539,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/implementation/transect-impl.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1711196714711" />
+              <option name="lastModified" value="1712333127670" />
               <option name="schema">
                 <list>
                   <option value="TransectServetImpl" />
@@ -1502,7 +1551,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/implementation/trial-site-impl.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1711882111113" />
+              <option name="lastModified" value="1712333127665" />
               <option name="schema">
                 <list>
                   <option value="TrialSiteServetImpl" />
@@ -1514,7 +1563,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/implementation/type-plant-impl.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1711487593781" />
+              <option name="lastModified" value="1712333127675" />
               <option name="schema">
                 <list>
                   <option value="TypePlantServetImpl" />
@@ -1705,10 +1754,26 @@
             </ScannedPath>
           </value>
         </entry>
+        <entry key="file://$PROJECT_DIR$/servers/graphql/graph/analysis.resolvers.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712334077397" />
+              <option name="schema">
+                <list>
+                  <option value="analysisResolver" />
+                  <option value="analysisMutationResolver" />
+                  <option value="analysisQueryResolver" />
+                  <option value="analysisInputResolver" />
+                  <option value="inputCreateAnalysisResolver" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/auth.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712162243554" />
+              <option name="lastModified" value="1712326318341" />
               <option name="schema">
                 <list>
                   <option value="authMutationResolver" />
@@ -1720,7 +1785,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/ecomorph-entity.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712162244060" />
+              <option name="lastModified" value="1712326318889" />
               <option name="schema">
                 <list>
                   <option value="ecomorphsEntityMutationResolver" />
@@ -1733,7 +1798,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/ecomorph.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712162244059" />
+              <option name="lastModified" value="1712326318897" />
               <option name="schema">
                 <list>
                   <option value="ecomorphMutationResolver" />
@@ -1759,7 +1824,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/generated.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712162244239" />
+              <option name="lastModified" value="1712326319090" />
               <option name="schema">
                 <list>
                   <option value="Config" />
@@ -1775,7 +1840,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/img.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712162244061" />
+              <option name="lastModified" value="1712326318890" />
               <option name="schema">
                 <list>
                   <option value="imgQueryResolver" />
@@ -1787,7 +1852,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/main.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712162244062" />
+              <option name="lastModified" value="1712334211930" />
               <option name="schema">
                 <list>
                   <option value="mutationResolver" />
@@ -1800,9 +1865,11 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/model/models_gen.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712162239363" />
+              <option name="lastModified" value="1712326312006" />
               <option name="schema">
                 <list>
+                  <option value="AnalysisMutation" />
+                  <option value="AnalysisQuery" />
                   <option value="AuthMutation" />
                   <option value="EcomorphMutation" />
                   <option value="EcomorphQuery" />
@@ -1838,7 +1905,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/transect.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712162273804" />
+              <option name="lastModified" value="1712326318891" />
               <option name="schema">
                 <list>
                   <option value="transectMutationResolver" />
@@ -1851,7 +1918,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/trial-site.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712162244065" />
+              <option name="lastModified" value="1712326318893" />
               <option name="schema">
                 <list>
                   <option value="trialSiteMutationResolver" />
@@ -1864,7 +1931,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/type-plant.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712162244066" />
+              <option name="lastModified" value="1712326318894" />
               <option name="schema">
                 <list>
                   <option value="typePlantMutationResolver" />
@@ -1891,7 +1958,7 @@
         <entry key="file://$PROJECT_DIR$/servers/rest/handler.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712004473774" />
+              <option name="lastModified" value="1712336885334" />
               <option name="schema">
                 <list>
                   <option value="Handler" />
@@ -1921,14 +1988,27 @@
             </ScannedPath>
           </value>
         </entry>
+        <entry key="file://$PROJECT_DIR$/test/graphqlTest/analysis/analysis_test.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712333096901" />
+            </ScannedPath>
+          </value>
+        </entry>
       </map>
     </option>
     <option name="tableStructMapping">
       <map>
         <entry key="analysis" value="Analysis" />
+        <entry key="analysis_input_resolver" value="analysisInputResolver" />
         <entry key="analysis_list" value="AnalysisList" />
+        <entry key="analysis_mutation" value="AnalysisMutation" />
+        <entry key="analysis_mutation_resolver" value="analysisMutationResolver" />
         <entry key="analysis_orm" value="AnalysisORM" />
+        <entry key="analysis_query" value="AnalysisQuery" />
+        <entry key="analysis_query_resolver" value="analysisQueryResolver" />
         <entry key="analysis_repository_impl" value="AnalysisRepositoryImpl" />
+        <entry key="analysis_resolver" value="analysisResolver" />
         <entry key="analysis_servet_impl" value="AnalysisServetImpl" />
         <entry key="analysis_service_client" value="analysisServiceClient" />
         <entry key="analysis_service_impl" value="AnalysisServiceImpl" />
@@ -1978,6 +2058,7 @@
         <entry key="img_service_client" value="imgServiceClient" />
         <entry key="img_service_impl" value="ImgServiceImpl" />
         <entry key="input_create_analysis" value="InputCreateAnalysis" />
+        <entry key="input_create_analysis_resolver" value="inputCreateAnalysisResolver" />
         <entry key="input_ecomorph" value="InputEcomorph" />
         <entry key="input_ecomorph_orm" value="InputEcomorphORM" />
         <entry key="input_ecomorphs_entity" value="InputEcomorphsEntity" />

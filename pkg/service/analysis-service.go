@@ -158,7 +158,7 @@ func (t AnalysisServiceImpl) CreateExcelTypeAnalysisPlantAnalysis(ctx context.Co
 	}
 
 	id := pkg.GenerateUUID()
-	path := "../analysis/" + id + ".xlsx"
+	path := "./analysis/" + id + ".xlsx"
 	analysis := &api.Analysis{
 		Id:           &resource.Identifier{ResourceId: id},
 		TypeAnalysis: api.TypeAnalysis_TypeAnalysisTransect,
@@ -293,7 +293,7 @@ func (t AnalysisServiceImpl) CreateExcelTypeTrialSiteAnalysis(ctx context.Contex
 	}
 
 	id := pkg.GenerateUUID()
-	path := "../analysis/" + id + ".xlsx"
+	path := "./analysis/" + id + ".xlsx"
 	analysis := &api.Analysis{
 		Id:           &resource.Identifier{ResourceId: id},
 		TypeAnalysis: api.TypeAnalysis_TypeAnalysisTransect,

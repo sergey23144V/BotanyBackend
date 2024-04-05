@@ -23,7 +23,7 @@ service TypePlantService {
   rpc UpdateTypePlant (InputTypePlantRequest) returns (TypePlant);
 
   // Обновление сущности по id
-  rpc addEcomorphsEntity (InputTypePlant_EcomorphsEntityRequest) returns (TypePlant);
+  rpc AddEcomorphsEntityToTypePlant (InputTypePlant_EcomorphsEntityRequest) returns (TypePlant);
 
   // Удаление сущности по заголовку
   rpc DeleteTypePlant (IdRequest) returns (BoolResponse){

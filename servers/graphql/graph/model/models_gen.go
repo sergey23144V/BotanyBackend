@@ -3,8 +3,23 @@
 package model
 
 import (
+	"fmt"
+	"io"
+	"strconv"
+
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 )
+
+type AnalysisMutation struct {
+	CreatAnalysis    *api.Ecomorph     `json:"creatAnalysis"`
+	RepeatedAnalysis *api.Ecomorph     `json:"repeatedAnalysis"`
+	DeleteAnalysis   *api.BoolResponse `json:"deleteAnalysis"`
+}
+
+type AnalysisQuery struct {
+	GetAnalysis     *api.Ecomorph      `json:"getAnalysis"`
+	GetListAnalysis *api.EcomorphsList `json:"getListAnalysis"`
+}
 
 type AuthMutation struct {
 	SignUpUser *api.SignInUserResponse `json:"signUpUser,omitempty"`
@@ -84,4 +99,45 @@ type TypePlantMutation struct {
 type TypePlantQuery struct {
 	GetTypePlant    *api.TypePlant     `json:"getTypePlant,omitempty"`
 	GetAllTypePlant *api.TypePlantList `json:"getAllTypePlant,omitempty"`
+}
+
+type TypeAnalysis string
+
+const (
+	TypeAnalysisTypeAnalysisPlant    TypeAnalysis = "TypeAnalysisPlant"
+	TypeAnalysisTypeAnalysisTransect TypeAnalysis = "TypeAnalysisTransect"
+)
+
+var AllTypeAnalysis = []TypeAnalysis{
+	TypeAnalysisTypeAnalysisPlant,
+	TypeAnalysisTypeAnalysisTransect,
+}
+
+func (e TypeAnalysis) IsValid() bool {
+	switch e {
+	case TypeAnalysisTypeAnalysisPlant, TypeAnalysisTypeAnalysisTransect:
+		return true
+	}
+	return false
+}
+
+func (e TypeAnalysis) String() string {
+	return string(e)
+}
+
+func (e *TypeAnalysis) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = TypeAnalysis(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid TypeAnalysis", str)
+	}
+	return nil
+}
+
+func (e TypeAnalysis) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }

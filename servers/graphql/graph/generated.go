@@ -41,6 +41,9 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	Analysis() AnalysisResolver
+	AnalysisMutation() AnalysisMutationResolver
+	AnalysisQuery() AnalysisQueryResolver
 	AuthMutation() AuthMutationResolver
 	EcomorphMutation() EcomorphMutationResolver
 	EcomorphQuery() EcomorphQueryResolver
@@ -55,12 +58,41 @@ type ResolverRoot interface {
 	TrialSiteQuery() TrialSiteQueryResolver
 	TypePlantMutation() TypePlantMutationResolver
 	TypePlantQuery() TypePlantQueryResolver
+	AnalysisInput() AnalysisInputResolver
 }
 
 type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	Analysis struct {
+		CreatedAt    func(childComplexity int) int
+		DeletedAt    func(childComplexity int) int
+		Id           func(childComplexity int) int
+		Path         func(childComplexity int) int
+		Title        func(childComplexity int) int
+		Transect     func(childComplexity int) int
+		TypeAnalysis func(childComplexity int) int
+		UpdatedAt    func(childComplexity int) int
+		UserId       func(childComplexity int) int
+	}
+
+	AnalysisList struct {
+		List func(childComplexity int) int
+		Page func(childComplexity int) int
+	}
+
+	AnalysisMutation struct {
+		CreatAnalysis    func(childComplexity int, input *api.InputCreateAnalysis) int
+		DeleteAnalysis   func(childComplexity int, id string) int
+		RepeatedAnalysis func(childComplexity int, input *api.InputUpdateAnalysis) int
+	}
+
+	AnalysisQuery struct {
+		GetAnalysis     func(childComplexity int, id string) int
+		GetListAnalysis func(childComplexity int, pages *api.PagesRequest) int
+	}
+
 	AuthMutation struct {
 		SignInUser func(childComplexity int, data *api.SignInUserInput) int
 		SignUpUser func(childComplexity int, data *api.SignUpUserInput) int
@@ -301,6 +333,18 @@ type ComplexityRoot struct {
 	}
 }
 
+type AnalysisResolver interface {
+	TypeAnalysis(ctx context.Context, obj *api.Analysis) (model.TypeAnalysis, error)
+}
+type AnalysisMutationResolver interface {
+	CreatAnalysis(ctx context.Context, obj *model.AnalysisMutation, input *api.InputCreateAnalysis) (*api.Ecomorph, error)
+	RepeatedAnalysis(ctx context.Context, obj *model.AnalysisMutation, input *api.InputUpdateAnalysis) (*api.Ecomorph, error)
+	DeleteAnalysis(ctx context.Context, obj *model.AnalysisMutation, id string) (*api.BoolResponse, error)
+}
+type AnalysisQueryResolver interface {
+	GetAnalysis(ctx context.Context, obj *model.AnalysisQuery, id string) (*api.Ecomorph, error)
+	GetListAnalysis(ctx context.Context, obj *model.AnalysisQuery, pages *api.PagesRequest) (*api.EcomorphsList, error)
+}
 type AuthMutationResolver interface {
 	SignUpUser(ctx context.Context, obj *model.AuthMutation, data *api.SignUpUserInput) (*api.SignInUserResponse, error)
 	SignInUser(ctx context.Context, obj *model.AuthMutation, data *api.SignInUserInput) (*api.SignInUserResponse, error)
@@ -376,6 +420,10 @@ type TypePlantQueryResolver interface {
 	GetAllTypePlant(ctx context.Context, obj *model.TypePlantQuery, pages *api.PagesRequest) (*api.TypePlantList, error)
 }
 
+type AnalysisInputResolver interface {
+	TypeAnalysis(ctx context.Context, obj *api.Analysis, data model.TypeAnalysis) error
+}
+
 type executableSchema struct {
 	schema     *ast.Schema
 	resolvers  ResolverRoot
@@ -394,6 +442,143 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	ec := executionContext{nil, e, 0, 0, nil}
 	_ = ec
 	switch typeName + "." + field {
+
+	case "Analysis.createdAt":
+		if e.complexity.Analysis.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Analysis.CreatedAt(childComplexity), true
+
+	case "Analysis.deletedAt":
+		if e.complexity.Analysis.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.Analysis.DeletedAt(childComplexity), true
+
+	case "Analysis.id":
+		if e.complexity.Analysis.Id == nil {
+			break
+		}
+
+		return e.complexity.Analysis.Id(childComplexity), true
+
+	case "Analysis.path":
+		if e.complexity.Analysis.Path == nil {
+			break
+		}
+
+		return e.complexity.Analysis.Path(childComplexity), true
+
+	case "Analysis.title":
+		if e.complexity.Analysis.Title == nil {
+			break
+		}
+
+		return e.complexity.Analysis.Title(childComplexity), true
+
+	case "Analysis.transect":
+		if e.complexity.Analysis.Transect == nil {
+			break
+		}
+
+		return e.complexity.Analysis.Transect(childComplexity), true
+
+	case "Analysis.typeAnalysis":
+		if e.complexity.Analysis.TypeAnalysis == nil {
+			break
+		}
+
+		return e.complexity.Analysis.TypeAnalysis(childComplexity), true
+
+	case "Analysis.updatedAt":
+		if e.complexity.Analysis.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Analysis.UpdatedAt(childComplexity), true
+
+	case "Analysis.userID":
+		if e.complexity.Analysis.UserId == nil {
+			break
+		}
+
+		return e.complexity.Analysis.UserId(childComplexity), true
+
+	case "AnalysisList.list":
+		if e.complexity.AnalysisList.List == nil {
+			break
+		}
+
+		return e.complexity.AnalysisList.List(childComplexity), true
+
+	case "AnalysisList.page":
+		if e.complexity.AnalysisList.Page == nil {
+			break
+		}
+
+		return e.complexity.AnalysisList.Page(childComplexity), true
+
+	case "AnalysisMutation.creatAnalysis":
+		if e.complexity.AnalysisMutation.CreatAnalysis == nil {
+			break
+		}
+
+		args, err := ec.field_AnalysisMutation_creatAnalysis_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.AnalysisMutation.CreatAnalysis(childComplexity, args["input"].(*api.InputCreateAnalysis)), true
+
+	case "AnalysisMutation.deleteAnalysis":
+		if e.complexity.AnalysisMutation.DeleteAnalysis == nil {
+			break
+		}
+
+		args, err := ec.field_AnalysisMutation_deleteAnalysis_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.AnalysisMutation.DeleteAnalysis(childComplexity, args["id"].(string)), true
+
+	case "AnalysisMutation.repeatedAnalysis":
+		if e.complexity.AnalysisMutation.RepeatedAnalysis == nil {
+			break
+		}
+
+		args, err := ec.field_AnalysisMutation_repeatedAnalysis_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.AnalysisMutation.RepeatedAnalysis(childComplexity, args["input"].(*api.InputUpdateAnalysis)), true
+
+	case "AnalysisQuery.getAnalysis":
+		if e.complexity.AnalysisQuery.GetAnalysis == nil {
+			break
+		}
+
+		args, err := ec.field_AnalysisQuery_getAnalysis_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.AnalysisQuery.GetAnalysis(childComplexity, args["id"].(string)), true
+
+	case "AnalysisQuery.getListAnalysis":
+		if e.complexity.AnalysisQuery.GetListAnalysis == nil {
+			break
+		}
+
+		args, err := ec.field_AnalysisQuery_getListAnalysis_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.AnalysisQuery.GetListAnalysis(childComplexity, args["pages"].(*api.PagesRequest)), true
 
 	case "AuthMutation.signInUser":
 		if e.complexity.AuthMutation.SignInUser == nil {
@@ -1532,10 +1717,12 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputAnalysisInput,
 		ec.unmarshalInputEcomorphInput,
 		ec.unmarshalInputEcomorphsEntityInput,
 		ec.unmarshalInputIdentifierInput,
 		ec.unmarshalInputImgInput,
+		ec.unmarshalInputInputCreateAnalysis,
 		ec.unmarshalInputInputEcomorph,
 		ec.unmarshalInputInputEcomorphsEntity,
 		ec.unmarshalInputInputFormEcomorph,
@@ -1548,6 +1735,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputInputTransectRequest,
 		ec.unmarshalInputInputTrialSiteRequest,
 		ec.unmarshalInputInputTypePlantRequest,
+		ec.unmarshalInputInputUpdateAnalysis,
 		ec.unmarshalInputPagesRequest,
 		ec.unmarshalInputPlantInput,
 		ec.unmarshalInputSignInUserInput,
@@ -1652,6 +1840,60 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
+	{Name: "../schemes/analysis.graphql", Input: `type Analysis {
+    id: IdentifierType!
+    createdAt: Timestamp!
+    updatedAt: Timestamp!
+    deletedAt : Timestamp!
+    title: String!
+    typeAnalysis: TypeAnalysis!
+    transect: Transect
+    path: String!
+    userID: IdentifierType!
+}
+
+input AnalysisInput {
+    id: IdentifierInput
+    title: String!
+    transect: TransectInput
+    typeAnalysis: TypeAnalysis!
+    path: String!
+    userID: IdentifierInput
+}
+
+type AnalysisList {
+    page: PagesResponse!
+    list: [Analysis]
+}
+
+enum TypeAnalysis{
+    TypeAnalysisPlant
+    TypeAnalysisTransect
+}
+
+input InputCreateAnalysis {
+    title: String!
+    transect: TransectInput
+    ecomorph: [EcomorphInput]!
+}
+
+input InputUpdateAnalysis {
+    id: IdentifierInput
+    title: String!
+    ecomorph: [EcomorphInput]
+}
+
+type AnalysisQuery {
+    getAnalysis(id: ID!): Ecomorph! @goField(forceResolver: true)
+    getListAnalysis(pages: PagesRequest ): ListEcomorph! @goField(forceResolver: true)
+}
+
+type AnalysisMutation {
+    creatAnalysis(input: InputCreateAnalysis): Ecomorph! @goField(forceResolver: true)
+    repeatedAnalysis(input: InputUpdateAnalysis): Ecomorph! @goField(forceResolver: true)
+    deleteAnalysis(id: ID!): BoolResponse! @goField(forceResolver: true)
+}
+`, BuiltIn: false},
 	{Name: "../schemes/auth.graphql", Input: `
 
 
@@ -2086,6 +2328,81 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_AnalysisMutation_creatAnalysis_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *api.InputCreateAnalysis
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalOInputCreateAnalysis2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputCreateAnalysis(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_AnalysisMutation_deleteAnalysis_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_AnalysisMutation_repeatedAnalysis_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *api.InputUpdateAnalysis
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalOInputUpdateAnalysis2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputUpdateAnalysis(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_AnalysisQuery_getAnalysis_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_AnalysisQuery_getListAnalysis_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *api.PagesRequest
+	if tmp, ok := rawArgs["pages"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pages"))
+		arg0, err = ec.unmarshalOPagesRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPagesRequest(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pages"] = arg0
+	return args, nil
+}
 
 func (ec *executionContext) field_AuthMutation_signInUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -2649,6 +2966,911 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 // endregion ************************** directives.gotpl **************************
 
 // region    **************************** field.gotpl *****************************
+
+func (ec *executionContext) _Analysis_id(ctx context.Context, field graphql.CollectedField, obj *api.Analysis) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Analysis_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Id, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*resource.Identifier)
+	fc.Result = res
+	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Analysis_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Analysis",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "applicationName":
+				return ec.fieldContext_IdentifierType_applicationName(ctx, field)
+			case "resourceType":
+				return ec.fieldContext_IdentifierType_resourceType(ctx, field)
+			case "resourceId":
+				return ec.fieldContext_IdentifierType_resourceId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type IdentifierType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Analysis_createdAt(ctx context.Context, field graphql.CollectedField, obj *api.Analysis) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Analysis_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*timestamppb.Timestamp)
+	fc.Result = res
+	return ec.marshalNTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Analysis_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Analysis",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "seconds":
+				return ec.fieldContext_Timestamp_seconds(ctx, field)
+			case "nanos":
+				return ec.fieldContext_Timestamp_nanos(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Timestamp", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Analysis_updatedAt(ctx context.Context, field graphql.CollectedField, obj *api.Analysis) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Analysis_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*timestamppb.Timestamp)
+	fc.Result = res
+	return ec.marshalNTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Analysis_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Analysis",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "seconds":
+				return ec.fieldContext_Timestamp_seconds(ctx, field)
+			case "nanos":
+				return ec.fieldContext_Timestamp_nanos(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Timestamp", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Analysis_deletedAt(ctx context.Context, field graphql.CollectedField, obj *api.Analysis) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Analysis_deletedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*timestamppb.Timestamp)
+	fc.Result = res
+	return ec.marshalNTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Analysis_deletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Analysis",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "seconds":
+				return ec.fieldContext_Timestamp_seconds(ctx, field)
+			case "nanos":
+				return ec.fieldContext_Timestamp_nanos(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Timestamp", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Analysis_title(ctx context.Context, field graphql.CollectedField, obj *api.Analysis) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Analysis_title(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Title, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Analysis_title(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Analysis",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Analysis_typeAnalysis(ctx context.Context, field graphql.CollectedField, obj *api.Analysis) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Analysis_typeAnalysis(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Analysis().TypeAnalysis(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(model.TypeAnalysis)
+	fc.Result = res
+	return ec.marshalNTypeAnalysis2githubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTypeAnalysis(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Analysis_typeAnalysis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Analysis",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type TypeAnalysis does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Analysis_transect(ctx context.Context, field graphql.CollectedField, obj *api.Analysis) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Analysis_transect(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Transect, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*api.Transect)
+	fc.Result = res
+	return ec.marshalOTransect2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTransect(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Analysis_transect(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Analysis",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Transect_id(ctx, field)
+			case "title":
+				return ec.fieldContext_Transect_title(ctx, field)
+			case "covered":
+				return ec.fieldContext_Transect_covered(ctx, field)
+			case "rating":
+				return ec.fieldContext_Transect_rating(ctx, field)
+			case "square":
+				return ec.fieldContext_Transect_square(ctx, field)
+			case "squareTrialSite":
+				return ec.fieldContext_Transect_squareTrialSite(ctx, field)
+			case "countTypes":
+				return ec.fieldContext_Transect_countTypes(ctx, field)
+			case "dominant":
+				return ec.fieldContext_Transect_dominant(ctx, field)
+			case "subDominant":
+				return ec.fieldContext_Transect_subDominant(ctx, field)
+			case "trialSite":
+				return ec.fieldContext_Transect_trialSite(ctx, field)
+			case "img":
+				return ec.fieldContext_Transect_img(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Transect_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Transect_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Transect_deletedAt(ctx, field)
+			case "userId":
+				return ec.fieldContext_Transect_userId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Transect", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Analysis_path(ctx context.Context, field graphql.CollectedField, obj *api.Analysis) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Analysis_path(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Path, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Analysis_path(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Analysis",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Analysis_userID(ctx context.Context, field graphql.CollectedField, obj *api.Analysis) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Analysis_userID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UserId, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*resource.Identifier)
+	fc.Result = res
+	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Analysis_userID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Analysis",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "applicationName":
+				return ec.fieldContext_IdentifierType_applicationName(ctx, field)
+			case "resourceType":
+				return ec.fieldContext_IdentifierType_resourceType(ctx, field)
+			case "resourceId":
+				return ec.fieldContext_IdentifierType_resourceId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type IdentifierType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AnalysisList_page(ctx context.Context, field graphql.CollectedField, obj *api.AnalysisList) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AnalysisList_page(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Page, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*api.PagesResponse)
+	fc.Result = res
+	return ec.marshalNPagesResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPagesResponse(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AnalysisList_page(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AnalysisList",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "total":
+				return ec.fieldContext_PagesResponse_total(ctx, field)
+			case "page":
+				return ec.fieldContext_PagesResponse_page(ctx, field)
+			case "limit":
+				return ec.fieldContext_PagesResponse_limit(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PagesResponse", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AnalysisList_list(ctx context.Context, field graphql.CollectedField, obj *api.AnalysisList) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AnalysisList_list(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.List, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*api.Analysis)
+	fc.Result = res
+	return ec.marshalOAnalysis2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐAnalysis(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AnalysisList_list(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AnalysisList",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Analysis_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Analysis_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Analysis_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Analysis_deletedAt(ctx, field)
+			case "title":
+				return ec.fieldContext_Analysis_title(ctx, field)
+			case "typeAnalysis":
+				return ec.fieldContext_Analysis_typeAnalysis(ctx, field)
+			case "transect":
+				return ec.fieldContext_Analysis_transect(ctx, field)
+			case "path":
+				return ec.fieldContext_Analysis_path(ctx, field)
+			case "userID":
+				return ec.fieldContext_Analysis_userID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Analysis", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AnalysisMutation_creatAnalysis(ctx context.Context, field graphql.CollectedField, obj *model.AnalysisMutation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AnalysisMutation_creatAnalysis(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.AnalysisMutation().CreatAnalysis(rctx, obj, fc.Args["input"].(*api.InputCreateAnalysis))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*api.Ecomorph)
+	fc.Result = res
+	return ec.marshalNEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AnalysisMutation_creatAnalysis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AnalysisMutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Ecomorph_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Ecomorph_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Ecomorph_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Ecomorph_deletedAt(ctx, field)
+			case "title":
+				return ec.fieldContext_Ecomorph_title(ctx, field)
+			case "description":
+				return ec.fieldContext_Ecomorph_description(ctx, field)
+			case "userID":
+				return ec.fieldContext_Ecomorph_userID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Ecomorph", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_AnalysisMutation_creatAnalysis_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AnalysisMutation_repeatedAnalysis(ctx context.Context, field graphql.CollectedField, obj *model.AnalysisMutation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AnalysisMutation_repeatedAnalysis(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.AnalysisMutation().RepeatedAnalysis(rctx, obj, fc.Args["input"].(*api.InputUpdateAnalysis))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*api.Ecomorph)
+	fc.Result = res
+	return ec.marshalNEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AnalysisMutation_repeatedAnalysis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AnalysisMutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Ecomorph_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Ecomorph_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Ecomorph_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Ecomorph_deletedAt(ctx, field)
+			case "title":
+				return ec.fieldContext_Ecomorph_title(ctx, field)
+			case "description":
+				return ec.fieldContext_Ecomorph_description(ctx, field)
+			case "userID":
+				return ec.fieldContext_Ecomorph_userID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Ecomorph", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_AnalysisMutation_repeatedAnalysis_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AnalysisMutation_deleteAnalysis(ctx context.Context, field graphql.CollectedField, obj *model.AnalysisMutation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AnalysisMutation_deleteAnalysis(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.AnalysisMutation().DeleteAnalysis(rctx, obj, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*api.BoolResponse)
+	fc.Result = res
+	return ec.marshalNBoolResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐBoolResponse(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AnalysisMutation_deleteAnalysis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AnalysisMutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "result":
+				return ec.fieldContext_BoolResponse_result(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type BoolResponse", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_AnalysisMutation_deleteAnalysis_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AnalysisQuery_getAnalysis(ctx context.Context, field graphql.CollectedField, obj *model.AnalysisQuery) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AnalysisQuery_getAnalysis(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.AnalysisQuery().GetAnalysis(rctx, obj, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*api.Ecomorph)
+	fc.Result = res
+	return ec.marshalNEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AnalysisQuery_getAnalysis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AnalysisQuery",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Ecomorph_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Ecomorph_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Ecomorph_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_Ecomorph_deletedAt(ctx, field)
+			case "title":
+				return ec.fieldContext_Ecomorph_title(ctx, field)
+			case "description":
+				return ec.fieldContext_Ecomorph_description(ctx, field)
+			case "userID":
+				return ec.fieldContext_Ecomorph_userID(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Ecomorph", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_AnalysisQuery_getAnalysis_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AnalysisQuery_getListAnalysis(ctx context.Context, field graphql.CollectedField, obj *model.AnalysisQuery) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AnalysisQuery_getListAnalysis(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.AnalysisQuery().GetListAnalysis(rctx, obj, fc.Args["pages"].(*api.PagesRequest))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*api.EcomorphsList)
+	fc.Result = res
+	return ec.marshalNListEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsList(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AnalysisQuery_getListAnalysis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AnalysisQuery",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "page":
+				return ec.fieldContext_ListEcomorph_page(ctx, field)
+			case "list":
+				return ec.fieldContext_ListEcomorph_list(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ListEcomorph", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_AnalysisQuery_getListAnalysis_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
 
 func (ec *executionContext) _AuthMutation_signUpUser(ctx context.Context, field graphql.CollectedField, obj *model.AuthMutation) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_AuthMutation_signUpUser(ctx, field)
@@ -11850,6 +13072,70 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(ctx context.Conte
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputAnalysisInput(ctx context.Context, obj interface{}) (api.Analysis, error) {
+	var it api.Analysis
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"id", "title", "transect", "typeAnalysis", "path", "userID"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "id":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Id = data
+		case "title":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("title"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Title = data
+		case "transect":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("transect"))
+			data, err := ec.unmarshalOTransectInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTransect(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Transect = data
+		case "typeAnalysis":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeAnalysis"))
+			data, err := ec.unmarshalNTypeAnalysis2githubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTypeAnalysis(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.AnalysisInput().TypeAnalysis(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "path":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("path"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Path = data
+		case "userID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userID"))
+			data, err := ec.unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserId = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputEcomorphInput(ctx context.Context, obj interface{}) (api.Ecomorph, error) {
 	var it api.Ecomorph
 	asMap := map[string]interface{}{}
@@ -12029,6 +13315,47 @@ func (ec *executionContext) unmarshalInputImgInput(ctx context.Context, obj inte
 				return it, err
 			}
 			it.UserId = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputInputCreateAnalysis(ctx context.Context, obj interface{}) (api.InputCreateAnalysis, error) {
+	var it api.InputCreateAnalysis
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"title", "transect", "ecomorph"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "title":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("title"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Title = data
+		case "transect":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("transect"))
+			data, err := ec.unmarshalOTransectInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTransect(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Transect = data
+		case "ecomorph":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ecomorph"))
+			data, err := ec.unmarshalNEcomorphInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Ecomorph = data
 		}
 	}
 
@@ -12569,6 +13896,47 @@ func (ec *executionContext) unmarshalInputInputTypePlantRequest(ctx context.Cont
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputInputUpdateAnalysis(ctx context.Context, obj interface{}) (api.InputUpdateAnalysis, error) {
+	var it api.InputUpdateAnalysis
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"id", "title", "ecomorph"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "id":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOIdentifierInput2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Id = data
+		case "title":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("title"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Title = data
+		case "ecomorph":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ecomorph"))
+			data, err := ec.unmarshalOEcomorphInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Ecomorph = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputPagesRequest(ctx context.Context, obj interface{}) (api.PagesRequest, error) {
 	var it api.PagesRequest
 	asMap := map[string]interface{}{}
@@ -12989,6 +14357,402 @@ func (ec *executionContext) unmarshalInputTypePlantInput(ctx context.Context, ob
 // endregion ************************** interface.gotpl ***************************
 
 // region    **************************** object.gotpl ****************************
+
+var analysisImplementors = []string{"Analysis"}
+
+func (ec *executionContext) _Analysis(ctx context.Context, sel ast.SelectionSet, obj *api.Analysis) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, analysisImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Analysis")
+		case "id":
+			out.Values[i] = ec._Analysis_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "createdAt":
+			out.Values[i] = ec._Analysis_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "updatedAt":
+			out.Values[i] = ec._Analysis_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "deletedAt":
+			out.Values[i] = ec._Analysis_deletedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "title":
+			out.Values[i] = ec._Analysis_title(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "typeAnalysis":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Analysis_typeAnalysis(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "transect":
+			out.Values[i] = ec._Analysis_transect(ctx, field, obj)
+		case "path":
+			out.Values[i] = ec._Analysis_path(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "userID":
+			out.Values[i] = ec._Analysis_userID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var analysisListImplementors = []string{"AnalysisList"}
+
+func (ec *executionContext) _AnalysisList(ctx context.Context, sel ast.SelectionSet, obj *api.AnalysisList) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, analysisListImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AnalysisList")
+		case "page":
+			out.Values[i] = ec._AnalysisList_page(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "list":
+			out.Values[i] = ec._AnalysisList_list(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var analysisMutationImplementors = []string{"AnalysisMutation"}
+
+func (ec *executionContext) _AnalysisMutation(ctx context.Context, sel ast.SelectionSet, obj *model.AnalysisMutation) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, analysisMutationImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AnalysisMutation")
+		case "creatAnalysis":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._AnalysisMutation_creatAnalysis(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "repeatedAnalysis":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._AnalysisMutation_repeatedAnalysis(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "deleteAnalysis":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._AnalysisMutation_deleteAnalysis(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var analysisQueryImplementors = []string{"AnalysisQuery"}
+
+func (ec *executionContext) _AnalysisQuery(ctx context.Context, sel ast.SelectionSet, obj *model.AnalysisQuery) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, analysisQueryImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AnalysisQuery")
+		case "getAnalysis":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._AnalysisQuery_getAnalysis(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "getListAnalysis":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._AnalysisQuery_getListAnalysis(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
 
 var authMutationImplementors = []string{"AuthMutation"}
 
@@ -16080,6 +17844,23 @@ func (ec *executionContext) marshalNEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBo
 	return ec._Ecomorph(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalNEcomorphInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx context.Context, v interface{}) ([]*api.Ecomorph, error) {
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*api.Ecomorph, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOEcomorphInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalID(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -16177,6 +17958,16 @@ func (ec *executionContext) marshalNTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobu
 		return graphql.Null
 	}
 	return ec._Timestamp(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNTypeAnalysis2githubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTypeAnalysis(ctx context.Context, v interface{}) (model.TypeAnalysis, error) {
+	var res model.TypeAnalysis
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNTypeAnalysis2githubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTypeAnalysis(ctx context.Context, sel ast.SelectionSet, v model.TypeAnalysis) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
@@ -16432,6 +18223,54 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
+func (ec *executionContext) marshalOAnalysis2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐAnalysis(ctx context.Context, sel ast.SelectionSet, v []*api.Analysis) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOAnalysis2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐAnalysis(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOAnalysis2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐAnalysis(ctx context.Context, sel ast.SelectionSet, v *api.Analysis) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Analysis(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalOAuthMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐAuthMutation(ctx context.Context, sel ast.SelectionSet, v *model.AuthMutation) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -16518,6 +18357,26 @@ func (ec *executionContext) marshalOEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBo
 		return graphql.Null
 	}
 	return ec._Ecomorph(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOEcomorphInput2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx context.Context, v interface{}) ([]*api.Ecomorph, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*api.Ecomorph, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOEcomorphInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
 }
 
 func (ec *executionContext) unmarshalOEcomorphInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx context.Context, v interface{}) (*api.Ecomorph, error) {
@@ -16724,6 +18583,14 @@ func (ec *executionContext) marshalOImgQuery2ᚖgithubᚗcomᚋsergey23144VᚋBo
 	return ec._ImgQuery(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalOInputCreateAnalysis2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputCreateAnalysis(ctx context.Context, v interface{}) (*api.InputCreateAnalysis, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputInputCreateAnalysis(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalOInputEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputEcomorph(ctx context.Context, v interface{}) (*api.InputEcomorph, error) {
 	if v == nil {
 		return nil, nil
@@ -16817,6 +18684,14 @@ func (ec *executionContext) unmarshalOInputTypePlantRequest2ᚖgithubᚗcomᚋse
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputInputTypePlantRequest(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOInputUpdateAnalysis2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐInputUpdateAnalysis(ctx context.Context, v interface{}) (*api.InputUpdateAnalysis, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputInputUpdateAnalysis(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -17078,6 +18953,14 @@ func (ec *executionContext) marshalOTransect2ᚖgithubᚗcomᚋsergey23144VᚋBo
 		return graphql.Null
 	}
 	return ec._Transect(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOTransectInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTransect(ctx context.Context, v interface{}) (*api.Transect, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputTransectInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOTransectList2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTransectList(ctx context.Context, sel ast.SelectionSet, v *api.TransectList) graphql.Marshaler {

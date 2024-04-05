@@ -264,7 +264,7 @@ func (t AnalysisServiceImpl) CreateExcelTypeTrialSiteAnalysis(ctx context.Contex
 					return nil, err
 				}
 
-				err = f.SetCellValue(sheetName, "C"+strconv.Itoa(indexPlant), GetEcomorphsEntityFromTypePlant(plant.TypePlant, ecomorph))
+				err = f.SetCellValue(sheetName, "C"+strconv.Itoa(indexPlant), GetEcomorphsEntityFromTypePlant(plant.TypePlant, ecomorph).Title)
 				if err != nil {
 					return nil, err
 				}

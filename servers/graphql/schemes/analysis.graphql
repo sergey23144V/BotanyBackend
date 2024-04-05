@@ -1,0 +1,53 @@
+type Analysis {
+    id: IdentifierType!
+    createdAt: Timestamp!
+    updatedAt: Timestamp!
+    deletedAt : Timestamp!
+    title: String!
+    typeAnalysis: TypeAnalysis!
+    transect: Transect
+    path: String!
+    userID: IdentifierType!
+}
+
+input AnalysisInput {
+    id: IdentifierInput
+    title: String!
+    transect: TransectInput
+    typeAnalysis: TypeAnalysis!
+    path: String!
+    userID: IdentifierInput
+}
+
+type AnalysisList {
+    page: PagesResponse!
+    list: [Analysis]
+}
+
+enum TypeAnalysis{
+    TypeAnalysisPlant
+    TypeAnalysisTransect
+}
+
+input InputCreateAnalysis {
+    title: String!
+    transect: TransectInput
+    ecomorph: [EcomorphInput]!
+}
+
+input InputUpdateAnalysis {
+    id: IdentifierInput
+    title: String!
+    ecomorph: [EcomorphInput]
+}
+
+type AnalysisQuery {
+    getAnalysis(id: ID!): Ecomorph! @goField(forceResolver: true)
+    getListAnalysis(pages: PagesRequest ): ListEcomorph! @goField(forceResolver: true)
+}
+
+type AnalysisMutation {
+    creatAnalysis(input: InputCreateAnalysis): Ecomorph! @goField(forceResolver: true)
+    repeatedAnalysis(input: InputUpdateAnalysis): Ecomorph! @goField(forceResolver: true)
+    deleteAnalysis(id: ID!): BoolResponse! @goField(forceResolver: true)
+}

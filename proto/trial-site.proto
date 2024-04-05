@@ -22,7 +22,8 @@ service TrialSiteService {
 
   // Обновление сущности по id
   rpc UpTrialSite (InputTrialSiteRequest) returns (TrialSite);
-
+  // Обновление сущности по id
+  rpc AddPlantsToTrialSite (InputTrialSiteRequest) returns (TrialSite);
   // Удаление сущности по заголовку
   rpc DeleteTrialSite (IdRequest) returns (BoolResponse){
     option (gorm.method).object_type = "TrialSite";
@@ -30,7 +31,6 @@ service TrialSiteService {
 
   // Получение списка всех сущностей
   rpc GetAllTrialSite (PagesRequest) returns (TrialSiteList);
-
 
 
   rpc CreatePlant(InputPlantRequest) returns (Plant);

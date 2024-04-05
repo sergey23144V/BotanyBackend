@@ -27,6 +27,8 @@ type TransectServiceClient interface {
 	GetTransect(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*Transect, error)
 	// Обновление сущности по id
 	UpTransect(ctx context.Context, in *InputTransectRequest, opts ...grpc.CallOption) (*Transect, error)
+	// Обновление сущности по id
+	AddTrialSiteToTransect(ctx context.Context, in *InputTransectRequest, opts ...grpc.CallOption) (*Transect, error)
 	// Удаление сущности по заголовку
 	DeleteTransect(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*BoolResponse, error)
 	// Получение списка всех сущностей
@@ -68,6 +70,15 @@ func (c *transectServiceClient) UpTransect(ctx context.Context, in *InputTransec
 	return out, nil
 }
 
+func (c *transectServiceClient) AddTrialSiteToTransect(ctx context.Context, in *InputTransectRequest, opts ...grpc.CallOption) (*Transect, error) {
+	out := new(Transect)
+	err := c.cc.Invoke(ctx, "/botany.TransectService/AddTrialSiteToTransect", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *transectServiceClient) DeleteTransect(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*BoolResponse, error) {
 	out := new(BoolResponse)
 	err := c.cc.Invoke(ctx, "/botany.TransectService/DeleteTransect", in, out, opts...)
@@ -95,6 +106,8 @@ type TransectServiceServer interface {
 	GetTransect(context.Context, *IdRequest) (*Transect, error)
 	// Обновление сущности по id
 	UpTransect(context.Context, *InputTransectRequest) (*Transect, error)
+	// Обновление сущности по id
+	AddTrialSiteToTransect(context.Context, *InputTransectRequest) (*Transect, error)
 	// Удаление сущности по заголовку
 	DeleteTransect(context.Context, *IdRequest) (*BoolResponse, error)
 	// Получение списка всех сущностей
@@ -114,6 +127,9 @@ func (UnimplementedTransectServiceServer) GetTransect(context.Context, *IdReques
 }
 func (UnimplementedTransectServiceServer) UpTransect(context.Context, *InputTransectRequest) (*Transect, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpTransect not implemented")
+}
+func (UnimplementedTransectServiceServer) AddTrialSiteToTransect(context.Context, *InputTransectRequest) (*Transect, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddTrialSiteToTransect not implemented")
 }
 func (UnimplementedTransectServiceServer) DeleteTransect(context.Context, *IdRequest) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteTransect not implemented")
@@ -188,6 +204,24 @@ func _TransectService_UpTransect_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TransectService_AddTrialSiteToTransect_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InputTransectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TransectServiceServer).AddTrialSiteToTransect(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/botany.TransectService/AddTrialSiteToTransect",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TransectServiceServer).AddTrialSiteToTransect(ctx, req.(*InputTransectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _TransectService_DeleteTransect_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(IdRequest)
 	if err := dec(in); err != nil {
@@ -242,6 +276,10 @@ var TransectService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpTransect",
 			Handler:    _TransectService_UpTransect_Handler,
+		},
+		{
+			MethodName: "AddTrialSiteToTransect",
+			Handler:    _TransectService_AddTrialSiteToTransect_Handler,
 		},
 		{
 			MethodName: "DeleteTransect",

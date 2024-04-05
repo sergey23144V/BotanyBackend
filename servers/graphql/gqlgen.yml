@@ -185,3 +185,16 @@ models:
     model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.InputFormTransectRequest
   InputTransectRequest:
     model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.InputTransectRequest
+
+
+  #Transect
+  Analysis:
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.Analysis
+  AnalysisInput:
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.Analysis
+  AnalysisList:
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.AnalysisList
+  InputCreateAnalysis:
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.InputCreateAnalysis
+  InputUpdateAnalysis:
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.InputUpdateAnalysis

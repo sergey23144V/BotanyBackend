@@ -23,6 +23,9 @@ service TransectService {
   // Обновление сущности по id
   rpc UpTransect (InputTransectRequest) returns (Transect);
 
+  // Обновление сущности по id
+  rpc AddTrialSiteToTransect (InputTransectRequest) returns (Transect);
+
   // Удаление сущности по заголовку
   rpc DeleteTransect (IdRequest) returns (BoolResponse){
     option (gorm.method).object_type = "Transect";

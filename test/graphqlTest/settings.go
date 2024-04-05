@@ -31,7 +31,7 @@ func StartServerGraphQl() {
 			log.Fatal(err)
 		}
 
-		err = db.AutoMigrate(api.EcomorphORM{}, api.EcomorphsEntityORM{}, api.UserORM{}, api.TypePlantORM{}, api.TrialSiteORM{}, api.TransectORM{})
+		err = db.AutoMigrate(api.ImgORM{}, api.EcomorphORM{}, api.EcomorphsEntityORM{}, api.UserORM{}, api.TypePlantORM{}, api.TrialSiteORM{}, api.TransectORM{})
 		log.Println("migrant")
 
 		authServet := api.NewAuthServer(db)

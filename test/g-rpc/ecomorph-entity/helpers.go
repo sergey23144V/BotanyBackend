@@ -5,16 +5,17 @@ import (
 	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
-	"github.com/sergey23144V/BotanyBackend/test/g-rpc/ecomorph"
 	log "github.com/sirupsen/logrus"
 )
 
 func CreateEcomorphsEntity(ctx context.Context, client g_rpc.ClientService) *resource.Identifier {
 	Ecomorph := &api.InputEcomorphsEntity{
 		Input: &api.InputFormEcomorphsEntity{
-			Title:       "Семейство",
-			Ecomorphs:   &api.Ecomorph{Id: ecomorph.CreateEcomorph(ctx, client.Ecomorph)},
-			Description: "Ну про вид",
+			Title:        "Не переносящий влагу",
+			Ecomorphs:    &api.Ecomorph{Id: &resource.Identifier{ResourceId: "d7ba7908-2ae1-9abd-e1ff-6bed503d80c9"}},
+			Description:  "Ну про вид",
+			DisplayTable: "MsKs",
+			Score:        0,
 		},
 	}
 

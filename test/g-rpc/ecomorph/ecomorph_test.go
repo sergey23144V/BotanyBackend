@@ -60,7 +60,7 @@ func TestGetEcomorphById(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			_, err := client.Ecomorph.GetEcomorphById(ctx, testCase.idEcomorph)
 			if testCase.expected {
-				err := DeleteEcomorphById(ctx, client.Ecomorph, testCase.idEcomorph.Id)
+				//err := DeleteEcomorphById(ctx, client.Ecomorph, testCase.idEcomorph.Id)
 				assert.NoError(t, err, "Done")
 			} else {
 				assert.Error(t, err, "Error")

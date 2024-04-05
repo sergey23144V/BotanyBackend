@@ -15,7 +15,7 @@ func CreateTypePlant(ctx context.Context, client g_rpc.ClientService) *resource.
 			Title:           "Трава",
 			EcomorphsEntity: []*api.EcomorphsEntity{{Id: ecomorph_entity.CreateEcomorphsEntity(ctx, client)}},
 			Subtitle:        "Ну про вид",
-			Img:             &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
+			//Img:             &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
 		},
 	}
 

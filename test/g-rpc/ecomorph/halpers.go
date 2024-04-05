@@ -10,8 +10,8 @@ import (
 func CreateEcomorph(ctx context.Context, client api.EcomorphServiceClient) *resource.Identifier {
 	Ecomorph := &api.InputEcomorph{
 		Payload: &api.InputFormEcomorph{
-			Title:       "Семейство",
-			Description: "Ну про вид",
+			Title:       "Гидроморф",
+			Description: "Определяет вид растения",
 		},
 	}
 

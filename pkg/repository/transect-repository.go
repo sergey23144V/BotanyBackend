@@ -12,6 +12,7 @@ import (
 type TransectRepository interface {
 	CreateTransect(ctx context.Context, in *api.Transect) (*api.Transect, error)
 	GetTransectById(ctx context.Context, in *api.Transect) (*api.Transect, error)
+	GetTransectByIdForAnalysis(ctx context.Context, in *api.Transect) (*api.Transect, error)
 	DeleteTransect(ctx context.Context, in *api.Transect) error
 	StrictUpdateTransect(ctx context.Context, in *api.Transect) (*api.Transect, error)
 	UpdateTransect(ctx context.Context, in *api.Transect, updateMask *field_mask.FieldMask) (*api.Transect, error)
@@ -74,8 +75,45 @@ func (t TransectRepositoryImpl) GetTransectById(ctx context.Context, in *api.Tra
 	}
 	ormResponse := api.TransectORM{}
 	if err = t.db.Where(&ormObj).Preload("TrialSite").Preload("Dominant").Preload("Dominant").
+		Preload("TrialSite.Dominant").Preload("TrialSite.SubDominant").
+		Preload("Img").First(&ormResponse).Error; err != nil {
+		return nil, err
+	}
+	if hook, ok := interface{}(&ormResponse).(api.TransectORMWithAfterReadFind); ok {
+		if err = hook.AfterReadFind(ctx, t.db); err != nil {
+			return nil, err
+		}
+	}
+	pbResponse, err := ormResponse.ToPB(ctx)
+	return &pbResponse, err
+}
+
+func (t TransectRepositoryImpl) GetTransectByIdForAnalysis(ctx context.Context, in *api.Transect) (*api.Transect, error) {
+	if in == nil {
+		return nil, errors.NilArgumentError
+	}
+	ormObj, err := in.ToORM(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if ormObj.Id == "" {
+		return nil, errors.EmptyIdError
+	}
+	if hook, ok := interface{}(&ormObj).(api.TransectORMWithBeforeReadApplyQuery); ok {
+		if t.db, err = hook.BeforeReadApplyQuery(ctx, t.db); err != nil {
+			return nil, err
+		}
+	}
+	if hook, ok := interface{}(&ormObj).(api.TransectORMWithBeforeReadFind); ok {
+		if t.db, err = hook.BeforeReadFind(ctx, t.db); err != nil {
+			return nil, err
+		}
+	}
+	ormResponse := api.TransectORM{}
+	if err = t.db.Where(&ormObj).Preload("TrialSite").Preload("Dominant").Preload("Dominant").
 		Preload("TrialSite.Dominant").Preload("TrialSite.SubDominant").Preload("TrialSite.Plant").
-		Preload("TrialSite.Plant.TypePlant").
+		Preload("TrialSite.Plant.TypePlant").Preload("TrialSite.Plant.TypePlant.EcomorphsEntity").
+		Preload("TrialSite.Plant.TypePlant.EcomorphsEntity.Ecomorphs").
 		Preload("Img").First(&ormResponse).Error; err != nil {
 		return nil, err
 	}

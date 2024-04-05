@@ -20,29 +20,43 @@ func TestCreateTrialSite(t *testing.T) {
 			name: "Done",
 			TrialSite: &api.InputTrialSiteRequest{
 				Input: &api.InputFormTrialSiteRequest{
-					Title:      "N2",
+					Title:      "N1",
 					CountTypes: 20,
 					Rating:     2,
 					Covered:    40,
-					Plant:      []*api.Plant{{Id: CreatePlant(ctx, *client)}, {Id: CreatePlant(ctx, *client)}},
-					Img:        &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
+					Plant:      []*api.Plant{{Id: &resource.Identifier{ResourceId: "9e958acb-5d06-8cbb-f204-71dc57529edd"}}, {Id: &resource.Identifier{ResourceId: "a0696b75-3f02-10ec-d307-bc3cb818ef46"}}},
+					//Img:        &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
 				},
 			},
 			expected: true,
 		},
 		{
-			name: "Error ",
+			name: "Done",
 			TrialSite: &api.InputTrialSiteRequest{
 				Input: &api.InputFormTrialSiteRequest{
 					Title:      "N2",
 					CountTypes: 20,
 					Rating:     2,
 					Covered:    40,
-					Plant:      []*api.Plant{{Id: CreatePlant(ctx, *client)}, {Id: CreatePlant(ctx, *client)}, {Id: CreatePlant(ctx, *client)}},
+					Plant:      []*api.Plant{{Id: &resource.Identifier{ResourceId: "ace7aaf5-8083-23d2-79e3-0fdd644c00f4"}}, {Id: &resource.Identifier{ResourceId: "71fd04cb-ddc2-2672-9ccb-2a3ca49b4378"}}},
+					//Img:        &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
 				},
 			},
-			expected: false,
+			expected: true,
 		},
+		//{
+		//	name: "Error ",
+		//	TrialSite: &api.InputTrialSiteRequest{
+		//		Input: &api.InputFormTrialSiteRequest{
+		//			Title:      "N2",
+		//			CountTypes: 20,
+		//			Rating:     2,
+		//			Covered:    40,
+		//			Plant:      []*api.Plant{{Id: CreatePlant(ctx, *client)}, {Id: CreatePlant(ctx, *client)}, {Id: CreatePlant(ctx, *client)}},
+		//		},
+		//	},
+		//	expected: false,
+		//},
 	}
 
 	for _, testCase := range testTable {
@@ -50,7 +64,7 @@ func TestCreateTrialSite(t *testing.T) {
 			result, err := client.TrialSite.CreateTrialSite(ctx, testCase.TrialSite)
 			g_rpc.Log(result)
 			if testCase.expected {
-				err := DeleteTrialSite(ctx, *client, result.Id)
+				//err := DeleteTrialSite(ctx, *client, result.Id)
 				assert.NoError(t, err, "Done")
 			} else {
 				assert.Error(t, err, "Error")

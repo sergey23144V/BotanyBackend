@@ -84,10 +84,12 @@ func (e EcomorphsEntityServiceImpl) ToPB(ctx context.Context, entity *api.InputE
 	}
 	userId := middlewares.GetUserIdFromContext(ctx)
 	return &api.EcomorphsEntity{
-		Id:          id,
-		Title:       entity.Input.Title,
-		Description: entity.Input.Description,
-		Ecomorphs:   entity.Input.Ecomorphs,
-		UserId:      userId,
+		Id:           id,
+		Title:        entity.Input.Title,
+		Description:  entity.Input.Description,
+		Ecomorphs:    entity.Input.Ecomorphs,
+		Score:        entity.Input.Score,
+		DisplayTable: entity.Input.DisplayTable,
+		UserId:       userId,
 	}
 }

@@ -12,6 +12,7 @@ type Repository struct {
 	TrialSiteRepository
 	TransectRepository
 	ImgRepositoryImpl
+	AnalysisRepository
 }
 
 func NewRepository(db *gorm.DB) *Repository {
@@ -22,6 +23,7 @@ func NewRepository(db *gorm.DB) *Repository {
 		TrialSiteRepository:       NewTrialSiteRepositoryImpl(db),
 		TransectRepository:        NewTransectRepositoryImpl(db),
 		ImgRepositoryImpl:         NewImgRepositoryImpl(db),
+		AnalysisRepository:        NewAnalysisRepositoryImpl(db),
 	}
 }
 

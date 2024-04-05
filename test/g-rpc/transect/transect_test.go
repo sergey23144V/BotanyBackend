@@ -4,8 +4,6 @@ import (
 	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
-	trial_site "github.com/sergey23144V/BotanyBackend/test/g-rpc/trial-site"
-
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -22,11 +20,11 @@ func TestCreateTransect(t *testing.T) {
 			name: "Done",
 			Transect: &api.InputTransectRequest{
 				Input: &api.InputFormTransectRequest{
-					Title:           "Семейство",
+					Title:           "Терекон",
 					Square:          20,
 					SquareTrialSite: 1,
-					TrialSite:       []*api.TrialSite{{Id: trial_site.CreateTrialSite(ctx, *client)}, {Id: trial_site.CreateTrialSite(ctx, *client)}, {Id: trial_site.CreateTrialSite(ctx, *client)}},
-					Img:             &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
+					TrialSite:       []*api.TrialSite{{Id: &resource.Identifier{ResourceId: "51d485bb-ec34-284b-d8a1-13e2f1608669"}}, {Id: &resource.Identifier{ResourceId: "380c728b-5b2c-1f5b-c68c-d164ddc7d2a5"}}},
+					//Img:             &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
 				},
 			},
 			expected: true,
@@ -38,7 +36,7 @@ func TestCreateTransect(t *testing.T) {
 			result, err := client.Transect.CreateTransect(ctx, testCase.Transect)
 			g_rpc.Log(result)
 			if testCase.expected {
-				err := DeleteTransect(ctx, *client, result.Id)
+				//err := DeleteTransect(ctx, *client, result.Id)
 				assert.NoError(t, err, "Done")
 			} else {
 				assert.Error(t, err, "Error")

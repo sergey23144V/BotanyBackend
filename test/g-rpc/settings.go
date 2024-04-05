@@ -28,7 +28,7 @@ func StartServerGRPC() {
 			log.Fatal(err)
 		}
 
-		err = db.AutoMigrate(api.ImgORM{}, api.EcomorphORM{}, api.EcomorphsEntityORM{}, api.UserORM{}, api.TypePlantORM{}, api.TransectORM{}, api.TrialSiteORM{}, api.PlantORM{})
+		err = db.AutoMigrate(api.ImgORM{}, api.EcomorphORM{}, api.EcomorphsEntityORM{}, api.UserORM{}, api.TypePlantORM{}, api.TransectORM{}, api.TrialSiteORM{}, api.PlantORM{}, api.AnalysisORM{})
 		if err != nil {
 			return
 		}
@@ -125,6 +125,8 @@ func GetClient() (*ClientService, context.Context) {
 	trialSiteClient := api.NewTrialSiteServiceClient(conn)
 	transectClient := api.NewTransectServiceClient(conn)
 	authClient := api.NewAuthServiceClient(conn)
+	analysisClient := api.NewAnalysisServiceClient(conn)
+
 	ctx := context.Background()
 	ctxOut, err := GetToken(ctx, authClient)
 	if err != nil {
@@ -136,6 +138,7 @@ func GetClient() (*ClientService, context.Context) {
 		TypePlant:       typePlantClient,
 		TrialSite:       trialSiteClient,
 		Transect:        transectClient,
+		Analysis:        analysisClient,
 	}, ctxOut
 }
 
@@ -145,6 +148,7 @@ type ClientService struct {
 	TypePlant       api.TypePlantServiceClient
 	TrialSite       api.TrialSiteServiceClient
 	Transect        api.TransectServiceClient
+	Analysis        api.AnalysisServiceClient
 }
 
 func Log(args ...interface{}) {

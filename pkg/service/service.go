@@ -11,6 +11,7 @@ type Service struct {
 	TrialSiteService
 	TransectService
 	ImgService
+	AnalysisService
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -21,5 +22,6 @@ func NewService(repos *repository.Repository) *Service {
 		TrialSiteService:       NewTrialSiteServiceImpl(repos),
 		TransectService:        NewTransectServiceImpl(repos),
 		ImgService:             NewImgServiceImpl(repos),
+		AnalysisService:        NewAnalysisServiceImpl(repos),
 	}
 }

@@ -46,8 +46,10 @@ message EcomorphsEntity {
   google.protobuf.Timestamp deleted_at  = 8;
   string title = 4;
   string description = 5;
-  Ecomorph ecomorphs = 6 [(gorm.field).belongs_to = {disable_association_autocreate: false, disable_association_autoupdate: false, preload: true}];
-  atlas.rpc.Identifier user_id = 7 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
+  string displayTable  = 6;
+  int32 score  = 10;
+  Ecomorph ecomorphs = 7 [(gorm.field).belongs_to = {disable_association_autocreate: false, disable_association_autoupdate: false, preload: true}];
+  atlas.rpc.Identifier user_id = 9 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
 }
 
 message EcomorphsEntityList {
@@ -59,6 +61,8 @@ message EcomorphsEntityList {
 message InputFormEcomorphsEntity {
   string title = 1;
   string description = 2;
+  string displayTable  = 6;
+  int32 score  = 10;
   Ecomorph ecomorphs = 3;
 }
 

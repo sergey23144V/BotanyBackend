@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+option go_package = "github.com/sergey23144V/BotanyBackend/servers/g-rpc/api";
+import "github.com/infobloxopen/protoc-gen-gorm@v1.1.4/proto/options/gorm.proto";
+import "github.com/infobloxopen/protoc-gen-gorm@v1.1.4/third_party/proto/atlas/resource/v1/resource.proto";
+import "google/protobuf/timestamp.proto";
+import "transect.proto";
+import "elementary-type.proto";
+import "ecomorphs.proto";
+package botany;
+
+
+service AnalysisService {
+  rpc CreatAnalysis(InputCreateAnalysis) returns (Analysis) {}
+
+  rpc RepeatedAnalysis(InputUpdateAnalysis) returns (Analysis) {}
+
+  rpc GetAnalysis(IdRequest) returns (Analysis) {}
+
+  rpc GetListAnalysis(PagesRequest) returns (AnalysisList) {}
+
+  rpc DeleteAnalysis(IdRequest) returns (BoolResponse) {
+    option (gorm.method).object_type = "Analysis";
+  }
+}
+
+message Analysis {
+  option (gorm.opts) = {
+    ormable: true,
+  };
+  atlas.rpc.Identifier id = 1 [(gorm.field).tag = {type: "uuid" primary_key: true}];
+  google.protobuf.Timestamp created_at = 2;
+  google.protobuf.Timestamp updated_at = 3;
+  google.protobuf.Timestamp deleted_at  = 4;
+  TypeAnalysis typeAnalysis = 5;
+  string title = 6;
+  Transect  transect = 7 [(gorm.field).belongs_to = {disable_association_autocreate: true, disable_association_autoupdate: true, preload: true}];
+  string path = 8;
+  atlas.rpc.Identifier user_id = 9 [(gorm.field).tag = {type: "uuid" foreignkey:"auth.User"}];
+}
+
+enum TypeAnalysis{
+  TypeAnalysisPlant = 0;
+  TypeAnalysisTransect = 1;
+}
+
+message AnalysisList {
+  PagesResponse page = 1;
+  repeated Analysis list = 2;
+}
+
+message InputCreateAnalysis{
+  string title = 1;
+  TypeAnalysis typeAnalysis = 2;
+  Transect  transect = 3;
+  repeated Ecomorph ecomorph = 4;
+}
+
+message InputUpdateAnalysis{
+  atlas.rpc.Identifier id = 1;
+  string title = 2;
+  repeated Ecomorph ecomorph = 3;
+}

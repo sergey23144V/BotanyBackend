@@ -11,11 +11,10 @@ type TransectServetImpl struct {
 }
 
 func (t TransectServetImpl) AddTrialSiteToTransect(ctx context.Context, request *api.InputTransectRequest) (*api.Transect, error) {
-	//TODO implement me
-	panic("implement me")
+	return t.service.TransectService.AddTrialSiteToTransect(ctx, request)
 }
 
-func NewTransectServetImpl(service *service.Service) TransectServetImpl {
+func NewTransectServetImpl(service *service.Service) api.TransectServiceServer {
 	return TransectServetImpl{service}
 }
 
@@ -35,7 +34,7 @@ func (t TransectServetImpl) DeleteTransect(ctx context.Context, request *api.IdR
 	return t.service.TransectService.DeleteTransect(ctx, request)
 }
 
-func (t TransectServetImpl) GetAllTransect(ctx context.Context, request *api.PagesRequest) (*api.TransectList, error) {
+func (t TransectServetImpl) GetAllTransect(ctx context.Context, request *api.TransectListRequest) (*api.TransectList, error) {
 	return t.service.TransectService.GetListTransect(ctx, request)
 }
 

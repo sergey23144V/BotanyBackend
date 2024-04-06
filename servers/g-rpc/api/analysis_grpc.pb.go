@@ -25,7 +25,7 @@ type AnalysisServiceClient interface {
 	CreatAnalysis(ctx context.Context, in *InputCreateAnalysis, opts ...grpc.CallOption) (*Analysis, error)
 	RepeatedAnalysis(ctx context.Context, in *InputUpdateAnalysis, opts ...grpc.CallOption) (*Analysis, error)
 	GetAnalysis(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*Analysis, error)
-	GetListAnalysis(ctx context.Context, in *PagesRequest, opts ...grpc.CallOption) (*AnalysisList, error)
+	GetListAnalysis(ctx context.Context, in *AnalysisListRequest, opts ...grpc.CallOption) (*AnalysisList, error)
 	DeleteAnalysis(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*BoolResponse, error)
 }
 
@@ -64,7 +64,7 @@ func (c *analysisServiceClient) GetAnalysis(ctx context.Context, in *IdRequest, 
 	return out, nil
 }
 
-func (c *analysisServiceClient) GetListAnalysis(ctx context.Context, in *PagesRequest, opts ...grpc.CallOption) (*AnalysisList, error) {
+func (c *analysisServiceClient) GetListAnalysis(ctx context.Context, in *AnalysisListRequest, opts ...grpc.CallOption) (*AnalysisList, error) {
 	out := new(AnalysisList)
 	err := c.cc.Invoke(ctx, "/botany.AnalysisService/GetListAnalysis", in, out, opts...)
 	if err != nil {
@@ -89,7 +89,7 @@ type AnalysisServiceServer interface {
 	CreatAnalysis(context.Context, *InputCreateAnalysis) (*Analysis, error)
 	RepeatedAnalysis(context.Context, *InputUpdateAnalysis) (*Analysis, error)
 	GetAnalysis(context.Context, *IdRequest) (*Analysis, error)
-	GetListAnalysis(context.Context, *PagesRequest) (*AnalysisList, error)
+	GetListAnalysis(context.Context, *AnalysisListRequest) (*AnalysisList, error)
 	DeleteAnalysis(context.Context, *IdRequest) (*BoolResponse, error)
 	MustEmbedUnimplementedAnalysisServiceServer()
 }
@@ -107,7 +107,7 @@ func (UnimplementedAnalysisServiceServer) RepeatedAnalysis(context.Context, *Inp
 func (UnimplementedAnalysisServiceServer) GetAnalysis(context.Context, *IdRequest) (*Analysis, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAnalysis not implemented")
 }
-func (UnimplementedAnalysisServiceServer) GetListAnalysis(context.Context, *PagesRequest) (*AnalysisList, error) {
+func (UnimplementedAnalysisServiceServer) GetListAnalysis(context.Context, *AnalysisListRequest) (*AnalysisList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetListAnalysis not implemented")
 }
 func (UnimplementedAnalysisServiceServer) DeleteAnalysis(context.Context, *IdRequest) (*BoolResponse, error) {
@@ -181,7 +181,7 @@ func _AnalysisService_GetAnalysis_Handler(srv interface{}, ctx context.Context, 
 }
 
 func _AnalysisService_GetListAnalysis_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PagesRequest)
+	in := new(AnalysisListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -193,7 +193,7 @@ func _AnalysisService_GetListAnalysis_Handler(srv interface{}, ctx context.Conte
 		FullMethod: "/botany.AnalysisService/GetListAnalysis",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AnalysisServiceServer).GetListAnalysis(ctx, req.(*PagesRequest))
+		return srv.(AnalysisServiceServer).GetListAnalysis(ctx, req.(*AnalysisListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

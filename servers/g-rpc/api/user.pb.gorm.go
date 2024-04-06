@@ -14,13 +14,12 @@ import (
 )
 
 type UserORM struct {
-	gorm.Model
 	CreatedAt *time.Time
 	Email     string `gorm:"unique"`
 	Id        string `gorm:"type:uuid;primaryKey"`
 	Name      string
 	Password  string
-	Role      string
+	Role      int32
 	UpdatedAt *time.Time
 }
 
@@ -47,7 +46,7 @@ func (m *User) ToORM(ctx context.Context) (UserORM, error) {
 	to.Name = m.Name
 	to.Email = m.Email
 	to.Password = m.Password
-	to.Role = m.Role
+	to.Role = int32(m.Role)
 	if m.CreatedAt != nil {
 		t := m.CreatedAt.AsTime()
 		to.CreatedAt = &t
@@ -80,7 +79,7 @@ func (m *UserORM) ToPB(ctx context.Context) (User, error) {
 	to.Name = m.Name
 	to.Email = m.Email
 	to.Password = m.Password
-	to.Role = m.Role
+	to.Role = RoleType(m.Role)
 	if m.CreatedAt != nil {
 		to.CreatedAt = timestamppb.New(*m.CreatedAt)
 	}

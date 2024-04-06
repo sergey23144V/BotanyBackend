@@ -158,7 +158,7 @@ func TestAddEcomorphsEntityById(t *testing.T) {
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-			result, err := client.TypePlant.AddEcomorphsEntity(ctx, testCase.InputTypePlant)
+			result, err := client.TypePlant.AddEcomorphsEntityToTypePlant(ctx, testCase.InputTypePlant)
 			g_rpc.Log(result.EcomorphsEntity)
 			if testCase.expected {
 				assert.NoError(t, err, "Done")
@@ -173,19 +173,23 @@ func TestGetListTypePlant(t *testing.T) {
 	client, ctx := g_rpc.GetClient()
 
 	testTable := []struct {
-		name string
-
+		name     string
+		request  *api.TypePlantListRequest
 		expected bool
 	}{
 		{
-			name:     "GetListTypePlant",
+			name: "GetListTypePlant",
+			request: &api.TypePlantListRequest{
+				Page: &api.PagesRequest{Page: 1, Limit: 2},
+			},
 			expected: true,
 		},
 	}
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-			_, err := client.TypePlant.GetAllTypePlant(ctx, &api.PagesRequest{Page: 2, Limit: 2})
+			result, err := client.TypePlant.GetAllTypePlant(ctx, testCase.request)
+			g_rpc.Log(result)
 			if testCase.expected {
 				assert.NoError(t, err, "Done")
 			} else {

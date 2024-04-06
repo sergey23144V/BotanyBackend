@@ -32,7 +32,7 @@ service TransectService {
   } ;
 
   // Получение списка всех сущностей
-  rpc GetAllTransect (PagesRequest) returns (TransectList);
+  rpc GetAllTransect (TransectListRequest) returns (TransectList);
 }
 
 
@@ -81,4 +81,20 @@ message InputFormTransectRequest {
 message InputTransectRequest{
   atlas.rpc.Identifier id = 1;
   InputFormTransectRequest input = 2;
+}
+
+message FilterTransect {
+  repeated atlas.rpc.Identifier id = 1;
+  string searchTitle = 2;
+  optional Direction title = 3;
+  optional Direction covered = 4;
+  optional Direction rating = 5;
+  optional Direction count_types = 6;
+  TypePlant dominant = 7;
+  TypePlant subDominant = 8;
+}
+
+message TransectListRequest{
+  PagesRequest page = 1;
+  FilterTransect filter = 2;
 }

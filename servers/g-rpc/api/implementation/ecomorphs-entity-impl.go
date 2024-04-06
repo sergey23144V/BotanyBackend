@@ -10,7 +10,7 @@ type EcomorphsEntityServetImpl struct {
 	service *service.Service
 }
 
-func NewEcomorphsEntityServetImpl(repository *service.Service) EcomorphsEntityServetImpl {
+func NewEcomorphsEntityServetImpl(repository *service.Service) api.EcomorphEntityServiceServer {
 	return EcomorphsEntityServetImpl{repository}
 }
 
@@ -30,7 +30,7 @@ func (e EcomorphsEntityServetImpl) DeleteEcomorphEntityByID(ctx context.Context,
 	return e.service.EcomorphsEntityService.DeleteEcomorphsEntity(ctx, request)
 }
 
-func (e EcomorphsEntityServetImpl) GetAllEcomorphEntity(ctx context.Context, request *api.PagesRequest) (*api.EcomorphsEntityList, error) {
+func (e EcomorphsEntityServetImpl) GetAllEcomorphEntity(ctx context.Context, request *api.EcomorphsEntityListRequest) (*api.EcomorphsEntityList, error) {
 	return e.service.EcomorphsEntityService.GetListEcomorphsEntity(ctx, request)
 }
 

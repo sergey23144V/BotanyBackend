@@ -47,7 +47,7 @@ func (c *userServiceClient) GetMe(ctx context.Context, in *EmptyRequest, opts ..
 // for forward compatibility
 type UserServiceServer interface {
 	GetMe(context.Context, *EmptyRequest) (*UserResponse, error)
-	MustEmbedUnimplementedUserServiceServer()
+	mustEmbedUnimplementedUserServiceServer()
 }
 
 // UnimplementedUserServiceServer must be embedded to have forward compatible implementations.
@@ -57,13 +57,13 @@ type UnimplementedUserServiceServer struct {
 func (UnimplementedUserServiceServer) GetMe(context.Context, *EmptyRequest) (*UserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMe not implemented")
 }
-func (UnimplementedUserServiceServer) MustEmbedUnimplementedUserServiceServer() {}
+func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
 // UnsafeUserServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to UserServiceServer will
 // result in compilation errors.
 type UnsafeUserServiceServer interface {
-	MustEmbedUnimplementedUserServiceServer()
+	mustEmbedUnimplementedUserServiceServer()
 }
 
 func RegisterUserServiceServer(s grpc.ServiceRegistrar, srv UserServiceServer) {

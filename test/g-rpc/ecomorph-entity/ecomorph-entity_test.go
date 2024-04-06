@@ -35,7 +35,7 @@ func TestCreateEcomorphsEntity(t *testing.T) {
 			result, err := client.Ecomorph_Emtity.InsertEcomorphEntity(ctx, testCase.Ecomorph)
 			log.Println(result.Ecomorphs.Title)
 			if testCase.expected {
-				err := DeleteEcomorphsEntity(ctx, *client, result.Id)
+				//err := DeleteEcomorphsEntity(ctx, *client, result.Id)
 				assert.NoError(t, err, "Done")
 			} else {
 				assert.Error(t, err, "Error")
@@ -109,19 +109,22 @@ func TestGetListEcomorphEntity(t *testing.T) {
 	client, ctx := g_rpc.GetClient()
 
 	testTable := []struct {
-		name string
-
+		name     string
+		request  *api.EcomorphsEntityListRequest
 		expected bool
 	}{
 		{
-			name:     "GetListEcomorphEntity",
+			name: "GetListEcomorphEntity",
+			request: &api.EcomorphsEntityListRequest{
+				Page: &api.PagesRequest{Page: 1, Limit: 2},
+			},
 			expected: true,
 		},
 	}
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-			_, err := client.Ecomorph_Emtity.GetAllEcomorphEntity(ctx, &api.PagesRequest{Page: 1, Limit: 2})
+			_, err := client.Ecomorph_Emtity.GetAllEcomorphEntity(ctx, testCase.request)
 			if testCase.expected {
 				assert.NoError(t, err, "Done")
 			} else {

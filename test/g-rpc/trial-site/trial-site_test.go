@@ -1,7 +1,6 @@
 package trial_site
 
 import (
-	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
 	"github.com/stretchr/testify/assert"
@@ -24,7 +23,7 @@ func TestCreateTrialSite(t *testing.T) {
 					CountTypes: 20,
 					Rating:     2,
 					Covered:    40,
-					Plant:      []*api.Plant{{Id: &resource.Identifier{ResourceId: "db20d15c-b4bb-733f-830d-c5c21cc8be68"}}, {Id: &resource.Identifier{ResourceId: "a22441d5-b42b-c2df-f716-16ead16c2d91"}}},
+					Plant:      []*api.Plant{{Id: CreatePlant(ctx, *client)}, {Id: CreatePlant(ctx, *client)}},
 					//Img:        &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
 				},
 			},
@@ -38,7 +37,7 @@ func TestCreateTrialSite(t *testing.T) {
 					CountTypes: 20,
 					Rating:     2,
 					Covered:    40,
-					Plant:      []*api.Plant{{Id: &resource.Identifier{ResourceId: "c01b5cb9-23cc-2082-fe95-95d07707846f"}}, {Id: &resource.Identifier{ResourceId: "87a76122-a0ee-2013-ae9a-18d95753449d"}}},
+					Plant:      []*api.Plant{{Id: CreatePlant(ctx, *client)}, {Id: CreatePlant(ctx, *client)}},
 					//Img:        &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
 				},
 			},
@@ -140,19 +139,22 @@ func TestGetListTrialSite(t *testing.T) {
 	client, ctx := g_rpc.GetClient()
 
 	testTable := []struct {
-		name string
-
+		name     string
+		request  *api.TrialSiteListRequest
 		expected bool
 	}{
 		{
-			name:     "GetListTransect",
+			name: "GetListTransect",
+			request: &api.TrialSiteListRequest{
+				Page: &api.PagesRequest{Page: 1, Limit: 2},
+			},
 			expected: true,
 		},
 	}
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-			result, err := client.TrialSite.GetAllTrialSite(ctx, &api.PagesRequest{Page: 1, Limit: 2})
+			result, err := client.TrialSite.GetAllTrialSite(ctx, testCase.request)
 			g_rpc.Log(result)
 			if testCase.expected {
 				assert.NoError(t, err, "Done")

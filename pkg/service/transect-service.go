@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/sergey23144V/BotanyBackend/pkg"
 	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
@@ -15,13 +16,29 @@ type TransectService interface {
 	GetTransectById(ctx context.Context, request *api.IdRequest) (*api.Transect, error)
 	DeleteTransect(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error)
 	StrictUpdateTransect(ctx context.Context, in *api.InputTransectRequest) (*api.Transect, error)
+	AddTrialSiteToTransect(context.Context, *api.InputTransectRequest) (*api.Transect, error)
 	UpdateTransect(ctx context.Context, in *api.InputTransectRequest) (*api.Transect, error)
-	GetListTransect(ctx context.Context, request *api.PagesRequest) (*api.TransectList, error)
+	GetListTransect(ctx context.Context, request *api.TransectListRequest) (*api.TransectList, error)
 	DetectionPlant(ctx context.Context, in *api.Transect) (*api.Transect, error)
 }
 
 type TransectServiceImpl struct {
 	repository *repository.Repository
+}
+
+func (t TransectServiceImpl) AddTrialSiteToTransect(ctx context.Context, request *api.InputTransectRequest) (*api.Transect, error) {
+	transect, err := t.GetTransectById(ctx, &api.IdRequest{Id: request.Id})
+	if err != nil {
+		return nil, err
+	}
+	if request.Input.TrialSite != nil {
+		for _, plant := range request.Input.TrialSite {
+			transect.TrialSite = append(transect.TrialSite, plant)
+		}
+		return t.repository.StrictUpdateTransect(ctx, transect)
+	} else {
+		return nil, errors.New("not have plant")
+	}
 }
 
 func NewTransectServiceImpl(repository *repository.Repository) TransectService {
@@ -117,13 +134,13 @@ func (t TransectServiceImpl) UpdateTransect(ctx context.Context, in *api.InputTr
 	return t.DetectionPlant(ctx, transect)
 }
 
-func (t TransectServiceImpl) GetListTransect(ctx context.Context, request *api.PagesRequest) (*api.TransectList, error) {
+func (t TransectServiceImpl) GetListTransect(ctx context.Context, request *api.TransectListRequest) (*api.TransectList, error) {
 	var page *api.PagesResponse
 
 	userId := middlewares.GetUserIdFromContext(ctx)
 	getList, err := t.repository.TransectRepository.GetListTransect(ctx, &api.Transect{UserId: userId}, request)
 	if request != nil {
-		page = &api.PagesResponse{Page: request.Page, Limit: request.Limit, Total: int32(len(getList))}
+		page = &api.PagesResponse{Page: request.Page.Page, Limit: request.Page.Limit, Total: int32(len(getList))}
 	}
 	if err != nil {
 		return nil, err

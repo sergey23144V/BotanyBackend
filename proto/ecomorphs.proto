@@ -30,7 +30,7 @@ service EcomorphService {
   };
 
   // Получение списка всех типов
-  rpc GetListEcomorph (PagesRequest) returns (EcomorphsList);
+  rpc GetListEcomorph (EcomorphListRequest) returns (EcomorphsList);
 }
 
 message Ecomorph {
@@ -59,9 +59,20 @@ message InputEcomorph{
   option (gorm.opts).ormable = true ;
   atlas.rpc.Identifier id = 1;
   InputFormEcomorph payload = 2;
+  bool publicly = 3;
 }
 
+message FilterEcomorph {
+  repeated atlas.rpc.Identifier id = 1;
+  optional string searchTitle = 2;
+  optional Direction title = 3;
+  optional bool publicly = 4;
+}
 
+message EcomorphListRequest{
+  PagesRequest page = 1;
+  FilterEcomorph filter = 2;
+}
 
 
 

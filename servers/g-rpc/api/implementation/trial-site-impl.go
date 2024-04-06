@@ -11,11 +11,10 @@ type TrialSiteServetImpl struct {
 }
 
 func (t TrialSiteServetImpl) AddPlantsToTrialSite(ctx context.Context, request *api.InputTrialSiteRequest) (*api.TrialSite, error) {
-	//TODO implement me
-	panic("implement me")
+	return t.service.TrialSiteService.AddPlantsToTrialSite(ctx, request)
 }
 
-func NewTrialSiteServetImpl(service *service.Service) TrialSiteServetImpl {
+func NewTrialSiteServetImpl(service *service.Service) api.TrialSiteServiceServer {
 	return TrialSiteServetImpl{service}
 }
 
@@ -35,7 +34,7 @@ func (t TrialSiteServetImpl) DeleteTrialSite(ctx context.Context, request *api.I
 	return t.service.TrialSiteService.DeleteTrialSite(ctx, request)
 }
 
-func (t TrialSiteServetImpl) GetAllTrialSite(ctx context.Context, request *api.PagesRequest) (*api.TrialSiteList, error) {
+func (t TrialSiteServetImpl) GetAllTrialSite(ctx context.Context, request *api.TrialSiteListRequest) (*api.TrialSiteList, error) {
 	return t.service.TrialSiteService.GetListTrialSite(ctx, request)
 }
 

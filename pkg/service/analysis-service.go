@@ -40,7 +40,7 @@ func (a AnalysisServiceImpl) CreatAnalysis(ctx context.Context, input *api.Input
 		if err != nil {
 			return nil, err
 		}
-		analysis, err = a.CreateExcelTypeTrialSiteAnalysis(ctx, transect, ecomorph)
+		analysis, err = a.CreateExcelTypeTrialSiteAnalysis(ctx, nil, transect, ecomorph)
 		if err != nil {
 			return nil, err
 		}
@@ -59,7 +59,7 @@ func (a AnalysisServiceImpl) CreatAnalysis(ctx context.Context, input *api.Input
 		if err != nil {
 			return nil, err
 		}
-		analysis, err = a.CreateExcelTypeAnalysisPlantAnalysis(ctx, transect, ecomorph)
+		analysis, err = a.CreateExcelTypeAnalysisPlantAnalysis(ctx, nil, transect, ecomorph)
 		if err != nil {
 			return nil, err
 		}
@@ -72,7 +72,7 @@ func (a AnalysisServiceImpl) CreatAnalysis(ctx context.Context, input *api.Input
 	return analysis, nil
 }
 
-func (t AnalysisServiceImpl) CreateExcelTypeAnalysisPlantAnalysis(ctx context.Context, transect *api.Transect, ecomorph []*api.Ecomorph) (*api.Analysis, error) {
+func (t AnalysisServiceImpl) CreateExcelTypeAnalysisPlantAnalysis(ctx context.Context, idInput *resource.Identifier, transect *api.Transect, ecomorph []*api.Ecomorph) (*api.Analysis, error) {
 
 	f := excelize.NewFile()
 	defer func() {
@@ -120,16 +120,14 @@ func (t AnalysisServiceImpl) CreateExcelTypeAnalysisPlantAnalysis(ctx context.Co
 
 				for _, ecomorphItem := range ecomorph {
 					ecomorphsEntity := GetEcomorphsEntityFromTypePlant(plant.TypePlant, ecomorphItem)
+
 					if ecomorphsEntity != nil {
 						err = f.SetCellValue(sheetName, string(ecomorphsColumb)+strconv.Itoa(indexPlant), ecomorphsEntity.DisplayTable)
 						if err != nil {
 							return nil, err
 						}
 					} else {
-						err = f.SetCellValue(sheetName, string(ecomorphsColumb)+strconv.Itoa(indexPlant), "")
-						if err != nil {
-							return nil, err
-						}
+						return nil, err
 					}
 					if ecomorphsAnalis[ecomorphItem.Id.ResourceId] == nil {
 						ecomorphsAnalis[ecomorphItem.Id.ResourceId] = make(map[string]int)
@@ -157,10 +155,17 @@ func (t AnalysisServiceImpl) CreateExcelTypeAnalysisPlantAnalysis(ctx context.Co
 		ecomorphsColumb++
 	}
 
-	id := pkg.GenerateUUID()
-	path := "./analysis/" + id + ".xlsx"
+	var id *resource.Identifier
+	if idInput != nil {
+		id = idInput
+	} else {
+		id = &resource.Identifier{ResourceId: pkg.GenerateUUID()}
+	}
+
+	path := "./analysis/" + id.ResourceId + ".xlsx"
+
 	analysis := &api.Analysis{
-		Id:           &resource.Identifier{ResourceId: id},
+		Id:           id,
 		TypeAnalysis: api.TypeAnalysis_TypeAnalysisTransect,
 		Title:        "",
 		Transect:     transect,
@@ -204,7 +209,7 @@ func (t AnalysisServiceImpl) BasicFormTypePlant(sheetName string, indexPlant int
 	return err
 }
 
-func (t AnalysisServiceImpl) CreateExcelTypeTrialSiteAnalysis(ctx context.Context, transect *api.Transect, ecomorph *api.Ecomorph) (*api.Analysis, error) {
+func (t AnalysisServiceImpl) CreateExcelTypeTrialSiteAnalysis(ctx context.Context, idInput *resource.Identifier, transect *api.Transect, ecomorph *api.Ecomorph) (*api.Analysis, error) {
 
 	f := excelize.NewFile()
 	defer func() {
@@ -292,10 +297,17 @@ func (t AnalysisServiceImpl) CreateExcelTypeTrialSiteAnalysis(ctx context.Contex
 		columnTrialSite++
 	}
 
-	id := pkg.GenerateUUID()
-	path := "./analysis/" + id + ".xlsx"
+	var id *resource.Identifier
+	if idInput != nil {
+		id = idInput
+	} else {
+		id = &resource.Identifier{ResourceId: pkg.GenerateUUID()}
+	}
+
+	path := "./analysis/" + id.ResourceId + ".xlsx"
+
 	analysis := &api.Analysis{
-		Id:           &resource.Identifier{ResourceId: id},
+		Id:           id,
 		TypeAnalysis: api.TypeAnalysis_TypeAnalysisTransect,
 		Title:        "",
 		Transect:     transect,
@@ -365,22 +377,78 @@ func (t AnalysisServiceImpl) BasicFormTrialSite(sheetName string, indexPlant int
 	return err
 }
 
-func (a AnalysisServiceImpl) RepeatedAnalysis(ctx context.Context, analysis *api.InputUpdateAnalysis) (*api.Analysis, error) {
-	//TODO implement me
-	panic("implement me")
+func (a AnalysisServiceImpl) RepeatedAnalysis(ctx context.Context, input *api.InputUpdateAnalysis) (*api.Analysis, error) {
+	userId := middlewares.GetUserIdFromContext(ctx)
+	analysis, err := a.GetAnalysis(ctx, &api.IdRequest{Id: input.Id})
+	if err != nil {
+		return nil, err
+	}
+	if analysis.TypeAnalysis == api.TypeAnalysis_TypeAnalysisTransect {
+		transect, err := a.repository.TransectRepository.GetTransectByIdForAnalysis(ctx, analysis.Transect)
+		if err != nil {
+			return nil, err
+		}
+		ecomorph, err := a.repository.EcomorphRepository.GetEcomorphById(ctx, input.Ecomorph[0])
+		if err != nil {
+			return nil, err
+		}
+		analysis, err = a.CreateExcelTypeTrialSiteAnalysis(ctx, analysis.Id, transect, ecomorph)
+		if err != nil {
+			return nil, err
+		}
+		analysis.UserId = userId
+		analysis, err = a.repository.AnalysisRepository.CreatAnalysis(ctx, analysis)
+		if err != nil {
+			return nil, err
+		}
+	} else if analysis.TypeAnalysis == api.TypeAnalysis_TypeAnalysisPlant {
+		transect, err := a.repository.TransectRepository.GetTransectByIdForAnalysis(ctx, analysis.Transect)
+		if err != nil {
+			return nil, err
+		}
+		filter := a.repository.EcomorphRepository.GetWhereList(input.Ecomorph)
+		ecomorph, err := a.repository.EcomorphRepository.GetListEcomorphById(ctx, filter)
+		if err != nil {
+			return nil, err
+		}
+		analysis, err = a.CreateExcelTypeAnalysisPlantAnalysis(ctx, analysis.Id, transect, ecomorph)
+		if err != nil {
+			return nil, err
+		}
+		analysis.UserId = userId
+		analysis, err = a.repository.AnalysisRepository.CreatAnalysis(ctx, analysis)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return analysis, nil
 }
 
 func (a AnalysisServiceImpl) GetAnalysis(ctx context.Context, request *api.IdRequest) (*api.Analysis, error) {
-	//TODO implement me
-	panic("implement me")
+	userId := middlewares.GetUserIdFromContext(ctx)
+	return a.repository.GetAnalysis(ctx, &api.Analysis{Id: request.Id, UserId: userId})
 }
 
 func (a AnalysisServiceImpl) GetListAnalysis(ctx context.Context, request *api.PagesRequest) (*api.AnalysisList, error) {
-	//TODO implement me
-	panic("implement me")
+	userId := middlewares.GetUserIdFromContext(ctx)
+	var page *api.PagesResponse
+	list, err := a.repository.GetListAnalysis(ctx, &api.Analysis{UserId: userId}, request)
+	if err != nil {
+		return nil, err
+	}
+	if request != nil {
+		page = &api.PagesResponse{Page: request.Page, Limit: request.Limit, Total: int32(len(list))}
+	}
+	return &api.AnalysisList{List: list, Page: page}, nil
 }
 
 func (a AnalysisServiceImpl) DeleteAnalysis(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	userId := middlewares.GetUserIdFromContext(ctx)
+	result := &api.BoolResponse{Result: true}
+	err := a.repository.DeleteAnalysis(ctx, &api.Analysis{Id: request.Id, UserId: userId})
+	if err != nil {
+		result.Result = false
+		return result, err
+	}
+	return result, nil
 }

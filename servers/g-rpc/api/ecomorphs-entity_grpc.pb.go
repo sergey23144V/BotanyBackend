@@ -31,7 +31,7 @@ type EcomorphEntityServiceClient interface {
 	// Удаление сущности по заголовку
 	DeleteEcomorphEntityByID(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*BoolResponse, error)
 	// Получение списка всех сущностей
-	GetAllEcomorphEntity(ctx context.Context, in *PagesRequest, opts ...grpc.CallOption) (*EcomorphsEntityList, error)
+	GetAllEcomorphEntity(ctx context.Context, in *EcomorphsEntityListRequest, opts ...grpc.CallOption) (*EcomorphsEntityList, error)
 }
 
 type ecomorphEntityServiceClient struct {
@@ -78,7 +78,7 @@ func (c *ecomorphEntityServiceClient) DeleteEcomorphEntityByID(ctx context.Conte
 	return out, nil
 }
 
-func (c *ecomorphEntityServiceClient) GetAllEcomorphEntity(ctx context.Context, in *PagesRequest, opts ...grpc.CallOption) (*EcomorphsEntityList, error) {
+func (c *ecomorphEntityServiceClient) GetAllEcomorphEntity(ctx context.Context, in *EcomorphsEntityListRequest, opts ...grpc.CallOption) (*EcomorphsEntityList, error) {
 	out := new(EcomorphsEntityList)
 	err := c.cc.Invoke(ctx, "/botany.EcomorphEntityService/GetAllEcomorphEntity", in, out, opts...)
 	if err != nil {
@@ -100,7 +100,7 @@ type EcomorphEntityServiceServer interface {
 	// Удаление сущности по заголовку
 	DeleteEcomorphEntityByID(context.Context, *IdRequest) (*BoolResponse, error)
 	// Получение списка всех сущностей
-	GetAllEcomorphEntity(context.Context, *PagesRequest) (*EcomorphsEntityList, error)
+	GetAllEcomorphEntity(context.Context, *EcomorphsEntityListRequest) (*EcomorphsEntityList, error)
 	MustEmbedUnimplementedEcomorphEntityServiceServer()
 }
 
@@ -120,7 +120,7 @@ func (UnimplementedEcomorphEntityServiceServer) UpdateEcomorphEntity(context.Con
 func (UnimplementedEcomorphEntityServiceServer) DeleteEcomorphEntityByID(context.Context, *IdRequest) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteEcomorphEntityByID not implemented")
 }
-func (UnimplementedEcomorphEntityServiceServer) GetAllEcomorphEntity(context.Context, *PagesRequest) (*EcomorphsEntityList, error) {
+func (UnimplementedEcomorphEntityServiceServer) GetAllEcomorphEntity(context.Context, *EcomorphsEntityListRequest) (*EcomorphsEntityList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllEcomorphEntity not implemented")
 }
 func (UnimplementedEcomorphEntityServiceServer) MustEmbedUnimplementedEcomorphEntityServiceServer() {}
@@ -209,7 +209,7 @@ func _EcomorphEntityService_DeleteEcomorphEntityByID_Handler(srv interface{}, ct
 }
 
 func _EcomorphEntityService_GetAllEcomorphEntity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PagesRequest)
+	in := new(EcomorphsEntityListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -221,7 +221,7 @@ func _EcomorphEntityService_GetAllEcomorphEntity_Handler(srv interface{}, ctx co
 		FullMethod: "/botany.EcomorphEntityService/GetAllEcomorphEntity",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EcomorphEntityServiceServer).GetAllEcomorphEntity(ctx, req.(*PagesRequest))
+		return srv.(EcomorphEntityServiceServer).GetAllEcomorphEntity(ctx, req.(*EcomorphsEntityListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

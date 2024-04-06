@@ -8,6 +8,7 @@ type TrialSiteQuery {
 type TrialSiteMutation {
     createTrialSite(input: InputFormTrialSiteRequest): TrialSite @goField(forceResolver: true)
     upTrialSite(input: InputTrialSiteRequest): TrialSite @goField(forceResolver: true)
+    addPlantsToTrialSite(input: InputTrialSiteRequest): TrialSite @goField(forceResolver: true)
     deleteTrialSite(id: ID!): BoolResponse @goField(forceResolver: true)
     createPlant(input: InputFormPlant): Plant @goField(forceResolver: true)
     updatePlant(input: InputPlantRequest): Plant @goField(forceResolver: true)

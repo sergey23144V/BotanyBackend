@@ -18,7 +18,7 @@ func CreateTrialSite(ctx context.Context, client g_rpc.ClientService) *resource.
 			Rating:  2,
 			Covered: 4,
 			Plant:   []*api.Plant{plants, plants, {Id: CreatePlant(ctx, client)}, {Id: CreatePlant(ctx, client)}},
-			Img:     &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
+			//Img:     &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
 		},
 	}
 	result, err := client.TrialSite.CreateTrialSite(ctx, Transect)

@@ -94,7 +94,7 @@ func Registration(ctx context.Context, authClient api.AuthServiceClient, input *
 }
 
 func GetAuthClient() (api.AuthServiceClient, *grpc.ClientConn) {
-	StartServerGRPC()
+	//StartServerGRPC()
 
 	time.Sleep(2 * time.Second)
 

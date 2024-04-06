@@ -20,10 +20,15 @@ message User {
   string name = 2;
   string email = 3 [(gorm.field).tag = {unique: true}];
   string password = 4;
-  string role = 5;
+  RoleType role = 5;
   google.protobuf.Timestamp created_at = 6;
   google.protobuf.Timestamp updated_at = 7;
 }
 
-message UserResponse { User user = 1; }
+message UserResponse {User user = 1;}
+
+enum RoleType{
+  SuperUser = 0;
+  NormalUser = 1;
+}
 

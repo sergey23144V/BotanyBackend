@@ -31,7 +31,7 @@ service TypePlantService {
   } ;
 
   // Получение списка всех сущностей
-  rpc GetAllTypePlant (PagesRequest) returns (TypePlantList);
+  rpc GetAllTypePlant (TypePlantListRequest) returns (TypePlantList);
 }
 
 
@@ -67,6 +67,7 @@ message InputFormTypePlantRequest {
 message InputTypePlantRequest{
   atlas.rpc.Identifier id = 1;
   InputFormTypePlantRequest input = 2;
+  bool publicly = 3;
 }
 
 message InputTypePlant_EcomorphsEntityRequest{
@@ -74,4 +75,16 @@ message InputTypePlant_EcomorphsEntityRequest{
   repeated EcomorphsEntity ecomorphsEntity = 4;
 }
 
+
+message FilterTypePlant {
+  repeated atlas.rpc.Identifier id = 1;
+  optional string searchTitle = 2;
+  optional Direction title = 3;
+  repeated EcomorphsEntity ecomorphsEntity = 4;
+}
+
+message TypePlantListRequest{
+  PagesRequest page = 1;
+  FilterTypePlant filter = 2;
+}
 

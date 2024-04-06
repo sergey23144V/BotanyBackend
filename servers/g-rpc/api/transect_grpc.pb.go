@@ -32,7 +32,7 @@ type TransectServiceClient interface {
 	// Удаление сущности по заголовку
 	DeleteTransect(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*BoolResponse, error)
 	// Получение списка всех сущностей
-	GetAllTransect(ctx context.Context, in *PagesRequest, opts ...grpc.CallOption) (*TransectList, error)
+	GetAllTransect(ctx context.Context, in *TransectListRequest, opts ...grpc.CallOption) (*TransectList, error)
 }
 
 type transectServiceClient struct {
@@ -88,7 +88,7 @@ func (c *transectServiceClient) DeleteTransect(ctx context.Context, in *IdReques
 	return out, nil
 }
 
-func (c *transectServiceClient) GetAllTransect(ctx context.Context, in *PagesRequest, opts ...grpc.CallOption) (*TransectList, error) {
+func (c *transectServiceClient) GetAllTransect(ctx context.Context, in *TransectListRequest, opts ...grpc.CallOption) (*TransectList, error) {
 	out := new(TransectList)
 	err := c.cc.Invoke(ctx, "/botany.TransectService/GetAllTransect", in, out, opts...)
 	if err != nil {
@@ -111,7 +111,7 @@ type TransectServiceServer interface {
 	// Удаление сущности по заголовку
 	DeleteTransect(context.Context, *IdRequest) (*BoolResponse, error)
 	// Получение списка всех сущностей
-	GetAllTransect(context.Context, *PagesRequest) (*TransectList, error)
+	GetAllTransect(context.Context, *TransectListRequest) (*TransectList, error)
 	MustEmbedUnimplementedTransectServiceServer()
 }
 
@@ -134,7 +134,7 @@ func (UnimplementedTransectServiceServer) AddTrialSiteToTransect(context.Context
 func (UnimplementedTransectServiceServer) DeleteTransect(context.Context, *IdRequest) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteTransect not implemented")
 }
-func (UnimplementedTransectServiceServer) GetAllTransect(context.Context, *PagesRequest) (*TransectList, error) {
+func (UnimplementedTransectServiceServer) GetAllTransect(context.Context, *TransectListRequest) (*TransectList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllTransect not implemented")
 }
 func (UnimplementedTransectServiceServer) MustEmbedUnimplementedTransectServiceServer() {}
@@ -241,7 +241,7 @@ func _TransectService_DeleteTransect_Handler(srv interface{}, ctx context.Contex
 }
 
 func _TransectService_GetAllTransect_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PagesRequest)
+	in := new(TransectListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -253,7 +253,7 @@ func _TransectService_GetAllTransect_Handler(srv interface{}, ctx context.Contex
 		FullMethod: "/botany.TransectService/GetAllTransect",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TransectServiceServer).GetAllTransect(ctx, req.(*PagesRequest))
+		return srv.(TransectServiceServer).GetAllTransect(ctx, req.(*TransectListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

@@ -17,8 +17,8 @@ type TypePlantService interface {
 	DeleteTypePlant(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error)
 	StrictUpdateTypePlant(ctx context.Context, in *api.InputTypePlantRequest) (*api.TypePlant, error)
 	UpdateTypePlant(ctx context.Context, in *api.InputTypePlantRequest) (*api.TypePlant, error)
-	AddEcomorphsEntity(ctx context.Context, request *api.InputTypePlant_EcomorphsEntityRequest) (*api.TypePlant, error)
-	GetListTypePlant(ctx context.Context, request *api.PagesRequest) (*api.TypePlantList, error)
+	AddEcomorphsEntityToTypePlant(context.Context, *api.InputTypePlant_EcomorphsEntityRequest) (*api.TypePlant, error)
+	GetListTypePlant(ctx context.Context, request *api.TypePlantListRequest) (*api.TypePlantList, error)
 }
 
 type TypePlantServiceImpl struct {
@@ -64,17 +64,17 @@ func (t TypePlantServiceImpl) UpdateTypePlant(ctx context.Context, in *api.Input
 	return t.repository.TypePlantRepository.UpdateTypePlant(ctx, t.ToPB(ctx, in), &field_mask.FieldMask{Paths: fieldMask})
 }
 
-func (t TypePlantServiceImpl) AddEcomorphsEntity(ctx context.Context, in *api.InputTypePlant_EcomorphsEntityRequest) (*api.TypePlant, error) {
+func (t TypePlantServiceImpl) AddEcomorphsEntityToTypePlant(ctx context.Context, in *api.InputTypePlant_EcomorphsEntityRequest) (*api.TypePlant, error) {
 	userId := middlewares.GetUserIdFromContext(ctx)
 	return t.repository.TypePlantRepository.UpdateTypePlant(ctx, &api.TypePlant{Id: in.Id, EcomorphsEntity: in.EcomorphsEntity, UserId: userId}, &field_mask.FieldMask{Paths: []string{}})
 }
 
-func (t TypePlantServiceImpl) GetListTypePlant(ctx context.Context, request *api.PagesRequest) (*api.TypePlantList, error) {
+func (t TypePlantServiceImpl) GetListTypePlant(ctx context.Context, request *api.TypePlantListRequest) (*api.TypePlantList, error) {
 	var page *api.PagesResponse
 	userId := middlewares.GetUserIdFromContext(ctx)
 	getList, err := t.repository.TypePlantRepository.GetListTypePlant(ctx, &api.TypePlant{UserId: userId}, request)
 	if request != nil {
-		page = &api.PagesResponse{Page: request.Page, Limit: request.Limit, Total: int32(len(getList))}
+		page = &api.PagesResponse{Page: request.Page.Page, Limit: request.Page.Limit, Total: int32(len(getList))}
 	}
 	if err != nil {
 		return nil, err

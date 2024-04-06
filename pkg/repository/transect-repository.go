@@ -7,6 +7,7 @@ import (
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"google.golang.org/genproto/protobuf/field_mask"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type TransectRepository interface {
@@ -16,7 +17,7 @@ type TransectRepository interface {
 	DeleteTransect(ctx context.Context, in *api.Transect) error
 	StrictUpdateTransect(ctx context.Context, in *api.Transect) (*api.Transect, error)
 	UpdateTransect(ctx context.Context, in *api.Transect, updateMask *field_mask.FieldMask) (*api.Transect, error)
-	GetListTransect(ctx context.Context, in *api.Transect, request *api.PagesRequest) ([]*api.Transect, error)
+	GetListTransect(ctx context.Context, in *api.Transect, request *api.TransectListRequest) ([]*api.Transect, error)
 }
 
 type TransectRepositoryImpl struct {
@@ -228,7 +229,8 @@ func (t TransectRepositoryImpl) UpdateTransect(ctx context.Context, in *api.Tran
 	return pbResponse, nil
 }
 
-func (t TransectRepositoryImpl) GetListTransect(ctx context.Context, in *api.Transect, request *api.PagesRequest) ([]*api.Transect, error) {
+func (t TransectRepositoryImpl) GetListTransect(ctx context.Context, in *api.Transect, request *api.TransectListRequest) ([]*api.Transect, error) {
+	expression := t.GetWhereList(request.Filter)
 	ormObj, err := in.ToORM(ctx)
 	if err != nil {
 		return nil, err
@@ -246,13 +248,13 @@ func (t TransectRepositoryImpl) GetListTransect(ctx context.Context, in *api.Tra
 			return nil, err
 		}
 	}
-	if request != nil && request.Page != 0 && request.Limit != 0 {
-		offset := (request.Page - 1) * request.Limit
-		t.db = t.db.Where(&ormObj).Offset(int(offset)).Limit(int(request.Limit))
+	if request != nil && request.Page.Page != 0 && request.Page.Limit != 0 {
+		offset := (request.Page.Page - 1) * request.Page.Limit
+		t.db = t.db.Where(&ormObj).Offset(int(offset)).Limit(int(request.Page.Limit))
 	} else {
 		t.db = t.db.Where(&ormObj)
 	}
-	t.db = t.db.Order("id")
+	t.db = t.db.Clauses(expression...).Order("id")
 	ormResponse := []api.TransectORM{}
 	if err := t.db.Preload("Img").Find(&ormResponse).Error; err != nil {
 		return nil, err
@@ -271,4 +273,45 @@ func (t TransectRepositoryImpl) GetListTransect(ctx context.Context, in *api.Tra
 		pbResponse = append(pbResponse, &temp)
 	}
 	return pbResponse, nil
+}
+
+func (s TransectRepositoryImpl) GetWhereList(filter *api.FilterTransect) []clause.Expression {
+	// Объявление переменных
+	var conditions []clause.Expression
+	if filter == nil {
+		return nil
+	}
+	// Проверка наличия фильтра по Ids
+	if filter.Id != nil {
+		// Преобразование Ids в массив интерфейсов
+		var interfaceIds []interface{}
+		for _, id := range filter.Id {
+			interfaceIds = append(interfaceIds, id.ResourceId)
+		}
+
+		// Добавление фильтра по Ids к условиям
+		conditions = append(conditions, clause.IN{
+			Column: clause.Column{Name: "id"},
+			Values: interfaceIds,
+		})
+	}
+
+	if filter.Title != nil {
+
+		var interfaceIds []interface{}
+		var columns []clause.OrderByColumn
+
+		interfaceIds = append(interfaceIds, filter.SearchTitle)
+
+		columns = append(columns, clause.OrderByColumn{
+			Column: clause.Column{Name: "title"},
+			Desc:   *filter.Title == api.Direction_DESCENDING,
+		})
+		conditions = append(conditions, clause.OrderBy{
+			Columns:    columns,
+			Expression: nil,
+		})
+	}
+
+	return conditions
 }

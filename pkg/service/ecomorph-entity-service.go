@@ -16,7 +16,7 @@ type EcomorphsEntityService interface {
 	DeleteEcomorphsEntity(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error)
 	StrictUpdateEcomorphsEntity(ctx context.Context, entity *api.InputEcomorphsEntity) (*api.EcomorphsEntity, error)
 	UpdateEcomorphsEntity(ctx context.Context, entity *api.InputEcomorphsEntity) (*api.EcomorphsEntity, error)
-	GetListEcomorphsEntity(ctx context.Context, request *api.PagesRequest) (*api.EcomorphsEntityList, error)
+	GetListEcomorphsEntity(ctx context.Context, request *api.EcomorphsEntityListRequest) (*api.EcomorphsEntityList, error)
 }
 
 type EcomorphsEntityServiceImpl struct {
@@ -62,14 +62,14 @@ func (e EcomorphsEntityServiceImpl) UpdateEcomorphsEntity(ctx context.Context, e
 	return e.repository.EcomorphsEntityRepository.UpdateEcomorphsEntity(ctx, e.ToPB(ctx, entity), &field_mask.FieldMask{Paths: fieldMask})
 }
 
-func (e EcomorphsEntityServiceImpl) GetListEcomorphsEntity(ctx context.Context, request *api.PagesRequest) (*api.EcomorphsEntityList, error) {
+func (e EcomorphsEntityServiceImpl) GetListEcomorphsEntity(ctx context.Context, request *api.EcomorphsEntityListRequest) (*api.EcomorphsEntityList, error) {
 	var page *api.PagesResponse
 	list, err := e.repository.EcomorphsEntityRepository.GetListEcomorphsEntity(ctx, &api.EcomorphsEntity{UserId: middlewares.GetUserIdFromContext(ctx)}, request)
 	if err != nil {
 		return nil, err
 	}
 	if request != nil {
-		page = &api.PagesResponse{Page: request.Page, Limit: request.Limit, Total: int32(len(list))}
+		page = &api.PagesResponse{Page: request.Page.Page, Limit: request.Page.Limit, Total: int32(len(list))}
 	}
 	return &api.EcomorphsEntityList{List: list, Page: page}, nil
 }

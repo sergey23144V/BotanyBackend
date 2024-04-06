@@ -32,7 +32,7 @@ type TrialSiteServiceClient interface {
 	// Удаление сущности по заголовку
 	DeleteTrialSite(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*BoolResponse, error)
 	// Получение списка всех сущностей
-	GetAllTrialSite(ctx context.Context, in *PagesRequest, opts ...grpc.CallOption) (*TrialSiteList, error)
+	GetAllTrialSite(ctx context.Context, in *TrialSiteListRequest, opts ...grpc.CallOption) (*TrialSiteList, error)
 	CreatePlant(ctx context.Context, in *InputPlantRequest, opts ...grpc.CallOption) (*Plant, error)
 	// Получение сущности по id
 	GetPlant(ctx context.Context, in *IdRequest, opts ...grpc.CallOption) (*Plant, error)
@@ -97,7 +97,7 @@ func (c *trialSiteServiceClient) DeleteTrialSite(ctx context.Context, in *IdRequ
 	return out, nil
 }
 
-func (c *trialSiteServiceClient) GetAllTrialSite(ctx context.Context, in *PagesRequest, opts ...grpc.CallOption) (*TrialSiteList, error) {
+func (c *trialSiteServiceClient) GetAllTrialSite(ctx context.Context, in *TrialSiteListRequest, opts ...grpc.CallOption) (*TrialSiteList, error) {
 	out := new(TrialSiteList)
 	err := c.cc.Invoke(ctx, "/botany.TrialSiteService/GetAllTrialSite", in, out, opts...)
 	if err != nil {
@@ -165,7 +165,7 @@ type TrialSiteServiceServer interface {
 	// Удаление сущности по заголовку
 	DeleteTrialSite(context.Context, *IdRequest) (*BoolResponse, error)
 	// Получение списка всех сущностей
-	GetAllTrialSite(context.Context, *PagesRequest) (*TrialSiteList, error)
+	GetAllTrialSite(context.Context, *TrialSiteListRequest) (*TrialSiteList, error)
 	CreatePlant(context.Context, *InputPlantRequest) (*Plant, error)
 	// Получение сущности по id
 	GetPlant(context.Context, *IdRequest) (*Plant, error)
@@ -197,7 +197,7 @@ func (UnimplementedTrialSiteServiceServer) AddPlantsToTrialSite(context.Context,
 func (UnimplementedTrialSiteServiceServer) DeleteTrialSite(context.Context, *IdRequest) (*BoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteTrialSite not implemented")
 }
-func (UnimplementedTrialSiteServiceServer) GetAllTrialSite(context.Context, *PagesRequest) (*TrialSiteList, error) {
+func (UnimplementedTrialSiteServiceServer) GetAllTrialSite(context.Context, *TrialSiteListRequest) (*TrialSiteList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllTrialSite not implemented")
 }
 func (UnimplementedTrialSiteServiceServer) CreatePlant(context.Context, *InputPlantRequest) (*Plant, error) {
@@ -319,7 +319,7 @@ func _TrialSiteService_DeleteTrialSite_Handler(srv interface{}, ctx context.Cont
 }
 
 func _TrialSiteService_GetAllTrialSite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PagesRequest)
+	in := new(TrialSiteListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -331,7 +331,7 @@ func _TrialSiteService_GetAllTrialSite_Handler(srv interface{}, ctx context.Cont
 		FullMethod: "/botany.TrialSiteService/GetAllTrialSite",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TrialSiteServiceServer).GetAllTrialSite(ctx, req.(*PagesRequest))
+		return srv.(TrialSiteServiceServer).GetAllTrialSite(ctx, req.(*TrialSiteListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

@@ -185,6 +185,8 @@ models:
     model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.InputFormTransectRequest
   InputTransectRequest:
     model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.InputTransectRequest
+  InputTypePlant_EcomorphsEntityRequest:
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.InputTypePlant_EcomorphsEntityRequest
 
 
   #Transect

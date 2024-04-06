@@ -17,7 +17,7 @@ service AnalysisService {
 
   rpc GetAnalysis(IdRequest) returns (Analysis) {}
 
-  rpc GetListAnalysis(PagesRequest) returns (AnalysisList) {}
+  rpc GetListAnalysis(AnalysisListRequest) returns (AnalysisList) {}
 
   rpc DeleteAnalysis(IdRequest) returns (BoolResponse) {
     option (gorm.method).object_type = "Analysis";
@@ -60,4 +60,17 @@ message InputUpdateAnalysis{
   atlas.rpc.Identifier id = 1;
   string title = 2;
   repeated Ecomorph ecomorph = 3;
+}
+
+message FilterAnalysis {
+  repeated atlas.rpc.Identifier id = 1;
+  string searchTitle = 2;
+  TypeAnalysis typeAnalysis = 3;
+  repeated Transect  transect = 4;
+  repeated Ecomorph ecomorph = 5;
+}
+
+message AnalysisListRequest{
+  PagesRequest page = 1;
+  FilterAnalysis filter = 2;
 }

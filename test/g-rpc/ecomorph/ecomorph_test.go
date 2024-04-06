@@ -19,7 +19,7 @@ func TestCreateEcomorph(t *testing.T) {
 			name: "Done",
 			Ecomorph: &api.InputEcomorph{
 				Payload: &api.InputFormEcomorph{
-					Title:       "Семейство",
+					Title:       "Семейства",
 					Description: "Ну про вид",
 				},
 			},
@@ -31,8 +31,9 @@ func TestCreateEcomorph(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 
 			result, err := client.Ecomorph.InsertEcomorph(ctx, testCase.Ecomorph)
+			g_rpc.Log(result)
 			if testCase.expected {
-				err := DeleteEcomorphById(ctx, client.Ecomorph, result.Id)
+				//err := DeleteEcomorphById(ctx, client.Ecomorph, result.Id)
 				assert.NoError(t, err, "Done")
 			} else {
 				assert.Error(t, err, "Error")
@@ -105,19 +106,23 @@ func TestGetListEcomorph(t *testing.T) {
 	client, ctx := g_rpc.GetClient()
 
 	testTable := []struct {
-		name string
-
+		name     string
+		request  *api.EcomorphListRequest
 		expected bool
 	}{
 		{
-			name:     "GetEcomorph",
+			name: "GetEcomorph",
+			request: &api.EcomorphListRequest{
+				Page: &api.PagesRequest{Page: 1, Limit: 2},
+			},
 			expected: true,
 		},
 	}
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-			_, err := client.Ecomorph.GetListEcomorph(ctx, &api.PagesRequest{Page: 1, Limit: 2})
+			r, err := client.Ecomorph.GetListEcomorph(ctx, testCase.request)
+			g_rpc.Log(r.List)
 			if testCase.expected {
 				assert.NoError(t, err, "Done")
 			} else {

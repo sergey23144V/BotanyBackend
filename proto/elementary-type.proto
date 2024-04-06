@@ -28,5 +28,12 @@ message BoolResponse {
   bool result = 1;
 }
 
+enum Direction {
+  // По возрастанию
+  ASCENDING = 0;
+  // по убыванию
+  DESCENDING = 1;
+}
+
 
 

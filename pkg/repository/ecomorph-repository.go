@@ -17,7 +17,7 @@ type EcomorphRepository interface {
 	DeleteEcomorph(ctx context.Context, in *api.Ecomorph) error
 	StrictUpdateEcomorph(ctx context.Context, in *api.Ecomorph) (*api.Ecomorph, error)
 	UpdateEcomorph(ctx context.Context, in *api.Ecomorph, updateMask *field_mask.FieldMask) (*api.Ecomorph, error)
-	GetListEcomorph(ctx context.Context, in *api.Ecomorph, request *api.PagesRequest) ([]*api.Ecomorph, error)
+	GetListEcomorph(ctx context.Context, in *api.Ecomorph, request *api.EcomorphListRequest) ([]*api.Ecomorph, error)
 	GetWhereList(filter []*api.Ecomorph) []clause.Expression
 	GetListEcomorphById(ctx context.Context, in []clause.Expression) ([]*api.Ecomorph, error)
 }
@@ -213,7 +213,8 @@ func (e EcomorphRepositoryImpl) UpdateEcomorph(ctx context.Context, in *api.Ecom
 	return pbResponse, nil
 }
 
-func (e EcomorphRepositoryImpl) GetListEcomorph(ctx context.Context, in *api.Ecomorph, request *api.PagesRequest) ([]*api.Ecomorph, error) {
+func (e EcomorphRepositoryImpl) GetListEcomorph(ctx context.Context, in *api.Ecomorph, request *api.EcomorphListRequest) ([]*api.Ecomorph, error) {
+	expression := e.GetWhereListFromEcomorphListRequest(request.Filter)
 	ormObj, err := in.ToORM(ctx)
 	if err != nil {
 		return nil, err
@@ -231,16 +232,16 @@ func (e EcomorphRepositoryImpl) GetListEcomorph(ctx context.Context, in *api.Eco
 			return nil, err
 		}
 	}
-	if request != nil && request.Page != 0 && request.Limit != 0 {
-		offset := (request.Page - 1) * request.Limit
-		e.db = e.db.Where(&ormObj).Offset(int(offset)).Limit(int(request.Limit))
+	if request != nil && request.Page.Page != 0 && request.Page.Limit != 0 {
+		offset := (request.Page.Page - 1) * request.Page.Limit
+		e.db = e.db.Where(&ormObj).Offset(int(offset)).Limit(int(request.Page.Limit))
 	} else {
 		e.db = e.db.Where(&ormObj)
 	}
 
 	e.db = e.db.Order("id")
 	ormResponse := []api.EcomorphORM{}
-	if err := e.db.Find(&ormResponse).Error; err != nil {
+	if err := e.db.Clauses(expression...).Find(&ormResponse).Error; err != nil {
 		return nil, err
 	}
 	if hook, ok := interface{}(&ormObj).(api.EcomorphORMWithAfterListFind); ok {
@@ -275,6 +276,59 @@ func (s EcomorphRepositoryImpl) GetWhereList(filter []*api.Ecomorph) []clause.Ex
 		conditions = append(conditions, clause.IN{
 			Column: clause.Column{Name: "id"},
 			Values: interfaceIds,
+		})
+	}
+
+	return conditions
+}
+
+func (s EcomorphRepositoryImpl) GetWhereListFromEcomorphListRequest(filter *api.FilterEcomorph) []clause.Expression {
+	// Объявление переменных
+	var conditions []clause.Expression
+	if filter == nil {
+		return nil
+	}
+	// Проверка наличия фильтра по Ids
+	if filter.Id != nil {
+		// Преобразование Ids в массив интерфейсов
+		var interfaceIds []interface{}
+		for _, id := range filter.Id {
+			interfaceIds = append(interfaceIds, id.ResourceId)
+		}
+
+		// Добавление фильтра по Ids к условиям
+		conditions = append(conditions, clause.IN{
+			Column: clause.Column{Name: "id"},
+			Values: interfaceIds,
+		})
+	}
+
+	if filter.SearchTitle != nil {
+
+		var interfaceIds []interface{}
+
+		interfaceIds = append(interfaceIds, filter.SearchTitle)
+
+		conditions = append(conditions, clause.IN{
+			Column: clause.Column{Name: "title"},
+			Values: interfaceIds,
+		})
+	}
+
+	if filter.Title != nil {
+
+		var interfaceIds []interface{}
+		var columns []clause.OrderByColumn
+
+		interfaceIds = append(interfaceIds, filter.SearchTitle)
+
+		columns = append(columns, clause.OrderByColumn{
+			Column: clause.Column{Name: "title"},
+			Desc:   *filter.Title == api.Direction_DESCENDING,
+		})
+		conditions = append(conditions, clause.OrderBy{
+			Columns:    columns,
+			Expression: nil,
 		})
 	}
 

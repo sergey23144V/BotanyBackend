@@ -16,7 +16,7 @@ func CreateTransect(ctx context.Context, client g_rpc.ClientService) *resource.I
 			Square:          20,
 			SquareTrialSite: 2,
 			TrialSite:       []*api.TrialSite{{Id: trial_site.CreateTrialSite(ctx, client)}},
-			Img:             &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
+			//Img:             &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
 		},
 	}
 

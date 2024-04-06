@@ -11,11 +11,10 @@ type TypePlantServetImpl struct {
 }
 
 func (t TypePlantServetImpl) AddEcomorphsEntityToTypePlant(ctx context.Context, request *api.InputTypePlant_EcomorphsEntityRequest) (*api.TypePlant, error) {
-	//TODO implement me
-	panic("implement me")
+	return t.service.TypePlantService.AddEcomorphsEntityToTypePlant(ctx, request)
 }
 
-func NewTypePlantServetImpl(service *service.Service) TypePlantServetImpl {
+func NewTypePlantServetImpl(service *service.Service) api.TypePlantServiceServer {
 	return TypePlantServetImpl{service}
 }
 
@@ -31,15 +30,11 @@ func (t TypePlantServetImpl) UpdateTypePlant(ctx context.Context, request *api.I
 	return t.service.TypePlantService.UpdateTypePlant(ctx, request)
 }
 
-func (t TypePlantServetImpl) AddEcomorphsEntity(ctx context.Context, request *api.InputTypePlant_EcomorphsEntityRequest) (*api.TypePlant, error) {
-	return t.service.TypePlantService.AddEcomorphsEntity(ctx, request)
-}
-
 func (t TypePlantServetImpl) DeleteTypePlant(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error) {
 	return t.service.TypePlantService.DeleteTypePlant(ctx, request)
 }
 
-func (t TypePlantServetImpl) GetAllTypePlant(ctx context.Context, request *api.PagesRequest) (*api.TypePlantList, error) {
+func (t TypePlantServetImpl) GetAllTypePlant(ctx context.Context, request *api.TypePlantListRequest) (*api.TypePlantList, error) {
 	return t.service.TypePlantService.GetListTypePlant(ctx, request)
 }
 

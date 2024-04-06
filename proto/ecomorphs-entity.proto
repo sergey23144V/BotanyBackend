@@ -31,7 +31,7 @@ service EcomorphEntityService {
   } ;
 
   // Получение списка всех сущностей
-  rpc  GetAllEcomorphEntity (PagesRequest) returns (EcomorphsEntityList);
+  rpc  GetAllEcomorphEntity (EcomorphsEntityListRequest) returns (EcomorphsEntityList);
 
 
 }
@@ -69,5 +69,19 @@ message InputFormEcomorphsEntity {
 message InputEcomorphsEntity{
   atlas.rpc.Identifier id = 1;
   InputFormEcomorphsEntity input = 2;
+  bool publicly = 3;
+}
+
+message FilterEcomorphsEntity {
+  repeated atlas.rpc.Identifier id = 1;
+  optional string searchTitle = 2;
+  optional  Direction title = 3;
+  optional Direction score = 4;
+  optional bool publicly = 5;
+}
+
+message EcomorphsEntityListRequest{
+  PagesRequest page = 1;
+  FilterEcomorphsEntity filter = 2;
 }
 

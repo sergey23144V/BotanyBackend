@@ -6,6 +6,7 @@ type TransectQuery {
 type TransectMutation {
     createTransect(input: InputFormTransectRequest): Transect @goField(forceResolver: true)
     upTransect(input: InputTransectRequest): Transect @goField(forceResolver: true)
+    addTrialSiteToTransect(input: InputTransectRequest): Transect @goField(forceResolver: true)
     deleteTransect(id: ID!): BoolResponse @goField(forceResolver: true)
 }
 

@@ -113,19 +113,22 @@ func TestGetListTransect(t *testing.T) {
 	client, ctx := g_rpc.GetClient()
 
 	testTable := []struct {
-		name string
-
+		name     string
+		request  *api.TransectListRequest
 		expected bool
 	}{
 		{
-			name:     "GetListTransect",
+			name: "GetListTransect",
+			request: &api.TransectListRequest{
+				Page: &api.PagesRequest{Page: 1, Limit: 2},
+			},
 			expected: true,
 		},
 	}
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-			result, err := client.Transect.GetAllTransect(ctx, &api.PagesRequest{Page: 1, Limit: 2})
+			result, err := client.Transect.GetAllTransect(ctx, testCase.request)
 			g_rpc.Log(result)
 			if testCase.expected {
 				assert.NoError(t, err, "Done")

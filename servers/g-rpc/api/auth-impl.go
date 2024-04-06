@@ -104,7 +104,32 @@ func (s *AuthServerImpl) CreateUser(ctx context.Context, input *SignUpUserInput)
 		Id:        &resource.Identifier{ResourceId: pkg.GenerateUUID()},
 		Name:      input.Name,
 		Email:     input.Email,
-		Role:      "",
+		Role:      RoleType_NormalUser,
+		Password:  generatePasswordHash(input.Password),
+		CreatedAt: nil,
+		UpdatedAt: nil,
+	}
+	return DefaultCreateUser(ctx, userInput, s.db)
+}
+
+func (s *AuthServerImpl) CreatSuperUser(ctx context.Context, input *SignUpUserInput) (*User, error) {
+	dubl, err := CheckingForDuplicateEmails(ctx, &User{Email: input.Email}, s.db)
+	if err != nil {
+		return nil, err
+	} else if !dubl {
+		return nil, errors.New("duplicate email")
+	}
+
+	err = ValidatePassword(input.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	userInput := &User{
+		Id:        &resource.Identifier{ResourceId: pkg.GenerateUUID()},
+		Name:      input.Name,
+		Email:     input.Email,
+		Role:      RoleType_SuperUser,
 		Password:  generatePasswordHash(input.Password),
 		CreatedAt: nil,
 		UpdatedAt: nil,

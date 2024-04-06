@@ -6,6 +6,7 @@ type TypePlantQuery {
 type TypePlantMutation {
     createTypePlant(input: InputFormTypePlantRequest): TypePlant @goField(forceResolver: true)
     updateTypePlant(input: InputTypePlantRequest): TypePlant @goField(forceResolver: true)
+    addEcomorphsEntityToTypePlant(input: InputTypePlant_EcomorphsEntityRequest): TypePlant @goField(forceResolver: true)
     deleteTypePlant(id: ID!): BoolResponse @goField(forceResolver: true)
 }
 
@@ -44,4 +45,9 @@ input InputFormTypePlantRequest  {
 input InputTypePlantRequest  {
     id: IdentifierInput!
     input: InputFormTypePlantRequest
+}
+
+input InputTypePlant_EcomorphsEntityRequest  {
+    id: IdentifierInput!
+    ecomorphsEntity: [EcomorphsEntityInput]!
 }

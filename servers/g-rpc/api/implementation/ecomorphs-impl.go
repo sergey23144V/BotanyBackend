@@ -11,7 +11,7 @@ type EcomorphsServetImpl struct {
 	service *service.Service
 }
 
-func NewEcomorphsServetImplImpl(repository *service.Service) EcomorphsServetImpl {
+func NewEcomorphsServetImplImpl(repository *service.Service) api.EcomorphServiceServer {
 	return EcomorphsServetImpl{repository}
 }
 
@@ -20,7 +20,7 @@ func (e EcomorphsServetImpl) UpdateEcomorph(ctx context.Context, in *api.InputEc
 
 }
 
-func (e EcomorphsServetImpl) GetListEcomorph(ctx context.Context, request *api.PagesRequest) (*api.EcomorphsList, error) {
+func (e EcomorphsServetImpl) GetListEcomorph(ctx context.Context, request *api.EcomorphListRequest) (*api.EcomorphsList, error) {
 	return e.service.GetListEcomorph(ctx, request)
 }
 

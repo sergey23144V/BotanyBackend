@@ -19,8 +19,8 @@ type TrialSiteService interface {
 	DeleteTrialSite(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error)
 	StrictUpdateTrialSite(ctx context.Context, in *api.InputTrialSiteRequest) (*api.TrialSite, error)
 	UpdateTrialSite(ctx context.Context, in *api.InputTrialSiteRequest) (*api.TrialSite, error)
-	GetListTrialSite(ctx context.Context, request *api.PagesRequest) (*api.TrialSiteList, error)
-
+	GetListTrialSite(ctx context.Context, request *api.TrialSiteListRequest) (*api.TrialSiteList, error)
+	AddPlantsToTrialSite(context.Context, *api.InputTrialSiteRequest) (*api.TrialSite, error)
 	CreatePlant(context.Context, *api.InputPlantRequest) (*api.Plant, error)
 
 	// Получение сущности по id
@@ -35,6 +35,21 @@ type TrialSiteService interface {
 
 type TrialSiteServiceImpl struct {
 	repository *repository.Repository
+}
+
+func (t TrialSiteServiceImpl) AddPlantsToTrialSite(ctx context.Context, request *api.InputTrialSiteRequest) (*api.TrialSite, error) {
+	trialSite, err := t.GetTrialSiteById(ctx, &api.IdRequest{Id: request.Id})
+	if err != nil {
+		return nil, err
+	}
+	if request.Input.Plant != nil {
+		for _, plant := range request.Input.Plant {
+			trialSite.Plant = append(trialSite.Plant, plant)
+		}
+		return t.repository.StrictUpdateTrialSite(ctx, trialSite)
+	} else {
+		return nil, errors.New("not have plant")
+	}
 }
 
 func NewTrialSiteServiceImpl(repository *repository.Repository) TrialSiteService {
@@ -116,13 +131,13 @@ func (t TrialSiteServiceImpl) UpdateTrialSite(ctx context.Context, in *api.Input
 	return t.DetectionPlant(ctx, site)
 }
 
-func (t TrialSiteServiceImpl) GetListTrialSite(ctx context.Context, request *api.PagesRequest) (*api.TrialSiteList, error) {
+func (t TrialSiteServiceImpl) GetListTrialSite(ctx context.Context, request *api.TrialSiteListRequest) (*api.TrialSiteList, error) {
 	var page *api.PagesResponse
 
 	userId := middlewares.GetUserIdFromContext(ctx)
 	getList, err := t.repository.TrialSiteRepository.GetListTrialSite(ctx, &api.TrialSite{UserId: userId}, request)
 	if request != nil {
-		page = &api.PagesResponse{Page: request.Page, Limit: request.Limit, Total: int32(len(getList))}
+		page = &api.PagesResponse{Page: request.Page.Page, Limit: request.Page.Limit, Total: int32(len(getList))}
 	}
 	if err != nil {
 		return nil, err

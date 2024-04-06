@@ -28,7 +28,7 @@ func (a AnalysisServetImpl) GetAnalysis(ctx context.Context, request *api.IdRequ
 	panic("implement me")
 }
 
-func (a AnalysisServetImpl) GetListAnalysis(ctx context.Context, request *api.PagesRequest) (*api.AnalysisList, error) {
+func (a AnalysisServetImpl) GetListAnalysis(ctx context.Context, request *api.AnalysisListRequest) (*api.AnalysisList, error) {
 	//TODO implement me
 	panic("implement me")
 }

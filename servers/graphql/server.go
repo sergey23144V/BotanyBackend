@@ -6,7 +6,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/pkg/service"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/implementation"
 	"github.com/sergey23144V/BotanyBackend/servers/graphql/graph"
 	"gorm.io/gorm"
 	"log"
@@ -15,7 +15,7 @@ import (
 
 const defaultPort = "80"
 
-func StartGraphQl(db *gorm.DB, authServerImpl *api.AuthServerImpl, newService *service.Service) {
+func StartGraphQl(db *gorm.DB, authServerImpl *implementation.AuthServerImpl, newService *service.Service) {
 	go func() {
 		port := defaultPort
 

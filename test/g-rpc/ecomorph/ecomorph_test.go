@@ -1,6 +1,7 @@
 package ecomorph
 
 import (
+	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
 	"github.com/stretchr/testify/assert"
@@ -15,6 +16,17 @@ func TestCreateEcomorph(t *testing.T) {
 		Ecomorph *api.InputEcomorph
 		expected bool
 	}{
+		{
+			name: "Done Publicly",
+			Ecomorph: &api.InputEcomorph{
+				Payload: &api.InputFormEcomorph{
+					Title:       "Семейства",
+					Description: "Ну про вид",
+				},
+				Publicly: true,
+			},
+			expected: true,
+		},
 		{
 			name: "Done",
 			Ecomorph: &api.InputEcomorph{
@@ -88,11 +100,22 @@ func TestUpdateEcomorphById(t *testing.T) {
 			},
 			expected: true,
 		},
+		{
+			name: "GetEcomorph",
+			idEcomorph: &api.InputEcomorph{
+				Id: &resource.Identifier{ResourceId: "24c2f368-aa46-0888-523f-9902adc3d400"},
+				Payload: &api.InputFormEcomorph{
+					Title: "Не семейство",
+				},
+			},
+			expected: false,
+		},
 	}
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-			_, err := client.Ecomorph.UpdateEcomorph(ctx, testCase.idEcomorph)
+			result, err := client.Ecomorph.UpdateEcomorph(ctx, testCase.idEcomorph)
+			g_rpc.Log(result)
 			if testCase.expected {
 				assert.NoError(t, err, "Done")
 			} else {
@@ -113,8 +136,13 @@ func TestGetListEcomorph(t *testing.T) {
 		{
 			name: "GetEcomorph",
 			request: &api.EcomorphListRequest{
-				Page: &api.PagesRequest{Page: 1, Limit: 2},
+				Page: &api.PagesRequest{Page: 1, Limit: 10},
 			},
+			expected: true,
+		},
+		{
+			name:     "GetEcomorph All",
+			request:  &api.EcomorphListRequest{},
 			expected: true,
 		},
 	}

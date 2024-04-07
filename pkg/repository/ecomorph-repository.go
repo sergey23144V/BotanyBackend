@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	er "errors"
 	"fmt"
 	"github.com/infobloxopen/protoc-gen-gorm/errors"
 	"gorm.io/gorm"
@@ -14,9 +15,9 @@ import (
 type EcomorphRepository interface {
 	CreateEcomorph(ctx context.Context, ecomorph *api.Ecomorph) (*api.Ecomorph, error)
 	GetEcomorphById(ctx context.Context, in *api.Ecomorph) (*api.Ecomorph, error)
-	DeleteEcomorph(ctx context.Context, in *api.Ecomorph) error
+	DeleteEcomorph(ctx context.Context, in *api.Ecomorph, userRole api.RoleType) error
 	StrictUpdateEcomorph(ctx context.Context, in *api.Ecomorph) (*api.Ecomorph, error)
-	UpdateEcomorph(ctx context.Context, in *api.Ecomorph, updateMask *field_mask.FieldMask) (*api.Ecomorph, error)
+	UpdateEcomorph(ctx context.Context, in *api.Ecomorph, updateMask *field_mask.FieldMask, userRole api.RoleType) (*api.Ecomorph, error)
 	GetListEcomorph(ctx context.Context, in *api.Ecomorph, request *api.EcomorphListRequest) ([]*api.Ecomorph, error)
 	GetWhereList(filter []*api.Ecomorph) []clause.Expression
 	GetListEcomorphById(ctx context.Context, in []clause.Expression) ([]*api.Ecomorph, error)
@@ -38,18 +39,8 @@ func (e EcomorphRepositoryImpl) CreateEcomorph(ctx context.Context, in *api.Ecom
 	if err != nil {
 		return nil, err
 	}
-	if hook, ok := interface{}(&ormObj).(api.EcomorphORMWithBeforeCreate_); ok {
-		if e.db, err = hook.BeforeCreate_(ctx, e.db); err != nil {
-			return nil, err
-		}
-	}
 	if err = e.db.Create(&ormObj).Error; err != nil {
 		return nil, err
-	}
-	if hook, ok := interface{}(&ormObj).(api.EcomorphORMWithAfterCreate_); ok {
-		if err = hook.AfterCreate_(ctx, e.db); err != nil {
-			return nil, err
-		}
 	}
 	pbResponse, err := ormObj.ToPB(ctx)
 	return &pbResponse, err
@@ -66,24 +57,9 @@ func (e EcomorphRepositoryImpl) GetEcomorphById(ctx context.Context, in *api.Eco
 	if ormObj.Id == "" {
 		return nil, errors.EmptyIdError
 	}
-	if hook, ok := interface{}(&ormObj).(api.EcomorphORMWithBeforeReadApplyQuery); ok {
-		if e.db, err = hook.BeforeReadApplyQuery(ctx, e.db); err != nil {
-			return nil, err
-		}
-	}
-	if hook, ok := interface{}(&ormObj).(api.EcomorphORMWithBeforeReadFind); ok {
-		if e.db, err = hook.BeforeReadFind(ctx, e.db); err != nil {
-			return nil, err
-		}
-	}
 	ormResponse := api.EcomorphORM{}
 	if err = e.db.Where(&ormObj).First(&ormResponse).Error; err != nil {
 		return nil, err
-	}
-	if hook, ok := interface{}(&ormResponse).(api.EcomorphORMWithAfterReadFind); ok {
-		if err = hook.AfterReadFind(ctx, e.db); err != nil {
-			return nil, err
-		}
 	}
 	pbResponse, err := ormResponse.ToPB(ctx)
 	return &pbResponse, err
@@ -110,10 +86,19 @@ func (e EcomorphRepositoryImpl) GetListEcomorphById(ctx context.Context, in []cl
 	return pbResponse, nil
 }
 
-func (e EcomorphRepositoryImpl) DeleteEcomorph(ctx context.Context, in *api.Ecomorph) error {
+func (e EcomorphRepositoryImpl) DeleteEcomorph(ctx context.Context, in *api.Ecomorph, userRole api.RoleType) error {
 	if in == nil {
 		return errors.NilArgumentError
 	}
+	pbReadRes, err := api.DefaultReadEcomorph(ctx, &api.Ecomorph{Id: in.GetId()}, e.db)
+	if err != nil {
+		return err
+	}
+
+	if pbReadRes.UserId == nil && userRole != api.RoleType_SuperUser {
+		return er.New("has no rights")
+	}
+
 	ormObj, err := in.ToORM(ctx)
 	if err != nil {
 		return err
@@ -121,19 +106,11 @@ func (e EcomorphRepositoryImpl) DeleteEcomorph(ctx context.Context, in *api.Ecom
 	if ormObj.Id == "" {
 		return errors.EmptyIdError
 	}
-	if hook, ok := interface{}(&ormObj).(api.EcomorphORMWithBeforeDelete_); ok {
-		if e.db, err = hook.BeforeDelete_(ctx, e.db); err != nil {
-			return err
-		}
-	}
-	//e.db = e.db.Unscoped()
 	err = e.db.Where(&ormObj).Delete(&api.EcomorphORM{}).Error
 	if err != nil {
 		return err
 	}
-	if hook, ok := interface{}(&ormObj).(api.EcomorphORMWithAfterDelete_); ok {
-		err = hook.AfterDelete_(ctx, e.db)
-	}
+
 	return err
 }
 
@@ -147,24 +124,11 @@ func (e EcomorphRepositoryImpl) StrictUpdateEcomorph(ctx context.Context, in *ap
 	}
 	lockedRow := &api.EcomorphORM{}
 	e.db.Model(&ormObj).Set("gorm:query_option", "FOR UPDATE").Where("id=?", ormObj.Id).First(lockedRow)
-	if hook, ok := interface{}(&ormObj).(api.EcomorphORMWithBeforeStrictUpdateCleanup); ok {
-		if e.db, err = hook.BeforeStrictUpdateCleanup(ctx, e.db); err != nil {
-			return nil, err
-		}
-	}
-	if hook, ok := interface{}(&ormObj).(api.EcomorphORMWithBeforeStrictUpdateSave); ok {
-		if e.db, err = hook.BeforeStrictUpdateSave(ctx, e.db); err != nil {
-			return nil, err
-		}
-	}
+
 	if err = e.db.Save(&ormObj).Error; err != nil {
 		return nil, err
 	}
-	if hook, ok := interface{}(&ormObj).(api.EcomorphORMWithAfterStrictUpdateSave); ok {
-		if err = hook.AfterStrictUpdateSave(ctx, e.db); err != nil {
-			return nil, err
-		}
-	}
+
 	pbResponse, err := ormObj.ToPB(ctx)
 	if err != nil {
 		return nil, err
@@ -172,44 +136,31 @@ func (e EcomorphRepositoryImpl) StrictUpdateEcomorph(ctx context.Context, in *ap
 	return &pbResponse, err
 }
 
-func (e EcomorphRepositoryImpl) UpdateEcomorph(ctx context.Context, in *api.Ecomorph, updateMask *field_mask.FieldMask) (*api.Ecomorph, error) {
+func (e EcomorphRepositoryImpl) UpdateEcomorph(ctx context.Context, in *api.Ecomorph, updateMask *field_mask.FieldMask, userRole api.RoleType) (*api.Ecomorph, error) {
 	if in == nil {
 		return nil, errors.NilArgumentError
 	}
 	var pbObj api.Ecomorph
 	var err error
-	if hook, ok := interface{}(&pbObj).(api.EcomorphWithBeforePatchRead); ok {
-		if e.db, err = hook.BeforePatchRead(ctx, in, updateMask, e.db); err != nil {
-			return nil, err
-		}
-	}
+
 	pbReadRes, err := api.DefaultReadEcomorph(ctx, &api.Ecomorph{Id: in.GetId()}, e.db)
 	if err != nil {
 		return nil, err
 	}
 	pbObj = *pbReadRes
-	if hook, ok := interface{}(&pbObj).(api.EcomorphWithBeforePatchApplyFieldMask); ok {
-		if e.db, err = hook.BeforePatchApplyFieldMask(ctx, in, updateMask, e.db); err != nil {
-			return nil, err
-		}
+
+	if pbReadRes.UserId == nil && userRole != api.RoleType_SuperUser {
+		return nil, er.New("has no rights")
 	}
 	if _, err := api.DefaultApplyFieldMaskEcomorph(ctx, &pbObj, in, updateMask, "", e.db); err != nil {
 		return nil, err
 	}
-	if hook, ok := interface{}(&pbObj).(api.EcomorphWithBeforePatchSave); ok {
-		if e.db, err = hook.BeforePatchSave(ctx, in, updateMask, e.db); err != nil {
-			return nil, err
-		}
-	}
+
 	pbResponse, err := api.DefaultStrictUpdateEcomorph(ctx, &pbObj, e.db)
 	if err != nil {
 		return nil, err
 	}
-	if hook, ok := interface{}(pbResponse).(api.EcomorphWithAfterPatchSave); ok {
-		if err = hook.AfterPatchSave(ctx, in, updateMask, e.db); err != nil {
-			return nil, err
-		}
-	}
+
 	return pbResponse, nil
 }
 
@@ -219,36 +170,20 @@ func (e EcomorphRepositoryImpl) GetListEcomorph(ctx context.Context, in *api.Eco
 	if err != nil {
 		return nil, err
 	}
-	if hook, ok := interface{}(&ormObj).(api.EcomorphORMWithBeforeListApplyQuery); ok {
-		if e.db, err = hook.BeforeListApplyQuery(ctx, e.db); err != nil {
-			return nil, err
-		}
-	}
-	if err != nil {
-		return nil, err
-	}
-	if hook, ok := interface{}(&ormObj).(api.EcomorphORMWithBeforeListFind); ok {
-		if e.db, err = hook.BeforeListFind(ctx, e.db); err != nil {
-			return nil, err
-		}
-	}
-	if request != nil && request.Page.Page != 0 && request.Page.Limit != 0 {
+
+	if request.Page != nil && request.Page.Page != 0 && request.Page.Limit != 0 {
 		offset := (request.Page.Page - 1) * request.Page.Limit
 		e.db = e.db.Where(&ormObj).Offset(int(offset)).Limit(int(request.Page.Limit))
 	} else {
-		e.db = e.db.Where(&ormObj)
+		//e.db = e.db.Where(&ormObj)
 	}
 
-	e.db = e.db.Order("id")
+	e.db = e.db.Order("id").Or("user_id IS NULL")
 	ormResponse := []api.EcomorphORM{}
 	if err := e.db.Clauses(expression...).Find(&ormResponse).Error; err != nil {
 		return nil, err
 	}
-	if hook, ok := interface{}(&ormObj).(api.EcomorphORMWithAfterListFind); ok {
-		if err = hook.AfterListFind(ctx, e.db, &ormResponse); err != nil {
-			return nil, err
-		}
-	}
+
 	pbResponse := []*api.Ecomorph{}
 	for _, responseEntry := range ormResponse {
 		temp, err := responseEntry.ToPB(ctx)

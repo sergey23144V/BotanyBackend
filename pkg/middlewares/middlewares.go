@@ -7,6 +7,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	auth_helper "github.com/sergey23144V/BotanyBackend/pkg/auth-helper"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
@@ -16,8 +17,9 @@ import (
 )
 
 const (
-	KeyToken  = "token"
-	KeyUserId = "userId"
+	KeyToken    = "token"
+	KeyUserId   = "userId"
+	KeyUserRole = "userRole"
 )
 
 func AuthInterceptorGraphQL() func(http.Handler) http.Handler {
@@ -32,7 +34,7 @@ func AuthInterceptorGraphQL() func(http.Handler) http.Handler {
 			}
 			authorization := ParseAuthorization(token)
 
-			userId, err := authorization.(auth_helper.TokenAuth).GetUserIdFromToken()
+			userId, role, err := authorization.(auth_helper.TokenAuth).GetUserFromToken()
 			if err != nil {
 				next.ServeHTTP(w, r)
 				return
@@ -40,6 +42,8 @@ func AuthInterceptorGraphQL() func(http.Handler) http.Handler {
 			ctx := r.Context()
 
 			ctx = context.WithValue(ctx, KeyToken, authorization.String())
+
+			ctx = context.WithValue(ctx, KeyUserRole, role)
 
 			ctx = context.WithValue(ctx, KeyUserId, userId)
 
@@ -53,7 +57,7 @@ func AuthInterceptorGraphQL() func(http.Handler) http.Handler {
 // AuthInterceptor - промежуточный слой для проверки токена в gRPC
 func AuthInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 
-	if info.FullMethod == "/auth.AuthService/SignUpUser" || info.FullMethod == "/auth.AuthService/SignInUser" {
+	if info.FullMethod == "/auth.AuthService/SignUpUser" || info.FullMethod == "/auth.AuthService/SignInUser" || info.FullMethod == "/auth.AuthService/SignUpSuperUser" {
 		return handler(ctx, req)
 	}
 
@@ -69,12 +73,14 @@ func AuthInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServe
 
 	authorization := ParseAuthorization(token)
 
-	userId, err := authorization.(auth_helper.TokenAuth).GetUserIdFromToken()
+	userId, role, err := authorization.(auth_helper.TokenAuth).GetUserFromToken()
 	if err != nil {
 		return nil, err
 	}
 
 	ctx = context.WithValue(ctx, KeyToken, authorization.String())
+
+	ctx = context.WithValue(ctx, KeyUserRole, role)
 
 	ctx = context.WithValue(ctx, KeyUserId, userId)
 
@@ -97,6 +103,13 @@ func GetUserIdFromContext(ctx context.Context) *resource.Identifier {
 	return &resource.Identifier{
 		ResourceId: id,
 	}
+}
+func GetUserRoleFromContext(ctx context.Context) *api.RoleType {
+	role, ok := ctx.Value(KeyUserRole).(*api.RoleType)
+	if !ok {
+		return nil
+	}
+	return role
 }
 
 func GetTokenFromContext(ctx context.Context) *string {

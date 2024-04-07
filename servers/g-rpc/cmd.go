@@ -11,7 +11,7 @@ import (
 	"net"
 )
 
-func StartGrpc(authServet *api.AuthServerImpl, newRepository *service.Service) {
+func StartGrpc(authServet *implementation.AuthServerImpl, newRepository *service.Service) {
 	go func() {
 		listener, err := net.Listen("tcp", ":50051")
 		if err != nil {

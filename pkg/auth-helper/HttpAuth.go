@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"regexp"
 	"strings"
 	"time"
@@ -18,7 +19,8 @@ const (
 
 type TokenClaims struct {
 	jwt.StandardClaims
-	UserId string `json:"user_id"`
+	UserId string       `json:"user_id"`
+	Role   api.RoleType `json:"role"`
 }
 
 var basicRegex = regexp.MustCompile(`^Basic (.+)$`)
@@ -87,7 +89,7 @@ func NewCredentialsAuth(login, password string) Authorization {
 	return &CredentialsAuth{login, password}
 }
 
-func (ta TokenAuth) GetUserIdFromToken() (string, error) {
+func (ta TokenAuth) GetUserFromToken() (string, *api.RoleType, error) {
 	token, err := jwt.ParseWithClaims(ta.Token, &TokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")
@@ -96,13 +98,13 @@ func (ta TokenAuth) GetUserIdFromToken() (string, error) {
 		return []byte(SigningKey), nil
 	})
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
 
 	claims, ok := token.Claims.(*TokenClaims)
 	if !ok {
-		return "", errors.New("token claims are not of type *tokenClaims")
+		return "", nil, errors.New("token claims are not of type *tokenClaims")
 	}
 
-	return claims.UserId, nil
+	return claims.UserId, &claims.Role, nil
 }

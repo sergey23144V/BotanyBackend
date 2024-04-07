@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	er "errors"
 	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"google.golang.org/genproto/protobuf/field_mask"
@@ -30,7 +31,11 @@ func NewEcomorphServiceImpl(repository *repository.Repository) EcomorphServiceIm
 }
 
 func (e EcomorphServiceImpl) CreateEcomorph(ctx context.Context, in *api.InputEcomorph) (*api.Ecomorph, error) {
-	createEcomorph, err := e.repository.CreateEcomorph(ctx, e.ToPB(ctx, in))
+	pb, err := e.ToPB(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	createEcomorph, err := e.repository.CreateEcomorph(ctx, pb)
 	if err != nil {
 		log.Error("Insert Ecomorph:", err)
 		return nil, err
@@ -54,8 +59,9 @@ func (e EcomorphServiceImpl) GetEcomorphById(ctx context.Context, request *api.I
 
 func (e EcomorphServiceImpl) DeleteEcomorph(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error) {
 	userId := middlewares.GetUserIdFromContext(ctx)
+	userRole := middlewares.GetUserRoleFromContext(ctx)
 	result := &api.BoolResponse{Result: true}
-	err := e.repository.DeleteEcomorph(ctx, &api.Ecomorph{Id: request.Id, UserId: userId})
+	err := e.repository.DeleteEcomorph(ctx, &api.Ecomorph{Id: request.Id, UserId: userId}, *userRole)
 	if err != nil {
 		result.Result = false
 		return result, err
@@ -64,7 +70,11 @@ func (e EcomorphServiceImpl) DeleteEcomorph(ctx context.Context, request *api.Id
 }
 
 func (e EcomorphServiceImpl) StrictUpdateEcomorph(ctx context.Context, in *api.InputEcomorph) (*api.Ecomorph, error) {
-	createEcomorph, err := e.repository.StrictUpdateEcomorph(ctx, e.ToPB(ctx, in))
+	pb, err := e.ToPB(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	createEcomorph, err := e.repository.StrictUpdateEcomorph(ctx, pb)
 	if err != nil {
 		log.Error("Update Ecomorph:", err)
 		return nil, err
@@ -82,7 +92,12 @@ func (e EcomorphServiceImpl) UpdateEcomorph(ctx context.Context, in *api.InputEc
 	if in.Payload.Description != "" {
 		fieldMask = append(fieldMask, "Description")
 	}
-	return e.repository.UpdateEcomorph(ctx, e.ToPB(ctx, in), &field_mask.FieldMask{Paths: fieldMask})
+	userRole := middlewares.GetUserRoleFromContext(ctx)
+	pb, err := e.ToPB(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return e.repository.UpdateEcomorph(ctx, pb, &field_mask.FieldMask{Paths: fieldMask}, *userRole)
 }
 
 func (e EcomorphServiceImpl) GetListEcomorph(ctx context.Context, request *api.EcomorphListRequest) (*api.EcomorphsList, error) {
@@ -93,26 +108,42 @@ func (e EcomorphServiceImpl) GetListEcomorph(ctx context.Context, request *api.E
 	if err != nil {
 		return nil, err
 	}
-	if request != nil {
+	if request.Page != nil {
 		page = &api.PagesResponse{Page: request.Page.Page, Limit: request.Page.Limit, Total: int32(len(list))}
 	}
 	return &api.EcomorphsList{List: list, Page: page}, nil
 }
 
-func (e EcomorphServiceImpl) ToPB(ctx context.Context, in *api.InputEcomorph) *api.Ecomorph {
-	var id *resource.Identifier
+func (e EcomorphServiceImpl) ToPB(ctx context.Context, in *api.InputEcomorph) (*api.Ecomorph, error) {
+	var (
+		id       *resource.Identifier
+		ecomorph *api.Ecomorph
+	)
 
 	if in.Id != nil {
 		id = in.Id
 	} else {
 		id = &resource.Identifier{ResourceId: pkg.GenerateUUID()}
 	}
-
 	userId := middlewares.GetUserIdFromContext(ctx)
-	return &api.Ecomorph{
-		Id:          id,
-		Title:       in.Payload.Title,
-		Description: in.Payload.Description,
-		UserId:      userId,
+	role := middlewares.GetUserRoleFromContext(ctx)
+
+	if *role == api.RoleType_SuperUser && in.Publicly {
+		ecomorph = &api.Ecomorph{
+			Id:          id,
+			Title:       in.Payload.Title,
+			Description: in.Payload.Description,
+		}
+	} else if *role != api.RoleType_SuperUser && in.Publicly {
+		return nil, er.New("has no rights")
+	} else {
+		ecomorph = &api.Ecomorph{
+			Id:          id,
+			Title:       in.Payload.Title,
+			Description: in.Payload.Description,
+			UserId:      userId,
+		}
 	}
+
+	return ecomorph, nil
 }

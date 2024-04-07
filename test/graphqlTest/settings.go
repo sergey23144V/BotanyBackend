@@ -9,6 +9,7 @@ import (
 	"github.com/sergey23144V/BotanyBackend/pkg/repository"
 	"github.com/sergey23144V/BotanyBackend/pkg/service"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/implementation"
 	"github.com/sergey23144V/BotanyBackend/servers/graphql"
 	"log"
 	"reflect"
@@ -34,7 +35,7 @@ func StartServerGraphQl() {
 		err = db.AutoMigrate(api.ImgORM{}, api.EcomorphORM{}, api.EcomorphsEntityORM{}, api.UserORM{}, api.TypePlantORM{}, api.TrialSiteORM{}, api.TransectORM{})
 		log.Println("migrant")
 
-		authServet := api.NewAuthServer(db)
+		authServet := implementation.NewAuthServer(db)
 
 		newRepository := repository.NewRepository(db)
 		newService := service.NewService(newRepository)

@@ -1,4 +1,4 @@
-package api
+package implementation
 
 import (
 	context "context"
@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	resource "github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"gorm.io/gorm"
 
 	"github.com/sergey23144V/BotanyBackend/pkg"
@@ -20,17 +21,13 @@ type AuthServerImpl struct {
 	db *gorm.DB
 }
 
-func NewAuthServer(db *gorm.DB) AuthServerImpl {
-	return AuthServerImpl{db: db}
-}
-
-func (a AuthServerImpl) SignUpUser(ctx context.Context, input *SignUpUserInput) (*SignInUserResponse, error) {
-	_, err := a.CreateUser(ctx, input)
+func (a AuthServerImpl) SignUpSuperUser(ctx context.Context, input *api.SignUpUserInput) (*api.SignInUserResponse, error) {
+	_, err := a.CreatSuperUser(ctx, input)
 	if err != nil {
 		return nil, err
 	}
 
-	token, err := a.GenerateToken(ctx, &SignInUserInput{
+	token, err := a.GenerateToken(ctx, &api.SignInUserInput{
 		Email:    input.Email,
 		Password: input.Password,
 	})
@@ -38,20 +35,45 @@ func (a AuthServerImpl) SignUpUser(ctx context.Context, input *SignUpUserInput) 
 		return nil, err
 	}
 
-	return &SignInUserResponse{
+	return &api.SignInUserResponse{
 		Status:       "200",
 		AccessToken:  token,
 		RefreshToken: "",
 	}, nil
 }
 
-func (a AuthServerImpl) SignInUser(ctx context.Context, input *SignInUserInput) (*SignInUserResponse, error) {
+func NewAuthServer(db *gorm.DB) AuthServerImpl {
+	return AuthServerImpl{db: db}
+}
+
+func (a AuthServerImpl) SignUpUser(ctx context.Context, input *api.SignUpUserInput) (*api.SignInUserResponse, error) {
+	_, err := a.CreatUser(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+
+	token, err := a.GenerateToken(ctx, &api.SignInUserInput{
+		Email:    input.Email,
+		Password: input.Password,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &api.SignInUserResponse{
+		Status:       "200",
+		AccessToken:  token,
+		RefreshToken: "",
+	}, nil
+}
+
+func (a AuthServerImpl) SignInUser(ctx context.Context, input *api.SignInUserInput) (*api.SignInUserResponse, error) {
 	token, err := a.GenerateToken(ctx, input)
 	if err != nil {
 		return nil, err
 	}
 
-	return &SignInUserResponse{
+	return &api.SignInUserResponse{
 		Status:       "200",
 		AccessToken:  token,
 		RefreshToken: "",
@@ -63,8 +85,8 @@ func (a AuthServerImpl) MustEmbedUnimplementedAuthServiceServer() {
 	panic("implement me")
 }
 
-func (s *AuthServerImpl) GenerateToken(ctx context.Context, input *SignInUserInput) (string, error) {
-	userResult, err := ReadUserByEmailAndPassword(ctx, &User{Email: input.Email, Password: generatePasswordHash(input.Password)}, s.db)
+func (s *AuthServerImpl) GenerateToken(ctx context.Context, input *api.SignInUserInput) (string, error) {
+	userResult, err := api.ReadUserByEmailAndPassword(ctx, &api.User{Email: input.Email, Password: generatePasswordHash(input.Password)}, s.db)
 	if err != nil {
 		return "", err
 	}
@@ -75,6 +97,7 @@ func (s *AuthServerImpl) GenerateToken(ctx context.Context, input *SignInUserInp
 			IssuedAt:  time.Now().Unix(),
 		},
 		userResult.Id.ResourceId,
+		userResult.Role,
 	})
 
 	return token.SignedString([]byte(auth_helper.SigningKey))
@@ -87,8 +110,8 @@ func generatePasswordHash(password string) string {
 	return fmt.Sprintf("%x", hash.Sum([]byte(auth_helper.Salt)))
 }
 
-func (s *AuthServerImpl) CreateUser(ctx context.Context, input *SignUpUserInput) (*User, error) {
-	dubl, err := CheckingForDuplicateEmails(ctx, &User{Email: input.Email}, s.db)
+func (s *AuthServerImpl) CreatUser(ctx context.Context, input *api.SignUpUserInput) (*api.User, error) {
+	dubl, err := api.CheckingForDuplicateEmails(ctx, &api.User{Email: input.Email}, s.db)
 	if err != nil {
 		return nil, err
 	} else if !dubl {
@@ -100,20 +123,20 @@ func (s *AuthServerImpl) CreateUser(ctx context.Context, input *SignUpUserInput)
 		return nil, err
 	}
 
-	userInput := &User{
+	userInput := &api.User{
 		Id:        &resource.Identifier{ResourceId: pkg.GenerateUUID()},
 		Name:      input.Name,
 		Email:     input.Email,
-		Role:      RoleType_NormalUser,
+		Role:      api.RoleType_NormalUser,
 		Password:  generatePasswordHash(input.Password),
 		CreatedAt: nil,
 		UpdatedAt: nil,
 	}
-	return DefaultCreateUser(ctx, userInput, s.db)
+	return api.DefaultCreateUser(ctx, userInput, s.db)
 }
 
-func (s *AuthServerImpl) CreatSuperUser(ctx context.Context, input *SignUpUserInput) (*User, error) {
-	dubl, err := CheckingForDuplicateEmails(ctx, &User{Email: input.Email}, s.db)
+func (s *AuthServerImpl) CreatSuperUser(ctx context.Context, input *api.SignUpUserInput) (*api.User, error) {
+	dubl, err := api.CheckingForDuplicateEmails(ctx, &api.User{Email: input.Email}, s.db)
 	if err != nil {
 		return nil, err
 	} else if !dubl {
@@ -125,16 +148,16 @@ func (s *AuthServerImpl) CreatSuperUser(ctx context.Context, input *SignUpUserIn
 		return nil, err
 	}
 
-	userInput := &User{
+	userInput := &api.User{
 		Id:        &resource.Identifier{ResourceId: pkg.GenerateUUID()},
 		Name:      input.Name,
 		Email:     input.Email,
-		Role:      RoleType_SuperUser,
+		Role:      api.RoleType_SuperUser,
 		Password:  generatePasswordHash(input.Password),
 		CreatedAt: nil,
 		UpdatedAt: nil,
 	}
-	return DefaultCreateUser(ctx, userInput, s.db)
+	return api.DefaultCreateUser(ctx, userInput, s.db)
 }
 
 func ValidatePassword(password string) error {

@@ -6,6 +6,7 @@ import (
 	"github.com/sergey23144V/BotanyBackend/pkg/service"
 	g_rpc "github.com/sergey23144V/BotanyBackend/servers/g-rpc"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/implementation"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -34,7 +35,7 @@ func StartServerGRPC() {
 		}
 		log.Println("migrant")
 
-		authServet := api.NewAuthServer(db)
+		authServet := implementation.NewAuthServer(db)
 
 		newRepository := repository.NewRepository(db)
 		newService := service.NewService(newRepository)
@@ -63,7 +64,7 @@ func Authorisation(ctx context.Context, authClient api.AuthServiceClient, input 
 func GetToken(ctx context.Context, authClient api.AuthServiceClient) (context.Context, error) {
 
 	input := &api.SignInUserInput{
-		Email:    "serg2",
+		Email:    "serg22",
 		Password: "Sergey2222",
 	}
 
@@ -94,7 +95,7 @@ func Registration(ctx context.Context, authClient api.AuthServiceClient, input *
 }
 
 func GetAuthClient() (api.AuthServiceClient, *grpc.ClientConn) {
-	//StartServerGRPC()
+	StartServerGRPC()
 
 	time.Sleep(2 * time.Second)
 

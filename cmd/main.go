@@ -5,6 +5,7 @@ import (
 	"github.com/sergey23144V/BotanyBackend/pkg/service"
 	g_rpc "github.com/sergey23144V/BotanyBackend/servers/g-rpc"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
+	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/implementation"
 	"github.com/sergey23144V/BotanyBackend/servers/rest"
 	"log"
 )
@@ -28,7 +29,7 @@ func main() {
 	db.AutoMigrate(api.ImgORM{}, api.EcomorphORM{}, api.EcomorphsEntityORM{}, api.UserORM{}, api.TypePlantORM{}, api.PlantORM{}, api.TransectORM{}, api.TrialSiteORM{}, api.AnalysisORM{})
 	log.Println("migrant")
 
-	authServet := api.NewAuthServer(db)
+	authServet := implementation.NewAuthServer(db)
 
 	newRepository := repository.NewRepository(db)
 	newService := service.NewService(newRepository)

@@ -108,3 +108,54 @@ func TestRegistration(t *testing.T) {
 
 	<-done
 }
+
+func TestRegistrationSuperUser(t *testing.T) {
+	done := make(chan struct{})
+	defer close(done)
+	authClient, conn := g_rpc.GetAuthClient()
+
+	testTable := []struct {
+		name     string
+		user     *api.SignUpUserInput
+		expected bool
+	}{
+		{
+			name: "Done",
+			user: &api.SignUpUserInput{
+				Email:    "serg22",
+				Password: "Sergey2222",
+				Name:     "Sergey Kalinin",
+			},
+			expected: true,
+		},
+		{
+			name: "Error",
+			user: &api.SignUpUserInput{
+				Email:    "sergeykalinin@gmail",
+				Password: "Ser",
+				Name:     "Sergey Kalinin",
+			},
+			expected: false,
+		},
+	}
+
+	for _, testCase := range testTable {
+		t.Run(testCase.name, func(t *testing.T) {
+			ctx := context.Background()
+			_, err := authClient.SignUpSuperUser(ctx, testCase.user)
+			if testCase.expected {
+				assert.NoError(t, err, "Done")
+			} else {
+				assert.Error(t, err, "Error")
+			}
+		})
+	}
+	err := conn.Close()
+	if err != nil {
+		return
+	}
+
+	return
+
+	<-done
+}

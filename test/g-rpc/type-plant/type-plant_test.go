@@ -51,6 +51,7 @@ func TestCreatesTypePlant(t *testing.T) {
 					EcomorphsEntity: []*api.EcomorphsEntity{{Id: &resource.Identifier{ResourceId: "09f59b48-64bf-79ed-f980-8d675ef182c6"}}, {Id: &resource.Identifier{ResourceId: "5aea8c3e-6bc0-9f9b-716e-d71b7f70565d"}}},
 					//Img:             &api.Img{Id: &resource.Identifier{ResourceId: "5622f6d5-9dd1-1567-d198-0ca6a1600c2d"}},
 				},
+				Publicly: true,
 			},
 			expected: true,
 		},
@@ -112,6 +113,17 @@ func TestUpdateTypePlantById(t *testing.T) {
 			name: "Done",
 			InputTypePlant: &api.InputTypePlantRequest{
 				Id: CreateTypePlant(ctx, *client),
+				Input: &api.InputFormTypePlantRequest{
+					Title:           "не Семейство",
+					EcomorphsEntity: []*api.EcomorphsEntity{{Id: ecomorph_entity.CreateEcomorphsEntity(ctx, *client)}},
+				},
+			},
+			expected: true,
+		},
+		{
+			name: "Done",
+			InputTypePlant: &api.InputTypePlantRequest{
+				Id: &resource.Identifier{ResourceId: "92bd51e1-33f2-0f8b-f27b-4f52bd06961a"},
 				Input: &api.InputFormTypePlantRequest{
 					Title:           "не Семейство",
 					EcomorphsEntity: []*api.EcomorphsEntity{{Id: ecomorph_entity.CreateEcomorphsEntity(ctx, *client)}},
@@ -182,6 +194,11 @@ func TestGetListTypePlant(t *testing.T) {
 			request: &api.TypePlantListRequest{
 				Page: &api.PagesRequest{Page: 1, Limit: 2},
 			},
+			expected: true,
+		},
+		{
+			name:     "GetListTypePlant",
+			request:  &api.TypePlantListRequest{},
 			expected: true,
 		},
 	}

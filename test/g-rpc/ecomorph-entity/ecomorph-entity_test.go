@@ -1,6 +1,7 @@
 package ecomorph_entity
 
 import (
+	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
 	"github.com/sergey23144V/BotanyBackend/test/g-rpc/ecomorph"
@@ -25,6 +26,18 @@ func TestCreateEcomorphsEntity(t *testing.T) {
 					Description: "Ну про вид",
 					Ecomorphs:   &api.Ecomorph{Id: ecomorph.CreateEcomorph(ctx, client.Ecomorph)},
 				},
+			},
+			expected: true,
+		},
+		{
+			name: "Done",
+			Ecomorph: &api.InputEcomorphsEntity{
+				Input: &api.InputFormEcomorphsEntity{
+					Title:       "Семейство",
+					Description: "Ну про вид",
+					Ecomorphs:   &api.Ecomorph{Id: ecomorph.CreateEcomorph(ctx, client.Ecomorph)},
+				},
+				Publicly: true,
 			},
 			expected: true,
 		},
@@ -91,6 +104,16 @@ func TestUpdateEcomorphEntityById(t *testing.T) {
 			},
 			expected: true,
 		},
+		{
+			name: "GetEcomorphEntity",
+			idEcomorph: &api.InputEcomorphsEntity{
+				Id: &resource.Identifier{ResourceId: "1e292960-b063-95e6-af1f-ca7243fa0126"},
+				Input: &api.InputFormEcomorphsEntity{
+					Title: "Не семейство",
+				},
+			},
+			expected: true,
+		},
 	}
 
 	for _, testCase := range testTable {
@@ -120,11 +143,17 @@ func TestGetListEcomorphEntity(t *testing.T) {
 			},
 			expected: true,
 		},
+		{
+			name:     "GetListEcomorphEntity",
+			request:  &api.EcomorphsEntityListRequest{},
+			expected: true,
+		},
 	}
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-			_, err := client.Ecomorph_Emtity.GetAllEcomorphEntity(ctx, testCase.request)
+			r, err := client.Ecomorph_Emtity.GetAllEcomorphEntity(ctx, testCase.request)
+			g_rpc.Log(r)
 			if testCase.expected {
 				assert.NoError(t, err, "Done")
 			} else {

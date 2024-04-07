@@ -64,7 +64,7 @@ func Authorisation(ctx context.Context, authClient api.AuthServiceClient, input 
 func GetToken(ctx context.Context, authClient api.AuthServiceClient) (context.Context, error) {
 
 	input := &api.SignInUserInput{
-		Email:    "serg22",
+		Email:    "serg2",
 		Password: "Sergey2222",
 	}
 

@@ -175,7 +175,7 @@ func (e EcomorphRepositoryImpl) GetListEcomorph(ctx context.Context, in *api.Eco
 		offset := (request.Page.Page - 1) * request.Page.Limit
 		e.db = e.db.Where(&ormObj).Offset(int(offset)).Limit(int(request.Page.Limit))
 	} else {
-		//e.db = e.db.Where(&ormObj)
+		e.db = e.db.Where(&ormObj)
 	}
 
 	e.db = e.db.Order("id").Or("user_id IS NULL")

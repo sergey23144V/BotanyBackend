@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	er "errors"
 	"fmt"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -14,9 +15,9 @@ import (
 type TypePlantRepository interface {
 	CreateTypePlant(ctx context.Context, in *api.TypePlant) (*api.TypePlant, error)
 	GetTypePlantById(ctx context.Context, in *api.TypePlant) (*api.TypePlant, error)
-	DeleteTypePlant(ctx context.Context, in *api.TypePlant) error
+	DeleteTypePlant(ctx context.Context, in *api.TypePlant, userRole api.RoleType) error
 	StrictUpdateTypePlant(ctx context.Context, in *api.TypePlant) (*api.TypePlant, error)
-	UpdateTypePlant(ctx context.Context, in *api.TypePlant, updateMask *field_mask.FieldMask) (*api.TypePlant, error)
+	UpdateTypePlant(ctx context.Context, in *api.TypePlant, updateMask *field_mask.FieldMask, userRole api.RoleType) (*api.TypePlant, error)
 	GetListTypePlant(ctx context.Context, in *api.TypePlant, request *api.TypePlantListRequest) ([]*api.TypePlant, error)
 }
 
@@ -63,9 +64,16 @@ func (t TypePlantRepositoryImpl) GetTypePlantById(ctx context.Context, in *api.T
 	return &pbResponse, err
 }
 
-func (t TypePlantRepositoryImpl) DeleteTypePlant(ctx context.Context, in *api.TypePlant) error {
+func (t TypePlantRepositoryImpl) DeleteTypePlant(ctx context.Context, in *api.TypePlant, userRole api.RoleType) error {
 	if in == nil {
 		return errors.NilArgumentError
+	}
+	pbReadRes, err := api.DefaultReadEcomorphsEntity(ctx, &api.EcomorphsEntity{Id: in.GetId()}, t.db)
+	if err != nil {
+		return err
+	}
+	if pbReadRes.UserId == nil && userRole != api.RoleType_SuperUser {
+		return er.New("has no rights")
 	}
 	ormObj, err := in.ToORM(ctx)
 	if err != nil {
@@ -109,7 +117,7 @@ func (t TypePlantRepositoryImpl) StrictUpdateTypePlant(ctx context.Context, in *
 	return &pbResponse, err
 }
 
-func (t TypePlantRepositoryImpl) UpdateTypePlant(ctx context.Context, in *api.TypePlant, updateMask *field_mask.FieldMask) (*api.TypePlant, error) {
+func (t TypePlantRepositoryImpl) UpdateTypePlant(ctx context.Context, in *api.TypePlant, updateMask *field_mask.FieldMask, userRole api.RoleType) (*api.TypePlant, error) {
 	if in == nil {
 		return nil, errors.NilArgumentError
 	}
@@ -120,6 +128,9 @@ func (t TypePlantRepositoryImpl) UpdateTypePlant(ctx context.Context, in *api.Ty
 		return nil, err
 	}
 	pbObj = *pbReadRes
+	if pbReadRes.UserId == nil && userRole != api.RoleType_SuperUser {
+		return nil, er.New("has no rights")
+	}
 
 	if in.EcomorphsEntity != nil {
 		for _, input := range pbObj.EcomorphsEntity {
@@ -146,13 +157,13 @@ func (t TypePlantRepositoryImpl) GetListTypePlant(ctx context.Context, in *api.T
 		return nil, err
 	}
 
-	if request != nil && request.Page.Page != 0 && request.Page.Limit != 0 {
+	if request.Page != nil && request.Page.Page != 0 && request.Page.Limit != 0 {
 		offset := (request.Page.Page - 1) * request.Page.Limit
 		t.db = t.db.Where(&ormObj).Offset(int(offset)).Limit(int(request.Page.Limit))
 	} else {
 		t.db = t.db.Where(&ormObj)
 	}
-	t.db = t.db.Clauses(expression...).Order("id")
+	t.db = t.db.Clauses(expression...).Order("id").Or("user_id IS NULL")
 	ormResponse := []api.TypePlantORM{}
 	if err := t.db.Preload("Img").Preload("EcomorphsEntity").Find(&ormResponse).Error; err != nil {
 		return nil, err

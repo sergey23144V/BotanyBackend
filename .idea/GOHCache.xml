@@ -1185,7 +1185,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/repository/ecomorph-entity-repository.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712399406695" />
+              <option name="lastModified" value="1712494706649" />
               <option name="schema">
                 <list>
                   <option value="EcomorphsEntityRepositoryImpl" />
@@ -1197,7 +1197,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/repository/ecomorph-repository.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712492976053" />
+              <option name="lastModified" value="1712494706468" />
               <option name="schema">
                 <list>
                   <option value="EcomorphRepositoryImpl" />
@@ -1269,7 +1269,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/repository/type-plant-repository.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712399406645" />
+              <option name="lastModified" value="1712494833904" />
               <option name="schema">
                 <list>
                   <option value="TypePlantRepositoryImpl" />
@@ -1305,7 +1305,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/service/ecomorph-entity-service.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712394451263" />
+              <option name="lastModified" value="1712495027269" />
               <option name="schema">
                 <list>
                   <option value="EcomorphsEntityServiceImpl" />
@@ -1377,7 +1377,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/service/type-plant-service.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712396918636" />
+              <option name="lastModified" value="1712495027357" />
               <option name="schema">
                 <list>
                   <option value="TypePlantServiceImpl" />
@@ -2135,6 +2135,13 @@
             </ScannedPath>
           </value>
         </entry>
+        <entry key="file://$PROJECT_DIR$/test/g-rpc/ecomorph-entity/ecomorph-entity_test.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712495240372" />
+            </ScannedPath>
+          </value>
+        </entry>
         <entry key="file://$PROJECT_DIR$/test/g-rpc/ecomorph/ecomorph_test.go">
           <value>
             <ScannedPath>
@@ -2145,12 +2152,19 @@
         <entry key="file://$PROJECT_DIR$/test/g-rpc/settings.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712493774471" />
+              <option name="lastModified" value="1712495258912" />
               <option name="schema">
                 <list>
                   <option value="ClientService" />
                 </list>
               </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/test/g-rpc/type-plant/type-plant_test.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712495302057" />
             </ScannedPath>
           </value>
         </entry>

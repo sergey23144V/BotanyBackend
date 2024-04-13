@@ -76,7 +76,6 @@
         <entry key="AuthServerImpl">
           <value>
             <set>
-              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/auth-impl.go" />
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/implementation/auth-impl.go" />
             </set>
           </value>
@@ -85,13 +84,6 @@
           <value>
             <set>
               <option value="file://$PROJECT_DIR$/servers/g-rpc/api/elementary-type.pb.go" />
-            </set>
-          </value>
-        </entry>
-        <entry key="ClientService">
-          <value>
-            <set>
-              <option value="file://$PROJECT_DIR$/test/g-rpc/settings.go" />
             </set>
           </value>
         </entry>
@@ -1257,7 +1249,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/repository/trial-site-repository.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712399407058" />
+              <option name="lastModified" value="1712506011055" />
               <option name="schema">
                 <list>
                   <option value="TrialSiteRepositoryImpl" />
@@ -1293,7 +1285,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/service/analysis-service.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712405472215" />
+              <option name="lastModified" value="1712515848789" />
               <option name="schema">
                 <list>
                   <option value="AnalysisServiceImpl" />
@@ -1365,7 +1357,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/service/trial-site-service.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712399406489" />
+              <option name="lastModified" value="1712505139578" />
               <option name="schema">
                 <list>
                   <option value="TrialSiteServiceImpl" />
@@ -1383,13 +1375,6 @@
                   <option value="TypePlantServiceImpl" />
                 </list>
               </option>
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/pkg/service/user-sercive.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712488062160" />
             </ScannedPath>
           </value>
         </entry>
@@ -1443,18 +1428,6 @@
                 <list>
                   <option value="analysisServiceClient" />
                   <option value="UnimplementedAnalysisServiceServer" />
-                </list>
-              </option>
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/auth-impl.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712491590103" />
-              <option name="schema">
-                <list>
-                  <option value="AuthServerImpl" />
                 </list>
               </option>
             </ScannedPath>
@@ -2128,53 +2101,6 @@
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/auth/auth_test.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712491944752" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/ecomorph-entity/ecomorph-entity_test.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712495240372" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/ecomorph/ecomorph_test.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712493739950" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/settings.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712495258912" />
-              <option name="schema">
-                <list>
-                  <option value="ClientService" />
-                </list>
-              </option>
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/type-plant/type-plant_test.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712495302057" />
-            </ScannedPath>
-          </value>
-        </entry>
-        <entry key="file://$PROJECT_DIR$/test/graphqlTest/settings.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1712491681859" />
-            </ScannedPath>
-          </value>
-        </entry>
       </map>
     </option>
     <option name="tableStructMapping">
@@ -2198,7 +2124,6 @@
         <entry key="auth_server_impl" value="AuthServerImpl" />
         <entry key="auth_service_client" value="authServiceClient" />
         <entry key="bool_response" value="BoolResponse" />
-        <entry key="client_service" value="ClientService" />
         <entry key="complexity_root" value="ComplexityRoot" />
         <entry key="config" value="Config" />
         <entry key="credentials_auth" value="CredentialsAuth" />
@@ -2337,6 +2262,6 @@
         <entry key="x" value="x" />
       </map>
     </option>
-    <option name="lastTimeChecked" value="1712407538887" />
+    <option name="lastTimeChecked" value="1712985630040" />
   </component>
 </project>

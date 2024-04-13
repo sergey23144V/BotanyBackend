@@ -46,7 +46,11 @@ func (t TrialSiteServiceImpl) AddPlantsToTrialSite(ctx context.Context, request 
 		for _, plant := range request.Input.Plant {
 			trialSite.Plant = append(trialSite.Plant, plant)
 		}
-		return t.repository.StrictUpdateTrialSite(ctx, trialSite)
+		pb, err := t.repository.TrialSiteRepository.UpdateTrialSite(ctx, trialSite, &field_mask.FieldMask{Paths: []string{"Plant"}})
+		if err != nil {
+			return nil, err
+		}
+		return t.DetectionPlant(ctx, pb)
 	} else {
 		return nil, errors.New("not have plant")
 	}

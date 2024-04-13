@@ -6,7 +6,6 @@ import (
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
 	"github.com/sergey23144V/BotanyBackend/test/g-rpc/ecomorph"
 	"github.com/stretchr/testify/assert"
-	"log"
 	"testing"
 )
 
@@ -46,7 +45,7 @@ func TestCreateEcomorphsEntity(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			result, err := client.Ecomorph_Emtity.InsertEcomorphEntity(ctx, testCase.Ecomorph)
-			log.Println(result.Ecomorphs.Title)
+			g_rpc.Log(result)
 			if testCase.expected {
 				//err := DeleteEcomorphsEntity(ctx, *client, result.Id)
 				assert.NoError(t, err, "Done")

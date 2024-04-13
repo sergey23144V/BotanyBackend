@@ -92,7 +92,7 @@ func TestGetTypePlantById(t *testing.T) {
 			result, err := client.TypePlant.GetTypePlant(ctx, testCase.id)
 			g_rpc.Log(result)
 			if testCase.expected {
-				err := DeleteTypePlant(ctx, *client, testCase.id.Id)
+				//err := DeleteTypePlant(ctx, *client, testCase.id.Id)
 				assert.NoError(t, err, "Done")
 			} else {
 				assert.Error(t, err, "Error")
@@ -136,7 +136,7 @@ func TestUpdateTypePlantById(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			result, err := client.TypePlant.UpdateTypePlant(ctx, testCase.InputTypePlant)
-			log.Println(result.EcomorphsEntity)
+			log.Println(result)
 			if testCase.expected {
 				assert.NoError(t, err, "Done")
 			} else {

@@ -99,11 +99,17 @@ func (t AnalysisServiceImpl) CreateExcelTypeAnalysisPlantAnalysis(ctx context.Co
 	for _, item := range transect.TrialSite {
 		for _, plant := range item.Plant {
 			if typePlants[plant.TypePlant.Id.ResourceId] == false {
-				indexPlant++
+				indexPlant += 2
 				number++
 				typePlants[plant.TypePlant.Id.ResourceId] = true
 				err = f.SetCellValue(sheetName, "A"+strconv.Itoa(indexPlant), number)
 				if err != nil {
+					return nil, err
+				}
+
+				err = f.MergeCell(sheetName, "A"+strconv.Itoa(indexPlant), "A"+strconv.Itoa(indexPlant+1))
+				if err != nil {
+					fmt.Println("Ошибка при объединении ячеек:", err)
 					return nil, err
 				}
 
@@ -112,12 +118,24 @@ func (t AnalysisServiceImpl) CreateExcelTypeAnalysisPlantAnalysis(ctx context.Co
 					return nil, err
 				}
 
+				err = f.MergeCell(sheetName, "B"+strconv.Itoa(indexPlant), "B"+strconv.Itoa(indexPlant+1))
+				if err != nil {
+					fmt.Println("Ошибка при объединении ячеек:", err)
+					return nil, err
+				}
+
 				err = f.SetCellValue(sheetName, "C"+strconv.Itoa(indexPlant), plant.TypePlant.Subtitle)
 				if err != nil {
 					return nil, err
 				}
-				ecomorphsColumb := 'D'
 
+				err = f.MergeCell(sheetName, "C"+strconv.Itoa(indexPlant), "C"+strconv.Itoa(indexPlant+1))
+				if err != nil {
+					fmt.Println("Ошибка при объединении ячеек:", err)
+					return nil, err
+				}
+				ecomorphsColumb := 'D'
+				sum := 0
 				for _, ecomorphItem := range ecomorph {
 					ecomorphsEntity := GetEcomorphsEntityFromTypePlant(plant.TypePlant, ecomorphItem)
 
@@ -126,6 +144,11 @@ func (t AnalysisServiceImpl) CreateExcelTypeAnalysisPlantAnalysis(ctx context.Co
 						if err != nil {
 							return nil, err
 						}
+						err = f.SetCellValue(sheetName, string(ecomorphsColumb)+strconv.Itoa(indexPlant+1), ecomorphsEntity.Score)
+						if err != nil {
+							return nil, err
+						}
+						sum +=
 					} else {
 						return nil, err
 					}
@@ -140,7 +163,7 @@ func (t AnalysisServiceImpl) CreateExcelTypeAnalysisPlantAnalysis(ctx context.Co
 
 	}
 
-	indexPlant++
+	indexPlant += 2
 	ecomorphsColumb := 'D'
 
 	for _, ecomorphsEntity := range ecomorphsAnalis {
@@ -185,17 +208,33 @@ func (t AnalysisServiceImpl) BasicFormTypePlant(sheetName string, indexPlant int
 	if err != nil {
 		return err
 	}
+	f.SetColWidth(sheetName, "A", "A", 3)
 
+	err = f.MergeCell(sheetName, "A2", "A4")
+	if err != nil {
+		fmt.Println("Ошибка при объединении ячеек:", err)
+		return err
+	}
 	err = f.SetCellValue(sheetName, "B"+strconv.Itoa(indexPlant), "Вид")
 	if err != nil {
 		return err
 	}
 
+	err = f.MergeCell(sheetName, "B2", "B4")
+	if err != nil {
+		fmt.Println("Ошибка при объединении ячеек:", err)
+		return err
+	}
 	err = f.SetCellValue(sheetName, "C"+strconv.Itoa(indexPlant), "Название на латыни")
 	if err != nil {
 		return err
 	}
 
+	err = f.MergeCell(sheetName, "C2", "C4")
+	if err != nil {
+		fmt.Println("Ошибка при объединении ячеек:", err)
+		return err
+	}
 	column := 'D'
 	for _, item := range ecomorph {
 		err = f.SetCellValue(sheetName, string(column)+strconv.Itoa(indexPlant), item.Title)
@@ -231,9 +270,10 @@ func (t AnalysisServiceImpl) CreateExcelTypeTrialSiteAnalysis(ctx context.Contex
 		return nil, err
 	}
 	indexPlant += 3
-	number := 1
+	number := 0
 	columnTrialSite := 'D'
 	typePlants := map[string]int{}
+	ecomorphUnique := map[string]bool{}
 	indexTrialSite := indexPlant
 	for i, item := range transect.TrialSite {
 		err = f.SetCellValue(sheetName, string(columnTrialSite)+"3", strconv.Itoa(int(item.Covered))+" %")
@@ -247,11 +287,12 @@ func (t AnalysisServiceImpl) CreateExcelTypeTrialSiteAnalysis(ctx context.Contex
 		for _, plant := range item.Plant {
 
 			if typePlants[plant.TypePlant.Id.ResourceId] == 0 {
+				number++
 				err = f.SetCellValue(sheetName, "A"+strconv.Itoa(indexPlant), number)
 				if err != nil {
 					return nil, err
 				}
-				number++
+
 				err = f.MergeCell(sheetName, "A"+strconv.Itoa(indexPlant), "A"+strconv.Itoa(indexPlant+1))
 				if err != nil {
 					fmt.Println("Ошибка при объединении ячеек:", err)
@@ -268,18 +309,21 @@ func (t AnalysisServiceImpl) CreateExcelTypeTrialSiteAnalysis(ctx context.Contex
 					fmt.Println("Ошибка при объединении ячеек:", err)
 					return nil, err
 				}
-
-				err = f.SetCellValue(sheetName, "C"+strconv.Itoa(indexPlant), GetEcomorphsEntityFromTypePlant(plant.TypePlant, ecomorph).Title)
+				ecomorphsEntity := GetEcomorphsEntityFromTypePlant(plant.TypePlant, ecomorph)
+				err = f.SetCellValue(sheetName, "C"+strconv.Itoa(indexPlant), ecomorphsEntity.Title)
 				if err != nil {
 					return nil, err
 				}
-
+				if !ecomorphUnique[ecomorphsEntity.Id.ResourceId] {
+					ecomorphUnique[ecomorphsEntity.Id.ResourceId] = true
+				}
 				err = f.MergeCell(sheetName, "C"+strconv.Itoa(indexPlant), "C"+strconv.Itoa(indexPlant+1))
 				if err != nil {
 					fmt.Println("Ошибка при объединении ячеек:", err)
 					return nil, err
 				}
-
+				indexPlant += 2
+				indexTrialSite += 2
 			}
 
 			err = f.SetCellValue(sheetName, string(columnTrialSite)+strconv.Itoa(typePlants[plant.TypePlant.Id.ResourceId]), plant.Coverage)
@@ -287,12 +331,45 @@ func (t AnalysisServiceImpl) CreateExcelTypeTrialSiteAnalysis(ctx context.Contex
 				return nil, err
 			}
 
-			err = f.SetCellValue(sheetName, string(columnTrialSite)+strconv.Itoa(typePlants[plant.TypePlant.Id.ResourceId]+1), plant.Count)
+			err = f.SetCellValue(sheetName, string(columnTrialSite)+strconv.Itoa(typePlants[plant.TypePlant.Id.ResourceId]+1), RevealBall(int(plant.Coverage)))
 			if err != nil {
 				return nil, err
 			}
-			indexPlant += 2
-			indexTrialSite += 2
+			f.SetColWidth(sheetName, string(columnTrialSite), string(columnTrialSite), 5)
+		}
+		columnTrialSite++
+	}
+
+	err = f.SetCellValue(sheetName, "B"+strconv.Itoa(indexPlant), "всего видов: "+strconv.Itoa(number))
+	if err != nil {
+		return nil, err
+	}
+	err = f.MergeCell(sheetName, "B"+strconv.Itoa(indexPlant), "B"+strconv.Itoa(indexPlant+1))
+	if err != nil {
+		fmt.Println("Ошибка при объединении ячеек:", err)
+		return nil, err
+	}
+
+	err = f.SetCellValue(sheetName, "C"+strconv.Itoa(indexPlant), "всего "+ecomorph.Title+" : "+strconv.Itoa(len(ecomorphUnique)))
+	if err != nil {
+		return nil, err
+	}
+	err = f.MergeCell(sheetName, "C"+strconv.Itoa(indexPlant), "C"+strconv.Itoa(indexPlant+1))
+	if err != nil {
+		fmt.Println("Ошибка при объединении ячеек:", err)
+		return nil, err
+	}
+	columnTrialSite = 'D'
+
+	for _, trialSite := range transect.TrialSite {
+		err = f.SetCellValue(sheetName, string(columnTrialSite)+strconv.Itoa(indexPlant), strconv.Itoa(len(trialSite.Plant))+" вида")
+		if err != nil {
+			return nil, err
+		}
+		err = f.MergeCell(sheetName, string(columnTrialSite)+strconv.Itoa(indexPlant), string(columnTrialSite)+strconv.Itoa(indexPlant+1))
+		if err != nil {
+			fmt.Println("Ошибка при объединении ячеек:", err)
+			return nil, err
 		}
 		columnTrialSite++
 	}
@@ -321,6 +398,23 @@ func (t AnalysisServiceImpl) CreateExcelTypeTrialSiteAnalysis(ctx context.Contex
 	return analysis, nil
 }
 
+func RevealBall(coverage int) string {
+	switch {
+	case coverage < 1:
+		return "+"
+	case coverage < 5:
+		return "1"
+	case coverage < 25:
+		return "2"
+	case coverage < 50:
+		return "3"
+	case coverage < 75:
+		return "4"
+	default:
+		return "5"
+	}
+}
+
 func GetEcomorphsEntityFromTypePlant(typePlant *api.TypePlant, ecomorph *api.Ecomorph) *api.EcomorphsEntity {
 	for _, ecomorphEmtiti := range typePlant.EcomorphsEntity {
 		if ecomorphEmtiti.Ecomorphs.Id.ResourceId == ecomorph.Id.ResourceId {
@@ -341,6 +435,7 @@ func (t AnalysisServiceImpl) BasicFormTrialSite(sheetName string, indexPlant int
 		fmt.Println("Ошибка при объединении ячеек:", err)
 		return err
 	}
+	f.SetColWidth(sheetName, "A", "A", 3)
 
 	err = f.SetCellValue(sheetName, "B"+strconv.Itoa(indexPlant), "Вид")
 	if err != nil {
@@ -353,6 +448,8 @@ func (t AnalysisServiceImpl) BasicFormTrialSite(sheetName string, indexPlant int
 		return err
 	}
 
+	f.SetColWidth(sheetName, "B", "B", 25)
+
 	err = f.SetCellValue(sheetName, "C"+strconv.Itoa(indexPlant), ecomorphTitle)
 	if err != nil {
 		return err
@@ -363,6 +460,8 @@ func (t AnalysisServiceImpl) BasicFormTrialSite(sheetName string, indexPlant int
 		fmt.Println("Ошибка при объединении ячеек:", err)
 		return err
 	}
+
+	f.SetColWidth(sheetName, "C", "C", 25)
 
 	err = f.SetCellValue(sheetName, "D"+strconv.Itoa(indexPlant), "Проективное покрытие каждой площадки номер пробной площадки")
 	if err != nil {

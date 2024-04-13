@@ -4,6 +4,7 @@ import (
 	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
+	trial_site "github.com/sergey23144V/BotanyBackend/test/g-rpc/trial-site"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -99,6 +100,43 @@ func TestUpdateTransectById(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			_, err := client.Transect.UpTransect(ctx, testCase.Transect)
+			if testCase.expected {
+				err := DeleteTransect(ctx, *client, testCase.Transect.Id)
+				assert.NoError(t, err, "Done")
+			} else {
+				assert.Error(t, err, "Error")
+			}
+		})
+	}
+}
+
+func TestAddTrialSiteToTransect(t *testing.T) {
+	client, ctx := g_rpc.GetClient()
+
+	testTable := []struct {
+		name     string
+		Transect *api.InputTransectRequest
+		expected bool
+	}{
+		{
+			name: "GetTransect",
+			Transect: &api.InputTransectRequest{
+				Id: CreateTransect(ctx, *client),
+				Input: &api.InputFormTransectRequest{
+					Title: "не Семейство",
+					TrialSite: []*api.TrialSite{{Id: trial_site.CreateTrialSite(ctx, *client)},
+						{Id: trial_site.CreateTrialSite(ctx, *client)},
+					},
+				},
+			},
+			expected: true,
+		},
+	}
+
+	for _, testCase := range testTable {
+		t.Run(testCase.name, func(t *testing.T) {
+			r, err := client.Transect.AddTrialSiteToTransect(ctx, testCase.Transect)
+			g_rpc.Log(r)
 			if testCase.expected {
 				err := DeleteTransect(ctx, *client, testCase.Transect.Id)
 				assert.NoError(t, err, "Done")

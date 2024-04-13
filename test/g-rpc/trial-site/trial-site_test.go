@@ -135,6 +135,39 @@ func TestUpdateTrialSiteById(t *testing.T) {
 	}
 }
 
+func TestAddPlantsToTrialSite(t *testing.T) {
+	client, ctx := g_rpc.GetClient()
+
+	testTable := []struct {
+		name      string
+		TrialSite *api.InputTrialSiteRequest
+		expected  bool
+	}{
+		{
+			name: "GetTransect",
+			TrialSite: &api.InputTrialSiteRequest{
+				Id: CreateTrialSite(ctx, *client),
+				Input: &api.InputFormTrialSiteRequest{
+					Plant: []*api.Plant{{Id: CreatePlant(ctx, *client)}, {Id: CreatePlant(ctx, *client)}},
+				},
+			},
+			expected: true,
+		},
+	}
+
+	for _, testCase := range testTable {
+		t.Run(testCase.name, func(t *testing.T) {
+			_, err := client.TrialSite.AddPlantsToTrialSite(ctx, testCase.TrialSite)
+			if testCase.expected {
+				err := DeleteTrialSite(ctx, *client, testCase.TrialSite.Id)
+				assert.NoError(t, err, "Done")
+			} else {
+				assert.Error(t, err, "Error")
+			}
+		})
+	}
+}
+
 func TestGetListTrialSite(t *testing.T) {
 	client, ctx := g_rpc.GetClient()
 

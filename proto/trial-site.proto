@@ -126,10 +126,6 @@ message InputPlantRequest{
 message FilterTrialSite {
   repeated atlas.rpc.Identifier id = 1;
   string searchTitle = 2;
-  optional Direction title = 3;
-  optional Direction covered = 4;
-  optional Direction rating = 5;
-  optional Direction count_types = 6;
   TypePlant dominant = 7;
   TypePlant subDominant = 8;
 }

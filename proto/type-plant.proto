@@ -79,7 +79,6 @@ message InputTypePlant_EcomorphsEntityRequest{
 message FilterTypePlant {
   repeated atlas.rpc.Identifier id = 1;
   optional string searchTitle = 2;
-  optional Direction title = 3;
   repeated EcomorphsEntity ecomorphsEntity = 4;
 }
 

@@ -226,22 +226,5 @@ func (s TypePlantRepositoryImpl) GetWhereList(filter *api.FilterTypePlant) []cla
 		})
 	}
 
-	if filter.Title != nil {
-
-		var interfaceIds []interface{}
-		var columns []clause.OrderByColumn
-
-		interfaceIds = append(interfaceIds, filter.SearchTitle)
-
-		columns = append(columns, clause.OrderByColumn{
-			Column: clause.Column{Name: "title"},
-			Desc:   *filter.Title == api.Direction_DESCENDING,
-		})
-		conditions = append(conditions, clause.OrderBy{
-			Columns:    columns,
-			Expression: nil,
-		})
-	}
-
 	return conditions
 }

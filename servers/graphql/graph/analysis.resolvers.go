@@ -6,7 +6,10 @@ package graph
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
+	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"github.com/sergey23144V/BotanyBackend/servers/graphql/graph/model"
@@ -24,27 +27,43 @@ func (r *analysisResolver) TypeAnalysis(ctx context.Context, obj *api.Analysis) 
 
 // CreatAnalysis is the resolver for the creatAnalysis field.
 func (r *analysisMutationResolver) CreatAnalysis(ctx context.Context, obj *model.AnalysisMutation, input *api.InputCreateAnalysis) (*api.Analysis, error) {
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.New("not authorization")
+	}
 	return r.service.AnalysisService.CreatAnalysis(ctx, input)
 }
 
 // RepeatedAnalysis is the resolver for the repeatedAnalysis field.
 func (r *analysisMutationResolver) RepeatedAnalysis(ctx context.Context, obj *model.AnalysisMutation, input *api.InputUpdateAnalysis) (*api.Analysis, error) {
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.New("not authorization")
+	}
 	panic(fmt.Errorf("not implemented: RepeatedAnalysis - repeatedAnalysis"))
+	return r.service.AnalysisService.RepeatedAnalysis(ctx, input)
 }
 
 // DeleteAnalysis is the resolver for the deleteAnalysis field.
 func (r *analysisMutationResolver) DeleteAnalysis(ctx context.Context, obj *model.AnalysisMutation, id string) (*api.BoolResponse, error) {
-	panic(fmt.Errorf("not implemented: DeleteAnalysis - deleteAnalysis"))
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.New("not authorization")
+	}
+	return r.service.AnalysisService.DeleteAnalysis(ctx, &api.IdRequest{Id: &resource.Identifier{ResourceId: id}})
 }
 
 // GetAnalysis is the resolver for the getAnalysis field.
 func (r *analysisQueryResolver) GetAnalysis(ctx context.Context, obj *model.AnalysisQuery, id string) (*api.Analysis, error) {
-	panic(fmt.Errorf("not implemented: GetAnalysis - getAnalysis"))
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.New("not authorization")
+	}
+	return r.service.AnalysisService.GetAnalysis(ctx, &api.IdRequest{Id: &resource.Identifier{ResourceId: id}})
 }
 
 // GetListAnalysis is the resolver for the getListAnalysis field.
 func (r *analysisQueryResolver) GetListAnalysis(ctx context.Context, obj *model.AnalysisQuery, pages *api.PagesRequest) (*api.AnalysisList, error) {
-	panic(fmt.Errorf("not implemented: GetListAnalysis - getListAnalysis"))
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.New("not authorization")
+	}
+	return r.service.AnalysisService.GetListAnalysis(ctx, pages)
 }
 
 // TypeAnalysis is the resolver for the typeAnalysis field.

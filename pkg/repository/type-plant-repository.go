@@ -220,9 +220,9 @@ func (s TypePlantRepositoryImpl) GetWhereList(filter *api.FilterTypePlant) []cla
 
 		interfaceIds = append(interfaceIds, filter.SearchTitle)
 
-		conditions = append(conditions, clause.IN{
-			Column: clause.Column{Name: "title"},
-			Values: interfaceIds,
+		conditions = append(conditions, clause.Expr{
+			SQL:  "title ~ ?",
+			Vars: interfaceIds,
 		})
 	}
 

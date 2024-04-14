@@ -71,9 +71,7 @@ func (t TransectServiceImpl) DeleteTransect(ctx context.Context, request *api.Id
 
 func (t TransectServiceImpl) DetectionPlant(ctx context.Context, in *api.Transect) (*api.Transect, error) {
 	var (
-		dominants    *api.TypePlant
-		subDominants *api.TypePlant
-		typePlant    []*api.Plant
+		typePlant []*api.Plant
 	)
 	output, err := t.GetTransectById(ctx, &api.IdRequest{Id: in.Id})
 	if err != nil {
@@ -81,42 +79,32 @@ func (t TransectServiceImpl) DetectionPlant(ctx context.Context, in *api.Transec
 	}
 	trialSites := output.TrialSite
 	countsDominants := make(map[string]int)
-	countsSubDominants := make(map[string]int)
 
 	for _, item := range trialSites {
 		for _, plant := range item.Plant {
 			typePlant = append(typePlant, plant)
-		}
-
-		countsDominants[item.Dominant.Id.ResourceId]++
-		countsSubDominants[item.SubDominant.Id.ResourceId]++
-	}
-
-	var maxCount int
-	for item, count := range countsDominants {
-		if count > maxCount {
-			typePlant, err := t.repository.TypePlantRepository.GetTypePlantById(ctx, &api.TypePlant{Id: &resource.Identifier{ResourceId: item}})
-			if err != nil {
-				return nil, err
-			}
-			dominants = typePlant
-			maxCount = count
+			countsDominants[plant.TypePlant.Id.ResourceId] += int(plant.Coverage)
 		}
 	}
-	maxCount = 0
-	for item, count := range countsSubDominants {
-		if count > maxCount {
-			typePlant, err := t.repository.TypePlantRepository.GetTypePlantById(ctx, &api.TypePlant{Id: &resource.Identifier{ResourceId: item}})
-			if err != nil {
-				return nil, err
-			}
-			subDominants = typePlant
-			maxCount = count
+	var maxCoverage, secondMaxCoverage int
+	var maxResourceId, secondMaxResourceId string
+
+	for resourceId, coverage := range countsDominants {
+		if coverage > maxCoverage {
+			secondMaxCoverage = maxCoverage
+			secondMaxResourceId = maxResourceId
+
+			maxCoverage = coverage
+			maxResourceId = resourceId
+		} else if coverage > secondMaxCoverage {
+			secondMaxCoverage = coverage
+			secondMaxResourceId = resourceId
 		}
 	}
 
-	output.Dominant = dominants
-	output.SubDominant = subDominants
+	output.Dominant = &api.TypePlant{Id: &resource.Identifier{ResourceId: maxResourceId}}
+	output.SubDominant = &api.TypePlant{Id: &resource.Identifier{ResourceId: secondMaxResourceId}}
+	output.Rating = RevealBallNumber(int(output.Covered))
 	output.CountTypes = int32(t.repository.CountPlant(typePlant))
 
 	return t.repository.StrictUpdateTransect(ctx, output)
@@ -139,7 +127,7 @@ func (t TransectServiceImpl) GetListTransect(ctx context.Context, request *api.T
 
 	userId := middlewares.GetUserIdFromContext(ctx)
 	getList, err := t.repository.TransectRepository.GetListTransect(ctx, &api.Transect{UserId: userId}, request)
-	if request != nil {
+	if request.Page != nil {
 		page = &api.PagesResponse{Page: request.Page.Page, Limit: request.Page.Limit, Total: int32(len(getList))}
 	}
 	if err != nil {

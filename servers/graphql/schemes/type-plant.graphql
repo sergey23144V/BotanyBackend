@@ -1,6 +1,6 @@
 type TypePlantQuery {
     getTypePlant(id: ID!): TypePlant @goField(forceResolver: true)
-    getAllTypePlant(pages: PagesRequest ): TypePlantList @goField(forceResolver: true)
+    getAllTypePlant(pages: TypePlantListRequest ): TypePlantList @goField(forceResolver: true)
 }
 
 type TypePlantMutation {
@@ -31,7 +31,7 @@ input TypePlantInput {
 }
 
 type TypePlantList {
-    page: PagesResponse!
+    page: PagesResponse
     list: [TypePlant]
 }
 
@@ -45,9 +45,21 @@ input InputFormTypePlantRequest  {
 input InputTypePlantRequest  {
     id: IdentifierInput!
     input: InputFormTypePlantRequest
+    publicly : Boolean
 }
 
 input InputTypePlant_EcomorphsEntityRequest  {
     id: IdentifierInput!
     ecomorphsEntity: [EcomorphsEntityInput]!
+}
+
+input FilterTypePlant {
+    id : [IdentifierInput]
+    searchTitle: String
+    ecomorphsEntity: [EcomorphsEntityInput]
+}
+
+input TypePlantListRequest {
+    page: PagesRequest
+    filter: FilterTypePlant
 }

@@ -176,17 +176,30 @@ mutation upTrialSite( $data: InputTrialSiteRequest ){
 func TestGetListTrialSite(t *testing.T) {
 	client, token := graphqlTest.GetClient()
 	ctx := context.Background()
-
+	SearchTitle := "не "
 	testTable := []struct {
 		name     string
-		page     *api.PagesRequest
+		request  *api.TrialSiteListRequest
 		expected bool
 	}{
 		{
-			name: "GetListEcomorphEntity",
-			page: &api.PagesRequest{
-				Limit: 2,
-				Page:  1,
+			name: "GetEcomorphsEntity",
+			request: &api.TrialSiteListRequest{
+				Page: &api.PagesRequest{Page: 1, Limit: 10},
+			},
+			expected: true,
+		},
+		{
+			name: "GetEcomorphsEntity FilterEcomorphsEntity ID",
+			request: &api.TrialSiteListRequest{
+				Filter: &api.FilterTrialSite{Id: []*resource.Identifier{CreateTrialSite(ctx, token, client)}},
+			},
+			expected: true,
+		},
+		{
+			name: "GetEcomorphsEntity FilterEcomorphsEntity Title",
+			request: &api.TrialSiteListRequest{
+				Filter: &api.FilterTrialSite{SearchTitle: SearchTitle},
 			},
 			expected: true,
 		},
@@ -195,7 +208,7 @@ func TestGetListTrialSite(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			req := graphql.NewRequest(`
-query getAllTrialSite($data: PagesRequest){
+query getAllTrialSite($data: TrialSiteListRequest){
   trialSite{
     getAllTrialSite(pages:$data){
     	page{
@@ -213,7 +226,8 @@ query getAllTrialSite($data: PagesRequest){
 }
 			`)
 			var respData interface{}
-			req.Var("data", testCase.page)
+			data := graphqlTest.StructToMap(testCase.request)
+			req.Var("data", data)
 			req.Header.Set("Authorization", token)
 			err := client.Run(ctx, req, &respData)
 			g_rpc.Log(respData)

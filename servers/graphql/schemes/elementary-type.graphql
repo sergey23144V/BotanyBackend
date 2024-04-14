@@ -4,14 +4,14 @@ type IdRequest {
 }
 
 input PagesRequest {
-    limit: Int!  @goField(forceResolver: false)
-    page: Int! @goField(forceResolver: false)
+    limit: Int  @goField(forceResolver: false)
+    page: Int @goField(forceResolver: false)
 }
 
 type PagesResponse {
-    total: Int!
-    page: Int!
-    limit: Int!
+    total: Int
+    page: Int
+    limit: Int
 }
 
 type BoolResponse {

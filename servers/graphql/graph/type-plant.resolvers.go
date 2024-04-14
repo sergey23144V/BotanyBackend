@@ -29,6 +29,14 @@ func (r *typePlantMutationResolver) UpdateTypePlant(ctx context.Context, obj *mo
 	return r.service.TypePlantService.UpdateTypePlant(ctx, input)
 }
 
+// AddEcomorphsEntityToTypePlant is the resolver for the addEcomorphsEntityToTypePlant field.
+func (r *typePlantMutationResolver) AddEcomorphsEntityToTypePlant(ctx context.Context, obj *model.TypePlantMutation, input *api.InputTypePlant_EcomorphsEntityRequest) (*api.TypePlant, error) {
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.New("not authorization")
+	}
+	return r.service.TypePlantService.AddEcomorphsEntityToTypePlant(ctx, input)
+}
+
 // DeleteTypePlant is the resolver for the deleteTypePlant field.
 func (r *typePlantMutationResolver) DeleteTypePlant(ctx context.Context, obj *model.TypePlantMutation, id string) (*api.BoolResponse, error) {
 	if !middlewares.ValidToken(ctx) {
@@ -46,7 +54,7 @@ func (r *typePlantQueryResolver) GetTypePlant(ctx context.Context, obj *model.Ty
 }
 
 // GetAllTypePlant is the resolver for the getAllTypePlant field.
-func (r *typePlantQueryResolver) GetAllTypePlant(ctx context.Context, obj *model.TypePlantQuery, pages *api.PagesRequest) (*api.TypePlantList, error) {
+func (r *typePlantQueryResolver) GetAllTypePlant(ctx context.Context, obj *model.TypePlantQuery, pages *api.TypePlantListRequest) (*api.TypePlantList, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.New("not authorization")
 	}

@@ -6,6 +6,7 @@ import (
 	g_rpc "github.com/sergey23144V/BotanyBackend/servers/g-rpc"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/implementation"
+	"github.com/sergey23144V/BotanyBackend/servers/graphql"
 	"github.com/sergey23144V/BotanyBackend/servers/rest"
 	"log"
 )
@@ -36,7 +37,7 @@ func main() {
 
 	g_rpc.StartGrpc(&authServet, newService)
 	rest.StartRest(newService)
-	//graphql.StartGraphQl(db, &authServet, newService)
+	graphql.StartGraphQl(db, &authServet, newService)
 
 	select {}
 }

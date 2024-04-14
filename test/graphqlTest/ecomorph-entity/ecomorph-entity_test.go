@@ -2,6 +2,7 @@ package ecomorph_entity
 
 import (
 	"context"
+	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/machinebox/graphql"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
@@ -160,17 +161,30 @@ mutation update( $data: InputEcomorphsEntity ){
 func TestGetListEcomorphEntity(t *testing.T) {
 	client, token := graphqlTest.GetClient()
 	ctx := context.Background()
-
+	SearchTitle := "Не "
 	testTable := []struct {
 		name     string
-		page     *api.PagesRequest
+		request  *api.EcomorphsEntityListRequest
 		expected bool
 	}{
 		{
-			name: "GetListEcomorphEntity",
-			page: &api.PagesRequest{
-				Limit: 2,
-				Page:  1,
+			name: "GetEcomorphsEntity",
+			request: &api.EcomorphsEntityListRequest{
+				Page: &api.PagesRequest{Page: 1, Limit: 10},
+			},
+			expected: true,
+		},
+		{
+			name: "GetEcomorphsEntity FilterEcomorphsEntity ID",
+			request: &api.EcomorphsEntityListRequest{
+				Filter: &api.FilterEcomorphsEntity{Id: []*resource.Identifier{CreateEcomorphsEntity(ctx, token, client)}},
+			},
+			expected: true,
+		},
+		{
+			name: "GetEcomorphsEntity FilterEcomorphsEntity Title",
+			request: &api.EcomorphsEntityListRequest{
+				Filter: &api.FilterEcomorphsEntity{SearchTitle: &SearchTitle},
 			},
 			expected: true,
 		},
@@ -179,7 +193,7 @@ func TestGetListEcomorphEntity(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			req := graphql.NewRequest(`
-query getListEcomorphsEntity($data: PagesRequest){
+query getListEcomorphsEntity($data: EcomorphsEntityListRequest){
   ecomorphsEntity{
     getAllEcomorphEntity(pages:$data){
     	page{
@@ -197,7 +211,8 @@ query getListEcomorphsEntity($data: PagesRequest){
 }
 			`)
 			var respData interface{}
-			req.Var("data", testCase.page)
+			data := graphqlTest.StructToMap(testCase.request)
+			req.Var("data", data)
 			req.Header.Set("Authorization", token)
 			err := client.Run(ctx, req, &respData)
 			g_rpc.Log(respData)

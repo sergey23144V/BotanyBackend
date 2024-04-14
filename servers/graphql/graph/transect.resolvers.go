@@ -29,6 +29,14 @@ func (r *transectMutationResolver) UpTransect(ctx context.Context, obj *model.Tr
 	return r.service.UpdateTransect(ctx, input)
 }
 
+// AddTrialSiteToTransect is the resolver for the addTrialSiteToTransect field.
+func (r *transectMutationResolver) AddTrialSiteToTransect(ctx context.Context, obj *model.TransectMutation, input *api.InputTransectRequest) (*api.Transect, error) {
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.New("not authorization")
+	}
+	return r.service.AddTrialSiteToTransect(ctx, input)
+}
+
 // DeleteTransect is the resolver for the deleteTransect field.
 func (r *transectMutationResolver) DeleteTransect(ctx context.Context, obj *model.TransectMutation, id string) (*api.BoolResponse, error) {
 	if !middlewares.ValidToken(ctx) {
@@ -46,7 +54,7 @@ func (r *transectQueryResolver) GetTransect(ctx context.Context, obj *model.Tran
 }
 
 // GetAllTransect is the resolver for the getAllTransect field.
-func (r *transectQueryResolver) GetAllTransect(ctx context.Context, obj *model.TransectQuery, pages *api.PagesRequest) (*api.TransectList, error) {
+func (r *transectQueryResolver) GetAllTransect(ctx context.Context, obj *model.TransectQuery, pages *api.TransectListRequest) (*api.TransectList, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.New("not authorization")
 	}

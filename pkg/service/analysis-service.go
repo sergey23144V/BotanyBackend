@@ -2,6 +2,7 @@ package service
 
 import (
 	context "context"
+	"errors"
 	"fmt"
 	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/sergey23144V/BotanyBackend/pkg"
@@ -62,6 +63,9 @@ func (a AnalysisServiceImpl) CreatAnalysis(ctx context.Context, input *api.Input
 		analysis, err = a.CreateExcelTypeAnalysisPlantAnalysis(ctx, nil, transect, ecomorph)
 		if err != nil {
 			return nil, err
+		}
+		if analysis == nil {
+			return nil, errors.New("Failed Create Analysis")
 		}
 		analysis.UserId = userId
 		analysis, err = a.repository.AnalysisRepository.CreatAnalysis(ctx, analysis)
@@ -150,7 +154,7 @@ func (t AnalysisServiceImpl) CreateExcelTypeAnalysisPlantAnalysis(ctx context.Co
 						}
 						typePlantPoints[plant.TypePlant.Id.ResourceId] += int(ecomorphsEntity.Score)
 					} else {
-						return nil, err
+						continue
 					}
 					if ecomorphsAnalis[ecomorphItem.Id.ResourceId] == nil {
 						ecomorphsAnalis[ecomorphItem.Id.ResourceId] = make(map[string]int)

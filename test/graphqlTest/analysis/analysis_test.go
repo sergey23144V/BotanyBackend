@@ -16,7 +16,7 @@ func TestCreateTransect(t *testing.T) {
 
 	testTable := []struct {
 		name     string
-		Transect *api.InputCreateAnalysis
+		analysis *api.InputCreateAnalysis
 		expected bool
 	}{
 		//{
@@ -31,7 +31,7 @@ func TestCreateTransect(t *testing.T) {
 		//},
 		{
 			name: "Done",
-			Transect: &api.InputCreateAnalysis{
+			analysis: &api.InputCreateAnalysis{
 				Title:        "Хз",
 				TypeAnalysis: api.TypeAnalysis_TypeAnalysisTransect,
 				Transect:     &api.Transect{Id: &resource.Identifier{ResourceId: "fdb18250-bdcd-6671-b119-b5cc3f427c60"}},
@@ -44,20 +44,18 @@ func TestCreateTransect(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			req := graphql.NewRequest(`
-mutation insertEcomorph($data: InputFormEcomorph){
-  ecomorph{
-    insertEcomorph(input:$data){
-      id{
-        resourceId
-      }
-      title
+mutation creatAnalysis($data:InputCreateAnalysis!) {
+  analysis{
+    creatAnalysis(input:$data){
+      path
     }
   }
 }
 			`)
 			var respData interface{}
 			ctx := context.Background()
-			req.Var("data", testCase.Transect)
+			data := graphqlTest.StructToMap(testCase.analysis)
+			req.Var("data", data)
 			req.Header.Set("Authorization", token)
 			err := client.Run(ctx, req, &respData)
 			g_rpc.Log(respData)

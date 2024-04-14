@@ -47,7 +47,7 @@ func (r *ecomorphQueryResolver) GetEcomorphByID(ctx context.Context, obj *model.
 }
 
 // GetListEcomorph is the resolver for the getListEcomorph field.
-func (r *ecomorphQueryResolver) GetListEcomorph(ctx context.Context, obj *model.EcomorphQuery, pages *api.PagesRequest) (*api.EcomorphsList, error) {
+func (r *ecomorphQueryResolver) GetListEcomorph(ctx context.Context, obj *model.EcomorphQuery, pages *api.EcomorphListRequest) (*api.EcomorphsList, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.New("not authorization")
 	}

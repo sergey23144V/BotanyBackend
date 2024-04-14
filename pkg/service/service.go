@@ -25,3 +25,20 @@ func NewService(repos *repository.Repository) *Service {
 		AnalysisService:        NewAnalysisServiceImpl(repos),
 	}
 }
+
+func RevealBallNumber(coverage int) int32 {
+	switch {
+	case coverage < 1:
+		return 0
+	case coverage < 5:
+		return 1
+	case coverage < 25:
+		return 2
+	case coverage < 50:
+		return 3
+	case coverage < 75:
+		return 4
+	default:
+		return 5
+	}
+}

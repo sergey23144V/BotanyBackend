@@ -1,6 +1,7 @@
 package trial_site
 
 import (
+	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
 	"github.com/stretchr/testify/assert"
@@ -170,7 +171,7 @@ func TestAddPlantsToTrialSite(t *testing.T) {
 
 func TestGetListTrialSite(t *testing.T) {
 	client, ctx := g_rpc.GetClient()
-
+	SearchTitle := "Трава"
 	testTable := []struct {
 		name     string
 		request  *api.TrialSiteListRequest
@@ -183,12 +184,32 @@ func TestGetListTrialSite(t *testing.T) {
 			},
 			expected: true,
 		},
+		{
+			name:     "GetListTransect all",
+			request:  &api.TrialSiteListRequest{},
+			expected: true,
+		},
+		{
+			name: "GetListTransect",
+			request: &api.TrialSiteListRequest{
+				Filter: &api.FilterTrialSite{Id: []*resource.Identifier{CreateTrialSite(ctx, *client)}},
+			},
+			expected: true,
+		},
+		{
+			name: "GetListTransect",
+			request: &api.TrialSiteListRequest{
+				Filter: &api.FilterTrialSite{SearchTitle: SearchTitle},
+			},
+			expected: true,
+		},
 	}
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			result, err := client.TrialSite.GetAllTrialSite(ctx, testCase.request)
 			g_rpc.Log(result)
+			g_rpc.Log(len(result.List))
 			if testCase.expected {
 				assert.NoError(t, err, "Done")
 			} else {

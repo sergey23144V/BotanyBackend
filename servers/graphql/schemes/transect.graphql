@@ -1,6 +1,6 @@
 type TransectQuery {
     getTransect(id: ID!): Transect @goField(forceResolver: true)
-    getAllTransect(pages: PagesRequest ): TransectList @goField(forceResolver: true)
+    getAllTransect(pages: TransectListRequest ): TransectList @goField(forceResolver: true)
 }
 
 type TransectMutation {
@@ -44,7 +44,7 @@ input TransectInput {
 }
 
 type TransectList {
-    page: PagesResponse!
+    page: PagesResponse
     list: [Transect]
 }
 
@@ -64,4 +64,16 @@ input InputFormTransectRequest {
 input InputTransectRequest {
     id: IdentifierInput!
     input: InputFormTransectRequest
+}
+
+input FilterTransect {
+    id : [IdentifierInput]
+    searchTitle: String
+    dominant: TypePlantInput
+    subDominant: TypePlantInput
+}
+
+input TransectListRequest {
+    page: PagesRequest
+    filter: FilterTransect
 }

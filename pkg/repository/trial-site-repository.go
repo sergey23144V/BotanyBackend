@@ -288,13 +288,13 @@ func (t TrialSiteRepositoryImpl) GetListTrialSite(ctx context.Context, in *api.T
 		return nil, err
 	}
 
-	if request != nil && request.Page.Page != 0 && request.Page.Limit != 0 {
+	if request.Page != nil && request.Page.Page != 0 && request.Page.Limit != 0 {
 		offset := (request.Page.Page - 1) * request.Page.Limit
 		t.db = t.db.Where(&ormObj).Offset(int(offset)).Limit(int(request.Page.Limit))
 	} else {
 		t.db = t.db.Where(&ormObj)
 	}
-	t.db = t.db.Clauses(expression...).Order("id")
+	t.db = t.db.Clauses(expression...).Order("id").Or("user_id IS NULL")
 	ormResponse := []api.TrialSiteORM{}
 	if err := t.db.Preload("Plant").Preload("Img").Find(&ormResponse).Error; err != nil {
 		return nil, err
@@ -332,20 +332,15 @@ func (s TrialSiteRepositoryImpl) GetWhereList(filter *api.FilterTrialSite) []cla
 		})
 	}
 
-	if filter.Title != nil {
+	if filter.SearchTitle != "" {
 
 		var interfaceIds []interface{}
-		var columns []clause.OrderByColumn
 
 		interfaceIds = append(interfaceIds, filter.SearchTitle)
 
-		columns = append(columns, clause.OrderByColumn{
-			Column: clause.Column{Name: "title"},
-			Desc:   *filter.Title == api.Direction_DESCENDING,
-		})
-		conditions = append(conditions, clause.OrderBy{
-			Columns:    columns,
-			Expression: nil,
+		conditions = append(conditions, clause.Expr{
+			SQL:  "title ~ ?",
+			Vars: interfaceIds,
 		})
 	}
 

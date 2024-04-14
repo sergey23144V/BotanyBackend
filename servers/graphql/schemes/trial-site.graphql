@@ -1,6 +1,6 @@
 type TrialSiteQuery {
     getTrialSite(id: ID!): TrialSite @goField(forceResolver: true)
-    getAllTrialSite(pages: PagesRequest ): TrialSiteList @goField(forceResolver: true)
+    getAllTrialSite(pages: TrialSiteListRequest ): TrialSiteList @goField(forceResolver: true)
     getPlant(id: ID!): Plant @goField(forceResolver: true)
     getAllPlant(pages: PagesRequest ): PlantList @goField(forceResolver: true)
 }
@@ -46,7 +46,7 @@ input TrialSiteInput {
 }
 
 type TrialSiteList {
-    page: PagesResponse!
+    page: PagesResponse
     list: [TrialSite]
 }
 
@@ -64,6 +64,18 @@ input InputFormTrialSiteRequest {
 input InputTrialSiteRequest {
     id: IdentifierInput!
     input: InputFormTrialSiteRequest
+}
+
+input FilterTrialSite {
+    id : [IdentifierInput]
+    searchTitle: String
+    dominant: TypePlantInput
+    subDominant: TypePlantInput
+}
+
+input TrialSiteListRequest {
+    page: PagesRequest
+    filter: FilterTrialSite
 }
 
 

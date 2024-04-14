@@ -165,17 +165,30 @@ mutation upTrialSite( $data: InputTransectRequest ){
 func TestGetListTransect(t *testing.T) {
 	client, token := graphqlTest.GetClient()
 	ctx := context.Background()
-
+	SearchTitle := "Т"
 	testTable := []struct {
 		name     string
-		page     *api.PagesRequest
+		request  *api.TransectListRequest
 		expected bool
 	}{
 		{
-			name: "GetListEcomorphEntity",
-			page: &api.PagesRequest{
-				Limit: 2,
-				Page:  1,
+			name: "GetEcomorphsEntity",
+			request: &api.TransectListRequest{
+				Page: &api.PagesRequest{Page: 1, Limit: 10},
+			},
+			expected: true,
+		},
+		{
+			name: "GetEcomorphsEntity FilterEcomorphsEntity ID",
+			request: &api.TransectListRequest{
+				Filter: &api.FilterTransect{Id: []*resource.Identifier{CreateTransect(ctx, token, client)}},
+			},
+			expected: true,
+		},
+		{
+			name: "GetEcomorphsEntity FilterEcomorphsEntity Title",
+			request: &api.TransectListRequest{
+				Filter: &api.FilterTransect{SearchTitle: SearchTitle},
 			},
 			expected: true,
 		},
@@ -184,7 +197,7 @@ func TestGetListTransect(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			req := graphql.NewRequest(`
-			query getAllTrialSite($data: PagesRequest){
+			query getAllTrialSite($data: TransectListRequest){
 			  transect{
 				getAllTransect(pages:$data){
 					page{
@@ -202,7 +215,8 @@ func TestGetListTransect(t *testing.T) {
 			}
 			`)
 			var respData interface{}
-			req.Var("data", testCase.page)
+			data := graphqlTest.StructToMap(testCase.request)
+			req.Var("data", data)
 			req.Header.Set("Authorization", token)
 			err := client.Run(ctx, req, &respData)
 			g_rpc.Log(respData)

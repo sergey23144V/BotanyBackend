@@ -86,7 +86,7 @@ func TestUpdateTransectById(t *testing.T) {
 		{
 			name: "GetTransect",
 			Transect: &api.InputTransectRequest{
-				Id: &resource.Identifier{ResourceId: "fdb18250-bdcd-6671-b119-b5cc3f427c60"},
+				Id: CreateTransect(ctx, *client),
 				Input: &api.InputFormTransectRequest{
 					Title: "не Семейство",
 					TrialSite: []*api.TrialSite{{Id: &resource.Identifier{ResourceId: "51d485bb-ec34-284b-d8a1-13e2f1608669"}}, {Id: &resource.Identifier{ResourceId: "380c728b-5b2c-1f5b-c68c-d164ddc7d2a5"}},
@@ -149,7 +149,7 @@ func TestAddTrialSiteToTransect(t *testing.T) {
 
 func TestGetListTransect(t *testing.T) {
 	client, ctx := g_rpc.GetClient()
-
+	SearchTitle := "Терекон"
 	testTable := []struct {
 		name     string
 		request  *api.TransectListRequest
@@ -162,12 +162,32 @@ func TestGetListTransect(t *testing.T) {
 			},
 			expected: true,
 		},
+		{
+			name:     "GetListTransect all",
+			request:  &api.TransectListRequest{},
+			expected: true,
+		},
+		{
+			name: "GetListTransect Id",
+			request: &api.TransectListRequest{
+				Filter: &api.FilterTransect{Id: []*resource.Identifier{CreateTransect(ctx, *client)}},
+			},
+			expected: true,
+		},
+		{
+			name: "GetListTransect SearchTitle",
+			request: &api.TransectListRequest{
+				Filter: &api.FilterTransect{SearchTitle: SearchTitle},
+			},
+			expected: true,
+		},
 	}
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			result, err := client.Transect.GetAllTransect(ctx, testCase.request)
 			g_rpc.Log(result)
+			g_rpc.Log(len(result.List))
 			if testCase.expected {
 				assert.NoError(t, err, "Done")
 			} else {

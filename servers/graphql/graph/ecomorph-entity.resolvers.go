@@ -46,7 +46,7 @@ func (r *ecomorphsEntityQueryResolver) GetEcomorphEntityByID(ctx context.Context
 }
 
 // GetAllEcomorphEntity is the resolver for the getAllEcomorphEntity field.
-func (r *ecomorphsEntityQueryResolver) GetAllEcomorphEntity(ctx context.Context, obj *model.EcomorphsEntityQuery, pages *api.PagesRequest) (*api.EcomorphsEntityList, error) {
+func (r *ecomorphsEntityQueryResolver) GetAllEcomorphEntity(ctx context.Context, obj *model.EcomorphsEntityQuery, pages *api.EcomorphsEntityListRequest) (*api.EcomorphsEntityList, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.New("not authorization")
 	}

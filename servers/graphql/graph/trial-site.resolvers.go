@@ -29,6 +29,14 @@ func (r *trialSiteMutationResolver) UpTrialSite(ctx context.Context, obj *model.
 	return r.service.UpdateTrialSite(ctx, input)
 }
 
+// AddPlantsToTrialSite is the resolver for the addPlantsToTrialSite field.
+func (r *trialSiteMutationResolver) AddPlantsToTrialSite(ctx context.Context, obj *model.TrialSiteMutation, input *api.InputTrialSiteRequest) (*api.TrialSite, error) {
+	if !middlewares.ValidToken(ctx) {
+		return nil, errors.New("not authorization")
+	}
+	return r.service.AddPlantsToTrialSite(ctx, input)
+}
+
 // DeleteTrialSite is the resolver for the deleteTrialSite field.
 func (r *trialSiteMutationResolver) DeleteTrialSite(ctx context.Context, obj *model.TrialSiteMutation, id string) (*api.BoolResponse, error) {
 	if !middlewares.ValidToken(ctx) {
@@ -70,7 +78,7 @@ func (r *trialSiteQueryResolver) GetTrialSite(ctx context.Context, obj *model.Tr
 }
 
 // GetAllTrialSite is the resolver for the getAllTrialSite field.
-func (r *trialSiteQueryResolver) GetAllTrialSite(ctx context.Context, obj *model.TrialSiteQuery, pages *api.PagesRequest) (*api.TrialSiteList, error) {
+func (r *trialSiteQueryResolver) GetAllTrialSite(ctx context.Context, obj *model.TrialSiteQuery, pages *api.TrialSiteListRequest) (*api.TrialSiteList, error) {
 	if !middlewares.ValidToken(ctx) {
 		return nil, errors.New("not authorization")
 	}

@@ -90,6 +90,7 @@ func (t TrialSiteServiceImpl) DetectionPlant(ctx context.Context, in *api.TrialS
 			}
 		}
 		dtn.CountTypes = int32(t.repository.CountPlant(plantList))
+		dtn.Rating = RevealBallNumber(int(dtn.Covered))
 		return t.repository.TrialSiteRepository.StrictUpdateTrialSite(ctx, dtn)
 	}
 	return in, err
@@ -140,7 +141,7 @@ func (t TrialSiteServiceImpl) GetListTrialSite(ctx context.Context, request *api
 
 	userId := middlewares.GetUserIdFromContext(ctx)
 	getList, err := t.repository.TrialSiteRepository.GetListTrialSite(ctx, &api.TrialSite{UserId: userId}, request)
-	if request != nil {
+	if request.Page != nil {
 		page = &api.PagesResponse{Page: request.Page.Page, Limit: request.Page.Limit, Total: int32(len(getList))}
 	}
 	if err != nil {

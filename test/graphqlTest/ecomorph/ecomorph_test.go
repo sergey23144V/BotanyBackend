@@ -2,6 +2,7 @@ package ecomorph
 
 import (
 	"context"
+	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/machinebox/graphql"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
@@ -154,17 +155,30 @@ mutation update($id: String! , $data:InputFormEcomorph! ){
 func TestGetListEcomorph(t *testing.T) {
 	client, token := graphqlTest.GetClient()
 	ctx := context.Background()
-
+	SearchTitle := "Не "
 	testTable := []struct {
 		name     string
-		page     *api.PagesRequest
+		request  *api.EcomorphListRequest
 		expected bool
 	}{
 		{
 			name: "GetEcomorph",
-			page: &api.PagesRequest{
-				Limit: 2,
-				Page:  1,
+			request: &api.EcomorphListRequest{
+				Page: &api.PagesRequest{Page: 1, Limit: 10},
+			},
+			expected: true,
+		},
+		{
+			name: "GetEcomorph FilterEcomorph ID",
+			request: &api.EcomorphListRequest{
+				Filter: &api.FilterEcomorph{Id: []*resource.Identifier{CreateEcomorph(ctx, token, client)}},
+			},
+			expected: true,
+		},
+		{
+			name: "GetEcomorph FilterEcomorph Title",
+			request: &api.EcomorphListRequest{
+				Filter: &api.FilterEcomorph{SearchTitle: &SearchTitle},
 			},
 			expected: true,
 		},
@@ -173,7 +187,7 @@ func TestGetListEcomorph(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			req := graphql.NewRequest(`
-query getListEcomorph($data: PagesRequest){
+query getListEcomorph($data: EcomorphListRequest){
   ecomorph{
     getListEcomorph(pages:$data){
     	page{
@@ -191,7 +205,8 @@ query getListEcomorph($data: PagesRequest){
 }
 			`)
 			var respData interface{}
-			req.Var("data", testCase.page)
+			data := graphqlTest.StructToMap(testCase.request)
+			req.Var("data", data)
 			req.Header.Set("Authorization", token)
 			err := client.Run(ctx, req, &respData)
 			g_rpc.Log(respData)

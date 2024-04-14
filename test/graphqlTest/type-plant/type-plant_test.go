@@ -49,7 +49,6 @@ mutation insertTypePlant($data: InputFormTypePlantRequest){
 			`)
 			var respData interface{}
 			data := graphqlTest.StructToMap(testCase.TypePlant)
-
 			req.Var("data", data)
 			req.Header.Set("Authorization", token)
 			err := client.Run(ctx, req, &respData)
@@ -165,17 +164,30 @@ mutation update( $data: InputTypePlantRequest ){
 func TestGetListTypePlant(t *testing.T) {
 	client, token := graphqlTest.GetClient()
 	ctx := context.Background()
-
+	SearchTitle := "не "
 	testTable := []struct {
 		name     string
-		page     *api.PagesRequest
+		request  *api.TypePlantListRequest
 		expected bool
 	}{
 		{
-			name: "GetListEcomorphEntity",
-			page: &api.PagesRequest{
-				Limit: 2,
-				Page:  1,
+			name: "GetEcomorphsEntity",
+			request: &api.TypePlantListRequest{
+				Page: &api.PagesRequest{Page: 1, Limit: 10},
+			},
+			expected: true,
+		},
+		{
+			name: "GetEcomorphsEntity FilterEcomorphsEntity ID",
+			request: &api.TypePlantListRequest{
+				Filter: &api.FilterTypePlant{Id: []*resource.Identifier{CreateTypePlant(ctx, token, client)}},
+			},
+			expected: true,
+		},
+		{
+			name: "GetEcomorphsEntity FilterEcomorphsEntity Title",
+			request: &api.TypePlantListRequest{
+				Filter: &api.FilterTypePlant{SearchTitle: &SearchTitle},
 			},
 			expected: true,
 		},
@@ -184,7 +196,7 @@ func TestGetListTypePlant(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			req := graphql.NewRequest(`
-query getListEcomorphsEntity($data: PagesRequest){
+query getListEcomorphsEntity($data: TypePlantListRequest){
   typePlant{
     getAllTypePlant(pages:$data){
     	page{
@@ -202,7 +214,8 @@ query getListEcomorphsEntity($data: PagesRequest){
 }
 			`)
 			var respData interface{}
-			req.Var("data", testCase.page)
+			data := graphqlTest.StructToMap(testCase.request)
+			req.Var("data", data)
 			req.Header.Set("Authorization", token)
 			err := client.Run(ctx, req, &respData)
 			g_rpc.Log(respData)

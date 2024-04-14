@@ -64,9 +64,10 @@ type Query struct {
 }
 
 type TransectMutation struct {
-	CreateTransect *api.Transect     `json:"createTransect,omitempty"`
-	UpTransect     *api.Transect     `json:"upTransect,omitempty"`
-	DeleteTransect *api.BoolResponse `json:"deleteTransect,omitempty"`
+	CreateTransect         *api.Transect     `json:"createTransect,omitempty"`
+	UpTransect             *api.Transect     `json:"upTransect,omitempty"`
+	AddTrialSiteToTransect *api.Transect     `json:"addTrialSiteToTransect,omitempty"`
+	DeleteTransect         *api.BoolResponse `json:"deleteTransect,omitempty"`
 }
 
 type TransectQuery struct {
@@ -75,12 +76,13 @@ type TransectQuery struct {
 }
 
 type TrialSiteMutation struct {
-	CreateTrialSite *api.TrialSite    `json:"createTrialSite,omitempty"`
-	UpTrialSite     *api.TrialSite    `json:"upTrialSite,omitempty"`
-	DeleteTrialSite *api.BoolResponse `json:"deleteTrialSite,omitempty"`
-	CreatePlant     *api.Plant        `json:"createPlant,omitempty"`
-	UpdatePlant     *api.Plant        `json:"updatePlant,omitempty"`
-	DeletePlant     *api.BoolResponse `json:"deletePlant,omitempty"`
+	CreateTrialSite      *api.TrialSite    `json:"createTrialSite,omitempty"`
+	UpTrialSite          *api.TrialSite    `json:"upTrialSite,omitempty"`
+	AddPlantsToTrialSite *api.TrialSite    `json:"addPlantsToTrialSite,omitempty"`
+	DeleteTrialSite      *api.BoolResponse `json:"deleteTrialSite,omitempty"`
+	CreatePlant          *api.Plant        `json:"createPlant,omitempty"`
+	UpdatePlant          *api.Plant        `json:"updatePlant,omitempty"`
+	DeletePlant          *api.BoolResponse `json:"deletePlant,omitempty"`
 }
 
 type TrialSiteQuery struct {
@@ -91,9 +93,10 @@ type TrialSiteQuery struct {
 }
 
 type TypePlantMutation struct {
-	CreateTypePlant *api.TypePlant    `json:"createTypePlant,omitempty"`
-	UpdateTypePlant *api.TypePlant    `json:"updateTypePlant,omitempty"`
-	DeleteTypePlant *api.BoolResponse `json:"deleteTypePlant,omitempty"`
+	CreateTypePlant               *api.TypePlant    `json:"createTypePlant,omitempty"`
+	UpdateTypePlant               *api.TypePlant    `json:"updateTypePlant,omitempty"`
+	AddEcomorphsEntityToTypePlant *api.TypePlant    `json:"addEcomorphsEntityToTypePlant,omitempty"`
+	DeleteTypePlant               *api.BoolResponse `json:"deleteTypePlant,omitempty"`
 }
 
 type TypePlantQuery struct {

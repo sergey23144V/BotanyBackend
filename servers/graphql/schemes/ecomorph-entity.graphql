@@ -4,6 +4,8 @@ type EcomorphsEntity {
     updatedAt: Timestamp
     deletedAt : Timestamp
     title: String
+    displayTable: String
+    score: Int
     description: String
     ecomorphs: Ecomorph
     userId: IdentifierType
@@ -12,30 +14,46 @@ type EcomorphsEntity {
 input EcomorphsEntityInput {
     id: IdentifierInput!
     title: String
+    displayTable: String
+    score: Int
     description: String
     ecomorphs: EcomorphInput
 }
 
 
 type EcomorphsEntityList {
-    page: PagesResponse!
+    page: PagesResponse
     list: [EcomorphsEntity]
 }
 
 input InputFormEcomorphsEntity {
     title: String
     description: String
+    displayTable: String
+    score: Int
     ecomorphs: EcomorphInput
 }
 
 input InputEcomorphsEntity {
     id : IdentifierInput!
     input: InputFormEcomorphsEntity
+    publicly: Boolean
+}
+
+input FilterEcomorphsEntity {
+    id : [IdentifierInput]
+    searchTitle: String
+    publicly : Boolean
+}
+
+input EcomorphsEntityListRequest {
+    page: PagesRequest
+    filter: FilterEcomorphsEntity
 }
 
 type EcomorphsEntityQuery {
     getEcomorphEntityByID(id: ID!): EcomorphsEntity @goField(forceResolver: true)
-    getAllEcomorphEntity(pages: PagesRequest ): EcomorphsEntityList @goField(forceResolver: true)
+    getAllEcomorphEntity(pages: EcomorphsEntityListRequest ): EcomorphsEntityList @goField(forceResolver: true)
 }
 
 type EcomorphsEntityMutation {

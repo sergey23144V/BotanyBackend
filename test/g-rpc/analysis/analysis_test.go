@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestCreateTransect(t *testing.T) {
+func TestCreateAnalysis(t *testing.T) {
 	client, ctx := g_rpc.GetClient()
 
 	testTable := []struct {
@@ -31,7 +31,7 @@ func TestCreateTransect(t *testing.T) {
 			Transect: &api.InputCreateAnalysis{
 				Title:        "Хз",
 				TypeAnalysis: api.TypeAnalysis_TypeAnalysisPlant,
-				Transect:     &api.Transect{Id: &resource.Identifier{ResourceId: "fdb18250-bdcd-6671-b119-b5cc3f427c60"}},
+				Transect:     &api.Transect{Id: &resource.Identifier{ResourceId: "3d9f3076-4b23-33e0-40f5-0e7bde4e5a56"}},
 				Ecomorph:     []*api.Ecomorph{{Id: &resource.Identifier{ResourceId: "d7ba7908-2ae1-9abd-e1ff-6bed503d80c9"}}, {Id: &resource.Identifier{ResourceId: "c15c4ebd-d583-6c3d-81fe-af286a2b72e1"}}},
 			},
 			expected: true,

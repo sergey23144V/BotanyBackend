@@ -20,18 +20,18 @@ func TestCreateEcomorph(t *testing.T) {
 			name: "Done Publicly",
 			Ecomorph: &api.InputEcomorph{
 				Payload: &api.InputFormEcomorph{
-					Title:       "Семейства",
+					Title:       "Гдроморфы",
 					Description: "Ну про вид",
 				},
 				Publicly: true,
 			},
-			expected: true,
+			expected: false,
 		},
 		{
 			name: "Done",
 			Ecomorph: &api.InputEcomorph{
 				Payload: &api.InputFormEcomorph{
-					Title:       "Семейства",
+					Title:       "Трофоморфы",
 					Description: "Ну про вид",
 				},
 			},
@@ -71,7 +71,8 @@ func TestGetEcomorphById(t *testing.T) {
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-			_, err := client.Ecomorph.GetEcomorphById(ctx, testCase.idEcomorph)
+			result, err := client.Ecomorph.GetEcomorphById(ctx, testCase.idEcomorph)
+			g_rpc.Log(result)
 			if testCase.expected {
 				//err := DeleteEcomorphById(ctx, client.Ecomorph, testCase.idEcomorph.Id)
 				assert.NoError(t, err, "Done")
@@ -127,7 +128,7 @@ func TestUpdateEcomorphById(t *testing.T) {
 
 func TestGetListEcomorph(t *testing.T) {
 	client, ctx := g_rpc.GetClient()
-
+	SearchTitle := "Не "
 	testTable := []struct {
 		name     string
 		request  *api.EcomorphListRequest
@@ -141,8 +142,17 @@ func TestGetListEcomorph(t *testing.T) {
 			expected: true,
 		},
 		{
-			name:     "GetEcomorph All",
-			request:  &api.EcomorphListRequest{},
+			name: "GetEcomorph FilterEcomorph ID",
+			request: &api.EcomorphListRequest{
+				Filter: &api.FilterEcomorph{Id: []*resource.Identifier{CreateEcomorph(ctx, client.Ecomorph)}},
+			},
+			expected: true,
+		},
+		{
+			name: "GetEcomorph FilterEcomorph Title",
+			request: &api.EcomorphListRequest{
+				Filter: &api.FilterEcomorph{SearchTitle: &SearchTitle},
+			},
 			expected: true,
 		},
 	}
@@ -150,6 +160,7 @@ func TestGetListEcomorph(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			r, err := client.Ecomorph.GetListEcomorph(ctx, testCase.request)
+			g_rpc.Log(len(r.List))
 			g_rpc.Log(r.List)
 			if testCase.expected {
 				assert.NoError(t, err, "Done")

@@ -65,7 +65,6 @@ message InputEcomorph{
 message FilterEcomorph {
   repeated atlas.rpc.Identifier id = 1;
   optional string searchTitle = 2;
-  optional Direction title = 3;
   optional bool publicly = 4;
 }
 

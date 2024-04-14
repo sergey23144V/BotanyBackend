@@ -94,14 +94,15 @@ func (t AnalysisServiceImpl) CreateExcelTypeAnalysisPlantAnalysis(ctx context.Co
 		return nil, err
 	}
 	number := 0
-	typePlants := map[string]bool{}
+	typePlants := map[string]int{}
+	typePlantPoints := map[string]int{}
 	ecomorphsAnalis := make(map[string]map[string]int)
 	for _, item := range transect.TrialSite {
 		for _, plant := range item.Plant {
-			if typePlants[plant.TypePlant.Id.ResourceId] == false {
+			if typePlants[plant.TypePlant.Id.ResourceId] == 0 {
 				indexPlant += 2
 				number++
-				typePlants[plant.TypePlant.Id.ResourceId] = true
+				typePlants[plant.TypePlant.Id.ResourceId] = indexPlant
 				err = f.SetCellValue(sheetName, "A"+strconv.Itoa(indexPlant), number)
 				if err != nil {
 					return nil, err
@@ -135,7 +136,6 @@ func (t AnalysisServiceImpl) CreateExcelTypeAnalysisPlantAnalysis(ctx context.Co
 					return nil, err
 				}
 				ecomorphsColumb := 'D'
-				sum := 0
 				for _, ecomorphItem := range ecomorph {
 					ecomorphsEntity := GetEcomorphsEntityFromTypePlant(plant.TypePlant, ecomorphItem)
 
@@ -148,7 +148,7 @@ func (t AnalysisServiceImpl) CreateExcelTypeAnalysisPlantAnalysis(ctx context.Co
 						if err != nil {
 							return nil, err
 						}
-						sum +=
+						typePlantPoints[plant.TypePlant.Id.ResourceId] += int(ecomorphsEntity.Score)
 					} else {
 						return nil, err
 					}
@@ -176,6 +176,15 @@ func (t AnalysisServiceImpl) CreateExcelTypeAnalysisPlantAnalysis(ctx context.Co
 			indexEcomorphs++
 		}
 		ecomorphsColumb++
+	}
+
+	for plant, index := range typePlants {
+
+		err = f.SetCellValue(sheetName, string(ecomorphsColumb)+strconv.Itoa(index), "Итог = "+strconv.Itoa(typePlantPoints[plant]))
+		if err != nil {
+			return nil, err
+		}
+
 	}
 
 	var id *resource.Identifier

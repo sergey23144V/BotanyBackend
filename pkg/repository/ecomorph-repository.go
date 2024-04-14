@@ -170,7 +170,7 @@ func (e EcomorphRepositoryImpl) GetListEcomorph(ctx context.Context, in *api.Eco
 	if err != nil {
 		return nil, err
 	}
-
+	e.db = e.db.Where(&ormObj)
 	if request.Page != nil && request.Page.Page != 0 && request.Page.Limit != 0 {
 		offset := (request.Page.Page - 1) * request.Page.Limit
 		e.db = e.db.Where(&ormObj).Offset(int(offset)).Limit(int(request.Page.Limit))
@@ -178,9 +178,9 @@ func (e EcomorphRepositoryImpl) GetListEcomorph(ctx context.Context, in *api.Eco
 		e.db = e.db.Where(&ormObj)
 	}
 
-	e.db = e.db.Order("id").Or("user_id IS NULL")
+	e.db = e.db.Order("id").Clauses(expression...).Or("user_id IS NULL")
 	ormResponse := []api.EcomorphORM{}
-	if err := e.db.Clauses(expression...).Find(&ormResponse).Error; err != nil {
+	if err := e.db.Find(&ormResponse).Error; err != nil {
 		return nil, err
 	}
 
@@ -233,7 +233,7 @@ func (s EcomorphRepositoryImpl) GetWhereListFromEcomorphListRequest(filter *api.
 
 		// Добавление фильтра по Ids к условиям
 		conditions = append(conditions, clause.IN{
-			Column: clause.Column{Name: "id"},
+			Column: clause.Column{Name: "\"ecomorphs\".\"id\""},
 			Values: interfaceIds,
 		})
 	}
@@ -244,26 +244,9 @@ func (s EcomorphRepositoryImpl) GetWhereListFromEcomorphListRequest(filter *api.
 
 		interfaceIds = append(interfaceIds, filter.SearchTitle)
 
-		conditions = append(conditions, clause.IN{
-			Column: clause.Column{Name: "title"},
-			Values: interfaceIds,
-		})
-	}
-
-	if filter.Title != nil {
-
-		var interfaceIds []interface{}
-		var columns []clause.OrderByColumn
-
-		interfaceIds = append(interfaceIds, filter.SearchTitle)
-
-		columns = append(columns, clause.OrderByColumn{
-			Column: clause.Column{Name: "title"},
-			Desc:   *filter.Title == api.Direction_DESCENDING,
-		})
-		conditions = append(conditions, clause.OrderBy{
-			Columns:    columns,
-			Expression: nil,
+		conditions = append(conditions, clause.Expr{
+			SQL:  "title ~ ?", // замените 'some_column' на имя вашего поля
+			Vars: interfaceIds,
 		})
 	}
 

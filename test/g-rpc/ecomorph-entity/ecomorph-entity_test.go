@@ -129,7 +129,7 @@ func TestUpdateEcomorphEntityById(t *testing.T) {
 
 func TestGetListEcomorphEntity(t *testing.T) {
 	client, ctx := g_rpc.GetClient()
-
+	SearchTitle := "Семейс"
 	testTable := []struct {
 		name     string
 		request  *api.EcomorphsEntityListRequest
@@ -143,8 +143,22 @@ func TestGetListEcomorphEntity(t *testing.T) {
 			expected: true,
 		},
 		{
-			name:     "GetListEcomorphEntity",
+			name:     "GetListEcomorphEntity all",
 			request:  &api.EcomorphsEntityListRequest{},
+			expected: true,
+		},
+		{
+			name: "GetListEcomorphEntity SearchTitle",
+			request: &api.EcomorphsEntityListRequest{
+				Filter: &api.FilterEcomorphsEntity{SearchTitle: &SearchTitle},
+			},
+			expected: true,
+		},
+		{
+			name: "GetListEcomorphEntity SearchTitle",
+			request: &api.EcomorphsEntityListRequest{
+				Filter: &api.FilterEcomorphsEntity{Id: []*resource.Identifier{CreateEcomorphsEntity(ctx, *client)}},
+			},
 			expected: true,
 		},
 	}
@@ -153,6 +167,7 @@ func TestGetListEcomorphEntity(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			r, err := client.Ecomorph_Emtity.GetAllEcomorphEntity(ctx, testCase.request)
 			g_rpc.Log(r)
+			g_rpc.Log(len(r.List))
 			if testCase.expected {
 				assert.NoError(t, err, "Done")
 			} else {

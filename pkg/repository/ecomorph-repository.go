@@ -245,7 +245,7 @@ func (s EcomorphRepositoryImpl) GetWhereListFromEcomorphListRequest(filter *api.
 		interfaceIds = append(interfaceIds, filter.SearchTitle)
 
 		conditions = append(conditions, clause.Expr{
-			SQL:  "title ~ ?", // замените 'some_column' на имя вашего поля
+			SQL:  "title ~ ?",
 			Vars: interfaceIds,
 		})
 	}

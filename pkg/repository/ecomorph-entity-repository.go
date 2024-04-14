@@ -163,9 +163,9 @@ func (e EcomorphsEntityRepositoryImpl) GetListEcomorphsEntity(ctx context.Contex
 		e.db = e.db.Where(&ormObj)
 	}
 
-	e.db = e.db.Order("id").Or("user_id IS NULL")
+	e.db = e.db.Order("id").Clauses(expression...).Or("user_id IS NULL")
 	ormResponse := []api.EcomorphsEntityORM{}
-	if err := e.db.Clauses(expression...).Find(&ormResponse).Error; err != nil {
+	if err := e.db.Find(&ormResponse).Error; err != nil {
 		return nil, err
 	}
 	pbResponse := []*api.EcomorphsEntity{}
@@ -206,26 +206,9 @@ func (s EcomorphsEntityRepositoryImpl) GetWhereList(filter *api.FilterEcomorphsE
 
 		interfaceIds = append(interfaceIds, filter.SearchTitle)
 
-		conditions = append(conditions, clause.IN{
-			Column: clause.Column{Name: "title"},
-			Values: interfaceIds,
-		})
-	}
-
-	if filter.Title != nil {
-
-		var interfaceIds []interface{}
-		var columns []clause.OrderByColumn
-
-		interfaceIds = append(interfaceIds, filter.SearchTitle)
-
-		columns = append(columns, clause.OrderByColumn{
-			Column: clause.Column{Name: "title"},
-			Desc:   *filter.Title == api.Direction_DESCENDING,
-		})
-		conditions = append(conditions, clause.OrderBy{
-			Columns:    columns,
-			Expression: nil,
+		conditions = append(conditions, clause.Expr{
+			SQL:  "title ~ ?",
+			Vars: interfaceIds,
 		})
 	}
 

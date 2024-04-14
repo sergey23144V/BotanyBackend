@@ -75,8 +75,6 @@ message InputEcomorphsEntity{
 message FilterEcomorphsEntity {
   repeated atlas.rpc.Identifier id = 1;
   optional string searchTitle = 2;
-  optional  Direction title = 3;
-  optional Direction score = 4;
   optional bool publicly = 5;
 }
 

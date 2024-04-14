@@ -73,7 +73,7 @@ func (t TransectServiceImpl) DetectionPlant(ctx context.Context, in *api.Transec
 	var (
 		typePlant []*api.Plant
 	)
-	output, err := t.GetTransectById(ctx, &api.IdRequest{Id: in.Id})
+	output, err := t.repository.TransectRepository.GetTransectByIdForAnalysis(ctx, in)
 	if err != nil {
 		return in, err
 	}

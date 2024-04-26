@@ -9,8 +9,6 @@ import (
 )
 
 func TestAuthorisation(t *testing.T) {
-	done := make(chan struct{})
-	defer close(done)
 	authClient, conn := g_rpc.GetAuthClient()
 
 	testTable := []struct {
@@ -52,15 +50,55 @@ func TestAuthorisation(t *testing.T) {
 	if err != nil {
 		return
 	}
+}
 
-	return
+func TestRefreshToken(t *testing.T) {
+	authClient, conn := g_rpc.GetAuthClient()
 
-	<-done
+	testTable := []struct {
+		name     string
+		user     *api.SignInUserInput
+		expected bool
+	}{
+		{
+			name: "Done",
+			user: &api.SignInUserInput{
+				Email:    "serg2",
+				Password: "Sergey2222",
+			},
+			expected: true,
+		},
+		{
+			name: "Error",
+			user: &api.SignInUserInput{
+				Email:    "sergeykalinin@gmail.con",
+				Password: "Serg",
+			},
+			expected: false,
+		},
+	}
+
+	for _, testCase := range testTable {
+		t.Run(testCase.name, func(t *testing.T) {
+			ctx := context.Background()
+			result, ctx, err := g_rpc.Authorisation(ctx, authClient, testCase.user)
+			refreshResult, err := authClient.RefreshToken(ctx, &api.RefreshTokenRequest{RefreshToken: result.RefreshToken})
+			g_rpc.Log(refreshResult)
+			if testCase.expected {
+				assert.NoError(t, err, "Done")
+			} else {
+				assert.Error(t, err, "Error")
+			}
+		})
+	}
+
+	err := conn.Close()
+	if err != nil {
+		return
+	}
 }
 
 func TestRegistration(t *testing.T) {
-	done := make(chan struct{})
-	defer close(done)
 	authClient, conn := g_rpc.GetAuthClient()
 
 	testTable := []struct {
@@ -103,15 +141,9 @@ func TestRegistration(t *testing.T) {
 	if err != nil {
 		return
 	}
-
-	return
-
-	<-done
 }
 
 func TestRegistrationSuperUser(t *testing.T) {
-	done := make(chan struct{})
-	defer close(done)
 	authClient, conn := g_rpc.GetAuthClient()
 
 	testTable := []struct {
@@ -154,8 +186,4 @@ func TestRegistrationSuperUser(t *testing.T) {
 	if err != nil {
 		return
 	}
-
-	return
-
-	<-done
 }

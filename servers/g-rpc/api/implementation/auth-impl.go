@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	resource "github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
+	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"gorm.io/gorm"
 
@@ -19,6 +20,50 @@ import (
 
 type AuthServerImpl struct {
 	db *gorm.DB
+}
+
+func (a AuthServerImpl) RefreshToken(ctx context.Context, input *api.RefreshTokenRequest) (*api.SignInUserResponse, error) {
+	authorization := middlewares.ParseAuthorization("Bearer " + input.RefreshToken)
+
+	userId, _, err := authorization.(auth_helper.TokenAuth).GetUserFromToken()
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := api.DefaultReadUser(ctx, &api.User{Id: &resource.Identifier{ResourceId: userId}}, a.db)
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &auth_helper.TokenClaims{
+		jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(auth_helper.TokenTTL).Unix(),
+			IssuedAt:  time.Now().Unix(),
+		},
+		user.Id.ResourceId,
+		user.Role,
+	})
+
+	tokenResult, err := token.SignedString([]byte(auth_helper.SigningKey))
+	if err != nil {
+		return nil, err
+	}
+
+	token = jwt.NewWithClaims(jwt.SigningMethodHS256, &auth_helper.TokenClaims{
+		jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(auth_helper.TokenTTLRefresh).Unix(),
+			IssuedAt:  time.Now().Unix(),
+		},
+		user.Id.ResourceId,
+		user.Role,
+	})
+	refreshToken, err := token.SignedString([]byte(auth_helper.SigningKey))
+	if err != nil {
+		return nil, err
+	}
+
+	return &api.SignInUserResponse{
+		Status:       "200",
+		AccessToken:  tokenResult,
+		RefreshToken: refreshToken,
+	}, nil
 }
 
 func (a AuthServerImpl) SignUpSuperUser(ctx context.Context, input *api.SignUpUserInput) (*api.SignInUserResponse, error) {
@@ -34,11 +79,17 @@ func (a AuthServerImpl) SignUpSuperUser(ctx context.Context, input *api.SignUpUs
 	if err != nil {
 		return nil, err
 	}
-
+	refreshToken, err := a.GenerateRefreshToken(ctx, &api.SignInUserInput{
+		Email:    input.Email,
+		Password: input.Password,
+	})
+	if err != nil {
+		return nil, err
+	}
 	return &api.SignInUserResponse{
 		Status:       "200",
 		AccessToken:  token,
-		RefreshToken: "",
+		RefreshToken: refreshToken,
 	}, nil
 }
 
@@ -60,10 +111,19 @@ func (a AuthServerImpl) SignUpUser(ctx context.Context, input *api.SignUpUserInp
 		return nil, err
 	}
 
+	refreshToken, err := a.GenerateRefreshToken(ctx, &api.SignInUserInput{
+		Email:    input.Email,
+		Password: input.Password,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
 	return &api.SignInUserResponse{
 		Status:       "200",
 		AccessToken:  token,
-		RefreshToken: "",
+		RefreshToken: refreshToken,
 	}, nil
 }
 
@@ -72,11 +132,14 @@ func (a AuthServerImpl) SignInUser(ctx context.Context, input *api.SignInUserInp
 	if err != nil {
 		return nil, err
 	}
-
+	refreshToken, err := a.GenerateRefreshToken(ctx, input)
+	if err != nil {
+		return nil, err
+	}
 	return &api.SignInUserResponse{
 		Status:       "200",
 		AccessToken:  token,
-		RefreshToken: "",
+		RefreshToken: refreshToken,
 	}, nil
 }
 
@@ -94,6 +157,24 @@ func (s *AuthServerImpl) GenerateToken(ctx context.Context, input *api.SignInUse
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &auth_helper.TokenClaims{
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(auth_helper.TokenTTL).Unix(),
+			IssuedAt:  time.Now().Unix(),
+		},
+		userResult.Id.ResourceId,
+		userResult.Role,
+	})
+
+	return token.SignedString([]byte(auth_helper.SigningKey))
+}
+
+func (s *AuthServerImpl) GenerateRefreshToken(ctx context.Context, input *api.SignInUserInput) (string, error) {
+	userResult, err := api.ReadUserByEmailAndPassword(ctx, &api.User{Email: input.Email, Password: generatePasswordHash(input.Password)}, s.db)
+	if err != nil {
+		return "", err
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &auth_helper.TokenClaims{
+		jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(auth_helper.TokenTTLRefresh).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
 		userResult.Id.ResourceId,

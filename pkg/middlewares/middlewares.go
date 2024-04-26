@@ -39,6 +39,7 @@ func AuthInterceptorGraphQL() func(http.Handler) http.Handler {
 				next.ServeHTTP(w, r)
 				return
 			}
+
 			ctx := r.Context()
 
 			ctx = context.WithValue(ctx, KeyToken, authorization.String())
@@ -57,7 +58,8 @@ func AuthInterceptorGraphQL() func(http.Handler) http.Handler {
 // AuthInterceptor - промежуточный слой для проверки токена в gRPC
 func AuthInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 
-	if info.FullMethod == "/auth.AuthService/SignUpUser" || info.FullMethod == "/auth.AuthService/SignInUser" || info.FullMethod == "/auth.AuthService/SignUpSuperUser" {
+	if info.FullMethod == "/auth.AuthService/SignUpUser" || info.FullMethod == "/auth.AuthService/SignInUser" ||
+		info.FullMethod == "/auth.AuthService/SignUpSuperUser" || info.FullMethod == "/auth.AuthService/RefreshToken" {
 		return handler(ctx, req)
 	}
 

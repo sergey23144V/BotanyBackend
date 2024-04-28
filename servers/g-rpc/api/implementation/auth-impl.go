@@ -25,7 +25,7 @@ type AuthServerImpl struct {
 func (a AuthServerImpl) RefreshToken(ctx context.Context, input *api.RefreshTokenRequest) (*api.SignInUserResponse, error) {
 	authorization := middlewares.ParseAuthorization("Bearer " + input.RefreshToken)
 
-	userId, _, err := authorization.(auth_helper.TokenAuth).GetUserFromToken()
+	userId, _, err := authorization.(auth_helper.TokenAuth).GetUserFromTokenRefresh()
 	if err != nil {
 		return nil, err
 	}
@@ -181,7 +181,7 @@ func (s *AuthServerImpl) GenerateRefreshToken(ctx context.Context, input *api.Si
 		userResult.Role,
 	})
 
-	return token.SignedString([]byte(auth_helper.SigningKey))
+	return token.SignedString([]byte(auth_helper.SigningKeyRefresh))
 }
 
 func generatePasswordHash(password string) string {

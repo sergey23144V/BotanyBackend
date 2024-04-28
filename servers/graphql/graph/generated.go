@@ -95,8 +95,10 @@ type ComplexityRoot struct {
 	}
 
 	AuthMutation struct {
-		SignInUser func(childComplexity int, data *api.SignInUserInput) int
-		SignUpUser func(childComplexity int, data *api.SignUpUserInput) int
+		RefreshToken    func(childComplexity int, data *api.RefreshTokenRequest) int
+		SignInUser      func(childComplexity int, data *api.SignInUserInput) int
+		SignUpSuperUser func(childComplexity int, data *api.SignUpUserInput) int
+		SignUpUser      func(childComplexity int, data *api.SignUpUserInput) int
 	}
 
 	BoolResponse struct {
@@ -355,7 +357,9 @@ type AnalysisQueryResolver interface {
 }
 type AuthMutationResolver interface {
 	SignUpUser(ctx context.Context, obj *model.AuthMutation, data *api.SignUpUserInput) (*api.SignInUserResponse, error)
+	SignUpSuperUser(ctx context.Context, obj *model.AuthMutation, data *api.SignUpUserInput) (*api.SignInUserResponse, error)
 	SignInUser(ctx context.Context, obj *model.AuthMutation, data *api.SignInUserInput) (*api.SignInUserResponse, error)
+	RefreshToken(ctx context.Context, obj *model.AuthMutation, data *api.RefreshTokenRequest) (*api.SignInUserResponse, error)
 }
 type EcomorphMutationResolver interface {
 	InsertEcomorph(ctx context.Context, obj *model.EcomorphMutation, input *api.InputFormEcomorph) (*api.Ecomorph, error)
@@ -596,6 +600,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AnalysisQuery.GetListAnalysis(childComplexity, args["pages"].(*api.PagesRequest)), true
 
+	case "AuthMutation.RefreshToken":
+		if e.complexity.AuthMutation.RefreshToken == nil {
+			break
+		}
+
+		args, err := ec.field_AuthMutation_RefreshToken_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.AuthMutation.RefreshToken(childComplexity, args["data"].(*api.RefreshTokenRequest)), true
+
 	case "AuthMutation.signInUser":
 		if e.complexity.AuthMutation.SignInUser == nil {
 			break
@@ -607,6 +623,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AuthMutation.SignInUser(childComplexity, args["data"].(*api.SignInUserInput)), true
+
+	case "AuthMutation.SignUpSuperUser":
+		if e.complexity.AuthMutation.SignUpSuperUser == nil {
+			break
+		}
+
+		args, err := ec.field_AuthMutation_SignUpSuperUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.AuthMutation.SignUpSuperUser(childComplexity, args["data"].(*api.SignUpUserInput)), true
 
 	case "AuthMutation.signUpUser":
 		if e.complexity.AuthMutation.SignUpUser == nil {
@@ -1826,6 +1854,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputInputUpdateAnalysis,
 		ec.unmarshalInputPagesRequest,
 		ec.unmarshalInputPlantInput,
+		ec.unmarshalInputRefreshTokenRequest,
 		ec.unmarshalInputSignInUserInput,
 		ec.unmarshalInputSignUpUserInput,
 		ec.unmarshalInputTransectInput,
@@ -2005,11 +2034,16 @@ input SignUpUserInput{
     password: String!
     name:String!
 }
+input RefreshTokenRequest{
+    refresh_token: String!
+}
 
 
 type AuthMutation{
     signUpUser(data : SignUpUserInput): SignInUserResponse @goField(forceResolver: true)
+    SignUpSuperUser(data : SignUpUserInput): SignInUserResponse @goField(forceResolver: true)
     signInUser(data : SignInUserInput): SignInUserResponse @goField(forceResolver: true)
+    RefreshToken(data : RefreshTokenRequest): SignInUserResponse @goField(forceResolver: true)
 }
 
 `, BuiltIn: false},
@@ -2571,6 +2605,36 @@ func (ec *executionContext) field_AnalysisQuery_getListAnalysis_args(ctx context
 		}
 	}
 	args["pages"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_AuthMutation_RefreshToken_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *api.RefreshTokenRequest
+	if tmp, ok := rawArgs["data"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
+		arg0, err = ec.unmarshalORefreshTokenRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐRefreshTokenRequest(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["data"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_AuthMutation_SignUpSuperUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *api.SignUpUserInput
+	if tmp, ok := rawArgs["data"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
+		arg0, err = ec.unmarshalOSignUpUserInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐSignUpUserInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["data"] = arg0
 	return args, nil
 }
 
@@ -4159,6 +4223,66 @@ func (ec *executionContext) fieldContext_AuthMutation_signUpUser(ctx context.Con
 	return fc, nil
 }
 
+func (ec *executionContext) _AuthMutation_SignUpSuperUser(ctx context.Context, field graphql.CollectedField, obj *model.AuthMutation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AuthMutation_SignUpSuperUser(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.AuthMutation().SignUpSuperUser(rctx, obj, fc.Args["data"].(*api.SignUpUserInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*api.SignInUserResponse)
+	fc.Result = res
+	return ec.marshalOSignInUserResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐSignInUserResponse(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AuthMutation_SignUpSuperUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AuthMutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "status":
+				return ec.fieldContext_SignInUserResponse_status(ctx, field)
+			case "access_token":
+				return ec.fieldContext_SignInUserResponse_access_token(ctx, field)
+			case "refresh_token":
+				return ec.fieldContext_SignInUserResponse_refresh_token(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type SignInUserResponse", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_AuthMutation_SignUpSuperUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _AuthMutation_signInUser(ctx context.Context, field graphql.CollectedField, obj *model.AuthMutation) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_AuthMutation_signInUser(ctx, field)
 	if err != nil {
@@ -4213,6 +4337,66 @@ func (ec *executionContext) fieldContext_AuthMutation_signInUser(ctx context.Con
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_AuthMutation_signInUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AuthMutation_RefreshToken(ctx context.Context, field graphql.CollectedField, obj *model.AuthMutation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AuthMutation_RefreshToken(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.AuthMutation().RefreshToken(rctx, obj, fc.Args["data"].(*api.RefreshTokenRequest))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*api.SignInUserResponse)
+	fc.Result = res
+	return ec.marshalOSignInUserResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐSignInUserResponse(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AuthMutation_RefreshToken(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AuthMutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "status":
+				return ec.fieldContext_SignInUserResponse_status(ctx, field)
+			case "access_token":
+				return ec.fieldContext_SignInUserResponse_access_token(ctx, field)
+			case "refresh_token":
+				return ec.fieldContext_SignInUserResponse_refresh_token(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type SignInUserResponse", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_AuthMutation_RefreshToken_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -6768,8 +6952,12 @@ func (ec *executionContext) fieldContext_Mutation_auth(ctx context.Context, fiel
 			switch field.Name {
 			case "signUpUser":
 				return ec.fieldContext_AuthMutation_signUpUser(ctx, field)
+			case "SignUpSuperUser":
+				return ec.fieldContext_AuthMutation_SignUpSuperUser(ctx, field)
 			case "signInUser":
 				return ec.fieldContext_AuthMutation_signInUser(ctx, field)
+			case "RefreshToken":
+				return ec.fieldContext_AuthMutation_RefreshToken(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AuthMutation", field.Name)
 		},
@@ -15048,6 +15236,33 @@ func (ec *executionContext) unmarshalInputPlantInput(ctx context.Context, obj in
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputRefreshTokenRequest(ctx context.Context, obj interface{}) (api.RefreshTokenRequest, error) {
+	var it api.RefreshTokenRequest
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"refresh_token"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "refresh_token":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("refresh_token"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RefreshToken = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputSignInUserInput(ctx context.Context, obj interface{}) (api.SignInUserInput, error) {
 	var it api.SignInUserInput
 	asMap := map[string]interface{}{}
@@ -15922,6 +16137,39 @@ func (ec *executionContext) _AuthMutation(ctx context.Context, sel ast.Selection
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "SignUpSuperUser":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._AuthMutation_SignUpSuperUser(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "signInUser":
 			field := field
 
@@ -15932,6 +16180,39 @@ func (ec *executionContext) _AuthMutation(ctx context.Context, sel ast.Selection
 					}
 				}()
 				res = ec._AuthMutation_signInUser(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "RefreshToken":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._AuthMutation_RefreshToken(ctx, field, obj)
 				return res
 			}
 
@@ -20165,6 +20446,14 @@ func (ec *executionContext) marshalOPlantList2ᚖgithubᚗcomᚋsergey23144VᚋB
 		return graphql.Null
 	}
 	return ec._PlantList(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalORefreshTokenRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐRefreshTokenRequest(ctx context.Context, v interface{}) (*api.RefreshTokenRequest, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputRefreshTokenRequest(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOSignInUserInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐSignInUserInput(ctx context.Context, v interface{}) (*api.SignInUserInput, error) {

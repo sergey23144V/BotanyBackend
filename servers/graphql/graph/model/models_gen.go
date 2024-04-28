@@ -22,8 +22,10 @@ type AnalysisQuery struct {
 }
 
 type AuthMutation struct {
-	SignUpUser *api.SignInUserResponse `json:"signUpUser,omitempty"`
-	SignInUser *api.SignInUserResponse `json:"signInUser,omitempty"`
+	SignUpUser      *api.SignInUserResponse `json:"signUpUser,omitempty"`
+	SignUpSuperUser *api.SignInUserResponse `json:"SignUpSuperUser,omitempty"`
+	SignInUser      *api.SignInUserResponse `json:"signInUser,omitempty"`
+	RefreshToken    *api.SignInUserResponse `json:"RefreshToken,omitempty"`
 }
 
 type EcomorphMutation struct {

@@ -17,10 +17,15 @@ input SignUpUserInput{
     password: String!
     name:String!
 }
+input RefreshTokenRequest{
+    refresh_token: String!
+}
 
 
 type AuthMutation{
     signUpUser(data : SignUpUserInput): SignInUserResponse @goField(forceResolver: true)
+    SignUpSuperUser(data : SignUpUserInput): SignInUserResponse @goField(forceResolver: true)
     signInUser(data : SignInUserInput): SignInUserResponse @goField(forceResolver: true)
+    RefreshToken(data : RefreshTokenRequest): SignInUserResponse @goField(forceResolver: true)
 }
 

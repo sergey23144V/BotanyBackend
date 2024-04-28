@@ -12,10 +12,11 @@ import (
 )
 
 const (
-	Salt            = "hjqrhjqw124617ajfhajs"
-	SigningKey      = "qrkjk#4#%35FSFJlja#4353KSFjH"
-	TokenTTL        = 7 * 24 * time.Minute
-	TokenTTLRefresh = 4 * 7 * 24 * time.Hour
+	Salt              = "hjqrhjqw124617ajfhajs"
+	SigningKey        = "qrkjk#4#%35FSFJlja#4353KSFjH"
+	SigningKeyRefresh = "qrkjk#4#%35FSfdsdgdsfdfJlja#4353KSFjH"
+	TokenTTL          = 7 * 24 * time.Minute
+	TokenTTLRefresh   = 4 * 7 * 24 * time.Hour
 )
 
 type TokenClaims struct {
@@ -97,6 +98,26 @@ func (ta TokenAuth) GetUserFromToken() (string, *api.RoleType, error) {
 		}
 
 		return []byte(SigningKey), nil
+	})
+	if err != nil {
+		return "", nil, err
+	}
+
+	claims, ok := token.Claims.(*TokenClaims)
+	if !ok {
+		return "", nil, errors.New("token claims are not of type *tokenClaims")
+	}
+
+	return claims.UserId, &claims.Role, nil
+}
+
+func (ta TokenAuth) GetUserFromTokenRefresh() (string, *api.RoleType, error) {
+	token, err := jwt.ParseWithClaims(ta.Token, &TokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("invalid signing method")
+		}
+
+		return []byte(SigningKeyRefresh), nil
 	})
 	if err != nil {
 		return "", nil, err

@@ -522,6 +522,13 @@
             </set>
           </value>
         </entry>
+        <entry key="RefreshTokenRequest">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/servers/g-rpc/api/auth.pb.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="Repository">
           <value>
             <set>
@@ -1112,7 +1119,7 @@
         <entry key="file://$PROJECT_DIR$/cmd/main.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1713095683448" />
+              <option name="lastModified" value="1714300719772" />
             </ScannedPath>
           </value>
         </entry>
@@ -1132,7 +1139,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/auth-helper/HttpAuth.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1714161649933" />
+              <option name="lastModified" value="1714300392833" />
               <option name="schema">
                 <list>
                   <option value="TokenClaims" />
@@ -1436,12 +1443,13 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/auth.pb.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712400616493" />
+              <option name="lastModified" value="1714161529214" />
               <option name="schema">
                 <list>
                   <option value="SignInUserInput" />
                   <option value="SignUpUserInput" />
                   <option value="SignInUserResponse" />
+                  <option value="RefreshTokenRequest" />
                   <option value="x" />
                 </list>
               </option>
@@ -1619,7 +1627,7 @@
         <entry key="file://$PROJECT_DIR$/servers/g-rpc/api/implementation/auth-impl.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1714163479291" />
+              <option name="lastModified" value="1714300392791" />
               <option name="schema">
                 <list>
                   <option value="AuthServerImpl" />
@@ -1907,7 +1915,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/auth.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1713097965017" />
+              <option name="lastModified" value="1714299962753" />
               <option name="schema">
                 <list>
                   <option value="authMutationResolver" />
@@ -2101,13 +2109,6 @@
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/test/g-rpc/auth/auth_test.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1714162697502" />
-            </ScannedPath>
-          </value>
-        </entry>
       </map>
     </option>
     <option name="tableStructMapping">
@@ -2207,6 +2208,7 @@
         <entry key="plant_orm" value="PlantORM" />
         <entry key="query" value="Query" />
         <entry key="query_resolver" value="queryResolver" />
+        <entry key="refresh_token_request" value="RefreshTokenRequest" />
         <entry key="repository" value="Repository" />
         <entry key="resolver" value="Resolver" />
         <entry key="service" value="Service" />
@@ -2269,6 +2271,6 @@
         <entry key="x" value="x" />
       </map>
     </option>
-    <option name="lastTimeChecked" value="1714158508997" />
+    <option name="lastTimeChecked" value="1714298131316" />
   </component>
 </project>

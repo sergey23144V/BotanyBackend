@@ -7,6 +7,7 @@ services:
     environment:
       - DB_URL=jdbc:postgresql://botanydb:5432/botany
       - PORT=8080
+      - PORT=80
       - PORT=50051
 
   botanydb:

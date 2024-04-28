@@ -16,9 +16,19 @@ func (r *authMutationResolver) SignUpUser(ctx context.Context, obj *model.AuthMu
 	return r.AuthServerImpl.SignUpUser(ctx, data)
 }
 
+// SignUpSuperUser is the resolver for the SignUpSuperUser field.
+func (r *authMutationResolver) SignUpSuperUser(ctx context.Context, obj *model.AuthMutation, data *api.SignUpUserInput) (*api.SignInUserResponse, error) {
+	return r.AuthServerImpl.SignUpSuperUser(ctx, data)
+}
+
 // SignInUser is the resolver for the signInUser field.
 func (r *authMutationResolver) SignInUser(ctx context.Context, obj *model.AuthMutation, data *api.SignInUserInput) (*api.SignInUserResponse, error) {
 	return r.AuthServerImpl.SignInUser(ctx, data)
+}
+
+// RefreshToken is the resolver for the RefreshToken field.
+func (r *authMutationResolver) RefreshToken(ctx context.Context, obj *model.AuthMutation, data *api.RefreshTokenRequest) (*api.SignInUserResponse, error) {
+	return r.AuthServerImpl.RefreshToken(ctx, data)
 }
 
 // AuthMutation returns AuthMutationResolver implementation.

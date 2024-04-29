@@ -34,16 +34,16 @@ func TestCreateEcomorphsEntity(t *testing.T) {
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
 			req := graphql.NewRequest(`
-mutation insertecomorphsEntity($data: InputFormEcomorphsEntity){
-  ecomorphsEntity{
-    insertEcomorphEntity(input:$data){
-      id{
-        resourceId
-      }
-      title
-    }
-  }
-}
+				mutation insertecomorphsEntity($data: InputFormEcomorphsEntity){
+				  ecomorphsEntity{
+					insertEcomorphEntity(input:$data){
+					  id{
+						resourceId
+					  }
+					  title
+					}
+				  }
+				}
 			`)
 			var respData interface{}
 			data := graphqlTest.StructToMap(testCase.Ecomorph)

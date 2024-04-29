@@ -87,6 +87,13 @@
             </set>
           </value>
         </entry>
+        <entry key="ClientService">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/test/g-rpc/settings.go" />
+            </set>
+          </value>
+        </entry>
         <entry key="ComplexityRoot">
           <value>
             <set>
@@ -1119,7 +1126,7 @@
         <entry key="file://$PROJECT_DIR$/cmd/main.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1714300719772" />
+              <option name="lastModified" value="1714397842778" />
             </ScannedPath>
           </value>
         </entry>
@@ -1184,7 +1191,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/repository/ecomorph-entity-repository.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1713089495272" />
+              <option name="lastModified" value="1714400886856" />
               <option name="schema">
                 <list>
                   <option value="EcomorphsEntityRepositoryImpl" />
@@ -1899,7 +1906,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/analysis.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1713098663880" />
+              <option name="lastModified" value="1714299994270" />
               <option name="schema">
                 <list>
                   <option value="analysisResolver" />
@@ -1915,7 +1922,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/auth.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1714299962753" />
+              <option name="lastModified" value="1714299994277" />
               <option name="schema">
                 <list>
                   <option value="authMutationResolver" />
@@ -1927,7 +1934,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/ecomorph-entity.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1713097965484" />
+              <option name="lastModified" value="1714299994271" />
               <option name="schema">
                 <list>
                   <option value="ecomorphsEntityMutationResolver" />
@@ -1940,7 +1947,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/ecomorph.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1713097965476" />
+              <option name="lastModified" value="1714299994278" />
               <option name="schema">
                 <list>
                   <option value="ecomorphMutationResolver" />
@@ -1966,7 +1973,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/generated.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1713097965670" />
+              <option name="lastModified" value="1714299994469" />
               <option name="schema">
                 <list>
                   <option value="Config" />
@@ -1982,7 +1989,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/img.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1713097965477" />
+              <option name="lastModified" value="1714299994280" />
               <option name="schema">
                 <list>
                   <option value="imgQueryResolver" />
@@ -1994,7 +2001,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/main.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1713097965486" />
+              <option name="lastModified" value="1714299994273" />
               <option name="schema">
                 <list>
                   <option value="mutationResolver" />
@@ -2007,7 +2014,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/model/models_gen.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1713097959253" />
+              <option name="lastModified" value="1714299989373" />
               <option name="schema">
                 <list>
                   <option value="AnalysisMutation" />
@@ -2047,7 +2054,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/transect.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1713097965479" />
+              <option name="lastModified" value="1714299994282" />
               <option name="schema">
                 <list>
                   <option value="transectMutationResolver" />
@@ -2060,7 +2067,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/trial-site.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1713097965480" />
+              <option name="lastModified" value="1714299994276" />
               <option name="schema">
                 <list>
                   <option value="trialSiteMutationResolver" />
@@ -2073,7 +2080,7 @@
         <entry key="file://$PROJECT_DIR$/servers/graphql/graph/type-plant.resolvers.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1713097965482" />
+              <option name="lastModified" value="1714299994274" />
               <option name="schema">
                 <list>
                   <option value="typePlantMutationResolver" />
@@ -2109,6 +2116,25 @@
             </ScannedPath>
           </value>
         </entry>
+        <entry key="file://$PROJECT_DIR$/test/g-rpc/settings.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1714400750430" />
+              <option name="schema">
+                <list>
+                  <option value="ClientService" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/test/graphqlTest/ecomorph-entity/ecomorph-entity_test.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1714397729452" />
+            </ScannedPath>
+          </value>
+        </entry>
       </map>
     </option>
     <option name="tableStructMapping">
@@ -2132,6 +2158,7 @@
         <entry key="auth_server_impl" value="AuthServerImpl" />
         <entry key="auth_service_client" value="authServiceClient" />
         <entry key="bool_response" value="BoolResponse" />
+        <entry key="client_service" value="ClientService" />
         <entry key="complexity_root" value="ComplexityRoot" />
         <entry key="config" value="Config" />
         <entry key="credentials_auth" value="CredentialsAuth" />
@@ -2271,6 +2298,6 @@
         <entry key="x" value="x" />
       </map>
     </option>
-    <option name="lastTimeChecked" value="1714298131316" />
+    <option name="lastTimeChecked" value="1714397608100" />
   </component>
 </project>

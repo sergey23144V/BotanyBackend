@@ -14,7 +14,7 @@ import (
 func main() {
 
 	cfgDB := repository.Config{
-		Host:     "db",
+		Host:     "localhost",
 		Port:     "5432",
 		Username: "postgres",
 		DBName:   "botany",

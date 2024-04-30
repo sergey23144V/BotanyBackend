@@ -3,6 +3,7 @@ package middlewares
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
@@ -42,7 +43,13 @@ func AuthInterceptorGraphQL() func(http.Handler) http.Handler {
 			// Восстанавливаем тело запроса
 			r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 
-			if findAuth(string(body)) {
+			var reqBody map[string]interface{}
+			if err := json.Unmarshal(body, &reqBody); err != nil {
+				http.Error(w, "Ошибка разбора JSON", http.StatusInternalServerError)
+				return
+			}
+
+			if findAuth(string(body)) || reqBody["operationName"].(string) == "IntrospectionQuery" {
 				next.ServeHTTP(w, r)
 				return
 			}

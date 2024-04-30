@@ -131,14 +131,6 @@ func (t TypePlantRepositoryImpl) UpdateTypePlant(ctx context.Context, in *api.Ty
 	if pbReadRes.UserId == nil && userRole != api.RoleType_SuperUser {
 		return nil, er.New("has no rights")
 	}
-
-	if in.EcomorphsEntity != nil {
-		for _, input := range pbObj.EcomorphsEntity {
-			in.EcomorphsEntity = append(in.EcomorphsEntity, input)
-		}
-
-		updateMask.Paths = append(updateMask.Paths, "EcomorphsEntity")
-	}
 	if _, err := api.DefaultApplyFieldMaskTypePlant(ctx, &pbObj, in, updateMask, "", t.db); err != nil {
 		return nil, err
 	}

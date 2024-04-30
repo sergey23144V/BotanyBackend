@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/machinebox/graphql"
+	"github.com/sergey23144V/BotanyBackend/pkg"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
 	"github.com/sergey23144V/BotanyBackend/test/graphqlTest"
@@ -54,7 +55,7 @@ mutation creatAnalysis($data:InputCreateAnalysis!) {
 			`)
 			var respData interface{}
 			ctx := context.Background()
-			data := graphqlTest.StructToMap(testCase.analysis)
+			data := pkg.StructToMap(testCase.analysis)
 			req.Var("data", data)
 			req.Header.Set("Authorization", token)
 			err := client.Run(ctx, req, &respData)

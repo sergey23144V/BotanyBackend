@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/machinebox/graphql"
+	"github.com/sergey23144V/BotanyBackend/pkg"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
 	"github.com/sergey23144V/BotanyBackend/test/graphqlTest"
@@ -48,7 +49,7 @@ mutation insertTypePlant($data: InputFormTypePlantRequest){
 }
 			`)
 			var respData interface{}
-			data := graphqlTest.StructToMap(testCase.TypePlant)
+			data := pkg.StructToMap(testCase.TypePlant)
 			req.Var("data", data)
 			req.Header.Set("Authorization", token)
 			err := client.Run(ctx, req, &respData)
@@ -147,7 +148,7 @@ mutation update( $data: InputTypePlantRequest ){
 }
 			`)
 			var respData interface{}
-			data := graphqlTest.StructToMap(testCase.InputTypePlant)
+			data := pkg.StructToMap(testCase.InputTypePlant)
 			req.Var("data", data)
 			req.Header.Set("Authorization", token)
 			err := client.Run(ctx, req, &respData)
@@ -214,7 +215,7 @@ query getListEcomorphsEntity($data: TypePlantListRequest){
 }
 			`)
 			var respData interface{}
-			data := graphqlTest.StructToMap(testCase.request)
+			data := pkg.StructToMap(testCase.request)
 			req.Var("data", data)
 			req.Header.Set("Authorization", token)
 			err := client.Run(ctx, req, &respData)

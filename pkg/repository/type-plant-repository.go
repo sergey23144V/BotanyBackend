@@ -57,7 +57,7 @@ func (t TypePlantRepositoryImpl) GetTypePlantById(ctx context.Context, in *api.T
 	}
 
 	ormResponse := api.TypePlantORM{}
-	if err = t.db.Where(&ormObj).Preload("EcomorphsEntity").Preload("Img").First(&ormResponse).Error; err != nil {
+	if err = t.db.Where(&ormObj).Preload("EcomorphsEntity").Preload("EcomorphsEntity.Ecomorphs").Preload("Img").First(&ormResponse).Error; err != nil {
 		return nil, err
 	}
 	pbResponse, err := ormResponse.ToPB(ctx)
@@ -165,7 +165,7 @@ func (t TypePlantRepositoryImpl) GetListTypePlant(ctx context.Context, in *api.T
 	}
 	t.db = t.db.Clauses(expression...).Order("id").Or("user_id IS NULL")
 	ormResponse := []api.TypePlantORM{}
-	if err := t.db.Preload("Img").Preload("EcomorphsEntity").Find(&ormResponse).Error; err != nil {
+	if err := t.db.Preload("Img").Preload("EcomorphsEntity").Preload("EcomorphsEntity.Ecomorphs").Find(&ormResponse).Error; err != nil {
 		return nil, err
 	}
 

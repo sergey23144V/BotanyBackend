@@ -6,51 +6,38 @@ package graph
 
 import (
 	"context"
-	"errors"
 
-	"github.com/sergey23144V/BotanyBackend/pkg/middlewares"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"github.com/sergey23144V/BotanyBackend/servers/graphql/graph/model"
 )
 
 // InsertEcomorph is the resolver for the insertEcomorph field.
 func (r *ecomorphMutationResolver) InsertEcomorph(ctx context.Context, obj *model.EcomorphMutation, input *api.InputFormEcomorph) (*api.Ecomorph, error) {
-	if !middlewares.ValidToken(ctx) {
-		return nil, errors.New("not authorization")
-	}
+
 	ecomorph, err := r.service.EcomorphService.CreateEcomorph(ctx, &api.InputEcomorph{Payload: input})
 	return ecomorph, err
 }
 
 // UpdateEcomorph is the resolver for the updateEcomorph field.
 func (r *ecomorphMutationResolver) UpdateEcomorph(ctx context.Context, obj *model.EcomorphMutation, input *api.InputEcomorph) (*api.Ecomorph, error) {
-	if !middlewares.ValidToken(ctx) {
-		return nil, errors.New("not authorization")
-	}
+
 	return r.service.EcomorphService.UpdateEcomorph(ctx, input)
 }
 
 // DeleteEcomorphByID is the resolver for the deleteEcomorphById field.
 func (r *ecomorphMutationResolver) DeleteEcomorphByID(ctx context.Context, obj *model.EcomorphMutation, id string) (*api.BoolResponse, error) {
-	if !middlewares.ValidToken(ctx) {
-		return nil, errors.New("not authorization")
-	}
+
 	return r.service.EcomorphService.DeleteEcomorph(ctx, ToIdRequest(id))
 }
 
 // GetEcomorphByID is the resolver for the getEcomorphById field.
 func (r *ecomorphQueryResolver) GetEcomorphByID(ctx context.Context, obj *model.EcomorphQuery, id string) (*api.Ecomorph, error) {
-	if !middlewares.ValidToken(ctx) {
-		return nil, errors.New("not authorization")
-	}
+
 	return r.service.EcomorphService.GetEcomorphById(ctx, ToIdRequest(id))
 }
 
 // GetListEcomorph is the resolver for the getListEcomorph field.
 func (r *ecomorphQueryResolver) GetListEcomorph(ctx context.Context, obj *model.EcomorphQuery, pages *api.EcomorphListRequest) (*api.EcomorphsList, error) {
-	if !middlewares.ValidToken(ctx) {
-		return nil, errors.New("not authorization")
-	}
 	return r.service.EcomorphService.GetListEcomorph(ctx, pages)
 }
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/machinebox/graphql"
+	"github.com/sergey23144V/BotanyBackend/pkg"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
 	"github.com/sergey23144V/BotanyBackend/test/graphqlTest"
@@ -46,7 +47,7 @@ func TestCreateEcomorphsEntity(t *testing.T) {
 				}
 			`)
 			var respData interface{}
-			data := graphqlTest.StructToMap(testCase.Ecomorph)
+			data := pkg.StructToMap(testCase.Ecomorph)
 
 			req.Var("data", data)
 			req.Header.Set("Authorization", token)
@@ -144,7 +145,7 @@ mutation update( $data: InputEcomorphsEntity ){
 }
 			`)
 			var respData interface{}
-			data := graphqlTest.StructToMap(testCase.Ecomorph)
+			data := pkg.StructToMap(testCase.Ecomorph)
 			req.Var("data", data)
 			req.Header.Set("Authorization", token)
 			err := client.Run(ctx, req, &respData)
@@ -211,7 +212,7 @@ query getListEcomorphsEntity($data: EcomorphsEntityListRequest){
 }
 			`)
 			var respData interface{}
-			data := graphqlTest.StructToMap(testCase.request)
+			data := pkg.StructToMap(testCase.request)
 			req.Var("data", data)
 			req.Header.Set("Authorization", token)
 			err := client.Run(ctx, req, &respData)

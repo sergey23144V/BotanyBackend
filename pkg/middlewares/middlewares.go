@@ -29,14 +29,14 @@ func AuthInterceptorGraphQL() func(http.Handler) http.Handler {
 			token := r.Header.Get("authorization")
 
 			if token == "" {
-				next.ServeHTTP(w, r)
+				http.Error(w, "Отсутствует токен авторизации", http.StatusUnauthorized)
 				return
 			}
 			authorization := ParseAuthorization(token)
 
 			userId, role, err := authorization.(auth_helper.TokenAuth).GetUserFromToken()
 			if err != nil {
-				next.ServeHTTP(w, r)
+				http.Error(w, err.Error(), http.StatusForbidden)
 				return
 			}
 
@@ -154,11 +154,11 @@ func ParseAuthorization(authToken string) auth_helper.Authorization {
 	return authorization
 }
 
-func ValidToken(ctx context.Context) bool {
+func ValidToken(ctx context.Context) error {
 
 	token := GetTokenFromContext(ctx)
 	if token == nil {
-		return false
+		return errors.New("request does not have a token token")
 	}
 	result, err := jwt.ParseWithClaims(*token, &auth_helper.TokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -168,10 +168,10 @@ func ValidToken(ctx context.Context) bool {
 		return []byte(auth_helper.SigningKey), nil
 	})
 	if err != nil {
-		return false
+		return errors.New("error parsing the token :" + err.Error())
 	}
 	if result == nil {
-		return false
+		return errors.New("the token is invalid or expired")
 	}
-	return true
+	return nil
 }

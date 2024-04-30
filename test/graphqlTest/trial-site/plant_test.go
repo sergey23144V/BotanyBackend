@@ -3,6 +3,7 @@ package trial_site
 import (
 	"context"
 	"github.com/machinebox/graphql"
+	"github.com/sergey23144V/BotanyBackend/pkg"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
 	"github.com/sergey23144V/BotanyBackend/test/graphqlTest"
@@ -47,7 +48,7 @@ mutation insertPlant($data: InputFormPlant){
 
 			`)
 			var respData interface{}
-			data := graphqlTest.StructToMap(testCase.Plant)
+			data := pkg.StructToMap(testCase.Plant)
 
 			req.Var("data", data)
 			req.Header.Set("Authorization", token)
@@ -148,7 +149,7 @@ mutation updatePlant( $data: InputPlantRequest ){
 }
 			`)
 			var respData interface{}
-			data := graphqlTest.StructToMap(testCase.Plant)
+			data := pkg.StructToMap(testCase.Plant)
 			req.Var("data", data)
 			req.Header.Set("Authorization", token)
 			err := client.Run(ctx, req, &respData)

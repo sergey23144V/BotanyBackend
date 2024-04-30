@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/machinebox/graphql"
+	"github.com/sergey23144V/BotanyBackend/pkg"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
 	"github.com/sergey23144V/BotanyBackend/test/graphqlTest"
@@ -205,7 +206,7 @@ query getListEcomorph($data: EcomorphListRequest){
 }
 			`)
 			var respData interface{}
-			data := graphqlTest.StructToMap(testCase.request)
+			data := pkg.StructToMap(testCase.request)
 			req.Var("data", data)
 			req.Header.Set("Authorization", token)
 			err := client.Run(ctx, req, &respData)

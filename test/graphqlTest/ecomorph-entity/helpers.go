@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/machinebox/graphql"
+	"github.com/sergey23144V/BotanyBackend/pkg"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
 	"github.com/sergey23144V/BotanyBackend/test/graphqlTest"
@@ -32,7 +33,7 @@ mutation insertecomorphsEntity($data: InputFormEcomorphsEntity){
 }`)
 
 	var respData interface{}
-	data := graphqlTest.StructToMap(EcomorphsEntity)
+	data := pkg.StructToMap(EcomorphsEntity)
 
 	req.Var("data", data)
 	req.Header.Set("Authorization", token)

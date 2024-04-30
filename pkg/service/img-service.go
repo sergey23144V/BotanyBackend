@@ -55,6 +55,7 @@ func (a ImgServiceImpl) GetImageFromRequest(r *http.Request) (*api.Img, error) {
 	if err != nil {
 		return nil, errors.New("Ошибка при копировании файла")
 	}
+
 	userId := middlewares.GetUserIdFromContext(r.Context())
 	localfile := &api.Img{
 		Id:     &resource.Identifier{ResourceId: pkg.GenerateUUID()},
@@ -68,7 +69,8 @@ func (a ImgServiceImpl) GetImageFromRequest(r *http.Request) (*api.Img, error) {
 }
 func (i ImgServiceImpl) SaveImg(w http.ResponseWriter, r *http.Request) {
 
-	if !middlewares.ValidToken(r.Context()) {
+	err := middlewares.ValidToken(r.Context())
+	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -83,8 +85,8 @@ func (i ImgServiceImpl) SaveImg(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-
-	jsonData, err := json.Marshal(img)
+	data := pkg.StructToMap(img)
+	jsonData, err := json.Marshal(data)
 
 	w.WriteHeader(http.StatusCreated)
 	w.Write(jsonData)

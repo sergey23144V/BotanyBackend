@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/infobloxopen/atlas-app-toolkit/v2/rpc/resource"
 	"github.com/machinebox/graphql"
+	"github.com/sergey23144V/BotanyBackend/pkg"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	g_rpc "github.com/sergey23144V/BotanyBackend/test/g-rpc"
 	"github.com/sergey23144V/BotanyBackend/test/graphqlTest"
@@ -33,7 +34,7 @@ mutation insertTypePlant($data: InputFormTypePlantRequest){
 }`)
 
 	var respData interface{}
-	data := graphqlTest.StructToMap(typePlant)
+	data := pkg.StructToMap(typePlant)
 
 	req.Var("data", data)
 	req.Header.Set("Authorization", token)

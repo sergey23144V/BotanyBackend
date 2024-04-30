@@ -102,7 +102,9 @@ func (ta TokenAuth) GetUserFromToken() (string, *api.RoleType, error) {
 	if err != nil {
 		return "", nil, err
 	}
-
+	if token == nil {
+		return "", nil, errors.New("the token is invalid or expired")
+	}
 	claims, ok := token.Claims.(*TokenClaims)
 	if !ok {
 		return "", nil, errors.New("token claims are not of type *tokenClaims")

@@ -1119,7 +1119,14 @@
         <entry key="file://$PROJECT_DIR$/cmd/main.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1714495656477" />
+              <option name="lastModified" value="1714499250596" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/img/edsf.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1714495830782" />
             </ScannedPath>
           </value>
         </entry>
@@ -1165,7 +1172,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/middlewares/middlewares.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1714495576528" />
+              <option name="lastModified" value="1714501392161" />
             </ScannedPath>
           </value>
         </entry>
@@ -1328,7 +1335,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/service/img-service.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1714489873274" />
+              <option name="lastModified" value="1714498199403" />
               <option name="schema">
                 <list>
                   <option value="ImgServiceImpl" />
@@ -2100,7 +2107,7 @@
         <entry key="file://$PROJECT_DIR$/servers/rest/cmd.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1712004526682" />
+              <option name="lastModified" value="1714501361666" />
             </ScannedPath>
           </value>
         </entry>

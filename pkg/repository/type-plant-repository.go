@@ -68,7 +68,7 @@ func (t TypePlantRepositoryImpl) DeleteTypePlant(ctx context.Context, in *api.Ty
 	if in == nil {
 		return errors.NilArgumentError
 	}
-	pbReadRes, err := api.DefaultReadEcomorphsEntity(ctx, &api.EcomorphsEntity{Id: in.GetId()}, t.db)
+	pbReadRes, err := api.DefaultReadTypePlant(ctx, &api.TypePlant{Id: in.GetId()}, t.db)
 	if err != nil {
 		return err
 	}

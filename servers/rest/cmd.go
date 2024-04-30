@@ -13,7 +13,7 @@ func StartRest(service *service.Service) {
 		handlers := NewHandler(service)
 		r := chi.NewRouter()
 
-		r.Use(middlewares.AuthInterceptorGraphQL())
+		r.Use(middlewares.AuthInterceptorREST())
 
 		r = handlers.InitRoutes(r)
 

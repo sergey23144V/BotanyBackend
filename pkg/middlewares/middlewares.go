@@ -29,35 +29,62 @@ func AuthInterceptorGraphQL() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-			if r.URL.Path != "/api" && !findPort(r.Host) {
+			if r.URL.Path != "/api" {
 				next.ServeHTTP(w, r)
 				return
 			}
 
-			if r.Method == "OPTIONS" && findPort(r.Host) {
-				next.ServeHTTP(w, r)
+			body, err := ioutil.ReadAll(r.Body)
+			if err != nil {
+				http.Error(w, "Ошибка чтения тела запроса", http.StatusInternalServerError)
 				return
 			}
+			// Восстанавливаем тело запроса
+			r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 
-			if r.URL.Path == "/api" {
-				body, err := ioutil.ReadAll(r.Body)
-				if err != nil {
-					http.Error(w, "Ошибка чтения тела запроса", http.StatusInternalServerError)
-					return
-				}
-				// Восстанавливаем тело запроса
-				r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
-
-				if findAuth(string(body)) {
-					next.ServeHTTP(w, r)
-					return
-				}
+			if findAuth(string(body)) {
+				next.ServeHTTP(w, r)
+				return
 			}
 
 			token := r.Header.Get("authorization")
 
 			if token == "" {
 				http.Error(w, "Отсутствует токен авторизации", http.StatusUnauthorized)
+				return
+			}
+			authorization := ParseAuthorization(token)
+
+			userId, role, err := authorization.(auth_helper.TokenAuth).GetUserFromToken()
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusForbidden)
+				return
+			}
+
+			ctx := r.Context()
+
+			ctx = context.WithValue(ctx, KeyToken, authorization.String())
+
+			ctx = context.WithValue(ctx, KeyUserRole, role)
+
+			ctx = context.WithValue(ctx, KeyUserId, userId)
+
+			r = r.WithContext(ctx)
+			next.ServeHTTP(w, r)
+			return
+
+		})
+	}
+}
+
+func AuthInterceptorREST() func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+			token := r.Header.Get("authorization")
+
+			if token == "" {
+				next.ServeHTTP(w, r)
 				return
 			}
 			authorization := ParseAuthorization(token)

@@ -87,7 +87,7 @@ func AuthInterceptorGraphQL() func(http.Handler) http.Handler {
 
 func findAuth(text string) bool {
 	// Создаем регулярное выражение для поиска строки "auth"
-	re := regexp.MustCompile(`auth\{`)
+	re := regexp.MustCompile(`auth \{`)
 
 	// Ищем все совпадения в тексте
 	matches := re.FindAllString(text, -1)

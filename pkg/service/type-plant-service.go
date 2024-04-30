@@ -71,6 +71,12 @@ func (t TypePlantServiceImpl) UpdateTypePlant(ctx context.Context, in *api.Input
 	if in.Input.Subtitle != "" {
 		fieldMask = append(fieldMask, "Subtitle")
 	}
+	if in.Input.EcomorphsEntity != nil {
+		fieldMask = append(fieldMask, "EcomorphsEntity")
+	}
+	if in.Input.Img != nil {
+		fieldMask = append(fieldMask, "Img")
+	}
 	role := middlewares.GetUserRoleFromContext(ctx)
 	pb, err := t.ToPB(ctx, in)
 	if err != nil {

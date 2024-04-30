@@ -3,7 +3,6 @@ package middlewares
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
@@ -30,29 +29,24 @@ func AuthInterceptorGraphQL() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-			if r.URL.Path != "/api" {
+			if r.URL.Path != "/api" && r.Method == "OPTIONS" || !findPort(r.Host) {
 				next.ServeHTTP(w, r)
 				return
 			}
 
-			// Получаем тело запроса GraphQL
-			body, err := ioutil.ReadAll(r.Body)
-			if err != nil {
-				http.Error(w, "Ошибка чтения тела запроса", http.StatusInternalServerError)
-				return
-			}
-			// Восстанавливаем тело запроса
-			r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+			if r.URL.Path == "/api" {
+				body, err := ioutil.ReadAll(r.Body)
+				if err != nil {
+					http.Error(w, "Ошибка чтения тела запроса", http.StatusInternalServerError)
+					return
+				}
+				// Восстанавливаем тело запроса
+				r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 
-			if findAuth(string(body)) {
-				next.ServeHTTP(w, r)
-				return
-			}
-
-			var reqBody map[string]interface{}
-			if err := json.Unmarshal(body, &reqBody); err != nil {
-				http.Error(w, "Ошибка разбора JSON", http.StatusInternalServerError)
-				return
+				if findAuth(string(body)) {
+					next.ServeHTTP(w, r)
+					return
+				}
 			}
 
 			token := r.Header.Get("authorization")
@@ -88,6 +82,22 @@ func AuthInterceptorGraphQL() func(http.Handler) http.Handler {
 func findAuth(text string) bool {
 	// Создаем регулярное выражение для поиска строки "auth"
 	re := regexp.MustCompile(`auth \{`)
+
+	// Ищем все совпадения в тексте
+	matches := re.FindAllString(text, -1)
+
+	// Если найдено хотя бы одно совпадение, возвращаем первое
+	if len(matches) > 0 {
+		return true
+	}
+
+	// Если совпадений не найдено, возвращаем пустую строку
+	return false
+}
+
+func findPort(text string) bool {
+	// Создаем регулярное выражение для поиска строки "auth"
+	re := regexp.MustCompile(`8080`)
 
 	// Ищем все совпадения в тексте
 	matches := re.FindAllString(text, -1)

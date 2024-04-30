@@ -58,7 +58,7 @@ func (a ImgServiceImpl) GetImageFromRequest(r *http.Request) (*api.Img, error) {
 
 	userId := middlewares.GetUserIdFromContext(r.Context())
 	localfile := &api.Img{
-		Id:     &resource.Identifier{ResourceId: pkg.GenerateUUID()},
+		Id:     &resource.Identifier{ResourceId: id},
 		Name:   handler.Filename,
 		Path:   newFileName2,
 		UserId: userId,

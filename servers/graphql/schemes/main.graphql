@@ -1,6 +1,7 @@
 
 
 type Query{
+    userQuery: UserQuery @goField(forceResolver: true)
     ecomorph: EcomorphQuery @goField(forceResolver: true)
     ecomorphsEntity: EcomorphsEntityQuery @goField(forceResolver: true)
     typePlant: TypePlantQuery @goField(forceResolver: true)

@@ -143,6 +143,8 @@ models:
     model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.SignUpUserInput
   RefreshTokenRequest:
     model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.RefreshTokenRequest
+  User:
+    model: github.com/sergey23144V/BotanyBackend/servers/g-rpc/api.User
 
 #EcomorphsEntity
   EcomorphsEntityInput:

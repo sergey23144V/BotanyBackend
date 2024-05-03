@@ -85,7 +85,7 @@ func (t TrialSiteServiceImpl) DetectionPlant(ctx context.Context, in *api.TrialS
 
 		if plantList[0] != nil {
 			dtn.Dominant = plantList[0].TypePlant
-			if plantList[1] != nil {
+			if len(plantList) > 1 && plantList[1] != nil {
 				dtn.SubDominant = plantList[1].TypePlant
 			}
 		}

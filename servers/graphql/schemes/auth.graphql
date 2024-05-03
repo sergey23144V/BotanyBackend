@@ -1,5 +1,15 @@
+enum RoleType{
+    SuperUser
+    NormalUser
+}
 
-
+type User{
+    id: IdentifierType!
+    name: String!
+    email: String!
+    password: String!
+    role: RoleType
+}
 
 type SignInUserResponse{
     status: String!
@@ -27,5 +37,9 @@ type AuthMutation{
     SignUpSuperUser(data : SignUpUserInput): SignInUserResponse @goField(forceResolver: true)
     signInUser(data : SignInUserInput): SignInUserResponse @goField(forceResolver: true)
     RefreshToken(data : RefreshTokenRequest): SignInUserResponse @goField(forceResolver: true)
+}
+
+type UserQuery {
+    getMe: User @goField(forceResolver: true)
 }
 

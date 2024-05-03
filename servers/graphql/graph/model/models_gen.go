@@ -106,6 +106,51 @@ type TypePlantQuery struct {
 	GetAllTypePlant *api.TypePlantList `json:"getAllTypePlant,omitempty"`
 }
 
+type UserQuery struct {
+	GetMe *api.User `json:"getMe,omitempty"`
+}
+
+type RoleType string
+
+const (
+	RoleTypeSuperUser  RoleType = "SuperUser"
+	RoleTypeNormalUser RoleType = "NormalUser"
+)
+
+var AllRoleType = []RoleType{
+	RoleTypeSuperUser,
+	RoleTypeNormalUser,
+}
+
+func (e RoleType) IsValid() bool {
+	switch e {
+	case RoleTypeSuperUser, RoleTypeNormalUser:
+		return true
+	}
+	return false
+}
+
+func (e RoleType) String() string {
+	return string(e)
+}
+
+func (e *RoleType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = RoleType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid RoleType", str)
+	}
+	return nil
+}
+
+func (e RoleType) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
 type TypeAnalysis string
 
 const (

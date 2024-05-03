@@ -58,8 +58,11 @@ type ResolverRoot interface {
 	TrialSiteQuery() TrialSiteQueryResolver
 	TypePlantMutation() TypePlantMutationResolver
 	TypePlantQuery() TypePlantQueryResolver
+	User() UserResolver
+	UserQuery() UserQueryResolver
 	AnalysisInput() AnalysisInputResolver
 	InputCreateAnalysis() InputCreateAnalysisResolver
+	InputFormPlant() InputFormPlantResolver
 }
 
 type DirectiveRoot struct {
@@ -227,6 +230,7 @@ type ComplexityRoot struct {
 		Transect        func(childComplexity int) int
 		TrialSite       func(childComplexity int) int
 		TypePlant       func(childComplexity int) int
+		UserQuery       func(childComplexity int) int
 	}
 
 	SignInUserResponse struct {
@@ -341,6 +345,18 @@ type ComplexityRoot struct {
 		GetAllTypePlant func(childComplexity int, pages *api.TypePlantListRequest) int
 		GetTypePlant    func(childComplexity int, id string) int
 	}
+
+	User struct {
+		Email    func(childComplexity int) int
+		Id       func(childComplexity int) int
+		Name     func(childComplexity int) int
+		Password func(childComplexity int) int
+		Role     func(childComplexity int) int
+	}
+
+	UserQuery struct {
+		GetMe func(childComplexity int) int
+	}
 }
 
 type AnalysisResolver interface {
@@ -393,6 +409,7 @@ type MutationResolver interface {
 	Analysis(ctx context.Context) (*model.AnalysisMutation, error)
 }
 type QueryResolver interface {
+	UserQuery(ctx context.Context) (*model.UserQuery, error)
 	Ecomorph(ctx context.Context) (*model.EcomorphQuery, error)
 	EcomorphsEntity(ctx context.Context) (*model.EcomorphsEntityQuery, error)
 	TypePlant(ctx context.Context) (*model.TypePlantQuery, error)
@@ -436,12 +453,21 @@ type TypePlantQueryResolver interface {
 	GetTypePlant(ctx context.Context, obj *model.TypePlantQuery, id string) (*api.TypePlant, error)
 	GetAllTypePlant(ctx context.Context, obj *model.TypePlantQuery, pages *api.TypePlantListRequest) (*api.TypePlantList, error)
 }
+type UserResolver interface {
+	Role(ctx context.Context, obj *api.User) (*model.RoleType, error)
+}
+type UserQueryResolver interface {
+	GetMe(ctx context.Context, obj *model.UserQuery) (*api.User, error)
+}
 
 type AnalysisInputResolver interface {
 	TypeAnalysis(ctx context.Context, obj *api.Analysis, data model.TypeAnalysis) error
 }
 type InputCreateAnalysisResolver interface {
 	TypeAnalysis(ctx context.Context, obj *api.InputCreateAnalysis, data model.TypeAnalysis) error
+}
+type InputFormPlantResolver interface {
+	TypePlant(ctx context.Context, obj *api.InputFormPlant, data *api.TypePlant) error
 }
 
 type executableSchema struct {
@@ -1205,6 +1231,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.TypePlant(childComplexity), true
 
+	case "Query.userQuery":
+		if e.complexity.Query.UserQuery == nil {
+			break
+		}
+
+		return e.complexity.Query.UserQuery(childComplexity), true
+
 	case "SignInUserResponse.access_token":
 		if e.complexity.SignInUserResponse.AccessToken == nil {
 			break
@@ -1817,6 +1850,48 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.TypePlantQuery.GetTypePlant(childComplexity, args["id"].(string)), true
 
+	case "User.email":
+		if e.complexity.User.Email == nil {
+			break
+		}
+
+		return e.complexity.User.Email(childComplexity), true
+
+	case "User.id":
+		if e.complexity.User.Id == nil {
+			break
+		}
+
+		return e.complexity.User.Id(childComplexity), true
+
+	case "User.name":
+		if e.complexity.User.Name == nil {
+			break
+		}
+
+		return e.complexity.User.Name(childComplexity), true
+
+	case "User.password":
+		if e.complexity.User.Password == nil {
+			break
+		}
+
+		return e.complexity.User.Password(childComplexity), true
+
+	case "User.role":
+		if e.complexity.User.Role == nil {
+			break
+		}
+
+		return e.complexity.User.Role(childComplexity), true
+
+	case "UserQuery.getMe":
+		if e.complexity.UserQuery.GetMe == nil {
+			break
+		}
+
+		return e.complexity.UserQuery.GetMe(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -2015,8 +2090,18 @@ type AnalysisMutation {
     deleteAnalysis(id: ID!): BoolResponse! @goField(forceResolver: true)
 }
 `, BuiltIn: false},
-	{Name: "../schemes/auth.graphql", Input: `
+	{Name: "../schemes/auth.graphql", Input: `enum RoleType{
+    SuperUser
+    NormalUser
+}
 
+type User{
+    id: IdentifierType!
+    name: String!
+    email: String!
+    password: String!
+    role: RoleType
+}
 
 type SignInUserResponse{
     status: String!
@@ -2044,6 +2129,10 @@ type AuthMutation{
     SignUpSuperUser(data : SignUpUserInput): SignInUserResponse @goField(forceResolver: true)
     signInUser(data : SignInUserInput): SignInUserResponse @goField(forceResolver: true)
     RefreshToken(data : RefreshTokenRequest): SignInUserResponse @goField(forceResolver: true)
+}
+
+type UserQuery {
+    getMe: User @goField(forceResolver: true)
 }
 
 `, BuiltIn: false},
@@ -2251,6 +2340,7 @@ type ImgList {
 	{Name: "../schemes/main.graphql", Input: `
 
 type Query{
+    userQuery: UserQuery @goField(forceResolver: true)
     ecomorph: EcomorphQuery @goField(forceResolver: true)
     ecomorphsEntity: EcomorphsEntityQuery @goField(forceResolver: true)
     typePlant: TypePlantQuery @goField(forceResolver: true)
@@ -2453,7 +2543,7 @@ type PlantList{
 input InputFormPlant {
     coverage: Int
     count: Int
-    typePlantId: TypePlantInput
+    typePlant: TypePlantInput
 }
 
 input InputPlantRequest {
@@ -7694,6 +7784,51 @@ func (ec *executionContext) fieldContext_PlantList_list(ctx context.Context, fie
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_userQuery(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_userQuery(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().UserQuery(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.UserQuery)
+	fc.Result = res
+	return ec.marshalOUserQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐUserQuery(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_userQuery(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "getMe":
+				return ec.fieldContext_UserQuery_getMe(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UserQuery", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_ecomorph(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_ecomorph(ctx, field)
 	if err != nil {
@@ -12130,6 +12265,284 @@ func (ec *executionContext) fieldContext_TypePlantQuery_getAllTypePlant(ctx cont
 	return fc, nil
 }
 
+func (ec *executionContext) _User_id(ctx context.Context, field graphql.CollectedField, obj *api.User) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_User_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Id, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*resource.Identifier)
+	fc.Result = res
+	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_User_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "User",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "applicationName":
+				return ec.fieldContext_IdentifierType_applicationName(ctx, field)
+			case "resourceType":
+				return ec.fieldContext_IdentifierType_resourceType(ctx, field)
+			case "resourceId":
+				return ec.fieldContext_IdentifierType_resourceId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type IdentifierType", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _User_name(ctx context.Context, field graphql.CollectedField, obj *api.User) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_User_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_User_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "User",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _User_email(ctx context.Context, field graphql.CollectedField, obj *api.User) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_User_email(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Email, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_User_email(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "User",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _User_password(ctx context.Context, field graphql.CollectedField, obj *api.User) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_User_password(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Password, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_User_password(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "User",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _User_role(ctx context.Context, field graphql.CollectedField, obj *api.User) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_User_role(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.User().Role(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.RoleType)
+	fc.Result = res
+	return ec.marshalORoleType2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐRoleType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_User_role(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "User",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type RoleType does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserQuery_getMe(ctx context.Context, field graphql.CollectedField, obj *model.UserQuery) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserQuery_getMe(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.UserQuery().GetMe(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*api.User)
+	fc.Result = res
+	return ec.marshalOUser2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UserQuery_getMe(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UserQuery",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_User_id(ctx, field)
+			case "name":
+				return ec.fieldContext_User_name(ctx, field)
+			case "email":
+				return ec.fieldContext_User_email(ctx, field)
+			case "password":
+				return ec.fieldContext_User_password(ctx, field)
+			case "role":
+				return ec.fieldContext_User_role(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext___Directive_name(ctx, field)
 	if err != nil {
@@ -14681,7 +15094,7 @@ func (ec *executionContext) unmarshalInputInputFormPlant(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"coverage", "count", "typePlantId"}
+	fieldsInOrder := [...]string{"coverage", "count", "typePlant"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -14702,13 +15115,15 @@ func (ec *executionContext) unmarshalInputInputFormPlant(ctx context.Context, ob
 				return it, err
 			}
 			it.Count = data
-		case "typePlantId":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typePlantId"))
+		case "typePlant":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typePlant"))
 			data, err := ec.unmarshalOTypePlantInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.TypePlantId = data
+			if err = ec.resolvers.InputFormPlant().TypePlant(ctx, &it, data); err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -17469,6 +17884,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
+		case "userQuery":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_userQuery(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "ecomorph":
 			field := field
 
@@ -18936,6 +19370,160 @@ func (ec *executionContext) _TypePlantQuery(ctx context.Context, sel ast.Selecti
 					}
 				}()
 				res = ec._TypePlantQuery_getAllTypePlant(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var userImplementors = []string{"User"}
+
+func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj *api.User) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, userImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("User")
+		case "id":
+			out.Values[i] = ec._User_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "name":
+			out.Values[i] = ec._User_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "email":
+			out.Values[i] = ec._User_email(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "password":
+			out.Values[i] = ec._User_password(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "role":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._User_role(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var userQueryImplementors = []string{"UserQuery"}
+
+func (ec *executionContext) _UserQuery(ctx context.Context, sel ast.SelectionSet, obj *model.UserQuery) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, userQueryImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("UserQuery")
+		case "getMe":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._UserQuery_getMe(ctx, field, obj)
 				return res
 			}
 
@@ -20456,6 +21044,22 @@ func (ec *executionContext) unmarshalORefreshTokenRequest2ᚖgithubᚗcomᚋserg
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalORoleType2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐRoleType(ctx context.Context, v interface{}) (*model.RoleType, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(model.RoleType)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalORoleType2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐRoleType(ctx context.Context, sel ast.SelectionSet, v *model.RoleType) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
 func (ec *executionContext) unmarshalOSignInUserInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐSignInUserInput(ctx context.Context, v interface{}) (*api.SignInUserInput, error) {
 	if v == nil {
 		return nil, nil
@@ -20823,6 +21427,20 @@ func (ec *executionContext) marshalOTypePlantQuery2ᚖgithubᚗcomᚋsergey23144
 		return graphql.Null
 	}
 	return ec._TypePlantQuery(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOUser2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐUser(ctx context.Context, sel ast.SelectionSet, v *api.User) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._User(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOUserQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐUserQuery(ctx context.Context, sel ast.SelectionSet, v *model.UserQuery) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._UserQuery(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

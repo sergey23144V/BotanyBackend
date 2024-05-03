@@ -52,6 +52,12 @@ func (r *mutationResolver) Analysis(ctx context.Context) (*model.AnalysisMutatio
 	return &v, nil
 }
 
+// UserQuery is the resolver for the userQuery field.
+func (r *queryResolver) UserQuery(ctx context.Context) (*model.UserQuery, error) {
+	v := model.UserQuery{}
+	return &v, nil
+}
+
 // Ecomorph is the resolver for the ecomorph field.
 func (r *queryResolver) Ecomorph(ctx context.Context) (*model.EcomorphQuery, error) {
 	v := model.EcomorphQuery{}

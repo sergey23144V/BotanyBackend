@@ -34,6 +34,7 @@ func (t Repository) CountPlant(plantList []*api.Plant) int {
 	seen := make(map[string]bool)
 	if len(plantList) > 0 {
 		for _, item := range plantList {
+			seen[item.TypePlant.Id.ResourceId] = false
 			if seen[item.TypePlant.Id.ResourceId] {
 				continue
 			}

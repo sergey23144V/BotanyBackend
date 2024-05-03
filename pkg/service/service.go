@@ -12,6 +12,7 @@ type Service struct {
 	TransectService
 	ImgService
 	AnalysisService
+	UserService
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -23,6 +24,7 @@ func NewService(repos *repository.Repository) *Service {
 		TransectService:        NewTransectServiceImpl(repos),
 		ImgService:             NewImgServiceImpl(repos),
 		AnalysisService:        NewAnalysisServiceImpl(repos),
+		UserService:            NewUserServiceImpl(repos),
 	}
 }
 

@@ -19,6 +19,7 @@ type TypePlantRepository interface {
 	StrictUpdateTypePlant(ctx context.Context, in *api.TypePlant) (*api.TypePlant, error)
 	UpdateTypePlant(ctx context.Context, in *api.TypePlant, updateMask *field_mask.FieldMask, userRole api.RoleType) (*api.TypePlant, error)
 	GetListTypePlant(ctx context.Context, in *api.TypePlant, request *api.TypePlantListRequest) ([]*api.TypePlant, error)
+	GetCountTypePlant(ctx context.Context, in *api.TypePlant) (int64, error)
 }
 
 type TypePlantRepositoryImpl struct {
@@ -170,6 +171,20 @@ func (t TypePlantRepositoryImpl) GetListTypePlant(ctx context.Context, in *api.T
 		pbResponse = append(pbResponse, &temp)
 	}
 	return pbResponse, nil
+}
+
+func (t TypePlantRepositoryImpl) GetCountTypePlant(ctx context.Context, in *api.TypePlant) (int64, error) {
+	ormObj, err := in.ToORM(ctx)
+	if err != nil {
+		return 0, err
+	}
+
+	var count = int64(0)
+	if tb := t.db.Model(&ormObj).Where(&ormObj).Or("user_id IS NULL").Count(&count); tb.Error != nil {
+		return 0, tb.Error
+	}
+
+	return count, nil
 }
 
 func (s TypePlantRepositoryImpl) GetWhereList(filter *api.FilterTypePlant) []clause.Expression {

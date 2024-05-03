@@ -13,26 +13,22 @@ import (
 
 // InsertEcomorph is the resolver for the insertEcomorph field.
 func (r *ecomorphMutationResolver) InsertEcomorph(ctx context.Context, obj *model.EcomorphMutation, input *api.InputFormEcomorph) (*api.Ecomorph, error) {
-
 	ecomorph, err := r.service.EcomorphService.CreateEcomorph(ctx, &api.InputEcomorph{Payload: input})
 	return ecomorph, err
 }
 
 // UpdateEcomorph is the resolver for the updateEcomorph field.
 func (r *ecomorphMutationResolver) UpdateEcomorph(ctx context.Context, obj *model.EcomorphMutation, input *api.InputEcomorph) (*api.Ecomorph, error) {
-
 	return r.service.EcomorphService.UpdateEcomorph(ctx, input)
 }
 
 // DeleteEcomorphByID is the resolver for the deleteEcomorphById field.
 func (r *ecomorphMutationResolver) DeleteEcomorphByID(ctx context.Context, obj *model.EcomorphMutation, id string) (*api.BoolResponse, error) {
-
 	return r.service.EcomorphService.DeleteEcomorph(ctx, ToIdRequest(id))
 }
 
 // GetEcomorphByID is the resolver for the getEcomorphById field.
 func (r *ecomorphQueryResolver) GetEcomorphByID(ctx context.Context, obj *model.EcomorphQuery, id string) (*api.Ecomorph, error) {
-
 	return r.service.EcomorphService.GetEcomorphById(ctx, ToIdRequest(id))
 }
 

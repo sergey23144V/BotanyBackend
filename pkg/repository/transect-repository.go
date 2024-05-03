@@ -230,7 +230,11 @@ func (t TransectRepositoryImpl) UpdateTransect(ctx context.Context, in *api.Tran
 }
 
 func (t TransectRepositoryImpl) GetListTransect(ctx context.Context, in *api.Transect, request *api.TransectListRequest) ([]*api.Transect, error) {
-	expression := t.GetWhereList(request.Filter)
+	var expression []clause.Expression
+	if request.Filter != nil {
+		expression = t.GetWhereList(request.Filter)
+	}
+
 	ormObj, err := in.ToORM(ctx)
 	if err != nil {
 		return nil, err

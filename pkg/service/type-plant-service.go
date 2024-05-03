@@ -95,8 +95,9 @@ func (t TypePlantServiceImpl) GetListTypePlant(ctx context.Context, request *api
 	var page *api.PagesResponse
 	userId := middlewares.GetUserIdFromContext(ctx)
 	getList, err := t.repository.TypePlantRepository.GetListTypePlant(ctx, &api.TypePlant{UserId: userId}, request)
+	count, err := t.repository.TypePlantRepository.GetCountTypePlant(ctx, &api.TypePlant{UserId: userId})
 	if request.Page != nil {
-		page = &api.PagesResponse{Page: request.Page.Page, Limit: request.Page.Limit, Total: int32(len(getList))}
+		page = &api.PagesResponse{Page: request.Page.Page, Limit: request.Page.Limit, Total: int32(count)}
 	}
 	if err != nil {
 		return nil, err

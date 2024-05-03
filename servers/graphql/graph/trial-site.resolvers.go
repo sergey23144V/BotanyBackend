@@ -6,7 +6,6 @@ package graph
 
 import (
 	"context"
-
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"github.com/sergey23144V/BotanyBackend/servers/graphql/graph/model"
 )
@@ -28,7 +27,6 @@ func (r *trialSiteMutationResolver) AddPlantsToTrialSite(ctx context.Context, ob
 
 // DeleteTrialSite is the resolver for the deleteTrialSite field.
 func (r *trialSiteMutationResolver) DeleteTrialSite(ctx context.Context, obj *model.TrialSiteMutation, id string) (*api.BoolResponse, error) {
-
 	return r.service.DeleteTrialSite(ctx, ToIdRequest(id))
 }
 
@@ -67,6 +65,12 @@ func (r *trialSiteQueryResolver) GetAllPlant(ctx context.Context, obj *model.Tri
 	return r.service.GetAllPlant(ctx, pages)
 }
 
+// TypePlant is the resolver for the typePlant field.
+func (r *inputFormPlantResolver) TypePlant(ctx context.Context, obj *api.InputFormPlant, data *api.TypePlant) error {
+	obj.TypePlantId = data
+	return nil
+}
+
 // TrialSiteMutation returns TrialSiteMutationResolver implementation.
 func (r *Resolver) TrialSiteMutation() TrialSiteMutationResolver {
 	return &trialSiteMutationResolver{r}
@@ -75,5 +79,9 @@ func (r *Resolver) TrialSiteMutation() TrialSiteMutationResolver {
 // TrialSiteQuery returns TrialSiteQueryResolver implementation.
 func (r *Resolver) TrialSiteQuery() TrialSiteQueryResolver { return &trialSiteQueryResolver{r} }
 
+// InputFormPlant returns InputFormPlantResolver implementation.
+func (r *Resolver) InputFormPlant() InputFormPlantResolver { return &inputFormPlantResolver{r} }
+
 type trialSiteMutationResolver struct{ *Resolver }
 type trialSiteQueryResolver struct{ *Resolver }
+type inputFormPlantResolver struct{ *Resolver }

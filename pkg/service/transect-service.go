@@ -101,9 +101,12 @@ func (t TransectServiceImpl) DetectionPlant(ctx context.Context, in *api.Transec
 			secondMaxResourceId = resourceId
 		}
 	}
-
-	output.Dominant = &api.TypePlant{Id: &resource.Identifier{ResourceId: maxResourceId}}
-	output.SubDominant = &api.TypePlant{Id: &resource.Identifier{ResourceId: secondMaxResourceId}}
+	if maxResourceId != "" {
+		output.Dominant = &api.TypePlant{Id: &resource.Identifier{ResourceId: maxResourceId}}
+	}
+	if secondMaxResourceId != "" {
+		output.SubDominant = &api.TypePlant{Id: &resource.Identifier{ResourceId: secondMaxResourceId}}
+	}
 	output.Rating = RevealBallNumber(int(output.Covered))
 	output.CountTypes = int32(t.repository.CountPlant(typePlant))
 
@@ -124,7 +127,9 @@ func (t TransectServiceImpl) UpdateTransect(ctx context.Context, in *api.InputTr
 
 func (t TransectServiceImpl) GetListTransect(ctx context.Context, request *api.TransectListRequest) (*api.TransectList, error) {
 	var page *api.PagesResponse
-
+	if request == nil {
+		request = &api.TransectListRequest{}
+	}
 	userId := middlewares.GetUserIdFromContext(ctx)
 	getList, err := t.repository.TransectRepository.GetListTransect(ctx, &api.Transect{UserId: userId}, request)
 	if request.Page != nil {

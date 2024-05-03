@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"errors"
 
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"github.com/sergey23144V/BotanyBackend/servers/graphql/graph/model"
@@ -31,7 +32,33 @@ func (r *authMutationResolver) RefreshToken(ctx context.Context, obj *model.Auth
 	return r.AuthServerImpl.RefreshToken(ctx, data)
 }
 
+// Role is the resolver for the role field.
+func (r *userResolver) Role(ctx context.Context, obj *api.User) (*model.RoleType, error) {
+	if obj.Role == api.RoleType_NormalUser {
+		role := model.RoleTypeNormalUser
+		return &role, nil
+	} else if obj.Role == api.RoleType_SuperUser {
+		role := model.RoleTypeSuperUser
+		return &role, nil
+	}
+	return nil, errors.New("Not role")
+}
+
+// GetMe is the resolver for the getMe field.
+func (r *userQueryResolver) GetMe(ctx context.Context, obj *model.UserQuery) (*api.User, error) {
+	user, err := r.service.GetMe(ctx)
+	return user.User, err
+}
+
 // AuthMutation returns AuthMutationResolver implementation.
 func (r *Resolver) AuthMutation() AuthMutationResolver { return &authMutationResolver{r} }
 
+// User returns UserResolver implementation.
+func (r *Resolver) User() UserResolver { return &userResolver{r} }
+
+// UserQuery returns UserQueryResolver implementation.
+func (r *Resolver) UserQuery() UserQueryResolver { return &userQueryResolver{r} }
+
 type authMutationResolver struct{ *Resolver }
+type userResolver struct{ *Resolver }
+type userQueryResolver struct{ *Resolver }

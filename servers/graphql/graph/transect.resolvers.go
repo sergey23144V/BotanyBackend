@@ -28,19 +28,16 @@ func (r *transectMutationResolver) AddTrialSiteToTransect(ctx context.Context, o
 
 // DeleteTransect is the resolver for the deleteTransect field.
 func (r *transectMutationResolver) DeleteTransect(ctx context.Context, obj *model.TransectMutation, id string) (*api.BoolResponse, error) {
-
 	return r.service.DeleteTransect(ctx, ToIdRequest(id))
 }
 
 // GetTransect is the resolver for the getTransect field.
 func (r *transectQueryResolver) GetTransect(ctx context.Context, obj *model.TransectQuery, id string) (*api.Transect, error) {
-
 	return r.service.GetTransectById(ctx, ToIdRequest(id))
 }
 
 // GetAllTransect is the resolver for the getAllTransect field.
 func (r *transectQueryResolver) GetAllTransect(ctx context.Context, obj *model.TransectQuery, pages *api.TransectListRequest) (*api.TransectList, error) {
-
 	return r.service.GetListTransect(ctx, pages)
 }
 

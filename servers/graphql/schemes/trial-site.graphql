@@ -103,7 +103,7 @@ type PlantList{
 input InputFormPlant {
     coverage: Int
     count: Int
-    typePlantId: TypePlantInput
+    typePlant: TypePlantInput
 }
 
 input InputPlantRequest {

@@ -28,6 +28,7 @@ func StartGrpc(authServet *implementation.AuthServerImpl, newRepository *service
 		transectServet := implementation.NewTransectServetImpl(newRepository)
 		imgServet := implementation.NewImgServetImpl(newRepository)
 		analysisServet := implementation.NewAnalysisServetImplServetImpl(newRepository)
+		userServet := implementation.NewUserServetImpl(newRepository)
 
 		//Регистрация Сервера
 		api.RegisterEcomorphEntityServiceServer(s, ecomorphsEntityServet)
@@ -38,6 +39,7 @@ func StartGrpc(authServet *implementation.AuthServerImpl, newRepository *service
 		api.RegisterTransectServiceServer(s, transectServet)
 		api.RegisterImgServiceServer(s, imgServet)
 		api.RegisterAnalysisServiceServer(s, analysisServet)
+		api.RegisterUserServiceServer(s, userServet)
 
 		reflection.Register(s)
 

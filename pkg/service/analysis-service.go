@@ -41,7 +41,7 @@ func (a AnalysisServiceImpl) CreatAnalysis(ctx context.Context, input *api.Input
 		if err != nil {
 			return nil, err
 		}
-		analysis, err = a.CreateExcelTypeTrialSiteAnalysis(ctx, nil, transect, ecomorph)
+		analysis, err = a.CreateExcelTypeTrialSiteAnalysis(ctx, nil, transect, input.Title, ecomorph)
 		if err != nil {
 			return nil, err
 		}
@@ -60,7 +60,7 @@ func (a AnalysisServiceImpl) CreatAnalysis(ctx context.Context, input *api.Input
 		if err != nil {
 			return nil, err
 		}
-		analysis, err = a.CreateExcelTypeAnalysisPlantAnalysis(ctx, nil, transect, ecomorph)
+		analysis, err = a.CreateExcelTypeAnalysisPlantAnalysis(ctx, nil, transect, input.Title, ecomorph)
 		if err != nil {
 			return nil, err
 		}
@@ -76,7 +76,7 @@ func (a AnalysisServiceImpl) CreatAnalysis(ctx context.Context, input *api.Input
 	return analysis, nil
 }
 
-func (t AnalysisServiceImpl) CreateExcelTypeAnalysisPlantAnalysis(ctx context.Context, idInput *resource.Identifier, transect *api.Transect, ecomorph []*api.Ecomorph) (*api.Analysis, error) {
+func (t AnalysisServiceImpl) CreateExcelTypeAnalysisPlantAnalysis(ctx context.Context, idInput *resource.Identifier, transect *api.Transect, title string, ecomorph []*api.Ecomorph) (*api.Analysis, error) {
 
 	f := excelize.NewFile()
 	defer func() {
@@ -173,7 +173,8 @@ func (t AnalysisServiceImpl) CreateExcelTypeAnalysisPlantAnalysis(ctx context.Co
 	for _, ecomorphsEntity := range ecomorphsAnalis {
 		indexEcomorphs := indexPlant
 		for key, value := range ecomorphsEntity {
-			err = f.SetCellValue(sheetName, string(ecomorphsColumb)+strconv.Itoa(indexEcomorphs), key+" = "+strconv.Itoa(int(float64(value)/float64(number)*100))+"%")
+			err = f.SetCellValue(sheetName, string(ecomorphsColumb)+strconv.Itoa(indexEcomorphs), key+" = "+strconv.Itoa(int(float64(value)/float64(number)*100))+"%, "+strconv.Itoa(int(float64(value))))
+			err = f.SetCellValue(sheetName, string(ecomorphsColumb)+strconv.Itoa(indexEcomorphs+1), "Всего: "+" = "+strconv.Itoa(int(float64(value))))
 			if err != nil {
 				return nil, err
 			}
@@ -199,13 +200,13 @@ func (t AnalysisServiceImpl) CreateExcelTypeAnalysisPlantAnalysis(ctx context.Co
 	}
 
 	path := "./analysis/" + id.ResourceId + ".xlsx"
-
+	url := "/analysis/" + id.ResourceId + ".xlsx"
 	analysis := &api.Analysis{
 		Id:           id,
 		TypeAnalysis: api.TypeAnalysis_TypeAnalysisTransect,
-		Title:        "",
+		Title:        title,
 		Transect:     transect,
-		Path:         path,
+		Path:         url,
 	}
 
 	if err := f.SaveAs(path); err != nil {
@@ -261,7 +262,7 @@ func (t AnalysisServiceImpl) BasicFormTypePlant(sheetName string, indexPlant int
 	return err
 }
 
-func (t AnalysisServiceImpl) CreateExcelTypeTrialSiteAnalysis(ctx context.Context, idInput *resource.Identifier, transect *api.Transect, ecomorph *api.Ecomorph) (*api.Analysis, error) {
+func (t AnalysisServiceImpl) CreateExcelTypeTrialSiteAnalysis(ctx context.Context, idInput *resource.Identifier, transect *api.Transect, title string, ecomorph *api.Ecomorph) (*api.Analysis, error) {
 
 	f := excelize.NewFile()
 	defer func() {
@@ -396,16 +397,17 @@ func (t AnalysisServiceImpl) CreateExcelTypeTrialSiteAnalysis(ctx context.Contex
 
 	path := "./analysis/" + id.ResourceId + ".xlsx"
 
+	if err := f.SaveAs(path); err != nil {
+		fmt.Println(err)
+	}
+
+	url := "/analysis/" + id.ResourceId + ".xlsx"
 	analysis := &api.Analysis{
 		Id:           id,
 		TypeAnalysis: api.TypeAnalysis_TypeAnalysisTransect,
-		Title:        "",
+		Title:        title,
 		Transect:     transect,
-		Path:         path,
-	}
-
-	if err := f.SaveAs(path); err != nil {
-		fmt.Println(err)
+		Path:         url,
 	}
 
 	return analysis, nil
@@ -504,7 +506,7 @@ func (a AnalysisServiceImpl) RepeatedAnalysis(ctx context.Context, input *api.In
 		if err != nil {
 			return nil, err
 		}
-		analysis, err = a.CreateExcelTypeTrialSiteAnalysis(ctx, analysis.Id, transect, ecomorph)
+		analysis, err = a.CreateExcelTypeTrialSiteAnalysis(ctx, analysis.Id, transect, input.Title, ecomorph)
 		if err != nil {
 			return nil, err
 		}
@@ -523,7 +525,7 @@ func (a AnalysisServiceImpl) RepeatedAnalysis(ctx context.Context, input *api.In
 		if err != nil {
 			return nil, err
 		}
-		analysis, err = a.CreateExcelTypeAnalysisPlantAnalysis(ctx, analysis.Id, transect, ecomorph)
+		analysis, err = a.CreateExcelTypeAnalysisPlantAnalysis(ctx, analysis.Id, transect, input.Title, ecomorph)
 		if err != nil {
 			return nil, err
 		}

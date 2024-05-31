@@ -82,8 +82,10 @@ func (t TransectServiceImpl) DetectionPlant(ctx context.Context, in *api.Transec
 
 	for _, item := range trialSites {
 		for _, plant := range item.Plant {
-			typePlant = append(typePlant, plant)
-			countsDominants[plant.TypePlant.Id.ResourceId] += int(plant.Coverage)
+			if plant.TypePlant != nil {
+				typePlant = append(typePlant, plant)
+				countsDominants[plant.TypePlant.Id.ResourceId] += int(plant.Coverage)
+			}
 		}
 	}
 	var maxCoverage, secondMaxCoverage int

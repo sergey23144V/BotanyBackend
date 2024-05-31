@@ -79,7 +79,7 @@ func (e EcomorphsEntityServiceImpl) UpdateEcomorphsEntity(ctx context.Context, e
 
 func (e EcomorphsEntityServiceImpl) GetListEcomorphsEntity(ctx context.Context, request *api.EcomorphsEntityListRequest) (*api.EcomorphsEntityList, error) {
 	var page *api.PagesResponse
-	list, err := e.repository.EcomorphsEntityRepository.GetListEcomorphsEntity(ctx, &api.EcomorphsEntity{UserId: middlewares.GetUserIdFromContext(ctx)}, request)
+	list, err := e.repository.EcomorphsEntityRepository.GetListEcomorphsEntity(ctx, &api.EcomorphsEntity{}, request)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +102,7 @@ func (e EcomorphsEntityServiceImpl) ToPB(ctx context.Context, entity *api.InputE
 	}
 	userId := middlewares.GetUserIdFromContext(ctx)
 	role := middlewares.GetUserRoleFromContext(ctx)
-	if *role == api.RoleType_SuperUser && entity.Publicly {
+	if *role == api.RoleType_SuperUser {
 		ecomorphEntity = &api.EcomorphsEntity{
 			Id:           id,
 			Title:        entity.Input.Title,
@@ -111,7 +111,7 @@ func (e EcomorphsEntityServiceImpl) ToPB(ctx context.Context, entity *api.InputE
 			Score:        entity.Input.Score,
 			DisplayTable: entity.Input.DisplayTable,
 		}
-	} else if *role != api.RoleType_SuperUser && entity.Publicly {
+	} else if *role != api.RoleType_SuperUser {
 		return nil, er.New("has no rights")
 	} else {
 		ecomorphEntity = &api.EcomorphsEntity{

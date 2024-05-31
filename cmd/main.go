@@ -4,7 +4,6 @@ import (
 	"github.com/sergey23144V/BotanyBackend/pkg/repository"
 	"github.com/sergey23144V/BotanyBackend/pkg/service"
 	g_rpc "github.com/sergey23144V/BotanyBackend/servers/g-rpc"
-	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api/implementation"
 	"github.com/sergey23144V/BotanyBackend/servers/graphql"
 	"github.com/sergey23144V/BotanyBackend/servers/rest"
@@ -14,7 +13,7 @@ import (
 func main() {
 
 	cfgDB := repository.Config{
-		Host:     "localhost",
+		Host:     "db",
 		Port:     "5432",
 		Username: "postgres",
 		DBName:   "botany",
@@ -27,8 +26,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	db.AutoMigrate(api.ImgORM{}, api.EcomorphORM{}, api.EcomorphsEntityORM{}, api.UserORM{}, api.TypePlantORM{}, api.PlantORM{}, api.TransectORM{}, api.TrialSiteORM{}, api.AnalysisORM{})
-	log.Println("migrant")
+	repository.Migrate(db)
 
 	authServet := implementation.NewAuthServer(db)
 

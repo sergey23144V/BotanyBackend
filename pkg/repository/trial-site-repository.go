@@ -74,6 +74,28 @@ func (t TrialSiteRepositoryImpl) GetPlant(ctx context.Context, in *api.Plant) (*
 	return &pbResponse, err
 }
 
+func (t TrialSiteRepositoryImpl) StrictUpdatePlant(ctx context.Context, in *api.Plant) (*api.Plant, error) {
+	if in == nil {
+		return nil, fmt.Errorf("Nil argument to DefaultStrictUpdatePlant")
+	}
+	ormObj, err := in.ToORM(ctx)
+	if err != nil {
+		return nil, err
+	}
+	lockedRow := &api.PlantORM{}
+	t.db.Model(&ormObj).Set("gorm:query_option", "FOR UPDATE").Where("id=?", ormObj.Id).First(lockedRow)
+
+	if err = t.db.Omit("TypePlant").Omit("TrialSiteId").Preload("TypePlant").Save(&ormObj).Error; err != nil {
+		return nil, err
+	}
+
+	pbResponse, err := ormObj.ToPB(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &pbResponse, err
+}
+
 func (t TrialSiteRepositoryImpl) UpdatePlant(ctx context.Context, in *api.Plant, updateMask *field_mask.FieldMask) (*api.Plant, error) {
 	if in == nil {
 		return nil, errors.NilArgumentError
@@ -88,7 +110,7 @@ func (t TrialSiteRepositoryImpl) UpdatePlant(ctx context.Context, in *api.Plant,
 	if _, err := api.DefaultApplyFieldMaskPlant(ctx, &pbObj, in, updateMask, "", t.db); err != nil {
 		return nil, err
 	}
-	pbResponse, err := api.DefaultStrictUpdatePlant(ctx, &pbObj, t.db)
+	pbResponse, err := t.StrictUpdatePlant(ctx, &pbObj)
 	if err != nil {
 		return nil, err
 	}
@@ -233,7 +255,7 @@ func (t TrialSiteRepositoryImpl) UpdateTrialSite(ctx context.Context, in *api.Tr
 		return nil, err
 	}
 
-	pbResponse, err := api.DefaultStrictUpdateTrialSite(ctx, &pbObj, t.db)
+	pbResponse, err := t.StrictUpdateTrialSite(ctx, &pbObj)
 	if err != nil {
 		return nil, err
 	}
@@ -252,7 +274,7 @@ func (t TrialSiteRepositoryImpl) StrictUpdateTrialSite(ctx context.Context, in *
 	lockedRow := &api.TrialSiteORM{}
 	t.db.Model(&ormObj).Set("gorm:query_option", "FOR UPDATE").Where("id=?", ormObj.Id).First(lockedRow)
 
-	if err = t.db.Omit("EcomorphsEntity").Preload("Dominant").Preload("SubDominant").Save(&ormObj).Error; err != nil {
+	if err = t.db.Omit("TransectId").Preload("Dominant").Preload("SubDominant").Save(&ormObj).Error; err != nil {
 		return nil, err
 	}
 

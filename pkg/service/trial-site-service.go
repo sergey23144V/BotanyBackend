@@ -278,7 +278,7 @@ func getMaskPlan(in *api.InputPlantRequest) []string {
 		fieldMask = append(fieldMask, "Coverage")
 	}
 	if in.Input.TypePlantId != nil {
-		fieldMask = append(fieldMask, "TypePlantId")
+		fieldMask = append(fieldMask, "TypePlant")
 	}
 
 	return fieldMask

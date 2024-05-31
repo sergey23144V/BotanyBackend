@@ -58,10 +58,9 @@ func (e EcomorphServiceImpl) GetEcomorphById(ctx context.Context, request *api.I
 }
 
 func (e EcomorphServiceImpl) DeleteEcomorph(ctx context.Context, request *api.IdRequest) (*api.BoolResponse, error) {
-	userId := middlewares.GetUserIdFromContext(ctx)
 	userRole := middlewares.GetUserRoleFromContext(ctx)
 	result := &api.BoolResponse{Result: true}
-	err := e.repository.DeleteEcomorph(ctx, &api.Ecomorph{Id: request.Id, UserId: userId}, *userRole)
+	err := e.repository.DeleteEcomorph(ctx, &api.Ecomorph{Id: request.Id}, *userRole)
 	if err != nil {
 		result.Result = false
 		return result, err
@@ -102,9 +101,8 @@ func (e EcomorphServiceImpl) UpdateEcomorph(ctx context.Context, in *api.InputEc
 
 func (e EcomorphServiceImpl) GetListEcomorph(ctx context.Context, request *api.EcomorphListRequest) (*api.EcomorphsList, error) {
 	var page *api.PagesResponse
-	userId := middlewares.GetUserIdFromContext(ctx)
 
-	list, err := e.repository.GetListEcomorph(ctx, &api.Ecomorph{UserId: userId}, request)
+	list, err := e.repository.GetListEcomorph(ctx, &api.Ecomorph{}, request)
 	if err != nil {
 		return nil, err
 	}
@@ -128,7 +126,7 @@ func (e EcomorphServiceImpl) ToPB(ctx context.Context, in *api.InputEcomorph) (*
 	userId := middlewares.GetUserIdFromContext(ctx)
 	role := middlewares.GetUserRoleFromContext(ctx)
 
-	if *role == api.RoleType_SuperUser && in.Publicly {
+	if *role == api.RoleType_SuperUser {
 		ecomorph = &api.Ecomorph{
 			Id:          id,
 			Title:       in.Payload.Title,

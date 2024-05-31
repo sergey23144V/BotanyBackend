@@ -163,7 +163,7 @@ func (e EcomorphsEntityRepositoryImpl) GetListEcomorphsEntity(ctx context.Contex
 		e.db = e.db.Where(&ormObj)
 	}
 
-	e.db = e.db.Order("id").Clauses(expression...).Or("user_id IS NULL")
+	e.db = e.db.Clauses(expression...).Order("ecomorph_id")
 	ormResponse := []api.EcomorphsEntityORM{}
 	if err := e.db.Preload("Ecomorphs").Find(&ormResponse).Error; err != nil {
 		return nil, err

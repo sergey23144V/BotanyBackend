@@ -1,6 +1,6 @@
 module github.com/sergey23144V/BotanyBackend
 
-go 1.21.0
+go 1.21.1
 
 require (
 	github.com/99designs/gqlgen v0.17.43

@@ -1,79 +1,304 @@
+"""
+Запросы для работы с трансектами
+"""
 type TransectQuery {
+    """
+    Получить трансект по идентификатору
+    """
     getTransect(id: ID!): Transect @goField(forceResolver: true)
-    getAllTransect(pages: TransectListRequest ): TransectList @goField(forceResolver: true)
+
+    """
+    Получить список всех трансектов с постраничным запросом
+    """
+    getAllTransect(pages: TransectListRequest): TransectList @goField(forceResolver: true)
 }
 
+"""
+Мутации для работы с трансектами
+"""
 type TransectMutation {
+    """
+    Создать новый трансект
+    """
     createTransect(input: InputFormTransectRequest): Transect @goField(forceResolver: true)
+
+    """
+    Обновить информацию о трансекте
+    """
     upTransect(input: InputTransectRequest): Transect @goField(forceResolver: true)
+
+    """
+    Добавить место проведения опыта к трансекту
+    """
     addTrialSiteToTransect(input: InputTransectRequest): Transect @goField(forceResolver: true)
+
+    """
+    Удалить трансект по идентификатору
+    """
     deleteTransect(id: ID!): BoolResponse @goField(forceResolver: true)
 }
 
+"""
+Информация о трансекте
+"""
 type Transect {
+    """
+    Уникальный идентификатор трансекта
+    """
     id: IdentifierType!
+
+    """
+    Название трансекта
+    """
     title: String
+
+    """
+    Пройденная длина (м)
+    """
     covered: Int
+
+    """
+    Рейтинг
+    """
     rating: Int
+
+    """
+    Площадь (кв.м)
+    """
     square: Int
+
+    """
+    Площадь места проведения опыта (кв.м)
+    """
     squareTrialSite: Int
+
+    """
+    Количество типов растений
+    """
     countTypes: Int
+
+    """
+    Доминирующий вид растения
+    """
     dominant: TypePlant
+
+    """
+    Поддоминирующий вид растения
+    """
     subDominant: TypePlant
+
+    """
+    Места проведения опыта
+    """
     trialSite: [TrialSite]
+
+    """
+    Изображение
+    """
     img: Img
+
+    """
+    Дата и время создания
+    """
     createdAt: Timestamp
+
+    """
+    Дата и время последнего обновления
+    """
     updatedAt: Timestamp
-    deletedAt : Timestamp
+
+    """
+    Дата и время удаления (если трансект удалён)
+    """
+    deletedAt: Timestamp
+
+    """
+    Идентификатор пользователя
+    """
     userId: IdentifierType
 }
 
+"""
+Входные данные для создания или обновления трансекта
+"""
 input TransectInput {
+    """
+    Уникальный идентификатор трансекта
+    """
     id: IdentifierInput!
+
+    """
+    Название трансекта
+    """
     title: String
+
+    """
+    Пройденная длина (м)
+    """
     covered: Int
+
+    """
+    Рейтинг
+    """
     rating: Int
+
+    """
+    Площадь (кв.м)
+    """
     square: Int
+
+    """
+    Площадь места проведения опыта (кв.м)
+    """
     squareTrialSite: Int
+
+    """
+    Количество типов растений
+    """
     countTypes: Int
+
+    """
+    Доминирующий вид растения
+    """
     dominant: TypePlantInput
+
+    """
+    Поддоминирующий вид растения
+    """
     subDominant: TypePlantInput
+
+    """
+    Места проведения опыта
+    """
     trialSite: [TrialSiteInput]
+
+    """
+    Изображение
+    """
     img: ImgInput
+
+    """
+    Идентификатор пользователя
+    """
     userId: IdentifierInput
 }
 
+"""
+Список трансектов с информацией о страницах
+"""
 type TransectList {
+    """
+    Информация о страницах
+    """
     page: PagesResponse
+
+    """
+    Список трансектов
+    """
     list: [Transect]
 }
 
+"""
+Входные данные для создания или обновления трансекта
+"""
 input InputFormTransectRequest {
+    """
+    Название трансекта
+    """
     title: String
+
+    """
+    Пройденная длина (м)
+    """
     covered: Int
+
+    """
+    Рейтинг
+    """
     rating: Int
+
+    """
+    Площадь (кв.м)
+    """
     square: Int
+
+    """
+    Площадь места проведения опыта (кв.м)
+    """
     squareTrialSite: Int
-    countTypes: Int
+
+    """
+    Изображение
+    """
     img: ImgInput
+
+    """
+    Места проведения опыта
+    """
     trialSite: [TrialSiteInput]
+
+    """
+    Доминирующий вид растения
+    """
     dominant: TypePlantInput
+
+    """
+    Поддоминирующий вид растения
+    """
     subDominant: TypePlantInput
 }
 
+"""
+Входные данные для обновления трансекта
+"""
 input InputTransectRequest {
+    """
+    Уникальный идентификатор трансекта
+    """
     id: IdentifierInput!
+
+    """
+    Данные для обновления трансекта
+    """
     input: InputFormTransectRequest
 }
 
+"""
+Фильтр для запроса списка трансектов
+"""
 input FilterTransect {
-    id : [IdentifierInput]
+    """
+    Идентификаторы трансектов
+    """
+    id: [IdentifierInput]
+
+    """
+    Поиск по названию трансекта
+    """
     searchTitle: String
+
+    """
+    Фильтр по доминирующему виду растения
+    """
     dominant: TypePlantInput
+
+    """
+    Фильтр по поддоминирующему виду растения
+    """
     subDominant: TypePlantInput
 }
 
+"""
+Запрос списка трансектов с фильтром и постраничным запросом
+"""
 input TransectListRequest {
+    """
+    Информация о странице
+    """
     page: PagesRequest
+
+    """
+    Фильтр для списка трансектов
+    """
     filter: FilterTransect
 }

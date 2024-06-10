@@ -1,63 +1,254 @@
+"""
+Сущность экоморфов
+"""
 type EcomorphsEntity {
+    """
+    Уникальный идентификатор сущности экоморфов
+    """
     id: IdentifierType!
+
+    """
+    Дата и время создания сущности
+    """
     createdAt: Timestamp
+
+    """
+    Дата и время последнего обновления сущности
+    """
     updatedAt: Timestamp
-    deletedAt : Timestamp
+
+    """
+    Дата и время удаления сущности (если была удалена)
+    """
+    deletedAt: Timestamp
+
+    """
+    Заголовок сущности
+    """
     title: String
+
+    """
+    Таблица отображения сущности
+    """
     displayTable: String
+
+    """
+    Оценка сущности
+    """
     score: Int
+
+    """
+    Описание сущности
+    """
     description: String
+
+    """
+    Экоморф, связанный с данной сущностью
+    """
     ecomorphs: Ecomorph
+
+    """
+    Идентификатор пользователя, создавшего сущность
+    """
     userId: IdentifierType
 }
 
+"""
+Входные данные для создания или обновления сущности экоморфов
+"""
 input EcomorphsEntityInput {
+    """
+    Уникальный идентификатор сущности экоморфов
+    """
     id: IdentifierInput!
+
+    """
+    Заголовок сущности
+    """
     title: String
+
+    """
+    Таблица отображения сущности
+    """
     displayTable: String
+
+    """
+    Оценка сущности
+    """
     score: Int
+
+    """
+    Описание сущности
+    """
     description: String
+
+    """
+    Экоморф, связанный с данной сущностью
+    """
     ecomorphs: EcomorphInput
 }
 
-
+"""
+Список сущностей экоморфов с постраничной информацией
+"""
 type EcomorphsEntityList {
+    """
+    Информация о страницах
+    """
     page: PagesResponse
+
+    """
+    Список сущностей экоморфов
+    """
     list: [EcomorphsEntity]
 }
 
+"""
+Входные данные для формы создания сущности экоморфов
+"""
 input InputFormEcomorphsEntity {
+    """
+    Заголовок сущности
+    """
     title: String
+
+    """
+    Описание сущности
+    """
     description: String
+
+    """
+    Таблица отображения сущности
+    """
     displayTable: String
+
+    """
+    Оценка сущности
+    """
     score: Int
+
+    """
+    Экоморф, связанный с данной сущностью
+    """
     ecomorphs: EcomorphInput
 }
 
+"""
+Входные данные для обновления сущности экоморфов
+"""
 input InputEcomorphsEntity {
-    id : IdentifierInput!
+    """
+    Уникальный идентификатор сущности экоморфов
+    """
+    id: IdentifierInput!
+
+    """
+    Данные формы для обновления сущности экоморфов
+    """
     input: InputFormEcomorphsEntity
+
+    """
+    Флаг публичности сущности экоморфов
+    """
     publicly: Boolean
 }
 
+"""
+Фильтр для поиска сущностей экоморфов
+"""
 input FilterEcomorphsEntity {
-    id : [IdentifierInput]
+    """
+    Список уникальных идентификаторов сущностей экоморфов для фильтрации
+    """
+    id: [IdentifierInput]
+
+    """
+    Поиск по заголовку сущности
+    """
     searchTitle: String
-    publicly : Boolean
+
+    """
+    Флаг публичности сущности экоморфов
+    """
+    publicly: Boolean
 }
 
+"""
+Запрос списка сущностей экоморфов с фильтрацией и постраничной информацией
+"""
 input EcomorphsEntityListRequest {
+    """
+    Параметры постраничного запроса
+    """
     page: PagesRequest
+
+    """
+    Фильтр для поиска сущностей экоморфов
+    """
     filter: FilterEcomorphsEntity
 }
 
+"""
+Запросы для работы с сущностями экоморфов
+"""
 type EcomorphsEntityQuery {
+    """
+    Получить сущность экоморфов по её уникальному идентификатору
+
+    Аргументы:
+    - id: Уникальный идентификатор сущности экоморфов
+
+    Возвращает:
+    - EcomorphsEntity: Объект сущности экоморфов
+    """
     getEcomorphEntityByID(id: ID!): EcomorphsEntity @goField(forceResolver: true)
-    getAllEcomorphEntity(pages: EcomorphsEntityListRequest ): EcomorphsEntityList @goField(forceResolver: true)
+
+    """
+    Получить список сущностей экоморфов с фильтрацией и постраничной информацией
+
+    Аргументы:
+    - pages: Параметры запроса списка сущностей экоморфов
+
+    Возвращает:
+    - EcomorphsEntityList: Список сущностей экоморфов с постраничной информацией
+    """
+    getAllEcomorphEntity(pages: EcomorphsEntityListRequest): EcomorphsEntityList @goField(forceResolver: true)
 }
 
+"""
+Мутации для работы с сущностями экоморфов
+"""
 type EcomorphsEntityMutation {
+    """
+    Вставка новой сущности экоморфов
+
+    Аргументы:
+    - input: Входные данные для создания сущности экоморфов
+
+    Возвращает:
+    - EcomorphsEntity: Созданный объект сущности экоморфов
+    """
     insertEcomorphEntity(input: InputFormEcomorphsEntity): EcomorphsEntity @goField(forceResolver: true)
+
+    """
+    Обновление существующей сущности экоморфов
+
+    Аргументы:
+    - input: Входные данные для обновления сущности экоморфов
+
+    Возвращает:
+    - EcomorphsEntity: Обновленный объект сущности экоморфов
+    """
     updateEcomorphEntity(input: InputEcomorphsEntity): EcomorphsEntity @goField(forceResolver: true)
+
+    """
+    Удаление сущности экоморфов по её уникальному идентификатору
+
+    Аргументы:
+    - id: Уникальный идентификатор сущности экоморфов
+
+    Возвращает:
+    - BoolResponse: Ответ с результатом операции
+    """
     deleteEcomorphEntityByID(id: ID!): BoolResponse @goField(forceResolver: true)
 }

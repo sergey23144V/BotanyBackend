@@ -1,112 +1,414 @@
+"""
+Запросы для работы с местами проведения опытов и растениями
+"""
 type TrialSiteQuery {
+    """
+    Получить место проведения опыта по идентификатору
+    """
     getTrialSite(id: ID!): TrialSite @goField(forceResolver: true)
-    getAllTrialSite(pages: TrialSiteListRequest ): TrialSiteList @goField(forceResolver: true)
+
+    """
+    Получить список всех мест проведения опытов с постраничным запросом
+    """
+    getAllTrialSite(pages: TrialSiteListRequest): TrialSiteList @goField(forceResolver: true)
+
+    """
+    Получить растение по идентификатору
+    """
     getPlant(id: ID!): Plant @goField(forceResolver: true)
-    getAllPlant(pages: PagesRequest ): PlantList @goField(forceResolver: true)
+
+    """
+    Получить список всех растений с постраничным запросом
+    """
+    getAllPlant(pages: PagesRequest): PlantList @goField(forceResolver: true)
 }
 
+"""
+Мутации для работы с местами проведения опытов и растениями
+"""
 type TrialSiteMutation {
+    """
+    Создать новое место проведения опыта
+    """
     createTrialSite(input: InputFormTrialSiteRequest): TrialSite @goField(forceResolver: true)
+
+    """
+    Обновить информацию о месте проведения опыта
+    """
     upTrialSite(input: InputTrialSiteRequest): TrialSite @goField(forceResolver: true)
+
+    """
+    Добавить растения к месту проведения опыта
+    """
     addPlantsToTrialSite(input: InputTrialSiteRequest): TrialSite @goField(forceResolver: true)
+
+    """
+    Удалить место проведения опыта по идентификатору
+    """
     deleteTrialSite(id: ID!): BoolResponse @goField(forceResolver: true)
+
+    """
+    Создать новое растение
+    """
     createPlant(input: InputFormPlant): Plant @goField(forceResolver: true)
+
+    """
+    Обновить информацию о растении
+    """
     updatePlant(input: InputPlantRequest): Plant @goField(forceResolver: true)
+
+    """
+    Удалить растение по идентификатору
+    """
     deletePlant(id: ID!): BoolResponse @goField(forceResolver: true)
 }
 
+"""
+Информация о месте проведения опыта
+"""
 type TrialSite {
+    """
+    Уникальный идентификатор места проведения опыта
+    """
     id: IdentifierType!
+
+    """
+    Название места проведения опыта
+    """
     title: String
+
+    """
+    Пройденная длина (м)
+    """
     covered: Int
+
+    """
+    Рейтинг
+    """
     rating: Int
+
+    """
+    Количество типов растений
+    """
     countTypes: Int
+
+    """
+    Доминирующий вид растения
+    """
     dominant: TypePlant
+
+    """
+    Поддоминирующий вид растения
+    """
     subDominant: TypePlant
+
+    """
+    Изображение места проведения опыта
+    """
     img: Img
+
+    """
+    Список растений на месте проведения опыта
+    """
     plant: [Plant]
+
+    """
+    Дата и время создания
+    """
     createdAt: Timestamp
+
+    """
+    Дата и время последнего обновления
+    """
     updatedAt: Timestamp
-    deletedAt : Timestamp
+
+    """
+    Дата и время удаления (если место проведения опыта удалено)
+    """
+    deletedAt: Timestamp
+
+    """
+    Идентификатор пользователя
+    """
     userId: IdentifierType
 }
 
-
+"""
+Входные данные для создания или обновления места проведения опыта
+"""
 input TrialSiteInput {
+    """
+    Уникальный идентификатор места проведения опыта
+    """
     id: IdentifierInput!
+
+    """
+    Название места проведения опыта
+    """
     title: String
+
+    """
+    Пройденная длина (м)
+    """
     covered: Int
+
+    """
+    Рейтинг
+    """
     rating: Int
+
+    """
+    Количество типов растений
+    """
     countTypes: Int
+
+    """
+    Изображение места проведения опыта
+    """
     img: ImgInput
+
+    """
+    Доминирующий вид растения
+    """
     dominant: TypePlantInput
+
+    """
+    Поддоминирующий вид растения
+    """
     subDominant: TypePlantInput
+
+    """
+    Список растений на месте проведения опыта
+    """
     plant: [PlantInput]
+
+    """
+    Идентификатор пользователя
+    """
     userId: IdentifierInput
 }
 
+"""
+Список мест проведения опытов с информацией о страницах
+"""
 type TrialSiteList {
+    """
+    Информация о странице
+    """
     page: PagesResponse
+
+    """
+    Список мест проведения опытов
+    """
     list: [TrialSite]
 }
 
+"""
+Входные данные для создания или обновления места проведения опыта
+"""
 input InputFormTrialSiteRequest {
+    """
+    Название места проведения опыта
+    """
     title: String
+
+    """
+    Пройденная длина (м)
+    """
     covered: Int
+
+    """
+    Рейтинг
+    """
     rating: Int
+
+    """
+    Количество типов растений
+    """
     countTypes: Int
+
+    """
+    Изображение места проведения опыта
+    """
     img: ImgInput
+
+    """
+    Список растений на месте проведения опыта
+    """
     plant: [PlantInput]
+
+    """
+    Доминирующий вид растения
+    """
     dominant: TypePlantInput
+
+    """
+    Поддоминирующий вид растения
+    """
     subDominant: TypePlantInput
 }
 
+"""
+Входные данные для запроса или обновления информации о месте проведения опыта
+"""
 input InputTrialSiteRequest {
+    """
+    Уникальный идентификатор места проведения опыта
+    """
     id: IdentifierInput!
+
+    """
+    Входные данные для создания или обновления места проведения опыта
+    """
     input: InputFormTrialSiteRequest
 }
 
+"""
+Фильтр для списка мест проведения опыта
+"""
 input FilterTrialSite {
-    id : [IdentifierInput]
+    """
+    Список уникальных идентификаторов мест проведения опыта
+    """
+    id: [IdentifierInput]
+
+    """
+    Поиск по названию места проведения опыта
+    """
     searchTitle: String
+
+    """
+    Доминирующий вид растения на месте проведения опыта
+    """
     dominant: TypePlantInput
+
+    """
+    Поддоминирующий вид растения на месте проведения опыта
+    """
     subDominant: TypePlantInput
 }
 
+"""
+Запрос списка мест проведения опыта с фильтром и постраничным запросом
+"""
 input TrialSiteListRequest {
+    """
+    Информация о странице
+    """
     page: PagesRequest
+
+    """
+    Фильтр для списка мест проведения опыта
+    """
     filter: FilterTrialSite
 }
 
-
+"""
+Информация о растении
+"""
 type Plant {
+    """
+    Уникальный идентификатор растения
+    """
     id: IdentifierType!
+
+    """
+    Процент покрытия растения на месте проведения опыта
+    """
     coverage: Int
+
+    """
+    Количество экземпляров растения на месте проведения опыта
+    """
     count: Int
+
+    """
+    Тип растения
+    """
     typePlant: TypePlant
+
+    """
+    Идентификатор пользователя
+    """
     userId: IdentifierType
 }
 
+"""
+Входные данные для создания или обновления информации о растении
+"""
 input PlantInput {
+    """
+    Уникальный идентификатор растения
+    """
     id: IdentifierInput!
+
+    """
+    Процент покрытия растения на месте проведения опыта
+    """
     coverage: Int
+
+    """
+    Количество экземпляров растения на месте проведения опыта
+    """
     count: Int
+
+    """
+    Тип растения
+    """
     typePlant: TypePlantInput
+
+    """
+    Идентификатор пользователя
+    """
     userId: IdentifierInput
 }
 
-type PlantList{
+"""
+Список растений с информацией о страницах
+"""
+type PlantList {
+    """
+    Информация о странице
+    """
     page: PagesResponse!
+
+    """
+    Список растений
+    """
     list: [Plant]
 }
 
+"""
+Входные данные для создания или обновления информации о растении
+"""
 input InputFormPlant {
+    """
+    Процент покрытия растения на месте проведения опыта
+    """
     coverage: Int
+
+    """
+    Количество экземпляров растения на месте проведения опыта
+    """
     count: Int
+
+    """
+    Тип растения
+    """
     typePlant: TypePlantInput
 }
 
+"""
+Входные данные для запроса или обновления информации о растении
+"""
 input InputPlantRequest {
+    """
+    Уникальный идентификатор растения
+    """
     id: IdentifierInput!
+
+    """
+    Входные данные для создания или обновления информации о растении
+    """
     input: InputFormPlant
 }

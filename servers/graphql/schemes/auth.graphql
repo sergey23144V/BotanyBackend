@@ -1,45 +1,171 @@
-enum RoleType{
+"""
+Перечисление типов ролей пользователей
+"""
+enum RoleType {
+    """
+    Суперпользователь с расширенными правами
+    """
     SuperUser
+
+    """
+    Обычный пользователь с ограниченными правами
+    """
     NormalUser
 }
 
-type User{
+"""
+Сущность пользователя
+"""
+type User {
+    """
+    Уникальный идентификатор пользователя
+    """
     id: IdentifierType!
+
+    """
+    Имя пользователя
+    """
     name: String!
+
+    """
+    Электронная почта пользователя
+    """
     email: String!
+
+    """
+    Пароль пользователя (хранится в зашифрованном виде)
+    """
     password: String!
+
+    """
+    Роль пользователя
+    """
     role: RoleType
 }
 
-type SignInUserResponse{
+"""
+Ответ на запрос авторизации пользователя
+"""
+type SignInUserResponse {
+    """
+    Статус авторизации
+    """
     status: String!
+
+    """
+    Токен доступа
+    """
     access_token: String!
+
+    """
+    Токен обновления
+    """
     refresh_token: String!
 }
 
-input SignInUserInput{
+"""
+Входные данные для авторизации пользователя
+"""
+input SignInUserInput {
+    """
+    Электронная почта пользователя
+    """
     email: String!
+
+    """
+    Пароль пользователя
+    """
     password: String!
 }
 
-input SignUpUserInput{
+"""
+Входные данные для регистрации пользователя
+"""
+input SignUpUserInput {
+    """
+    Электронная почта пользователя
+    """
     email: String!
+
+    """
+    Пароль пользователя
+    """
     password: String!
-    name:String!
+
+    """
+    Имя пользователя
+    """
+    name: String!
 }
-input RefreshTokenRequest{
+
+"""
+Входные данные для обновления токена
+"""
+input RefreshTokenRequest {
+    """
+    Токен обновления
+    """
     refresh_token: String!
 }
 
+"""
+Мутации для работы с аутентификацией
+"""
+type AuthMutation {
+    """
+    Регистрация нового пользователя
 
-type AuthMutation{
-    signUpUser(data : SignUpUserInput): SignInUserResponse @goField(forceResolver: true)
-    SignUpSuperUser(data : SignUpUserInput): SignInUserResponse @goField(forceResolver: true)
-    signInUser(data : SignInUserInput): SignInUserResponse @goField(forceResolver: true)
-    RefreshToken(data : RefreshTokenRequest): SignInUserResponse @goField(forceResolver: true)
+    Аргументы:
+    - data: Входные данные для регистрации пользователя
+
+    Возвращает:
+    - SignInUserResponse: Ответ с токенами и статусом
+    """
+    signUpUser(data: SignUpUserInput): SignInUserResponse @goField(forceResolver: true)
+
+    """
+    Регистрация нового суперпользователя
+
+    Аргументы:
+    - data: Входные данные для регистрации суперпользователя
+
+    Возвращает:
+    - SignInUserResponse: Ответ с токенами и статусом
+    """
+    signUpSuperUser(data: SignUpUserInput): SignInUserResponse @goField(forceResolver: true)
+
+    """
+    Авторизация пользователя
+
+    Аргументы:
+    - data: Входные данные для авторизации пользователя
+
+    Возвращает:
+    - SignInUserResponse: Ответ с токенами и статусом
+    """
+    signInUser(data: SignInUserInput): SignInUserResponse @goField(forceResolver: true)
+
+    """
+    Обновление токена доступа
+
+    Аргументы:
+    - data: Входные данные для обновления токена
+
+    Возвращает:
+    - SignInUserResponse: Ответ с новыми токенами и статусом
+    """
+    refreshToken(data: RefreshTokenRequest): SignInUserResponse @goField(forceResolver: true)
 }
 
+"""
+Запросы для работы с пользователями
+"""
 type UserQuery {
+    """
+    Получить текущего авторизованного пользователя
+
+    Возвращает:
+    - User: Объект текущего пользователя
+    """
     getMe: User @goField(forceResolver: true)
 }
-

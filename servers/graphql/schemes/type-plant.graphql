@@ -1,65 +1,230 @@
+"""
+Запрос информации о типе растения по его идентификатору
+"""
 type TypePlantQuery {
+    """
+    Получить информацию о типе растения по его идентификатору
+    """
     getTypePlant(id: ID!): TypePlant @goField(forceResolver: true)
-    getAllTypePlant(pages: TypePlantListRequest ): TypePlantList @goField(forceResolver: true)
+
+    """
+    Получить список всех типов растений с возможностью постраничного запроса
+    """
+    getAllTypePlant(pages: TypePlantListRequest): TypePlantList @goField(forceResolver: true)
 }
 
+"""
+Мутации для управления типами растений
+"""
 type TypePlantMutation {
+    """
+    Создать новый тип растения
+    """
     createTypePlant(input: InputFormTypePlantRequest): TypePlant @goField(forceResolver: true)
+
+    """
+    Обновить информацию о типе растения
+    """
     updateTypePlant(input: InputTypePlantRequest): TypePlant @goField(forceResolver: true)
+
+    """
+    Добавить сущность экоморфа к типу растения
+    """
     addEcomorphsEntityToTypePlant(input: InputTypePlant_EcomorphsEntityRequest): TypePlant @goField(forceResolver: true)
+
+    """
+    Удалить тип растения
+    """
     deleteTypePlant(id: ID!): BoolResponse @goField(forceResolver: true)
 }
 
+"""
+Информация о типе растения
+"""
 type TypePlant {
+    """
+    Уникальный идентификатор типа растения
+    """
     id: IdentifierType!
+
+    """
+    Название типа растения
+    """
     title: String
+
+    """
+    Подзаголовок типа растения
+    """
     subtitle: String
+
+    """
+    Список связанных с типом растения сущностей экоморфов
+    """
     ecomorphsEntity: [EcomorphsEntity]
+
+    """
+    Дата и время создания
+    """
     createdAt: Timestamp
+
+    """
+    Дата и время последнего обновления
+    """
     updatedAt: Timestamp
-    deletedAt : Timestamp
+
+    """
+    Дата и время удаления (если тип растения удален)
+    """
+    deletedAt: Timestamp
+
+    """
+    Изображение типа растения
+    """
     img: Img
+
+    """
+    Идентификатор пользователя
+    """
     userId: IdentifierType
 }
 
+"""
+Входные данные для создания или обновления информации о типе растения
+"""
 input TypePlantInput {
+    """
+    Уникальный идентификатор типа растения
+    """
     id: IdentifierInput!
+
+    """
+    Название типа растения
+    """
     title: String
+
+    """
+    Подзаголовок типа растения
+    """
     subtitle: String
+
+    """
+    Список связанных с типом растения сущностей экоморфов
+    """
     ecomorphsEntity: [EcomorphsEntityInput]
+
+    """
+    Идентификатор пользователя
+    """
     userId: IdentifierInput
 }
 
+"""
+Список типов растений с информацией о страницах
+"""
 type TypePlantList {
+    """
+    Информация о странице
+    """
     page: PagesResponse
+
+    """
+    Список типов растений
+    """
     list: [TypePlant]
 }
 
-input InputFormTypePlantRequest  {
+
+"""
+Входные данные для создания или обновления информации о типе растения
+"""
+input InputFormTypePlantRequest {
+    """
+    Название типа растения
+    """
     title: String
+
+    """
+    Подзаголовок типа растения
+    """
     subtitle: String
+
+    """
+    Список связанных с типом растения сущностей экоморфов
+    """
     ecomorphsEntity: [EcomorphsEntityInput]
+
+    """
+    Изображение типа растения
+    """
     img: ImgInput
 }
 
-input InputTypePlantRequest  {
+"""
+Входные данные для запроса или обновления информации о типе растения
+"""
+input InputTypePlantRequest {
+    """
+    Уникальный идентификатор типа растения
+    """
     id: IdentifierInput!
+
+    """
+    Входные данные для создания или обновления информации о типе растения
+    """
     input: InputFormTypePlantRequest
-    publicly : Boolean
+
+    """
+    Флаг публичного доступа к типу растения
+    """
+    publicly: Boolean
 }
 
-input InputTypePlant_EcomorphsEntityRequest  {
+"""
+Входные данные для добавления сущности экоморфа к типу растения
+"""
+input InputTypePlant_EcomorphsEntityRequest {
+    """
+    Уникальный идентификатор типа растения
+    """
     id: IdentifierInput!
+
+    """
+    Список связанных с типом растения сущностей экоморфов
+    """
     ecomorphsEntity: [EcomorphsEntityInput]!
 }
 
+"""
+Фильтр для списка типов растений
+"""
 input FilterTypePlant {
-    id : [IdentifierInput]
+    """
+    Список уникальных идентификаторов типов растений
+    """
+    id: [IdentifierInput]
+
+    """
+    Поиск по названию типа растений
+    """
     searchTitle: String
+
+    """
+    Список связанных с типом растения сущностей экоморфов
+    """
     ecomorphsEntity: [EcomorphsEntityInput]
 }
 
+"""
+Запрос списка типов растений с фильтром и постраничным запросом
+"""
 input TypePlantListRequest {
+    """
+    Информация о странице
+    """
     page: PagesRequest
+
+    """
+    Фильтр для списка типов растений
+    """
     filter: FilterTypePlant
 }

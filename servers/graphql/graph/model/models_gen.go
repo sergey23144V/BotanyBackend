@@ -10,110 +10,294 @@ import (
 	"github.com/sergey23144V/BotanyBackend/servers/g-rpc/api"
 )
 
+// Мутации для работы с сущностью анализа
 type AnalysisMutation struct {
-	CreatAnalysis    *api.Analysis     `json:"creatAnalysis"`
-	RepeatedAnalysis *api.Analysis     `json:"repeatedAnalysis"`
-	DeleteAnalysis   *api.BoolResponse `json:"deleteAnalysis"`
+	// Создать новый анализ
+	//
+	// Аргументы:
+	// - input: Входные данные для создания анализа
+	//
+	// Возвращает:
+	// - Analysis: Созданный объект анализа
+	CreatAnalysis *api.Analysis `json:"creatAnalysis"`
+	// Повторить (обновить) анализ
+	//
+	// Аргументы:
+	// - input: Входные данные для обновления анализа
+	//
+	// Возвращает:
+	// - Analysis: Обновленный объект анализа
+	RepeatedAnalysis *api.Analysis `json:"repeatedAnalysis"`
+	// Удалить анализ по уникальному идентификатору
+	//
+	// Аргументы:
+	// - id: Уникальный идентификатор анализа
+	//
+	// Возвращает:
+	// - BoolResponse: Ответ с результатом операции (успешно/неуспешно)
+	DeleteAnalysis *api.BoolResponse `json:"deleteAnalysis"`
 }
 
+// Запросы для работы с сущностью анализа
 type AnalysisQuery struct {
-	GetAnalysis     *api.Analysis     `json:"getAnalysis"`
+	// Получить анализ по уникальному идентификатору
+	//
+	// Аргументы:
+	// - id: Уникальный идентификатор анализа
+	//
+	// Возвращает:
+	// - Analysis: Объект анализа
+	GetAnalysis *api.Analysis `json:"getAnalysis"`
+	// Получить список анализов с учетом пагинации
+	//
+	// Аргументы:
+	// - pages: Параметры пагинации
+	//
+	// Возвращает:
+	// - AnalysisList: Список анализов с информацией о страницах
 	GetListAnalysis *api.AnalysisList `json:"getListAnalysis"`
 }
 
+// Мутации для работы с аутентификацией
 type AuthMutation struct {
-	SignUpUser      *api.SignInUserResponse `json:"signUpUser,omitempty"`
-	SignUpSuperUser *api.SignInUserResponse `json:"SignUpSuperUser,omitempty"`
-	SignInUser      *api.SignInUserResponse `json:"signInUser,omitempty"`
-	RefreshToken    *api.SignInUserResponse `json:"RefreshToken,omitempty"`
+	// Регистрация нового пользователя
+	//
+	// Аргументы:
+	// - data: Входные данные для регистрации пользователя
+	//
+	// Возвращает:
+	// - SignInUserResponse: Ответ с токенами и статусом
+	SignUpUser *api.SignInUserResponse `json:"signUpUser,omitempty"`
+	// Регистрация нового суперпользователя
+	//
+	// Аргументы:
+	// - data: Входные данные для регистрации суперпользователя
+	//
+	// Возвращает:
+	// - SignInUserResponse: Ответ с токенами и статусом
+	SignUpSuperUser *api.SignInUserResponse `json:"signUpSuperUser,omitempty"`
+	// Авторизация пользователя
+	//
+	// Аргументы:
+	// - data: Входные данные для авторизации пользователя
+	//
+	// Возвращает:
+	// - SignInUserResponse: Ответ с токенами и статусом
+	SignInUser *api.SignInUserResponse `json:"signInUser,omitempty"`
+	// Обновление токена доступа
+	//
+	// Аргументы:
+	// - data: Входные данные для обновления токена
+	//
+	// Возвращает:
+	// - SignInUserResponse: Ответ с новыми токенами и статусом
+	RefreshToken *api.SignInUserResponse `json:"refreshToken,omitempty"`
 }
 
+// Мутации для работы с экоморфами
 type EcomorphMutation struct {
-	InsertEcomorph     *api.Ecomorph     `json:"insertEcomorph"`
-	UpdateEcomorph     *api.Ecomorph     `json:"updateEcomorph"`
+	// Вставка нового экоморфа
+	//
+	// Аргументы:
+	// - input: Входные данные для создания экоморфа
+	//
+	// Возвращает:
+	// - Ecomorph: Созданный объект экоморфа
+	InsertEcomorph *api.Ecomorph `json:"insertEcomorph"`
+	// Обновление существующего экоморфа
+	//
+	// Аргументы:
+	// - input: Входные данные для обновления экоморфа
+	//
+	// Возвращает:
+	// - Ecomorph: Обновленный объект экоморфа
+	UpdateEcomorph *api.Ecomorph `json:"updateEcomorph"`
+	// Удаление экоморфа по его уникальному идентификатору
+	//
+	// Аргументы:
+	// - id: Уникальный идентификатор экоморфа
+	//
+	// Возвращает:
+	// - BoolResponse: Ответ с результатом операции
 	DeleteEcomorphByID *api.BoolResponse `json:"deleteEcomorphById"`
 }
 
+// Запросы для работы с экоморфами
 type EcomorphQuery struct {
-	GetEcomorphByID *api.Ecomorph      `json:"getEcomorphById"`
+	// Получить экоморф по его уникальному идентификатору
+	//
+	// Аргументы:
+	// - id: Уникальный идентификатор экоморфа
+	//
+	// Возвращает:
+	// - Ecomorph: Объект экоморфа
+	GetEcomorphByID *api.Ecomorph `json:"getEcomorphById"`
+	// Получить список экоморфов с фильтрацией и постраничной информацией
+	//
+	// Аргументы:
+	// - pages: Параметры запроса списка экоморфов
+	//
+	// Возвращает:
+	// - ListEcomorph: Список экоморфов с постраничной информацией
 	GetListEcomorph *api.EcomorphsList `json:"getListEcomorph"`
 }
 
+// Мутации для работы с сущностями экоморфов
 type EcomorphsEntityMutation struct {
-	InsertEcomorphEntity     *api.EcomorphsEntity `json:"insertEcomorphEntity,omitempty"`
-	UpdateEcomorphEntity     *api.EcomorphsEntity `json:"updateEcomorphEntity,omitempty"`
-	DeleteEcomorphEntityByID *api.BoolResponse    `json:"deleteEcomorphEntityByID,omitempty"`
+	// Вставка новой сущности экоморфов
+	//
+	// Аргументы:
+	// - input: Входные данные для создания сущности экоморфов
+	//
+	// Возвращает:
+	// - EcomorphsEntity: Созданный объект сущности экоморфов
+	InsertEcomorphEntity *api.EcomorphsEntity `json:"insertEcomorphEntity,omitempty"`
+	// Обновление существующей сущности экоморфов
+	//
+	// Аргументы:
+	// - input: Входные данные для обновления сущности экоморфов
+	//
+	// Возвращает:
+	// - EcomorphsEntity: Обновленный объект сущности экоморфов
+	UpdateEcomorphEntity *api.EcomorphsEntity `json:"updateEcomorphEntity,omitempty"`
+	// Удаление сущности экоморфов по её уникальному идентификатору
+	//
+	// Аргументы:
+	// - id: Уникальный идентификатор сущности экоморфов
+	//
+	// Возвращает:
+	// - BoolResponse: Ответ с результатом операции
+	DeleteEcomorphEntityByID *api.BoolResponse `json:"deleteEcomorphEntityByID,omitempty"`
 }
 
+// Запросы для работы с сущностями экоморфов
 type EcomorphsEntityQuery struct {
-	GetEcomorphEntityByID *api.EcomorphsEntity     `json:"getEcomorphEntityByID,omitempty"`
-	GetAllEcomorphEntity  *api.EcomorphsEntityList `json:"getAllEcomorphEntity,omitempty"`
+	// Получить сущность экоморфов по её уникальному идентификатору
+	//
+	// Аргументы:
+	// - id: Уникальный идентификатор сущности экоморфов
+	//
+	// Возвращает:
+	// - EcomorphsEntity: Объект сущности экоморфов
+	GetEcomorphEntityByID *api.EcomorphsEntity `json:"getEcomorphEntityByID,omitempty"`
+	// Получить список сущностей экоморфов с фильтрацией и постраничной информацией
+	//
+	// Аргументы:
+	// - pages: Параметры запроса списка сущностей экоморфов
+	//
+	// Возвращает:
+	// - EcomorphsEntityList: Список сущностей экоморфов с постраничной информацией
+	GetAllEcomorphEntity *api.EcomorphsEntityList `json:"getAllEcomorphEntity,omitempty"`
 }
 
+// Запрос с идентификатором
 type IDRequest struct {
+	// Уникальный идентификатор
 	ID string `json:"id"`
 }
 
+// Запросы для работы с изображениями
 type ImgQuery struct {
-	GetImgByID *api.Img     `json:"getImgByID,omitempty"`
+	// Получить изображение по идентификатору
+	GetImgByID *api.Img `json:"getImgByID,omitempty"`
+	// Получить список изображений с постраничным запросом
 	GetListImg *api.ImgList `json:"getListImg,omitempty"`
 }
 
+// Корневая мутация для работы с различными сущностями
 type Mutation struct {
 }
 
+// Корневой запрос для работы с различными сущностями
 type Query struct {
 }
 
+// Мутации для работы с трансектами
 type TransectMutation struct {
-	CreateTransect         *api.Transect     `json:"createTransect,omitempty"`
-	UpTransect             *api.Transect     `json:"upTransect,omitempty"`
-	AddTrialSiteToTransect *api.Transect     `json:"addTrialSiteToTransect,omitempty"`
-	DeleteTransect         *api.BoolResponse `json:"deleteTransect,omitempty"`
+	// Создать новый трансект
+	CreateTransect *api.Transect `json:"createTransect,omitempty"`
+	// Обновить информацию о трансекте
+	UpTransect *api.Transect `json:"upTransect,omitempty"`
+	// Добавить место проведения опыта к трансекту
+	AddTrialSiteToTransect *api.Transect `json:"addTrialSiteToTransect,omitempty"`
+	// Удалить трансект по идентификатору
+	DeleteTransect *api.BoolResponse `json:"deleteTransect,omitempty"`
 }
 
+// Запросы для работы с трансектами
 type TransectQuery struct {
-	GetTransect    *api.Transect     `json:"getTransect,omitempty"`
+	// Получить трансект по идентификатору
+	GetTransect *api.Transect `json:"getTransect,omitempty"`
+	// Получить список всех трансектов с постраничным запросом
 	GetAllTransect *api.TransectList `json:"getAllTransect,omitempty"`
 }
 
+// Мутации для работы с местами проведения опытов и растениями
 type TrialSiteMutation struct {
-	CreateTrialSite      *api.TrialSite    `json:"createTrialSite,omitempty"`
-	UpTrialSite          *api.TrialSite    `json:"upTrialSite,omitempty"`
-	AddPlantsToTrialSite *api.TrialSite    `json:"addPlantsToTrialSite,omitempty"`
-	DeleteTrialSite      *api.BoolResponse `json:"deleteTrialSite,omitempty"`
-	CreatePlant          *api.Plant        `json:"createPlant,omitempty"`
-	UpdatePlant          *api.Plant        `json:"updatePlant,omitempty"`
-	DeletePlant          *api.BoolResponse `json:"deletePlant,omitempty"`
+	// Создать новое место проведения опыта
+	CreateTrialSite *api.TrialSite `json:"createTrialSite,omitempty"`
+	// Обновить информацию о месте проведения опыта
+	UpTrialSite *api.TrialSite `json:"upTrialSite,omitempty"`
+	// Добавить растения к месту проведения опыта
+	AddPlantsToTrialSite *api.TrialSite `json:"addPlantsToTrialSite,omitempty"`
+	// Удалить место проведения опыта по идентификатору
+	DeleteTrialSite *api.BoolResponse `json:"deleteTrialSite,omitempty"`
+	// Создать новое растение
+	CreatePlant *api.Plant `json:"createPlant,omitempty"`
+	// Обновить информацию о растении
+	UpdatePlant *api.Plant `json:"updatePlant,omitempty"`
+	// Удалить растение по идентификатору
+	DeletePlant *api.BoolResponse `json:"deletePlant,omitempty"`
 }
 
+// Запросы для работы с местами проведения опытов и растениями
 type TrialSiteQuery struct {
-	GetTrialSite    *api.TrialSite     `json:"getTrialSite,omitempty"`
+	// Получить место проведения опыта по идентификатору
+	GetTrialSite *api.TrialSite `json:"getTrialSite,omitempty"`
+	// Получить список всех мест проведения опытов с постраничным запросом
 	GetAllTrialSite *api.TrialSiteList `json:"getAllTrialSite,omitempty"`
-	GetPlant        *api.Plant         `json:"getPlant,omitempty"`
-	GetAllPlant     *api.PlantList     `json:"getAllPlant,omitempty"`
+	// Получить растение по идентификатору
+	GetPlant *api.Plant `json:"getPlant,omitempty"`
+	// Получить список всех растений с постраничным запросом
+	GetAllPlant *api.PlantList `json:"getAllPlant,omitempty"`
 }
 
+// Мутации для управления типами растений
 type TypePlantMutation struct {
-	CreateTypePlant               *api.TypePlant    `json:"createTypePlant,omitempty"`
-	UpdateTypePlant               *api.TypePlant    `json:"updateTypePlant,omitempty"`
-	AddEcomorphsEntityToTypePlant *api.TypePlant    `json:"addEcomorphsEntityToTypePlant,omitempty"`
-	DeleteTypePlant               *api.BoolResponse `json:"deleteTypePlant,omitempty"`
+	// Создать новый тип растения
+	CreateTypePlant *api.TypePlant `json:"createTypePlant,omitempty"`
+	// Обновить информацию о типе растения
+	UpdateTypePlant *api.TypePlant `json:"updateTypePlant,omitempty"`
+	// Добавить сущность экоморфа к типу растения
+	AddEcomorphsEntityToTypePlant *api.TypePlant `json:"addEcomorphsEntityToTypePlant,omitempty"`
+	// Удалить тип растения
+	DeleteTypePlant *api.BoolResponse `json:"deleteTypePlant,omitempty"`
 }
 
+// Запрос информации о типе растения по его идентификатору
 type TypePlantQuery struct {
-	GetTypePlant    *api.TypePlant     `json:"getTypePlant,omitempty"`
+	// Получить информацию о типе растения по его идентификатору
+	GetTypePlant *api.TypePlant `json:"getTypePlant,omitempty"`
+	// Получить список всех типов растений с возможностью постраничного запроса
 	GetAllTypePlant *api.TypePlantList `json:"getAllTypePlant,omitempty"`
 }
 
+// Запросы для работы с пользователями
 type UserQuery struct {
+	// Получить текущего авторизованного пользователя
+	//
+	// Возвращает:
+	// - User: Объект текущего пользователя
 	GetMe *api.User `json:"getMe,omitempty"`
 }
 
+// Перечисление типов ролей пользователей
 type RoleType string
 
 const (
-	RoleTypeSuperUser  RoleType = "SuperUser"
+	// Суперпользователь с расширенными правами
+	RoleTypeSuperUser RoleType = "SuperUser"
+	// Обычный пользователь с ограниченными правами
 	RoleTypeNormalUser RoleType = "NormalUser"
 )
 
@@ -151,10 +335,13 @@ func (e RoleType) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
+// Типы анализа
 type TypeAnalysis string
 
 const (
-	TypeAnalysisTypeAnalysisPlant    TypeAnalysis = "TypeAnalysisPlant"
+	// Анализ растений
+	TypeAnalysisTypeAnalysisPlant TypeAnalysis = "TypeAnalysisPlant"
+	// Анализ транекта
 	TypeAnalysisTypeAnalysisTransect TypeAnalysis = "TypeAnalysisTransect"
 )
 

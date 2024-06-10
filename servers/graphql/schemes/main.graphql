@@ -1,22 +1,85 @@
 
-
-type Query{
+"""
+Корневой запрос для работы с различными сущностями
+"""
+type Query {
+    """
+    Запросы, связанные с пользователями
+    """
     userQuery: UserQuery @goField(forceResolver: true)
+
+    """
+    Запросы, связанные с экоморфами
+    """
     ecomorph: EcomorphQuery @goField(forceResolver: true)
+
+    """
+    Запросы, связанные с сущностями экоморфов
+    """
     ecomorphsEntity: EcomorphsEntityQuery @goField(forceResolver: true)
+
+    """
+    Запросы, связанные с типами растений
+    """
     typePlant: TypePlantQuery @goField(forceResolver: true)
+
+    """
+    Запросы, связанные с пробными участками
+    """
     trialSite: TrialSiteQuery @goField(forceResolver: true)
+
+    """
+    Запросы, связанные с транектами
+    """
     transect: TransectQuery @goField(forceResolver: true)
+
+    """
+    Запросы, связанные с изображениями
+    """
     img: ImgQuery @goField(forceResolver: true)
+
+    """
+    Запросы, связанные с анализами
+    """
     analysis: AnalysisQuery @goField(forceResolver: true)
 }
 
-type Mutation{
+"""
+Корневая мутация для работы с различными сущностями
+"""
+type Mutation {
+    """
+    Мутации, связанные с экоморфами
+    """
     ecomorph: EcomorphMutation @goField(forceResolver: true)
-    auth: AuthMutation   @goField(forceResolver: true)
-    ecomorphsEntity: EcomorphsEntityMutation  @goField(forceResolver: true)
-    typePlant: TypePlantMutation  @goField(forceResolver: true)
+
+    """
+    Мутации, связанные с аутентификацией
+    """
+    auth: AuthMutation @goField(forceResolver: true)
+
+    """
+    Мутации, связанные с сущностями экоморфов
+    """
+    ecomorphsEntity: EcomorphsEntityMutation @goField(forceResolver: true)
+
+    """
+    Мутации, связанные с типами растений
+    """
+    typePlant: TypePlantMutation @goField(forceResolver: true)
+
+    """
+    Мутации, связанные с пробными участками
+    """
     trialSite: TrialSiteMutation @goField(forceResolver: true)
+
+    """
+    Мутации, связанные с транектами
+    """
     transect: TransectMutation @goField(forceResolver: true)
+
+    """
+    Мутации, связанные с анализами
+    """
     analysis: AnalysisMutation @goField(forceResolver: true)
 }

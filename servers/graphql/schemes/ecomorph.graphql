@@ -1,58 +1,214 @@
-
+"""
+Сущность экоморфа
+"""
 type Ecomorph {
+    """
+    Уникальный идентификатор экоморфа
+    """
     id: IdentifierType!
+
+    """
+    Дата и время создания экоморфа
+    """
     createdAt: Timestamp!
+
+    """
+    Дата и время последнего обновления экоморфа
+    """
     updatedAt: Timestamp!
-    deletedAt : Timestamp!
+
+    """
+    Дата и время удаления экоморфа (если был удалён)
+    """
+    deletedAt: Timestamp!
+
+    """
+    Заголовок экоморфа
+    """
     title: String!
+
+    """
+    Описание экоморфа
+    """
     description: String!
+
+    """
+    Идентификатор пользователя, создавшего экоморф
+    """
     userID: IdentifierType!
 }
 
+"""
+Входные данные для создания или обновления экоморфа
+"""
 input EcomorphInput {
+    """
+    Уникальный идентификатор экоморфа
+    """
     id: IdentifierInput
+
+    """
+    Заголовок экоморфа
+    """
     title: String
+
+    """
+    Описание экоморфа
+    """
     description: String
+
+    """
+    Идентификатор пользователя, создавшего экоморф
+    """
     userID: IdentifierInput
 }
 
+"""
+Список экоморфов с постраничной информацией
+"""
 type ListEcomorph {
+    """
+    Информация о страницах
+    """
     page: PagesResponse
+
+    """
+    Список экоморфов
+    """
     list: [Ecomorph]
 }
 
-
+"""
+Входные данные для формы создания экоморфа
+"""
 input InputFormEcomorph {
+    """
+    Заголовок экоморфа
+    """
     title: String
+
+    """
+    Описание экоморфа
+    """
     description: String
 }
 
+"""
+Входные данные для обновления экоморфа
+"""
 input InputEcomorph {
+    """
+    Уникальный идентификатор экоморфа
+    """
     id: IdentifierInput
+
+    """
+    Данные формы для обновления экоморфа
+    """
     payload: InputFormEcomorph!
-    publicly : Boolean
+
+    """
+    Флаг публичности экоморфа
+    """
+    publicly: Boolean
 }
 
+"""
+Фильтр для поиска экоморфов
+"""
 input FilterEcomorph {
+    """
+    Список уникальных идентификаторов экоморфов для фильтрации
+    """
     id: [IdentifierInput]
+
+    """
+    Поиск по заголовку экоморфа
+    """
     searchTitle: String
-    publicly : Boolean
+
+    """
+    Флаг публичности экоморфа
+    """
+    publicly: Boolean
 }
 
+"""
+Запрос списка экоморфов с фильтрацией и постраничной информацией
+"""
 input EcomorphListRequest {
+    """
+    Параметры постраничного запроса
+    """
     page: PagesRequest
+
+    """
+    Фильтр для поиска экоморфов
+    """
     filter: FilterEcomorph
 }
 
-
-
+"""
+Запросы для работы с экоморфами
+"""
 type EcomorphQuery {
+    """
+    Получить экоморф по его уникальному идентификатору
+
+    Аргументы:
+    - id: Уникальный идентификатор экоморфа
+
+    Возвращает:
+    - Ecomorph: Объект экоморфа
+    """
     getEcomorphById(id: ID!): Ecomorph! @goField(forceResolver: true)
-    getListEcomorph(pages: EcomorphListRequest ): ListEcomorph! @goField(forceResolver: true)
+
+    """
+    Получить список экоморфов с фильтрацией и постраничной информацией
+
+    Аргументы:
+    - pages: Параметры запроса списка экоморфов
+
+    Возвращает:
+    - ListEcomorph: Список экоморфов с постраничной информацией
+    """
+    getListEcomorph(pages: EcomorphListRequest): ListEcomorph! @goField(forceResolver: true)
 }
 
+"""
+Мутации для работы с экоморфами
+"""
 type EcomorphMutation {
+    """
+    Вставка нового экоморфа
+
+    Аргументы:
+    - input: Входные данные для создания экоморфа
+
+    Возвращает:
+    - Ecomorph: Созданный объект экоморфа
+    """
     insertEcomorph(input: InputFormEcomorph): Ecomorph! @goField(forceResolver: true)
+
+    """
+    Обновление существующего экоморфа
+
+    Аргументы:
+    - input: Входные данные для обновления экоморфа
+
+    Возвращает:
+    - Ecomorph: Обновленный объект экоморфа
+    """
     updateEcomorph(input: InputEcomorph): Ecomorph! @goField(forceResolver: true)
+
+    """
+    Удаление экоморфа по его уникальному идентификатору
+
+    Аргументы:
+    - id: Уникальный идентификатор экоморфа
+
+    Возвращает:
+    - BoolResponse: Ответ с результатом операции
+    """
     deleteEcomorphById(id: ID!): BoolResponse! @goField(forceResolver: true)
 }

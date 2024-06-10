@@ -1,27 +1,94 @@
-
+"""
+Запросы для работы с изображениями
+"""
 type ImgQuery {
+    """
+    Получить изображение по идентификатору
+    """
     getImgByID(id: ID!): Img @goField(forceResolver: true)
-    getListImg(pages: PagesRequest ): ImgList @goField(forceResolver: true)
+
+    """
+    Получить список изображений с постраничным запросом
+    """
+    getListImg(pages: PagesRequest): ImgList @goField(forceResolver: true)
 }
 
+"""
+Информация об изображении
+"""
 type Img {
+    """
+    Уникальный идентификатор изображения
+    """
     id: IdentifierType!
+
+    """
+    Имя изображения
+    """
     name: String
+
+    """
+    Путь к изображению
+    """
     path: String
+
+    """
+    Дата и время создания
+    """
     createdAt: Timestamp
+
+    """
+    Дата и время последнего обновления
+    """
     updatedAt: Timestamp
-    deletedAt : Timestamp
+
+    """
+    Дата и время удаления (если удалено)
+    """
+    deletedAt: Timestamp
+
+    """
+    Идентификатор пользователя, загрузившего изображение
+    """
     userId: IdentifierType
 }
 
+"""
+Входные данные для создания или обновления изображения
+"""
 input ImgInput {
+    """
+    Уникальный идентификатор изображения
+    """
     id: IdentifierInput!
+
+    """
+    Имя изображения
+    """
     name: String
+
+    """
+    Путь к изображению
+    """
     path: String
+
+    """
+    Идентификатор пользователя, загрузившего изображение
+    """
     userId: IdentifierInput
 }
 
+"""
+Список изображений с информацией о страницах
+"""
 type ImgList {
+    """
+    Информация о страницах
+    """
     page: PagesResponse
+
+    """
+    Список изображений
+    """
     list: [Img]
 }

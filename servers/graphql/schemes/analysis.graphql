@@ -1,54 +1,150 @@
+#Сущность для работы с файлом экологического анализа
 type Analysis {
+    "Уникальный идентификатор анализа"
     id: IdentifierType!
+    "Дата и время создания анализа"
     createdAt: Timestamp!
+    "Дата и время последнего обновления анализа"
     updatedAt: Timestamp!
-    deletedAt : Timestamp!
+    "Дата и время удаления анализа"
+    deletedAt: Timestamp!
+    "Название анализа"
     title: String!
+    "Тип анализа"
     typeAnalysis: TypeAnalysis!
+    "Транект анализа"
     transect: Transect
+    "Путь к файлу анализа"
     path: String!
+    "Уникальный идентификатор пользователя, создавшего анализ"
     userID: IdentifierType!
 }
 
+"""
+Входные данные для создания или обновления анализа
+"""
 input AnalysisInput {
+    "Уникальный идентификатор анализа"
     id: IdentifierInput
+    "Название анализа"
     title: String!
+    "Транект анализа"
     transect: TransectInput
+    "Тип анализа"
     typeAnalysis: TypeAnalysis!
+    "Путь к файлу анализа"
     path: String!
+    "Уникальный идентификатор пользователя, создавшего анализ"
     userID: IdentifierInput
 }
 
+"""
+Список анализов с информацией о страницах
+"""
 type AnalysisList {
+    "Информация о страницах"
     page: PagesResponse!
+    "Список анализов"
     list: [Analysis]
 }
 
-enum TypeAnalysis{
+"""
+Типы анализа
+"""
+enum TypeAnalysis {
+    "Анализ растений"
     TypeAnalysisPlant
+    "Анализ транекта"
     TypeAnalysisTransect
 }
 
+"""
+Входные данные для создания анализа
+"""
 input InputCreateAnalysis {
+    "Название анализа"
     title: String!
+    "Транект анализа"
     transect: TransectInput
+    "Тип анализа"
     typeAnalysis: TypeAnalysis!
+    "Список экоморфов"
     ecomorph: [EcomorphInput]!
 }
 
+"""
+Входные данные для обновления анализа
+"""
 input InputUpdateAnalysis {
+    "Уникальный идентификатор анализа"
     id: IdentifierInput
+    "Название анализа"
     title: String!
+    "Список экоморфов"
     ecomorph: [EcomorphInput]
 }
 
+"""
+Запросы для работы с сущностью анализа
+"""
 type AnalysisQuery {
+    """
+    Получить анализ по уникальному идентификатору
+
+    Аргументы:
+    - id: Уникальный идентификатор анализа
+
+    Возвращает:
+    - Analysis: Объект анализа
+    """
     getAnalysis(id: ID!): Analysis! @goField(forceResolver: true)
-    getListAnalysis(pages: PagesRequest ): AnalysisList! @goField(forceResolver: true)
+
+    """
+    Получить список анализов с учетом пагинации
+
+    Аргументы:
+    - pages: Параметры пагинации
+
+    Возвращает:
+    - AnalysisList: Список анализов с информацией о страницах
+    """
+    getListAnalysis(pages: PagesRequest): AnalysisList! @goField(forceResolver: true)
 }
 
+"""
+Мутации для работы с сущностью анализа
+"""
 type AnalysisMutation {
+    """
+    Создать новый анализ
+
+    Аргументы:
+    - input: Входные данные для создания анализа
+
+    Возвращает:
+    - Analysis: Созданный объект анализа
+    """
     creatAnalysis(input: InputCreateAnalysis): Analysis! @goField(forceResolver: true)
+
+    """
+    Повторить (обновить) анализ
+
+    Аргументы:
+    - input: Входные данные для обновления анализа
+
+    Возвращает:
+    - Analysis: Обновленный объект анализа
+    """
     repeatedAnalysis(input: InputUpdateAnalysis): Analysis! @goField(forceResolver: true)
+
+    """
+    Удалить анализ по уникальному идентификатору
+
+    Аргументы:
+    - id: Уникальный идентификатор анализа
+
+    Возвращает:
+    - BoolResponse: Ответ с результатом операции (успешно/неуспешно)
+    """
     deleteAnalysis(id: ID!): BoolResponse! @goField(forceResolver: true)
 }

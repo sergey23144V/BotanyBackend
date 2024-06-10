@@ -626,12 +626,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AnalysisQuery.GetListAnalysis(childComplexity, args["pages"].(*api.PagesRequest)), true
 
-	case "AuthMutation.RefreshToken":
+	case "AuthMutation.refreshToken":
 		if e.complexity.AuthMutation.RefreshToken == nil {
 			break
 		}
 
-		args, err := ec.field_AuthMutation_RefreshToken_args(context.TODO(), rawArgs)
+		args, err := ec.field_AuthMutation_refreshToken_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
@@ -650,12 +650,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AuthMutation.SignInUser(childComplexity, args["data"].(*api.SignInUserInput)), true
 
-	case "AuthMutation.SignUpSuperUser":
+	case "AuthMutation.signUpSuperUser":
 		if e.complexity.AuthMutation.SignUpSuperUser == nil {
 			break
 		}
 
-		args, err := ec.field_AuthMutation_SignUpSuperUser_args(context.TODO(), rawArgs)
+		args, err := ec.field_AuthMutation_signUpSuperUser_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
@@ -2035,107 +2035,328 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "../schemes/analysis.graphql", Input: `type Analysis {
+	{Name: "../schemes/analysis.graphql", Input: `#Сущность для работы с файлом экологического анализа
+type Analysis {
+    "Уникальный идентификатор анализа"
     id: IdentifierType!
+    "Дата и время создания анализа"
     createdAt: Timestamp!
+    "Дата и время последнего обновления анализа"
     updatedAt: Timestamp!
-    deletedAt : Timestamp!
+    "Дата и время удаления анализа"
+    deletedAt: Timestamp!
+    "Название анализа"
     title: String!
+    "Тип анализа"
     typeAnalysis: TypeAnalysis!
+    "Транект анализа"
     transect: Transect
+    "Путь к файлу анализа"
     path: String!
+    "Уникальный идентификатор пользователя, создавшего анализ"
     userID: IdentifierType!
 }
 
+"""
+Входные данные для создания или обновления анализа
+"""
 input AnalysisInput {
+    "Уникальный идентификатор анализа"
     id: IdentifierInput
+    "Название анализа"
     title: String!
+    "Транект анализа"
     transect: TransectInput
+    "Тип анализа"
     typeAnalysis: TypeAnalysis!
+    "Путь к файлу анализа"
     path: String!
+    "Уникальный идентификатор пользователя, создавшего анализ"
     userID: IdentifierInput
 }
 
+"""
+Список анализов с информацией о страницах
+"""
 type AnalysisList {
+    "Информация о страницах"
     page: PagesResponse!
+    "Список анализов"
     list: [Analysis]
 }
 
-enum TypeAnalysis{
+"""
+Типы анализа
+"""
+enum TypeAnalysis {
+    "Анализ растений"
     TypeAnalysisPlant
+    "Анализ транекта"
     TypeAnalysisTransect
 }
 
+"""
+Входные данные для создания анализа
+"""
 input InputCreateAnalysis {
+    "Название анализа"
     title: String!
+    "Транект анализа"
     transect: TransectInput
+    "Тип анализа"
     typeAnalysis: TypeAnalysis!
+    "Список экоморфов"
     ecomorph: [EcomorphInput]!
 }
 
+"""
+Входные данные для обновления анализа
+"""
 input InputUpdateAnalysis {
+    "Уникальный идентификатор анализа"
     id: IdentifierInput
+    "Название анализа"
     title: String!
+    "Список экоморфов"
     ecomorph: [EcomorphInput]
 }
 
+"""
+Запросы для работы с сущностью анализа
+"""
 type AnalysisQuery {
+    """
+    Получить анализ по уникальному идентификатору
+
+    Аргументы:
+    - id: Уникальный идентификатор анализа
+
+    Возвращает:
+    - Analysis: Объект анализа
+    """
     getAnalysis(id: ID!): Analysis! @goField(forceResolver: true)
-    getListAnalysis(pages: PagesRequest ): AnalysisList! @goField(forceResolver: true)
+
+    """
+    Получить список анализов с учетом пагинации
+
+    Аргументы:
+    - pages: Параметры пагинации
+
+    Возвращает:
+    - AnalysisList: Список анализов с информацией о страницах
+    """
+    getListAnalysis(pages: PagesRequest): AnalysisList! @goField(forceResolver: true)
 }
 
+"""
+Мутации для работы с сущностью анализа
+"""
 type AnalysisMutation {
+    """
+    Создать новый анализ
+
+    Аргументы:
+    - input: Входные данные для создания анализа
+
+    Возвращает:
+    - Analysis: Созданный объект анализа
+    """
     creatAnalysis(input: InputCreateAnalysis): Analysis! @goField(forceResolver: true)
+
+    """
+    Повторить (обновить) анализ
+
+    Аргументы:
+    - input: Входные данные для обновления анализа
+
+    Возвращает:
+    - Analysis: Обновленный объект анализа
+    """
     repeatedAnalysis(input: InputUpdateAnalysis): Analysis! @goField(forceResolver: true)
+
+    """
+    Удалить анализ по уникальному идентификатору
+
+    Аргументы:
+    - id: Уникальный идентификатор анализа
+
+    Возвращает:
+    - BoolResponse: Ответ с результатом операции (успешно/неуспешно)
+    """
     deleteAnalysis(id: ID!): BoolResponse! @goField(forceResolver: true)
 }
 `, BuiltIn: false},
-	{Name: "../schemes/auth.graphql", Input: `enum RoleType{
+	{Name: "../schemes/auth.graphql", Input: `"""
+Перечисление типов ролей пользователей
+"""
+enum RoleType {
+    """
+    Суперпользователь с расширенными правами
+    """
     SuperUser
+
+    """
+    Обычный пользователь с ограниченными правами
+    """
     NormalUser
 }
 
-type User{
+"""
+Сущность пользователя
+"""
+type User {
+    """
+    Уникальный идентификатор пользователя
+    """
     id: IdentifierType!
+
+    """
+    Имя пользователя
+    """
     name: String!
+
+    """
+    Электронная почта пользователя
+    """
     email: String!
+
+    """
+    Пароль пользователя (хранится в зашифрованном виде)
+    """
     password: String!
+
+    """
+    Роль пользователя
+    """
     role: RoleType
 }
 
-type SignInUserResponse{
+"""
+Ответ на запрос авторизации пользователя
+"""
+type SignInUserResponse {
+    """
+    Статус авторизации
+    """
     status: String!
+
+    """
+    Токен доступа
+    """
     access_token: String!
+
+    """
+    Токен обновления
+    """
     refresh_token: String!
 }
 
-input SignInUserInput{
+"""
+Входные данные для авторизации пользователя
+"""
+input SignInUserInput {
+    """
+    Электронная почта пользователя
+    """
     email: String!
+
+    """
+    Пароль пользователя
+    """
     password: String!
 }
 
-input SignUpUserInput{
+"""
+Входные данные для регистрации пользователя
+"""
+input SignUpUserInput {
+    """
+    Электронная почта пользователя
+    """
     email: String!
+
+    """
+    Пароль пользователя
+    """
     password: String!
-    name:String!
+
+    """
+    Имя пользователя
+    """
+    name: String!
 }
-input RefreshTokenRequest{
+
+"""
+Входные данные для обновления токена
+"""
+input RefreshTokenRequest {
+    """
+    Токен обновления
+    """
     refresh_token: String!
 }
 
+"""
+Мутации для работы с аутентификацией
+"""
+type AuthMutation {
+    """
+    Регистрация нового пользователя
 
-type AuthMutation{
-    signUpUser(data : SignUpUserInput): SignInUserResponse @goField(forceResolver: true)
-    SignUpSuperUser(data : SignUpUserInput): SignInUserResponse @goField(forceResolver: true)
-    signInUser(data : SignInUserInput): SignInUserResponse @goField(forceResolver: true)
-    RefreshToken(data : RefreshTokenRequest): SignInUserResponse @goField(forceResolver: true)
+    Аргументы:
+    - data: Входные данные для регистрации пользователя
+
+    Возвращает:
+    - SignInUserResponse: Ответ с токенами и статусом
+    """
+    signUpUser(data: SignUpUserInput): SignInUserResponse @goField(forceResolver: true)
+
+    """
+    Регистрация нового суперпользователя
+
+    Аргументы:
+    - data: Входные данные для регистрации суперпользователя
+
+    Возвращает:
+    - SignInUserResponse: Ответ с токенами и статусом
+    """
+    signUpSuperUser(data: SignUpUserInput): SignInUserResponse @goField(forceResolver: true)
+
+    """
+    Авторизация пользователя
+
+    Аргументы:
+    - data: Входные данные для авторизации пользователя
+
+    Возвращает:
+    - SignInUserResponse: Ответ с токенами и статусом
+    """
+    signInUser(data: SignInUserInput): SignInUserResponse @goField(forceResolver: true)
+
+    """
+    Обновление токена доступа
+
+    Аргументы:
+    - data: Входные данные для обновления токена
+
+    Возвращает:
+    - SignInUserResponse: Ответ с новыми токенами и статусом
+    """
+    refreshToken(data: RefreshTokenRequest): SignInUserResponse @goField(forceResolver: true)
 }
 
+"""
+Запросы для работы с пользователями
+"""
 type UserQuery {
-    getMe: User @goField(forceResolver: true)
-}
+    """
+    Получить текущего авторизованного пользователя
 
-`, BuiltIn: false},
+    Возвращает:
+    - User: Объект текущего пользователя
+    """
+    getMe: User @goField(forceResolver: true)
+}`, BuiltIn: false},
 	{Name: "../schemes/directives.graphql", Input: `# GQL Directives
 # This part is fairly necessary and is described in the gql documentation
 # https://gqlgen.com/config/
@@ -2149,471 +2370,1709 @@ directive @goModel(model: String, models: [String!]) on OBJECT
 directive @goField(forceResolver: Boolean, name: String) on INPUT_FIELD_DEFINITION
     | FIELD_DEFINITION
 `, BuiltIn: false},
-	{Name: "../schemes/ecomorph-entity.graphql", Input: `type EcomorphsEntity {
+	{Name: "../schemes/ecomorph-entity.graphql", Input: `"""
+Сущность экоморфов
+"""
+type EcomorphsEntity {
+    """
+    Уникальный идентификатор сущности экоморфов
+    """
     id: IdentifierType!
+
+    """
+    Дата и время создания сущности
+    """
     createdAt: Timestamp
+
+    """
+    Дата и время последнего обновления сущности
+    """
     updatedAt: Timestamp
-    deletedAt : Timestamp
+
+    """
+    Дата и время удаления сущности (если была удалена)
+    """
+    deletedAt: Timestamp
+
+    """
+    Заголовок сущности
+    """
     title: String
+
+    """
+    Таблица отображения сущности
+    """
     displayTable: String
+
+    """
+    Оценка сущности
+    """
     score: Int
+
+    """
+    Описание сущности
+    """
     description: String
+
+    """
+    Экоморф, связанный с данной сущностью
+    """
     ecomorphs: Ecomorph
+
+    """
+    Идентификатор пользователя, создавшего сущность
+    """
     userId: IdentifierType
 }
 
+"""
+Входные данные для создания или обновления сущности экоморфов
+"""
 input EcomorphsEntityInput {
+    """
+    Уникальный идентификатор сущности экоморфов
+    """
     id: IdentifierInput!
+
+    """
+    Заголовок сущности
+    """
     title: String
+
+    """
+    Таблица отображения сущности
+    """
     displayTable: String
+
+    """
+    Оценка сущности
+    """
     score: Int
+
+    """
+    Описание сущности
+    """
     description: String
+
+    """
+    Экоморф, связанный с данной сущностью
+    """
     ecomorphs: EcomorphInput
 }
 
-
+"""
+Список сущностей экоморфов с постраничной информацией
+"""
 type EcomorphsEntityList {
+    """
+    Информация о страницах
+    """
     page: PagesResponse
+
+    """
+    Список сущностей экоморфов
+    """
     list: [EcomorphsEntity]
 }
 
+"""
+Входные данные для формы создания сущности экоморфов
+"""
 input InputFormEcomorphsEntity {
+    """
+    Заголовок сущности
+    """
     title: String
+
+    """
+    Описание сущности
+    """
     description: String
+
+    """
+    Таблица отображения сущности
+    """
     displayTable: String
+
+    """
+    Оценка сущности
+    """
     score: Int
+
+    """
+    Экоморф, связанный с данной сущностью
+    """
     ecomorphs: EcomorphInput
 }
 
+"""
+Входные данные для обновления сущности экоморфов
+"""
 input InputEcomorphsEntity {
-    id : IdentifierInput!
+    """
+    Уникальный идентификатор сущности экоморфов
+    """
+    id: IdentifierInput!
+
+    """
+    Данные формы для обновления сущности экоморфов
+    """
     input: InputFormEcomorphsEntity
+
+    """
+    Флаг публичности сущности экоморфов
+    """
     publicly: Boolean
 }
 
+"""
+Фильтр для поиска сущностей экоморфов
+"""
 input FilterEcomorphsEntity {
-    id : [IdentifierInput]
+    """
+    Список уникальных идентификаторов сущностей экоморфов для фильтрации
+    """
+    id: [IdentifierInput]
+
+    """
+    Поиск по заголовку сущности
+    """
     searchTitle: String
-    publicly : Boolean
+
+    """
+    Флаг публичности сущности экоморфов
+    """
+    publicly: Boolean
 }
 
+"""
+Запрос списка сущностей экоморфов с фильтрацией и постраничной информацией
+"""
 input EcomorphsEntityListRequest {
+    """
+    Параметры постраничного запроса
+    """
     page: PagesRequest
+
+    """
+    Фильтр для поиска сущностей экоморфов
+    """
     filter: FilterEcomorphsEntity
 }
 
+"""
+Запросы для работы с сущностями экоморфов
+"""
 type EcomorphsEntityQuery {
+    """
+    Получить сущность экоморфов по её уникальному идентификатору
+
+    Аргументы:
+    - id: Уникальный идентификатор сущности экоморфов
+
+    Возвращает:
+    - EcomorphsEntity: Объект сущности экоморфов
+    """
     getEcomorphEntityByID(id: ID!): EcomorphsEntity @goField(forceResolver: true)
-    getAllEcomorphEntity(pages: EcomorphsEntityListRequest ): EcomorphsEntityList @goField(forceResolver: true)
+
+    """
+    Получить список сущностей экоморфов с фильтрацией и постраничной информацией
+
+    Аргументы:
+    - pages: Параметры запроса списка сущностей экоморфов
+
+    Возвращает:
+    - EcomorphsEntityList: Список сущностей экоморфов с постраничной информацией
+    """
+    getAllEcomorphEntity(pages: EcomorphsEntityListRequest): EcomorphsEntityList @goField(forceResolver: true)
 }
 
+"""
+Мутации для работы с сущностями экоморфов
+"""
 type EcomorphsEntityMutation {
+    """
+    Вставка новой сущности экоморфов
+
+    Аргументы:
+    - input: Входные данные для создания сущности экоморфов
+
+    Возвращает:
+    - EcomorphsEntity: Созданный объект сущности экоморфов
+    """
     insertEcomorphEntity(input: InputFormEcomorphsEntity): EcomorphsEntity @goField(forceResolver: true)
+
+    """
+    Обновление существующей сущности экоморфов
+
+    Аргументы:
+    - input: Входные данные для обновления сущности экоморфов
+
+    Возвращает:
+    - EcomorphsEntity: Обновленный объект сущности экоморфов
+    """
     updateEcomorphEntity(input: InputEcomorphsEntity): EcomorphsEntity @goField(forceResolver: true)
+
+    """
+    Удаление сущности экоморфов по её уникальному идентификатору
+
+    Аргументы:
+    - id: Уникальный идентификатор сущности экоморфов
+
+    Возвращает:
+    - BoolResponse: Ответ с результатом операции
+    """
     deleteEcomorphEntityByID(id: ID!): BoolResponse @goField(forceResolver: true)
 }`, BuiltIn: false},
-	{Name: "../schemes/ecomorph.graphql", Input: `
+	{Name: "../schemes/ecomorph.graphql", Input: `"""
+Сущность экоморфа
+"""
 type Ecomorph {
+    """
+    Уникальный идентификатор экоморфа
+    """
     id: IdentifierType!
+
+    """
+    Дата и время создания экоморфа
+    """
     createdAt: Timestamp!
+
+    """
+    Дата и время последнего обновления экоморфа
+    """
     updatedAt: Timestamp!
-    deletedAt : Timestamp!
+
+    """
+    Дата и время удаления экоморфа (если был удалён)
+    """
+    deletedAt: Timestamp!
+
+    """
+    Заголовок экоморфа
+    """
     title: String!
+
+    """
+    Описание экоморфа
+    """
     description: String!
+
+    """
+    Идентификатор пользователя, создавшего экоморф
+    """
     userID: IdentifierType!
 }
 
+"""
+Входные данные для создания или обновления экоморфа
+"""
 input EcomorphInput {
+    """
+    Уникальный идентификатор экоморфа
+    """
     id: IdentifierInput
+
+    """
+    Заголовок экоморфа
+    """
     title: String
+
+    """
+    Описание экоморфа
+    """
     description: String
+
+    """
+    Идентификатор пользователя, создавшего экоморф
+    """
     userID: IdentifierInput
 }
 
+"""
+Список экоморфов с постраничной информацией
+"""
 type ListEcomorph {
+    """
+    Информация о страницах
+    """
     page: PagesResponse
+
+    """
+    Список экоморфов
+    """
     list: [Ecomorph]
 }
 
-
+"""
+Входные данные для формы создания экоморфа
+"""
 input InputFormEcomorph {
+    """
+    Заголовок экоморфа
+    """
     title: String
+
+    """
+    Описание экоморфа
+    """
     description: String
 }
 
+"""
+Входные данные для обновления экоморфа
+"""
 input InputEcomorph {
+    """
+    Уникальный идентификатор экоморфа
+    """
     id: IdentifierInput
+
+    """
+    Данные формы для обновления экоморфа
+    """
     payload: InputFormEcomorph!
-    publicly : Boolean
+
+    """
+    Флаг публичности экоморфа
+    """
+    publicly: Boolean
 }
 
+"""
+Фильтр для поиска экоморфов
+"""
 input FilterEcomorph {
+    """
+    Список уникальных идентификаторов экоморфов для фильтрации
+    """
     id: [IdentifierInput]
+
+    """
+    Поиск по заголовку экоморфа
+    """
     searchTitle: String
-    publicly : Boolean
+
+    """
+    Флаг публичности экоморфа
+    """
+    publicly: Boolean
 }
 
+"""
+Запрос списка экоморфов с фильтрацией и постраничной информацией
+"""
 input EcomorphListRequest {
+    """
+    Параметры постраничного запроса
+    """
     page: PagesRequest
+
+    """
+    Фильтр для поиска экоморфов
+    """
     filter: FilterEcomorph
 }
 
-
-
+"""
+Запросы для работы с экоморфами
+"""
 type EcomorphQuery {
+    """
+    Получить экоморф по его уникальному идентификатору
+
+    Аргументы:
+    - id: Уникальный идентификатор экоморфа
+
+    Возвращает:
+    - Ecomorph: Объект экоморфа
+    """
     getEcomorphById(id: ID!): Ecomorph! @goField(forceResolver: true)
-    getListEcomorph(pages: EcomorphListRequest ): ListEcomorph! @goField(forceResolver: true)
+
+    """
+    Получить список экоморфов с фильтрацией и постраничной информацией
+
+    Аргументы:
+    - pages: Параметры запроса списка экоморфов
+
+    Возвращает:
+    - ListEcomorph: Список экоморфов с постраничной информацией
+    """
+    getListEcomorph(pages: EcomorphListRequest): ListEcomorph! @goField(forceResolver: true)
 }
 
+"""
+Мутации для работы с экоморфами
+"""
 type EcomorphMutation {
+    """
+    Вставка нового экоморфа
+
+    Аргументы:
+    - input: Входные данные для создания экоморфа
+
+    Возвращает:
+    - Ecomorph: Созданный объект экоморфа
+    """
     insertEcomorph(input: InputFormEcomorph): Ecomorph! @goField(forceResolver: true)
+
+    """
+    Обновление существующего экоморфа
+
+    Аргументы:
+    - input: Входные данные для обновления экоморфа
+
+    Возвращает:
+    - Ecomorph: Обновленный объект экоморфа
+    """
     updateEcomorph(input: InputEcomorph): Ecomorph! @goField(forceResolver: true)
+
+    """
+    Удаление экоморфа по его уникальному идентификатору
+
+    Аргументы:
+    - id: Уникальный идентификатор экоморфа
+
+    Возвращает:
+    - BoolResponse: Ответ с результатом операции
+    """
     deleteEcomorphById(id: ID!): BoolResponse! @goField(forceResolver: true)
-}
-`, BuiltIn: false},
-	{Name: "../schemes/elementary-type.graphql", Input: `
+}`, BuiltIn: false},
+	{Name: "../schemes/elementary-type.graphql", Input: `"""
+Запрос с идентификатором
+"""
 type IdRequest {
+    """
+    Уникальный идентификатор
+    """
     id: ID!
 }
 
+"""
+Входные данные для постраничного запроса
+"""
 input PagesRequest {
-    limit: Int  @goField(forceResolver: false)
+    """
+    Количество элементов на странице
+    """
+    limit: Int @goField(forceResolver: false)
+
+    """
+    Номер страницы
+    """
     page: Int @goField(forceResolver: false)
 }
 
+"""
+Ответ с информацией о страницах
+"""
 type PagesResponse {
+    """
+    Общее количество элементов
+    """
     total: Int
+
+    """
+    Номер текущей страницы
+    """
     page: Int
+
+    """
+    Количество элементов на странице
+    """
     limit: Int
 }
 
+"""
+Ответ с булевым результатом
+"""
 type BoolResponse {
+    """
+    Результат операции
+    """
     result: Boolean!
 }
 
+"""
+Тип идентификатора ресурса
+"""
 type IdentifierType {
+    """
+    Имя приложения
+    """
     applicationName: String
+
+    """
+    Тип ресурса
+    """
     resourceType: String
+
+    """
+    Уникальный идентификатор ресурса
+    """
     resourceId: String!
 }
 
+"""
+Входные данные для идентификатора ресурса
+"""
 input IdentifierInput {
+    """
+    Имя приложения
+    """
     applicationName: String
+
+    """
+    Тип ресурса
+    """
     resourceType: String
+
+    """
+    Уникальный идентификатор ресурса
+    """
     resourceId: String!
 }
 
+"""
+Тип временной метки
+"""
 type Timestamp {
+    """
+    Секунды с 1970-01-01T00:00:00Z (Unix время)
+    """
     seconds: Int
+
+    """
+    Наносекунды
+    """
     nanos: Int
-}
-
-`, BuiltIn: false},
-	{Name: "../schemes/img.graphql", Input: `
+}`, BuiltIn: false},
+	{Name: "../schemes/img.graphql", Input: `"""
+Запросы для работы с изображениями
+"""
 type ImgQuery {
+    """
+    Получить изображение по идентификатору
+    """
     getImgByID(id: ID!): Img @goField(forceResolver: true)
-    getListImg(pages: PagesRequest ): ImgList @goField(forceResolver: true)
+
+    """
+    Получить список изображений с постраничным запросом
+    """
+    getListImg(pages: PagesRequest): ImgList @goField(forceResolver: true)
 }
 
+"""
+Информация об изображении
+"""
 type Img {
+    """
+    Уникальный идентификатор изображения
+    """
     id: IdentifierType!
+
+    """
+    Имя изображения
+    """
     name: String
+
+    """
+    Путь к изображению
+    """
     path: String
+
+    """
+    Дата и время создания
+    """
     createdAt: Timestamp
+
+    """
+    Дата и время последнего обновления
+    """
     updatedAt: Timestamp
-    deletedAt : Timestamp
+
+    """
+    Дата и время удаления (если удалено)
+    """
+    deletedAt: Timestamp
+
+    """
+    Идентификатор пользователя, загрузившего изображение
+    """
     userId: IdentifierType
 }
 
+"""
+Входные данные для создания или обновления изображения
+"""
 input ImgInput {
+    """
+    Уникальный идентификатор изображения
+    """
     id: IdentifierInput!
+
+    """
+    Имя изображения
+    """
     name: String
+
+    """
+    Путь к изображению
+    """
     path: String
+
+    """
+    Идентификатор пользователя, загрузившего изображение
+    """
     userId: IdentifierInput
 }
 
+"""
+Список изображений с информацией о страницах
+"""
 type ImgList {
+    """
+    Информация о страницах
+    """
     page: PagesResponse
-    list: [Img]
-}
-`, BuiltIn: false},
-	{Name: "../schemes/main.graphql", Input: `
 
-type Query{
+    """
+    Список изображений
+    """
+    list: [Img]
+}`, BuiltIn: false},
+	{Name: "../schemes/main.graphql", Input: `
+"""
+Корневой запрос для работы с различными сущностями
+"""
+type Query {
+    """
+    Запросы, связанные с пользователями
+    """
     userQuery: UserQuery @goField(forceResolver: true)
+
+    """
+    Запросы, связанные с экоморфами
+    """
     ecomorph: EcomorphQuery @goField(forceResolver: true)
+
+    """
+    Запросы, связанные с сущностями экоморфов
+    """
     ecomorphsEntity: EcomorphsEntityQuery @goField(forceResolver: true)
+
+    """
+    Запросы, связанные с типами растений
+    """
     typePlant: TypePlantQuery @goField(forceResolver: true)
+
+    """
+    Запросы, связанные с пробными участками
+    """
     trialSite: TrialSiteQuery @goField(forceResolver: true)
+
+    """
+    Запросы, связанные с транектами
+    """
     transect: TransectQuery @goField(forceResolver: true)
+
+    """
+    Запросы, связанные с изображениями
+    """
     img: ImgQuery @goField(forceResolver: true)
+
+    """
+    Запросы, связанные с анализами
+    """
     analysis: AnalysisQuery @goField(forceResolver: true)
 }
 
-type Mutation{
+"""
+Корневая мутация для работы с различными сущностями
+"""
+type Mutation {
+    """
+    Мутации, связанные с экоморфами
+    """
     ecomorph: EcomorphMutation @goField(forceResolver: true)
-    auth: AuthMutation   @goField(forceResolver: true)
-    ecomorphsEntity: EcomorphsEntityMutation  @goField(forceResolver: true)
-    typePlant: TypePlantMutation  @goField(forceResolver: true)
+
+    """
+    Мутации, связанные с аутентификацией
+    """
+    auth: AuthMutation @goField(forceResolver: true)
+
+    """
+    Мутации, связанные с сущностями экоморфов
+    """
+    ecomorphsEntity: EcomorphsEntityMutation @goField(forceResolver: true)
+
+    """
+    Мутации, связанные с типами растений
+    """
+    typePlant: TypePlantMutation @goField(forceResolver: true)
+
+    """
+    Мутации, связанные с пробными участками
+    """
     trialSite: TrialSiteMutation @goField(forceResolver: true)
+
+    """
+    Мутации, связанные с транектами
+    """
     transect: TransectMutation @goField(forceResolver: true)
+
+    """
+    Мутации, связанные с анализами
+    """
     analysis: AnalysisMutation @goField(forceResolver: true)
 }`, BuiltIn: false},
-	{Name: "../schemes/transect.graphql", Input: `type TransectQuery {
+	{Name: "../schemes/transect.graphql", Input: `"""
+Запросы для работы с трансектами
+"""
+type TransectQuery {
+    """
+    Получить трансект по идентификатору
+    """
     getTransect(id: ID!): Transect @goField(forceResolver: true)
-    getAllTransect(pages: TransectListRequest ): TransectList @goField(forceResolver: true)
+
+    """
+    Получить список всех трансектов с постраничным запросом
+    """
+    getAllTransect(pages: TransectListRequest): TransectList @goField(forceResolver: true)
 }
 
+"""
+Мутации для работы с трансектами
+"""
 type TransectMutation {
+    """
+    Создать новый трансект
+    """
     createTransect(input: InputFormTransectRequest): Transect @goField(forceResolver: true)
+
+    """
+    Обновить информацию о трансекте
+    """
     upTransect(input: InputTransectRequest): Transect @goField(forceResolver: true)
+
+    """
+    Добавить место проведения опыта к трансекту
+    """
     addTrialSiteToTransect(input: InputTransectRequest): Transect @goField(forceResolver: true)
+
+    """
+    Удалить трансект по идентификатору
+    """
     deleteTransect(id: ID!): BoolResponse @goField(forceResolver: true)
 }
 
+"""
+Информация о трансекте
+"""
 type Transect {
+    """
+    Уникальный идентификатор трансекта
+    """
     id: IdentifierType!
+
+    """
+    Название трансекта
+    """
     title: String
+
+    """
+    Пройденная длина (м)
+    """
     covered: Int
+
+    """
+    Рейтинг
+    """
     rating: Int
+
+    """
+    Площадь (кв.м)
+    """
     square: Int
+
+    """
+    Площадь места проведения опыта (кв.м)
+    """
     squareTrialSite: Int
+
+    """
+    Количество типов растений
+    """
     countTypes: Int
+
+    """
+    Доминирующий вид растения
+    """
     dominant: TypePlant
+
+    """
+    Поддоминирующий вид растения
+    """
     subDominant: TypePlant
+
+    """
+    Места проведения опыта
+    """
     trialSite: [TrialSite]
+
+    """
+    Изображение
+    """
     img: Img
+
+    """
+    Дата и время создания
+    """
     createdAt: Timestamp
+
+    """
+    Дата и время последнего обновления
+    """
     updatedAt: Timestamp
-    deletedAt : Timestamp
+
+    """
+    Дата и время удаления (если трансект удалён)
+    """
+    deletedAt: Timestamp
+
+    """
+    Идентификатор пользователя
+    """
     userId: IdentifierType
 }
 
+"""
+Входные данные для создания или обновления трансекта
+"""
 input TransectInput {
+    """
+    Уникальный идентификатор трансекта
+    """
     id: IdentifierInput!
+
+    """
+    Название трансекта
+    """
     title: String
+
+    """
+    Пройденная длина (м)
+    """
     covered: Int
+
+    """
+    Рейтинг
+    """
     rating: Int
+
+    """
+    Площадь (кв.м)
+    """
     square: Int
+
+    """
+    Площадь места проведения опыта (кв.м)
+    """
     squareTrialSite: Int
+
+    """
+    Количество типов растений
+    """
     countTypes: Int
+
+    """
+    Доминирующий вид растения
+    """
     dominant: TypePlantInput
+
+    """
+    Поддоминирующий вид растения
+    """
     subDominant: TypePlantInput
+
+    """
+    Места проведения опыта
+    """
     trialSite: [TrialSiteInput]
+
+    """
+    Изображение
+    """
     img: ImgInput
+
+    """
+    Идентификатор пользователя
+    """
     userId: IdentifierInput
 }
 
+"""
+Список трансектов с информацией о страницах
+"""
 type TransectList {
+    """
+    Информация о страницах
+    """
     page: PagesResponse
+
+    """
+    Список трансектов
+    """
     list: [Transect]
 }
 
+"""
+Входные данные для создания или обновления трансекта
+"""
 input InputFormTransectRequest {
+    """
+    Название трансекта
+    """
     title: String
+
+    """
+    Пройденная длина (м)
+    """
     covered: Int
+
+    """
+    Рейтинг
+    """
     rating: Int
+
+    """
+    Площадь (кв.м)
+    """
     square: Int
+
+    """
+    Площадь места проведения опыта (кв.м)
+    """
     squareTrialSite: Int
-    countTypes: Int
+
+    """
+    Изображение
+    """
     img: ImgInput
+
+    """
+    Места проведения опыта
+    """
     trialSite: [TrialSiteInput]
+
+    """
+    Доминирующий вид растения
+    """
     dominant: TypePlantInput
+
+    """
+    Поддоминирующий вид растения
+    """
     subDominant: TypePlantInput
 }
 
+"""
+Входные данные для обновления трансекта
+"""
 input InputTransectRequest {
+    """
+    Уникальный идентификатор трансекта
+    """
     id: IdentifierInput!
+
+    """
+    Данные для обновления трансекта
+    """
     input: InputFormTransectRequest
 }
 
+"""
+Фильтр для запроса списка трансектов
+"""
 input FilterTransect {
-    id : [IdentifierInput]
+    """
+    Идентификаторы трансектов
+    """
+    id: [IdentifierInput]
+
+    """
+    Поиск по названию трансекта
+    """
     searchTitle: String
+
+    """
+    Фильтр по доминирующему виду растения
+    """
     dominant: TypePlantInput
+
+    """
+    Фильтр по поддоминирующему виду растения
+    """
     subDominant: TypePlantInput
 }
 
+"""
+Запрос списка трансектов с фильтром и постраничным запросом
+"""
 input TransectListRequest {
+    """
+    Информация о странице
+    """
     page: PagesRequest
+
+    """
+    Фильтр для списка трансектов
+    """
     filter: FilterTransect
 }`, BuiltIn: false},
-	{Name: "../schemes/trial-site.graphql", Input: `type TrialSiteQuery {
+	{Name: "../schemes/trial-site.graphql", Input: `"""
+Запросы для работы с местами проведения опытов и растениями
+"""
+type TrialSiteQuery {
+    """
+    Получить место проведения опыта по идентификатору
+    """
     getTrialSite(id: ID!): TrialSite @goField(forceResolver: true)
-    getAllTrialSite(pages: TrialSiteListRequest ): TrialSiteList @goField(forceResolver: true)
+
+    """
+    Получить список всех мест проведения опытов с постраничным запросом
+    """
+    getAllTrialSite(pages: TrialSiteListRequest): TrialSiteList @goField(forceResolver: true)
+
+    """
+    Получить растение по идентификатору
+    """
     getPlant(id: ID!): Plant @goField(forceResolver: true)
-    getAllPlant(pages: PagesRequest ): PlantList @goField(forceResolver: true)
+
+    """
+    Получить список всех растений с постраничным запросом
+    """
+    getAllPlant(pages: PagesRequest): PlantList @goField(forceResolver: true)
 }
 
+"""
+Мутации для работы с местами проведения опытов и растениями
+"""
 type TrialSiteMutation {
+    """
+    Создать новое место проведения опыта
+    """
     createTrialSite(input: InputFormTrialSiteRequest): TrialSite @goField(forceResolver: true)
+
+    """
+    Обновить информацию о месте проведения опыта
+    """
     upTrialSite(input: InputTrialSiteRequest): TrialSite @goField(forceResolver: true)
+
+    """
+    Добавить растения к месту проведения опыта
+    """
     addPlantsToTrialSite(input: InputTrialSiteRequest): TrialSite @goField(forceResolver: true)
+
+    """
+    Удалить место проведения опыта по идентификатору
+    """
     deleteTrialSite(id: ID!): BoolResponse @goField(forceResolver: true)
+
+    """
+    Создать новое растение
+    """
     createPlant(input: InputFormPlant): Plant @goField(forceResolver: true)
+
+    """
+    Обновить информацию о растении
+    """
     updatePlant(input: InputPlantRequest): Plant @goField(forceResolver: true)
+
+    """
+    Удалить растение по идентификатору
+    """
     deletePlant(id: ID!): BoolResponse @goField(forceResolver: true)
 }
 
+"""
+Информация о месте проведения опыта
+"""
 type TrialSite {
+    """
+    Уникальный идентификатор места проведения опыта
+    """
     id: IdentifierType!
+
+    """
+    Название места проведения опыта
+    """
     title: String
+
+    """
+    Пройденная длина (м)
+    """
     covered: Int
+
+    """
+    Рейтинг
+    """
     rating: Int
+
+    """
+    Количество типов растений
+    """
     countTypes: Int
+
+    """
+    Доминирующий вид растения
+    """
     dominant: TypePlant
+
+    """
+    Поддоминирующий вид растения
+    """
     subDominant: TypePlant
+
+    """
+    Изображение места проведения опыта
+    """
     img: Img
+
+    """
+    Список растений на месте проведения опыта
+    """
     plant: [Plant]
+
+    """
+    Дата и время создания
+    """
     createdAt: Timestamp
+
+    """
+    Дата и время последнего обновления
+    """
     updatedAt: Timestamp
-    deletedAt : Timestamp
+
+    """
+    Дата и время удаления (если место проведения опыта удалено)
+    """
+    deletedAt: Timestamp
+
+    """
+    Идентификатор пользователя
+    """
     userId: IdentifierType
 }
 
-
+"""
+Входные данные для создания или обновления места проведения опыта
+"""
 input TrialSiteInput {
+    """
+    Уникальный идентификатор места проведения опыта
+    """
     id: IdentifierInput!
+
+    """
+    Название места проведения опыта
+    """
     title: String
+
+    """
+    Пройденная длина (м)
+    """
     covered: Int
+
+    """
+    Рейтинг
+    """
     rating: Int
+
+    """
+    Количество типов растений
+    """
     countTypes: Int
+
+    """
+    Изображение места проведения опыта
+    """
     img: ImgInput
+
+    """
+    Доминирующий вид растения
+    """
     dominant: TypePlantInput
+
+    """
+    Поддоминирующий вид растения
+    """
     subDominant: TypePlantInput
+
+    """
+    Список растений на месте проведения опыта
+    """
     plant: [PlantInput]
+
+    """
+    Идентификатор пользователя
+    """
     userId: IdentifierInput
 }
 
+"""
+Список мест проведения опытов с информацией о страницах
+"""
 type TrialSiteList {
+    """
+    Информация о странице
+    """
     page: PagesResponse
+
+    """
+    Список мест проведения опытов
+    """
     list: [TrialSite]
 }
 
+"""
+Входные данные для создания или обновления места проведения опыта
+"""
 input InputFormTrialSiteRequest {
+    """
+    Название места проведения опыта
+    """
     title: String
+
+    """
+    Пройденная длина (м)
+    """
     covered: Int
+
+    """
+    Рейтинг
+    """
     rating: Int
+
+    """
+    Количество типов растений
+    """
     countTypes: Int
+
+    """
+    Изображение места проведения опыта
+    """
     img: ImgInput
+
+    """
+    Список растений на месте проведения опыта
+    """
     plant: [PlantInput]
+
+    """
+    Доминирующий вид растения
+    """
     dominant: TypePlantInput
+
+    """
+    Поддоминирующий вид растения
+    """
     subDominant: TypePlantInput
 }
 
+"""
+Входные данные для запроса или обновления информации о месте проведения опыта
+"""
 input InputTrialSiteRequest {
+    """
+    Уникальный идентификатор места проведения опыта
+    """
     id: IdentifierInput!
+
+    """
+    Входные данные для создания или обновления места проведения опыта
+    """
     input: InputFormTrialSiteRequest
 }
 
+"""
+Фильтр для списка мест проведения опыта
+"""
 input FilterTrialSite {
-    id : [IdentifierInput]
+    """
+    Список уникальных идентификаторов мест проведения опыта
+    """
+    id: [IdentifierInput]
+
+    """
+    Поиск по названию места проведения опыта
+    """
     searchTitle: String
+
+    """
+    Доминирующий вид растения на месте проведения опыта
+    """
     dominant: TypePlantInput
+
+    """
+    Поддоминирующий вид растения на месте проведения опыта
+    """
     subDominant: TypePlantInput
 }
 
+"""
+Запрос списка мест проведения опыта с фильтром и постраничным запросом
+"""
 input TrialSiteListRequest {
+    """
+    Информация о странице
+    """
     page: PagesRequest
+
+    """
+    Фильтр для списка мест проведения опыта
+    """
     filter: FilterTrialSite
 }
 
-
+"""
+Информация о растении
+"""
 type Plant {
+    """
+    Уникальный идентификатор растения
+    """
     id: IdentifierType!
+
+    """
+    Процент покрытия растения на месте проведения опыта
+    """
     coverage: Int
+
+    """
+    Количество экземпляров растения на месте проведения опыта
+    """
     count: Int
+
+    """
+    Тип растения
+    """
     typePlant: TypePlant
+
+    """
+    Идентификатор пользователя
+    """
     userId: IdentifierType
 }
 
+"""
+Входные данные для создания или обновления информации о растении
+"""
 input PlantInput {
+    """
+    Уникальный идентификатор растения
+    """
     id: IdentifierInput!
+
+    """
+    Процент покрытия растения на месте проведения опыта
+    """
     coverage: Int
+
+    """
+    Количество экземпляров растения на месте проведения опыта
+    """
     count: Int
+
+    """
+    Тип растения
+    """
     typePlant: TypePlantInput
+
+    """
+    Идентификатор пользователя
+    """
     userId: IdentifierInput
 }
 
-type PlantList{
+"""
+Список растений с информацией о страницах
+"""
+type PlantList {
+    """
+    Информация о странице
+    """
     page: PagesResponse!
+
+    """
+    Список растений
+    """
     list: [Plant]
 }
 
+"""
+Входные данные для создания или обновления информации о растении
+"""
 input InputFormPlant {
+    """
+    Процент покрытия растения на месте проведения опыта
+    """
     coverage: Int
+
+    """
+    Количество экземпляров растения на месте проведения опыта
+    """
     count: Int
+
+    """
+    Тип растения
+    """
     typePlant: TypePlantInput
 }
 
+"""
+Входные данные для запроса или обновления информации о растении
+"""
 input InputPlantRequest {
+    """
+    Уникальный идентификатор растения
+    """
     id: IdentifierInput!
+
+    """
+    Входные данные для создания или обновления информации о растении
+    """
     input: InputFormPlant
 }
 `, BuiltIn: false},
-	{Name: "../schemes/type-plant.graphql", Input: `type TypePlantQuery {
+	{Name: "../schemes/type-plant.graphql", Input: `"""
+Запрос информации о типе растения по его идентификатору
+"""
+type TypePlantQuery {
+    """
+    Получить информацию о типе растения по его идентификатору
+    """
     getTypePlant(id: ID!): TypePlant @goField(forceResolver: true)
-    getAllTypePlant(pages: TypePlantListRequest ): TypePlantList @goField(forceResolver: true)
+
+    """
+    Получить список всех типов растений с возможностью постраничного запроса
+    """
+    getAllTypePlant(pages: TypePlantListRequest): TypePlantList @goField(forceResolver: true)
 }
 
+"""
+Мутации для управления типами растений
+"""
 type TypePlantMutation {
+    """
+    Создать новый тип растения
+    """
     createTypePlant(input: InputFormTypePlantRequest): TypePlant @goField(forceResolver: true)
+
+    """
+    Обновить информацию о типе растения
+    """
     updateTypePlant(input: InputTypePlantRequest): TypePlant @goField(forceResolver: true)
+
+    """
+    Добавить сущность экоморфа к типу растения
+    """
     addEcomorphsEntityToTypePlant(input: InputTypePlant_EcomorphsEntityRequest): TypePlant @goField(forceResolver: true)
+
+    """
+    Удалить тип растения
+    """
     deleteTypePlant(id: ID!): BoolResponse @goField(forceResolver: true)
 }
 
+"""
+Информация о типе растения
+"""
 type TypePlant {
+    """
+    Уникальный идентификатор типа растения
+    """
     id: IdentifierType!
+
+    """
+    Название типа растения
+    """
     title: String
+
+    """
+    Подзаголовок типа растения
+    """
     subtitle: String
+
+    """
+    Список связанных с типом растения сущностей экоморфов
+    """
     ecomorphsEntity: [EcomorphsEntity]
+
+    """
+    Дата и время создания
+    """
     createdAt: Timestamp
+
+    """
+    Дата и время последнего обновления
+    """
     updatedAt: Timestamp
-    deletedAt : Timestamp
+
+    """
+    Дата и время удаления (если тип растения удален)
+    """
+    deletedAt: Timestamp
+
+    """
+    Изображение типа растения
+    """
     img: Img
+
+    """
+    Идентификатор пользователя
+    """
     userId: IdentifierType
 }
 
+"""
+Входные данные для создания или обновления информации о типе растения
+"""
 input TypePlantInput {
+    """
+    Уникальный идентификатор типа растения
+    """
     id: IdentifierInput!
+
+    """
+    Название типа растения
+    """
     title: String
+
+    """
+    Подзаголовок типа растения
+    """
     subtitle: String
+
+    """
+    Список связанных с типом растения сущностей экоморфов
+    """
     ecomorphsEntity: [EcomorphsEntityInput]
+
+    """
+    Идентификатор пользователя
+    """
     userId: IdentifierInput
 }
 
+"""
+Список типов растений с информацией о страницах
+"""
 type TypePlantList {
+    """
+    Информация о странице
+    """
     page: PagesResponse
+
+    """
+    Список типов растений
+    """
     list: [TypePlant]
 }
 
-input InputFormTypePlantRequest  {
+
+"""
+Входные данные для создания или обновления информации о типе растения
+"""
+input InputFormTypePlantRequest {
+    """
+    Название типа растения
+    """
     title: String
+
+    """
+    Подзаголовок типа растения
+    """
     subtitle: String
+
+    """
+    Список связанных с типом растения сущностей экоморфов
+    """
     ecomorphsEntity: [EcomorphsEntityInput]
+
+    """
+    Изображение типа растения
+    """
     img: ImgInput
 }
 
-input InputTypePlantRequest  {
+"""
+Входные данные для запроса или обновления информации о типе растения
+"""
+input InputTypePlantRequest {
+    """
+    Уникальный идентификатор типа растения
+    """
     id: IdentifierInput!
+
+    """
+    Входные данные для создания или обновления информации о типе растения
+    """
     input: InputFormTypePlantRequest
-    publicly : Boolean
+
+    """
+    Флаг публичного доступа к типу растения
+    """
+    publicly: Boolean
 }
 
-input InputTypePlant_EcomorphsEntityRequest  {
+"""
+Входные данные для добавления сущности экоморфа к типу растения
+"""
+input InputTypePlant_EcomorphsEntityRequest {
+    """
+    Уникальный идентификатор типа растения
+    """
     id: IdentifierInput!
+
+    """
+    Список связанных с типом растения сущностей экоморфов
+    """
     ecomorphsEntity: [EcomorphsEntityInput]!
 }
 
+"""
+Фильтр для списка типов растений
+"""
 input FilterTypePlant {
-    id : [IdentifierInput]
+    """
+    Список уникальных идентификаторов типов растений
+    """
+    id: [IdentifierInput]
+
+    """
+    Поиск по названию типа растений
+    """
     searchTitle: String
+
+    """
+    Список связанных с типом растения сущностей экоморфов
+    """
     ecomorphsEntity: [EcomorphsEntityInput]
 }
 
+"""
+Запрос списка типов растений с фильтром и постраничным запросом
+"""
 input TypePlantListRequest {
+    """
+    Информация о странице
+    """
     page: PagesRequest
+
+    """
+    Фильтр для списка типов растений
+    """
     filter: FilterTypePlant
 }`, BuiltIn: false},
 }
@@ -2698,28 +4157,13 @@ func (ec *executionContext) field_AnalysisQuery_getListAnalysis_args(ctx context
 	return args, nil
 }
 
-func (ec *executionContext) field_AuthMutation_RefreshToken_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_AuthMutation_refreshToken_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 *api.RefreshTokenRequest
 	if tmp, ok := rawArgs["data"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
 		arg0, err = ec.unmarshalORefreshTokenRequest2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐRefreshTokenRequest(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["data"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_AuthMutation_SignUpSuperUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 *api.SignUpUserInput
-	if tmp, ok := rawArgs["data"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
-		arg0, err = ec.unmarshalOSignUpUserInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐSignUpUserInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2735,6 +4179,21 @@ func (ec *executionContext) field_AuthMutation_signInUser_args(ctx context.Conte
 	if tmp, ok := rawArgs["data"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
 		arg0, err = ec.unmarshalOSignInUserInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐSignInUserInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["data"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_AuthMutation_signUpSuperUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *api.SignUpUserInput
+	if tmp, ok := rawArgs["data"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("data"))
+		arg0, err = ec.unmarshalOSignUpUserInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐSignUpUserInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3367,7 +4826,7 @@ func (ec *executionContext) _Analysis_id(ctx context.Context, field graphql.Coll
 	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Analysis_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Analysis_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Analysis",
 		Field:      field,
@@ -3419,7 +4878,7 @@ func (ec *executionContext) _Analysis_createdAt(ctx context.Context, field graph
 	return ec.marshalNTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Analysis_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Analysis_createdAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Analysis",
 		Field:      field,
@@ -3469,7 +4928,7 @@ func (ec *executionContext) _Analysis_updatedAt(ctx context.Context, field graph
 	return ec.marshalNTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Analysis_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Analysis_updatedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Analysis",
 		Field:      field,
@@ -3519,7 +4978,7 @@ func (ec *executionContext) _Analysis_deletedAt(ctx context.Context, field graph
 	return ec.marshalNTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Analysis_deletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Analysis_deletedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Analysis",
 		Field:      field,
@@ -3569,7 +5028,7 @@ func (ec *executionContext) _Analysis_title(ctx context.Context, field graphql.C
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Analysis_title(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Analysis_title(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Analysis",
 		Field:      field,
@@ -3613,7 +5072,7 @@ func (ec *executionContext) _Analysis_typeAnalysis(ctx context.Context, field gr
 	return ec.marshalNTypeAnalysis2githubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTypeAnalysis(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Analysis_typeAnalysis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Analysis_typeAnalysis(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Analysis",
 		Field:      field,
@@ -3654,7 +5113,7 @@ func (ec *executionContext) _Analysis_transect(ctx context.Context, field graphq
 	return ec.marshalOTransect2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTransect(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Analysis_transect(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Analysis_transect(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Analysis",
 		Field:      field,
@@ -3730,7 +5189,7 @@ func (ec *executionContext) _Analysis_path(ctx context.Context, field graphql.Co
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Analysis_path(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Analysis_path(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Analysis",
 		Field:      field,
@@ -3774,7 +5233,7 @@ func (ec *executionContext) _Analysis_userID(ctx context.Context, field graphql.
 	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Analysis_userID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Analysis_userID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Analysis",
 		Field:      field,
@@ -3826,7 +5285,7 @@ func (ec *executionContext) _AnalysisList_page(ctx context.Context, field graphq
 	return ec.marshalNPagesResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPagesResponse(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_AnalysisList_page(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AnalysisList_page(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "AnalysisList",
 		Field:      field,
@@ -3875,7 +5334,7 @@ func (ec *executionContext) _AnalysisList_list(ctx context.Context, field graphq
 	return ec.marshalOAnalysis2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐAnalysis(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_AnalysisList_list(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AnalysisList_list(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "AnalysisList",
 		Field:      field,
@@ -4313,8 +5772,8 @@ func (ec *executionContext) fieldContext_AuthMutation_signUpUser(ctx context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _AuthMutation_SignUpSuperUser(ctx context.Context, field graphql.CollectedField, obj *model.AuthMutation) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AuthMutation_SignUpSuperUser(ctx, field)
+func (ec *executionContext) _AuthMutation_signUpSuperUser(ctx context.Context, field graphql.CollectedField, obj *model.AuthMutation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AuthMutation_signUpSuperUser(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -4341,7 +5800,7 @@ func (ec *executionContext) _AuthMutation_SignUpSuperUser(ctx context.Context, f
 	return ec.marshalOSignInUserResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐSignInUserResponse(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_AuthMutation_SignUpSuperUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AuthMutation_signUpSuperUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "AuthMutation",
 		Field:      field,
@@ -4366,7 +5825,7 @@ func (ec *executionContext) fieldContext_AuthMutation_SignUpSuperUser(ctx contex
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_AuthMutation_SignUpSuperUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_AuthMutation_signUpSuperUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -4433,8 +5892,8 @@ func (ec *executionContext) fieldContext_AuthMutation_signInUser(ctx context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _AuthMutation_RefreshToken(ctx context.Context, field graphql.CollectedField, obj *model.AuthMutation) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AuthMutation_RefreshToken(ctx, field)
+func (ec *executionContext) _AuthMutation_refreshToken(ctx context.Context, field graphql.CollectedField, obj *model.AuthMutation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AuthMutation_refreshToken(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -4461,7 +5920,7 @@ func (ec *executionContext) _AuthMutation_RefreshToken(ctx context.Context, fiel
 	return ec.marshalOSignInUserResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐSignInUserResponse(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_AuthMutation_RefreshToken(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AuthMutation_refreshToken(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "AuthMutation",
 		Field:      field,
@@ -4486,7 +5945,7 @@ func (ec *executionContext) fieldContext_AuthMutation_RefreshToken(ctx context.C
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_AuthMutation_RefreshToken_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_AuthMutation_refreshToken_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -4524,7 +5983,7 @@ func (ec *executionContext) _BoolResponse_result(ctx context.Context, field grap
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_BoolResponse_result(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_BoolResponse_result(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "BoolResponse",
 		Field:      field,
@@ -4568,7 +6027,7 @@ func (ec *executionContext) _Ecomorph_id(ctx context.Context, field graphql.Coll
 	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Ecomorph_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Ecomorph_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Ecomorph",
 		Field:      field,
@@ -4620,7 +6079,7 @@ func (ec *executionContext) _Ecomorph_createdAt(ctx context.Context, field graph
 	return ec.marshalNTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Ecomorph_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Ecomorph_createdAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Ecomorph",
 		Field:      field,
@@ -4670,7 +6129,7 @@ func (ec *executionContext) _Ecomorph_updatedAt(ctx context.Context, field graph
 	return ec.marshalNTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Ecomorph_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Ecomorph_updatedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Ecomorph",
 		Field:      field,
@@ -4720,7 +6179,7 @@ func (ec *executionContext) _Ecomorph_deletedAt(ctx context.Context, field graph
 	return ec.marshalNTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Ecomorph_deletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Ecomorph_deletedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Ecomorph",
 		Field:      field,
@@ -4770,7 +6229,7 @@ func (ec *executionContext) _Ecomorph_title(ctx context.Context, field graphql.C
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Ecomorph_title(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Ecomorph_title(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Ecomorph",
 		Field:      field,
@@ -4814,7 +6273,7 @@ func (ec *executionContext) _Ecomorph_description(ctx context.Context, field gra
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Ecomorph_description(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Ecomorph_description(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Ecomorph",
 		Field:      field,
@@ -4858,7 +6317,7 @@ func (ec *executionContext) _Ecomorph_userID(ctx context.Context, field graphql.
 	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Ecomorph_userID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Ecomorph_userID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Ecomorph",
 		Field:      field,
@@ -5243,7 +6702,7 @@ func (ec *executionContext) _EcomorphsEntity_id(ctx context.Context, field graph
 	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_EcomorphsEntity_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_EcomorphsEntity_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "EcomorphsEntity",
 		Field:      field,
@@ -5292,7 +6751,7 @@ func (ec *executionContext) _EcomorphsEntity_createdAt(ctx context.Context, fiel
 	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_EcomorphsEntity_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_EcomorphsEntity_createdAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "EcomorphsEntity",
 		Field:      field,
@@ -5339,7 +6798,7 @@ func (ec *executionContext) _EcomorphsEntity_updatedAt(ctx context.Context, fiel
 	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_EcomorphsEntity_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_EcomorphsEntity_updatedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "EcomorphsEntity",
 		Field:      field,
@@ -5386,7 +6845,7 @@ func (ec *executionContext) _EcomorphsEntity_deletedAt(ctx context.Context, fiel
 	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_EcomorphsEntity_deletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_EcomorphsEntity_deletedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "EcomorphsEntity",
 		Field:      field,
@@ -5433,7 +6892,7 @@ func (ec *executionContext) _EcomorphsEntity_title(ctx context.Context, field gr
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_EcomorphsEntity_title(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_EcomorphsEntity_title(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "EcomorphsEntity",
 		Field:      field,
@@ -5474,7 +6933,7 @@ func (ec *executionContext) _EcomorphsEntity_displayTable(ctx context.Context, f
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_EcomorphsEntity_displayTable(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_EcomorphsEntity_displayTable(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "EcomorphsEntity",
 		Field:      field,
@@ -5515,7 +6974,7 @@ func (ec *executionContext) _EcomorphsEntity_score(ctx context.Context, field gr
 	return ec.marshalOInt2int32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_EcomorphsEntity_score(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_EcomorphsEntity_score(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "EcomorphsEntity",
 		Field:      field,
@@ -5556,7 +7015,7 @@ func (ec *executionContext) _EcomorphsEntity_description(ctx context.Context, fi
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_EcomorphsEntity_description(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_EcomorphsEntity_description(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "EcomorphsEntity",
 		Field:      field,
@@ -5597,7 +7056,7 @@ func (ec *executionContext) _EcomorphsEntity_ecomorphs(ctx context.Context, fiel
 	return ec.marshalOEcomorph2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_EcomorphsEntity_ecomorphs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_EcomorphsEntity_ecomorphs(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "EcomorphsEntity",
 		Field:      field,
@@ -5654,7 +7113,7 @@ func (ec *executionContext) _EcomorphsEntity_userId(ctx context.Context, field g
 	return ec.marshalOIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_EcomorphsEntity_userId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_EcomorphsEntity_userId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "EcomorphsEntity",
 		Field:      field,
@@ -5703,7 +7162,7 @@ func (ec *executionContext) _EcomorphsEntityList_page(ctx context.Context, field
 	return ec.marshalOPagesResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPagesResponse(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_EcomorphsEntityList_page(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_EcomorphsEntityList_page(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "EcomorphsEntityList",
 		Field:      field,
@@ -5752,7 +7211,7 @@ func (ec *executionContext) _EcomorphsEntityList_list(ctx context.Context, field
 	return ec.marshalOEcomorphsEntity2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsEntity(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_EcomorphsEntityList_list(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_EcomorphsEntityList_list(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "EcomorphsEntityList",
 		Field:      field,
@@ -6154,7 +7613,7 @@ func (ec *executionContext) _IdRequest_id(ctx context.Context, field graphql.Col
 	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_IdRequest_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_IdRequest_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "IdRequest",
 		Field:      field,
@@ -6195,7 +7654,7 @@ func (ec *executionContext) _IdentifierType_applicationName(ctx context.Context,
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_IdentifierType_applicationName(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_IdentifierType_applicationName(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "IdentifierType",
 		Field:      field,
@@ -6236,7 +7695,7 @@ func (ec *executionContext) _IdentifierType_resourceType(ctx context.Context, fi
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_IdentifierType_resourceType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_IdentifierType_resourceType(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "IdentifierType",
 		Field:      field,
@@ -6280,7 +7739,7 @@ func (ec *executionContext) _IdentifierType_resourceId(ctx context.Context, fiel
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_IdentifierType_resourceId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_IdentifierType_resourceId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "IdentifierType",
 		Field:      field,
@@ -6324,7 +7783,7 @@ func (ec *executionContext) _Img_id(ctx context.Context, field graphql.Collected
 	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Img_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Img_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Img",
 		Field:      field,
@@ -6373,7 +7832,7 @@ func (ec *executionContext) _Img_name(ctx context.Context, field graphql.Collect
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Img_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Img_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Img",
 		Field:      field,
@@ -6414,7 +7873,7 @@ func (ec *executionContext) _Img_path(ctx context.Context, field graphql.Collect
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Img_path(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Img_path(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Img",
 		Field:      field,
@@ -6455,7 +7914,7 @@ func (ec *executionContext) _Img_createdAt(ctx context.Context, field graphql.Co
 	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Img_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Img_createdAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Img",
 		Field:      field,
@@ -6502,7 +7961,7 @@ func (ec *executionContext) _Img_updatedAt(ctx context.Context, field graphql.Co
 	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Img_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Img_updatedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Img",
 		Field:      field,
@@ -6549,7 +8008,7 @@ func (ec *executionContext) _Img_deletedAt(ctx context.Context, field graphql.Co
 	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Img_deletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Img_deletedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Img",
 		Field:      field,
@@ -6596,7 +8055,7 @@ func (ec *executionContext) _Img_userId(ctx context.Context, field graphql.Colle
 	return ec.marshalOIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Img_userId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Img_userId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Img",
 		Field:      field,
@@ -6645,7 +8104,7 @@ func (ec *executionContext) _ImgList_page(ctx context.Context, field graphql.Col
 	return ec.marshalOPagesResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPagesResponse(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_ImgList_page(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_ImgList_page(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "ImgList",
 		Field:      field,
@@ -6694,7 +8153,7 @@ func (ec *executionContext) _ImgList_list(ctx context.Context, field graphql.Col
 	return ec.marshalOImg2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImg(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_ImgList_list(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_ImgList_list(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "ImgList",
 		Field:      field,
@@ -6877,7 +8336,7 @@ func (ec *executionContext) _ListEcomorph_page(ctx context.Context, field graphq
 	return ec.marshalOPagesResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPagesResponse(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_ListEcomorph_page(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_ListEcomorph_page(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "ListEcomorph",
 		Field:      field,
@@ -6926,7 +8385,7 @@ func (ec *executionContext) _ListEcomorph_list(ctx context.Context, field graphq
 	return ec.marshalOEcomorph2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorph(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_ListEcomorph_list(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_ListEcomorph_list(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "ListEcomorph",
 		Field:      field,
@@ -6983,7 +8442,7 @@ func (ec *executionContext) _Mutation_ecomorph(ctx context.Context, field graphq
 	return ec.marshalOEcomorphMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐEcomorphMutation(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_ecomorph(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_ecomorph(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -7032,7 +8491,7 @@ func (ec *executionContext) _Mutation_auth(ctx context.Context, field graphql.Co
 	return ec.marshalOAuthMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐAuthMutation(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_auth(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_auth(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -7042,12 +8501,12 @@ func (ec *executionContext) fieldContext_Mutation_auth(ctx context.Context, fiel
 			switch field.Name {
 			case "signUpUser":
 				return ec.fieldContext_AuthMutation_signUpUser(ctx, field)
-			case "SignUpSuperUser":
-				return ec.fieldContext_AuthMutation_SignUpSuperUser(ctx, field)
+			case "signUpSuperUser":
+				return ec.fieldContext_AuthMutation_signUpSuperUser(ctx, field)
 			case "signInUser":
 				return ec.fieldContext_AuthMutation_signInUser(ctx, field)
-			case "RefreshToken":
-				return ec.fieldContext_AuthMutation_RefreshToken(ctx, field)
+			case "refreshToken":
+				return ec.fieldContext_AuthMutation_refreshToken(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AuthMutation", field.Name)
 		},
@@ -7083,7 +8542,7 @@ func (ec *executionContext) _Mutation_ecomorphsEntity(ctx context.Context, field
 	return ec.marshalOEcomorphsEntityMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐEcomorphsEntityMutation(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_ecomorphsEntity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_ecomorphsEntity(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -7132,7 +8591,7 @@ func (ec *executionContext) _Mutation_typePlant(ctx context.Context, field graph
 	return ec.marshalOTypePlantMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTypePlantMutation(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_typePlant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_typePlant(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -7183,7 +8642,7 @@ func (ec *executionContext) _Mutation_trialSite(ctx context.Context, field graph
 	return ec.marshalOTrialSiteMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTrialSiteMutation(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_trialSite(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_trialSite(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -7240,7 +8699,7 @@ func (ec *executionContext) _Mutation_transect(ctx context.Context, field graphq
 	return ec.marshalOTransectMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTransectMutation(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_transect(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_transect(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -7291,7 +8750,7 @@ func (ec *executionContext) _Mutation_analysis(ctx context.Context, field graphq
 	return ec.marshalOAnalysisMutation2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐAnalysisMutation(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_analysis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_analysis(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -7340,7 +8799,7 @@ func (ec *executionContext) _PagesResponse_total(ctx context.Context, field grap
 	return ec.marshalOInt2int32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_PagesResponse_total(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_PagesResponse_total(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "PagesResponse",
 		Field:      field,
@@ -7381,7 +8840,7 @@ func (ec *executionContext) _PagesResponse_page(ctx context.Context, field graph
 	return ec.marshalOInt2int32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_PagesResponse_page(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_PagesResponse_page(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "PagesResponse",
 		Field:      field,
@@ -7422,7 +8881,7 @@ func (ec *executionContext) _PagesResponse_limit(ctx context.Context, field grap
 	return ec.marshalOInt2int32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_PagesResponse_limit(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_PagesResponse_limit(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "PagesResponse",
 		Field:      field,
@@ -7466,7 +8925,7 @@ func (ec *executionContext) _Plant_id(ctx context.Context, field graphql.Collect
 	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Plant_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Plant_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Plant",
 		Field:      field,
@@ -7515,7 +8974,7 @@ func (ec *executionContext) _Plant_coverage(ctx context.Context, field graphql.C
 	return ec.marshalOInt2int32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Plant_coverage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Plant_coverage(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Plant",
 		Field:      field,
@@ -7556,7 +9015,7 @@ func (ec *executionContext) _Plant_count(ctx context.Context, field graphql.Coll
 	return ec.marshalOInt2int32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Plant_count(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Plant_count(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Plant",
 		Field:      field,
@@ -7597,7 +9056,7 @@ func (ec *executionContext) _Plant_typePlant(ctx context.Context, field graphql.
 	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Plant_typePlant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Plant_typePlant(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Plant",
 		Field:      field,
@@ -7658,7 +9117,7 @@ func (ec *executionContext) _Plant_userId(ctx context.Context, field graphql.Col
 	return ec.marshalOIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Plant_userId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Plant_userId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Plant",
 		Field:      field,
@@ -7710,7 +9169,7 @@ func (ec *executionContext) _PlantList_page(ctx context.Context, field graphql.C
 	return ec.marshalNPagesResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPagesResponse(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_PlantList_page(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_PlantList_page(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "PlantList",
 		Field:      field,
@@ -7759,7 +9218,7 @@ func (ec *executionContext) _PlantList_list(ctx context.Context, field graphql.C
 	return ec.marshalOPlant2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPlant(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_PlantList_list(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_PlantList_list(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "PlantList",
 		Field:      field,
@@ -7812,7 +9271,7 @@ func (ec *executionContext) _Query_userQuery(ctx context.Context, field graphql.
 	return ec.marshalOUserQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐUserQuery(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_userQuery(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_userQuery(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -7857,7 +9316,7 @@ func (ec *executionContext) _Query_ecomorph(ctx context.Context, field graphql.C
 	return ec.marshalOEcomorphQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐEcomorphQuery(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_ecomorph(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_ecomorph(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -7904,7 +9363,7 @@ func (ec *executionContext) _Query_ecomorphsEntity(ctx context.Context, field gr
 	return ec.marshalOEcomorphsEntityQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐEcomorphsEntityQuery(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_ecomorphsEntity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_ecomorphsEntity(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -7951,7 +9410,7 @@ func (ec *executionContext) _Query_typePlant(ctx context.Context, field graphql.
 	return ec.marshalOTypePlantQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTypePlantQuery(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_typePlant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_typePlant(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -7998,7 +9457,7 @@ func (ec *executionContext) _Query_trialSite(ctx context.Context, field graphql.
 	return ec.marshalOTrialSiteQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTrialSiteQuery(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_trialSite(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_trialSite(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -8049,7 +9508,7 @@ func (ec *executionContext) _Query_transect(ctx context.Context, field graphql.C
 	return ec.marshalOTransectQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐTransectQuery(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_transect(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_transect(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -8096,7 +9555,7 @@ func (ec *executionContext) _Query_img(ctx context.Context, field graphql.Collec
 	return ec.marshalOImgQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐImgQuery(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_img(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_img(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -8143,7 +9602,7 @@ func (ec *executionContext) _Query_analysis(ctx context.Context, field graphql.C
 	return ec.marshalOAnalysisQuery2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐAnalysisQuery(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_analysis(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_analysis(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -8264,7 +9723,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query___schema(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query___schema(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -8322,7 +9781,7 @@ func (ec *executionContext) _SignInUserResponse_status(ctx context.Context, fiel
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_SignInUserResponse_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_SignInUserResponse_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "SignInUserResponse",
 		Field:      field,
@@ -8366,7 +9825,7 @@ func (ec *executionContext) _SignInUserResponse_access_token(ctx context.Context
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_SignInUserResponse_access_token(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_SignInUserResponse_access_token(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "SignInUserResponse",
 		Field:      field,
@@ -8410,7 +9869,7 @@ func (ec *executionContext) _SignInUserResponse_refresh_token(ctx context.Contex
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_SignInUserResponse_refresh_token(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_SignInUserResponse_refresh_token(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "SignInUserResponse",
 		Field:      field,
@@ -8451,7 +9910,7 @@ func (ec *executionContext) _Timestamp_seconds(ctx context.Context, field graphq
 	return ec.marshalOInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Timestamp_seconds(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Timestamp_seconds(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Timestamp",
 		Field:      field,
@@ -8492,7 +9951,7 @@ func (ec *executionContext) _Timestamp_nanos(ctx context.Context, field graphql.
 	return ec.marshalOInt2int32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Timestamp_nanos(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Timestamp_nanos(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Timestamp",
 		Field:      field,
@@ -8536,7 +9995,7 @@ func (ec *executionContext) _Transect_id(ctx context.Context, field graphql.Coll
 	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Transect_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Transect_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Transect",
 		Field:      field,
@@ -8585,7 +10044,7 @@ func (ec *executionContext) _Transect_title(ctx context.Context, field graphql.C
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Transect_title(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Transect_title(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Transect",
 		Field:      field,
@@ -8626,7 +10085,7 @@ func (ec *executionContext) _Transect_covered(ctx context.Context, field graphql
 	return ec.marshalOInt2int32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Transect_covered(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Transect_covered(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Transect",
 		Field:      field,
@@ -8667,7 +10126,7 @@ func (ec *executionContext) _Transect_rating(ctx context.Context, field graphql.
 	return ec.marshalOInt2int32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Transect_rating(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Transect_rating(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Transect",
 		Field:      field,
@@ -8708,7 +10167,7 @@ func (ec *executionContext) _Transect_square(ctx context.Context, field graphql.
 	return ec.marshalOInt2int32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Transect_square(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Transect_square(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Transect",
 		Field:      field,
@@ -8749,7 +10208,7 @@ func (ec *executionContext) _Transect_squareTrialSite(ctx context.Context, field
 	return ec.marshalOInt2int32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Transect_squareTrialSite(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Transect_squareTrialSite(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Transect",
 		Field:      field,
@@ -8790,7 +10249,7 @@ func (ec *executionContext) _Transect_countTypes(ctx context.Context, field grap
 	return ec.marshalOInt2int32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Transect_countTypes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Transect_countTypes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Transect",
 		Field:      field,
@@ -8831,7 +10290,7 @@ func (ec *executionContext) _Transect_dominant(ctx context.Context, field graphq
 	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Transect_dominant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Transect_dominant(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Transect",
 		Field:      field,
@@ -8892,7 +10351,7 @@ func (ec *executionContext) _Transect_subDominant(ctx context.Context, field gra
 	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Transect_subDominant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Transect_subDominant(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Transect",
 		Field:      field,
@@ -8953,7 +10412,7 @@ func (ec *executionContext) _Transect_trialSite(ctx context.Context, field graph
 	return ec.marshalOTrialSite2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTrialSite(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Transect_trialSite(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Transect_trialSite(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Transect",
 		Field:      field,
@@ -9022,7 +10481,7 @@ func (ec *executionContext) _Transect_img(ctx context.Context, field graphql.Col
 	return ec.marshalOImg2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImg(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Transect_img(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Transect_img(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Transect",
 		Field:      field,
@@ -9079,7 +10538,7 @@ func (ec *executionContext) _Transect_createdAt(ctx context.Context, field graph
 	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Transect_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Transect_createdAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Transect",
 		Field:      field,
@@ -9126,7 +10585,7 @@ func (ec *executionContext) _Transect_updatedAt(ctx context.Context, field graph
 	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Transect_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Transect_updatedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Transect",
 		Field:      field,
@@ -9173,7 +10632,7 @@ func (ec *executionContext) _Transect_deletedAt(ctx context.Context, field graph
 	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Transect_deletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Transect_deletedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Transect",
 		Field:      field,
@@ -9220,7 +10679,7 @@ func (ec *executionContext) _Transect_userId(ctx context.Context, field graphql.
 	return ec.marshalOIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Transect_userId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Transect_userId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Transect",
 		Field:      field,
@@ -9269,7 +10728,7 @@ func (ec *executionContext) _TransectList_page(ctx context.Context, field graphq
 	return ec.marshalOPagesResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPagesResponse(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TransectList_page(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TransectList_page(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TransectList",
 		Field:      field,
@@ -9318,7 +10777,7 @@ func (ec *executionContext) _TransectList_list(ctx context.Context, field graphq
 	return ec.marshalOTransect2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTransect(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TransectList_list(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TransectList_list(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TransectList",
 		Field:      field,
@@ -9844,7 +11303,7 @@ func (ec *executionContext) _TrialSite_id(ctx context.Context, field graphql.Col
 	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TrialSite_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TrialSite_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TrialSite",
 		Field:      field,
@@ -9893,7 +11352,7 @@ func (ec *executionContext) _TrialSite_title(ctx context.Context, field graphql.
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TrialSite_title(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TrialSite_title(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TrialSite",
 		Field:      field,
@@ -9934,7 +11393,7 @@ func (ec *executionContext) _TrialSite_covered(ctx context.Context, field graphq
 	return ec.marshalOInt2int32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TrialSite_covered(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TrialSite_covered(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TrialSite",
 		Field:      field,
@@ -9975,7 +11434,7 @@ func (ec *executionContext) _TrialSite_rating(ctx context.Context, field graphql
 	return ec.marshalOInt2int32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TrialSite_rating(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TrialSite_rating(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TrialSite",
 		Field:      field,
@@ -10016,7 +11475,7 @@ func (ec *executionContext) _TrialSite_countTypes(ctx context.Context, field gra
 	return ec.marshalOInt2int32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TrialSite_countTypes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TrialSite_countTypes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TrialSite",
 		Field:      field,
@@ -10057,7 +11516,7 @@ func (ec *executionContext) _TrialSite_dominant(ctx context.Context, field graph
 	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TrialSite_dominant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TrialSite_dominant(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TrialSite",
 		Field:      field,
@@ -10118,7 +11577,7 @@ func (ec *executionContext) _TrialSite_subDominant(ctx context.Context, field gr
 	return ec.marshalOTypePlant2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TrialSite_subDominant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TrialSite_subDominant(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TrialSite",
 		Field:      field,
@@ -10179,7 +11638,7 @@ func (ec *executionContext) _TrialSite_img(ctx context.Context, field graphql.Co
 	return ec.marshalOImg2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImg(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TrialSite_img(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TrialSite_img(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TrialSite",
 		Field:      field,
@@ -10236,7 +11695,7 @@ func (ec *executionContext) _TrialSite_plant(ctx context.Context, field graphql.
 	return ec.marshalOPlant2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPlant(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TrialSite_plant(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TrialSite_plant(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TrialSite",
 		Field:      field,
@@ -10289,7 +11748,7 @@ func (ec *executionContext) _TrialSite_createdAt(ctx context.Context, field grap
 	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TrialSite_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TrialSite_createdAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TrialSite",
 		Field:      field,
@@ -10336,7 +11795,7 @@ func (ec *executionContext) _TrialSite_updatedAt(ctx context.Context, field grap
 	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TrialSite_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TrialSite_updatedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TrialSite",
 		Field:      field,
@@ -10383,7 +11842,7 @@ func (ec *executionContext) _TrialSite_deletedAt(ctx context.Context, field grap
 	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TrialSite_deletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TrialSite_deletedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TrialSite",
 		Field:      field,
@@ -10430,7 +11889,7 @@ func (ec *executionContext) _TrialSite_userId(ctx context.Context, field graphql
 	return ec.marshalOIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TrialSite_userId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TrialSite_userId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TrialSite",
 		Field:      field,
@@ -10479,7 +11938,7 @@ func (ec *executionContext) _TrialSiteList_page(ctx context.Context, field graph
 	return ec.marshalOPagesResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPagesResponse(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TrialSiteList_page(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TrialSiteList_page(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TrialSiteList",
 		Field:      field,
@@ -10528,7 +11987,7 @@ func (ec *executionContext) _TrialSiteList_list(ctx context.Context, field graph
 	return ec.marshalOTrialSite2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTrialSite(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TrialSiteList_list(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TrialSiteList_list(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TrialSiteList",
 		Field:      field,
@@ -11340,7 +12799,7 @@ func (ec *executionContext) _TypePlant_id(ctx context.Context, field graphql.Col
 	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TypePlant_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TypePlant_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TypePlant",
 		Field:      field,
@@ -11389,7 +12848,7 @@ func (ec *executionContext) _TypePlant_title(ctx context.Context, field graphql.
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TypePlant_title(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TypePlant_title(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TypePlant",
 		Field:      field,
@@ -11430,7 +12889,7 @@ func (ec *executionContext) _TypePlant_subtitle(ctx context.Context, field graph
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TypePlant_subtitle(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TypePlant_subtitle(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TypePlant",
 		Field:      field,
@@ -11471,7 +12930,7 @@ func (ec *executionContext) _TypePlant_ecomorphsEntity(ctx context.Context, fiel
 	return ec.marshalOEcomorphsEntity2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐEcomorphsEntity(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TypePlant_ecomorphsEntity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TypePlant_ecomorphsEntity(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TypePlant",
 		Field:      field,
@@ -11534,7 +12993,7 @@ func (ec *executionContext) _TypePlant_createdAt(ctx context.Context, field grap
 	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TypePlant_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TypePlant_createdAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TypePlant",
 		Field:      field,
@@ -11581,7 +13040,7 @@ func (ec *executionContext) _TypePlant_updatedAt(ctx context.Context, field grap
 	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TypePlant_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TypePlant_updatedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TypePlant",
 		Field:      field,
@@ -11628,7 +13087,7 @@ func (ec *executionContext) _TypePlant_deletedAt(ctx context.Context, field grap
 	return ec.marshalOTimestamp2ᚖgoogleᚗgolangᚗorgᚋprotobufᚋtypesᚋknownᚋtimestamppbᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TypePlant_deletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TypePlant_deletedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TypePlant",
 		Field:      field,
@@ -11675,7 +13134,7 @@ func (ec *executionContext) _TypePlant_img(ctx context.Context, field graphql.Co
 	return ec.marshalOImg2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImg(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TypePlant_img(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TypePlant_img(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TypePlant",
 		Field:      field,
@@ -11732,7 +13191,7 @@ func (ec *executionContext) _TypePlant_userId(ctx context.Context, field graphql
 	return ec.marshalOIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TypePlant_userId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TypePlant_userId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TypePlant",
 		Field:      field,
@@ -11781,7 +13240,7 @@ func (ec *executionContext) _TypePlantList_page(ctx context.Context, field graph
 	return ec.marshalOPagesResponse2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐPagesResponse(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TypePlantList_page(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TypePlantList_page(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TypePlantList",
 		Field:      field,
@@ -11830,7 +13289,7 @@ func (ec *executionContext) _TypePlantList_list(ctx context.Context, field graph
 	return ec.marshalOTypePlant2ᚕᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐTypePlant(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_TypePlantList_list(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_TypePlantList_list(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TypePlantList",
 		Field:      field,
@@ -12296,7 +13755,7 @@ func (ec *executionContext) _User_id(ctx context.Context, field graphql.Collecte
 	return ec.marshalNIdentifierType2ᚖgithubᚗcomᚋinfobloxopenᚋatlasᚑappᚑtoolkitᚋv2ᚋrpcᚋresourceᚐIdentifier(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_User_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_User_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "User",
 		Field:      field,
@@ -12348,7 +13807,7 @@ func (ec *executionContext) _User_name(ctx context.Context, field graphql.Collec
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_User_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_User_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "User",
 		Field:      field,
@@ -12392,7 +13851,7 @@ func (ec *executionContext) _User_email(ctx context.Context, field graphql.Colle
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_User_email(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_User_email(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "User",
 		Field:      field,
@@ -12436,7 +13895,7 @@ func (ec *executionContext) _User_password(ctx context.Context, field graphql.Co
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_User_password(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_User_password(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "User",
 		Field:      field,
@@ -12477,7 +13936,7 @@ func (ec *executionContext) _User_role(ctx context.Context, field graphql.Collec
 	return ec.marshalORoleType2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgraphqlᚋgraphᚋmodelᚐRoleType(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_User_role(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_User_role(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "User",
 		Field:      field,
@@ -12518,7 +13977,7 @@ func (ec *executionContext) _UserQuery_getMe(ctx context.Context, field graphql.
 	return ec.marshalOUser2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐUser(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_UserQuery_getMe(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_UserQuery_getMe(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "UserQuery",
 		Field:      field,
@@ -12574,7 +14033,7 @@ func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Directive_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Directive_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Directive",
 		Field:      field,
@@ -12615,7 +14074,7 @@ func (ec *executionContext) ___Directive_description(ctx context.Context, field 
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Directive_description(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Directive_description(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Directive",
 		Field:      field,
@@ -12659,7 +14118,7 @@ func (ec *executionContext) ___Directive_locations(ctx context.Context, field gr
 	return ec.marshalN__DirectiveLocation2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Directive_locations(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Directive_locations(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Directive",
 		Field:      field,
@@ -12703,7 +14162,7 @@ func (ec *executionContext) ___Directive_args(ctx context.Context, field graphql
 	return ec.marshalN__InputValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐInputValueᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Directive_args(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Directive_args(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Directive",
 		Field:      field,
@@ -12757,7 +14216,7 @@ func (ec *executionContext) ___Directive_isRepeatable(ctx context.Context, field
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Directive_isRepeatable(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Directive_isRepeatable(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Directive",
 		Field:      field,
@@ -12801,7 +14260,7 @@ func (ec *executionContext) ___EnumValue_name(ctx context.Context, field graphql
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___EnumValue_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___EnumValue_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__EnumValue",
 		Field:      field,
@@ -12842,7 +14301,7 @@ func (ec *executionContext) ___EnumValue_description(ctx context.Context, field 
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___EnumValue_description(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___EnumValue_description(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__EnumValue",
 		Field:      field,
@@ -12886,7 +14345,7 @@ func (ec *executionContext) ___EnumValue_isDeprecated(ctx context.Context, field
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___EnumValue_isDeprecated(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___EnumValue_isDeprecated(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__EnumValue",
 		Field:      field,
@@ -12927,7 +14386,7 @@ func (ec *executionContext) ___EnumValue_deprecationReason(ctx context.Context, 
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___EnumValue_deprecationReason(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___EnumValue_deprecationReason(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__EnumValue",
 		Field:      field,
@@ -12971,7 +14430,7 @@ func (ec *executionContext) ___Field_name(ctx context.Context, field graphql.Col
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Field_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Field_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Field",
 		Field:      field,
@@ -13012,7 +14471,7 @@ func (ec *executionContext) ___Field_description(ctx context.Context, field grap
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Field_description(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Field_description(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Field",
 		Field:      field,
@@ -13056,7 +14515,7 @@ func (ec *executionContext) ___Field_args(ctx context.Context, field graphql.Col
 	return ec.marshalN__InputValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐInputValueᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Field_args(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Field_args(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Field",
 		Field:      field,
@@ -13110,7 +14569,7 @@ func (ec *executionContext) ___Field_type(ctx context.Context, field graphql.Col
 	return ec.marshalN__Type2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐType(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Field_type(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Field_type(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Field",
 		Field:      field,
@@ -13176,7 +14635,7 @@ func (ec *executionContext) ___Field_isDeprecated(ctx context.Context, field gra
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Field_isDeprecated(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Field_isDeprecated(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Field",
 		Field:      field,
@@ -13217,7 +14676,7 @@ func (ec *executionContext) ___Field_deprecationReason(ctx context.Context, fiel
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Field_deprecationReason(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Field_deprecationReason(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Field",
 		Field:      field,
@@ -13261,7 +14720,7 @@ func (ec *executionContext) ___InputValue_name(ctx context.Context, field graphq
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___InputValue_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___InputValue_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__InputValue",
 		Field:      field,
@@ -13302,7 +14761,7 @@ func (ec *executionContext) ___InputValue_description(ctx context.Context, field
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___InputValue_description(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___InputValue_description(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__InputValue",
 		Field:      field,
@@ -13346,7 +14805,7 @@ func (ec *executionContext) ___InputValue_type(ctx context.Context, field graphq
 	return ec.marshalN__Type2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐType(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___InputValue_type(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___InputValue_type(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__InputValue",
 		Field:      field,
@@ -13409,7 +14868,7 @@ func (ec *executionContext) ___InputValue_defaultValue(ctx context.Context, fiel
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___InputValue_defaultValue(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___InputValue_defaultValue(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__InputValue",
 		Field:      field,
@@ -13450,7 +14909,7 @@ func (ec *executionContext) ___Schema_description(ctx context.Context, field gra
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Schema_description(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Schema_description(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Schema",
 		Field:      field,
@@ -13494,7 +14953,7 @@ func (ec *executionContext) ___Schema_types(ctx context.Context, field graphql.C
 	return ec.marshalN__Type2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐTypeᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Schema_types(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Schema_types(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Schema",
 		Field:      field,
@@ -13560,7 +15019,7 @@ func (ec *executionContext) ___Schema_queryType(ctx context.Context, field graph
 	return ec.marshalN__Type2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐType(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Schema_queryType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Schema_queryType(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Schema",
 		Field:      field,
@@ -13623,7 +15082,7 @@ func (ec *executionContext) ___Schema_mutationType(ctx context.Context, field gr
 	return ec.marshalO__Type2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐType(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Schema_mutationType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Schema_mutationType(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Schema",
 		Field:      field,
@@ -13686,7 +15145,7 @@ func (ec *executionContext) ___Schema_subscriptionType(ctx context.Context, fiel
 	return ec.marshalO__Type2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐType(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Schema_subscriptionType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Schema_subscriptionType(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Schema",
 		Field:      field,
@@ -13752,7 +15211,7 @@ func (ec *executionContext) ___Schema_directives(ctx context.Context, field grap
 	return ec.marshalN__Directive2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirectiveᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Schema_directives(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Schema_directives(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Schema",
 		Field:      field,
@@ -13808,7 +15267,7 @@ func (ec *executionContext) ___Type_kind(ctx context.Context, field graphql.Coll
 	return ec.marshalN__TypeKind2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Type_kind(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Type_kind(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Type",
 		Field:      field,
@@ -13849,7 +15308,7 @@ func (ec *executionContext) ___Type_name(ctx context.Context, field graphql.Coll
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Type_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Type_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Type",
 		Field:      field,
@@ -13890,7 +15349,7 @@ func (ec *executionContext) ___Type_description(ctx context.Context, field graph
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Type_description(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Type_description(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Type",
 		Field:      field,
@@ -13997,7 +15456,7 @@ func (ec *executionContext) ___Type_interfaces(ctx context.Context, field graphq
 	return ec.marshalO__Type2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐTypeᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Type_interfaces(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Type_interfaces(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Type",
 		Field:      field,
@@ -14060,7 +15519,7 @@ func (ec *executionContext) ___Type_possibleTypes(ctx context.Context, field gra
 	return ec.marshalO__Type2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐTypeᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Type_possibleTypes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Type_possibleTypes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Type",
 		Field:      field,
@@ -14185,7 +15644,7 @@ func (ec *executionContext) ___Type_inputFields(ctx context.Context, field graph
 	return ec.marshalO__InputValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐInputValueᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Type_inputFields(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Type_inputFields(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Type",
 		Field:      field,
@@ -14236,7 +15695,7 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 	return ec.marshalO__Type2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐType(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Type_ofType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Type_ofType(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Type",
 		Field:      field,
@@ -14299,7 +15758,7 @@ func (ec *executionContext) ___Type_specifiedByURL(ctx context.Context, field gr
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Type_specifiedByURL(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Type_specifiedByURL(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Type",
 		Field:      field,
@@ -15137,7 +16596,7 @@ func (ec *executionContext) unmarshalInputInputFormTransectRequest(ctx context.C
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"title", "covered", "rating", "square", "squareTrialSite", "countTypes", "img", "trialSite", "dominant", "subDominant"}
+	fieldsInOrder := [...]string{"title", "covered", "rating", "square", "squareTrialSite", "img", "trialSite", "dominant", "subDominant"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -15179,13 +16638,6 @@ func (ec *executionContext) unmarshalInputInputFormTransectRequest(ctx context.C
 				return it, err
 			}
 			it.SquareTrialSite = data
-		case "countTypes":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("countTypes"))
-			data, err := ec.unmarshalOInt2int32(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CountTypes = data
 		case "img":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("img"))
 			data, err := ec.unmarshalOImgInput2ᚖgithubᚗcomᚋsergey23144VᚋBotanyBackendᚋserversᚋgᚑrpcᚋapiᚐImg(ctx, v)
@@ -16522,7 +17974,7 @@ func (ec *executionContext) _AuthMutation(ctx context.Context, sel ast.Selection
 		case "signUpUser":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -16552,16 +18004,16 @@ func (ec *executionContext) _AuthMutation(ctx context.Context, sel ast.Selection
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "SignUpSuperUser":
+		case "signUpSuperUser":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._AuthMutation_SignUpSuperUser(ctx, field, obj)
+				res = ec._AuthMutation_signUpSuperUser(ctx, field, obj)
 				return res
 			}
 
@@ -16588,7 +18040,7 @@ func (ec *executionContext) _AuthMutation(ctx context.Context, sel ast.Selection
 		case "signInUser":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -16618,16 +18070,16 @@ func (ec *executionContext) _AuthMutation(ctx context.Context, sel ast.Selection
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "RefreshToken":
+		case "refreshToken":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._AuthMutation_RefreshToken(ctx, field, obj)
+				res = ec._AuthMutation_refreshToken(ctx, field, obj)
 				return res
 			}
 
@@ -17139,7 +18591,7 @@ func (ec *executionContext) _EcomorphsEntityMutation(ctx context.Context, sel as
 		case "insertEcomorphEntity":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -17172,7 +18624,7 @@ func (ec *executionContext) _EcomorphsEntityMutation(ctx context.Context, sel as
 		case "updateEcomorphEntity":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -17205,7 +18657,7 @@ func (ec *executionContext) _EcomorphsEntityMutation(ctx context.Context, sel as
 		case "deleteEcomorphEntityByID":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -17272,7 +18724,7 @@ func (ec *executionContext) _EcomorphsEntityQuery(ctx context.Context, sel ast.S
 		case "getEcomorphEntityByID":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -17305,7 +18757,7 @@ func (ec *executionContext) _EcomorphsEntityQuery(ctx context.Context, sel ast.S
 		case "getAllEcomorphEntity":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -17543,7 +18995,7 @@ func (ec *executionContext) _ImgQuery(ctx context.Context, sel ast.SelectionSet,
 		case "getImgByID":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -17576,7 +19028,7 @@ func (ec *executionContext) _ImgQuery(ctx context.Context, sel ast.SelectionSet,
 		case "getListImg":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -17887,7 +19339,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		case "userQuery":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -17906,7 +19358,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		case "ecomorph":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -17925,7 +19377,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		case "ecomorphsEntity":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -17944,7 +19396,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		case "typePlant":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -17963,7 +19415,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		case "trialSite":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -17982,7 +19434,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		case "transect":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -18001,7 +19453,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		case "img":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -18020,7 +19472,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		case "analysis":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -18273,7 +19725,7 @@ func (ec *executionContext) _TransectMutation(ctx context.Context, sel ast.Selec
 		case "createTransect":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -18306,7 +19758,7 @@ func (ec *executionContext) _TransectMutation(ctx context.Context, sel ast.Selec
 		case "upTransect":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -18339,7 +19791,7 @@ func (ec *executionContext) _TransectMutation(ctx context.Context, sel ast.Selec
 		case "addTrialSiteToTransect":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -18372,7 +19824,7 @@ func (ec *executionContext) _TransectMutation(ctx context.Context, sel ast.Selec
 		case "deleteTransect":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -18439,7 +19891,7 @@ func (ec *executionContext) _TransectQuery(ctx context.Context, sel ast.Selectio
 		case "getTransect":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -18472,7 +19924,7 @@ func (ec *executionContext) _TransectQuery(ctx context.Context, sel ast.Selectio
 		case "getAllTransect":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -18640,7 +20092,7 @@ func (ec *executionContext) _TrialSiteMutation(ctx context.Context, sel ast.Sele
 		case "createTrialSite":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -18673,7 +20125,7 @@ func (ec *executionContext) _TrialSiteMutation(ctx context.Context, sel ast.Sele
 		case "upTrialSite":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -18706,7 +20158,7 @@ func (ec *executionContext) _TrialSiteMutation(ctx context.Context, sel ast.Sele
 		case "addPlantsToTrialSite":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -18739,7 +20191,7 @@ func (ec *executionContext) _TrialSiteMutation(ctx context.Context, sel ast.Sele
 		case "deleteTrialSite":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -18772,7 +20224,7 @@ func (ec *executionContext) _TrialSiteMutation(ctx context.Context, sel ast.Sele
 		case "createPlant":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -18805,7 +20257,7 @@ func (ec *executionContext) _TrialSiteMutation(ctx context.Context, sel ast.Sele
 		case "updatePlant":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -18838,7 +20290,7 @@ func (ec *executionContext) _TrialSiteMutation(ctx context.Context, sel ast.Sele
 		case "deletePlant":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -18905,7 +20357,7 @@ func (ec *executionContext) _TrialSiteQuery(ctx context.Context, sel ast.Selecti
 		case "getTrialSite":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -18938,7 +20390,7 @@ func (ec *executionContext) _TrialSiteQuery(ctx context.Context, sel ast.Selecti
 		case "getAllTrialSite":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -18971,7 +20423,7 @@ func (ec *executionContext) _TrialSiteQuery(ctx context.Context, sel ast.Selecti
 		case "getPlant":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -19004,7 +20456,7 @@ func (ec *executionContext) _TrialSiteQuery(ctx context.Context, sel ast.Selecti
 		case "getAllPlant":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -19164,7 +20616,7 @@ func (ec *executionContext) _TypePlantMutation(ctx context.Context, sel ast.Sele
 		case "createTypePlant":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -19197,7 +20649,7 @@ func (ec *executionContext) _TypePlantMutation(ctx context.Context, sel ast.Sele
 		case "updateTypePlant":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -19230,7 +20682,7 @@ func (ec *executionContext) _TypePlantMutation(ctx context.Context, sel ast.Sele
 		case "addEcomorphsEntityToTypePlant":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -19263,7 +20715,7 @@ func (ec *executionContext) _TypePlantMutation(ctx context.Context, sel ast.Sele
 		case "deleteTypePlant":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -19330,7 +20782,7 @@ func (ec *executionContext) _TypePlantQuery(ctx context.Context, sel ast.Selecti
 		case "getTypePlant":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -19363,7 +20815,7 @@ func (ec *executionContext) _TypePlantQuery(ctx context.Context, sel ast.Selecti
 		case "getAllTypePlant":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -19450,7 +20902,7 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 		case "role":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
@@ -19517,7 +20969,7 @@ func (ec *executionContext) _UserQuery(ctx context.Context, sel ast.SelectionSet
 		case "getMe":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))

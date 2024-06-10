@@ -1,37 +1,109 @@
-
+"""
+Запрос с идентификатором
+"""
 type IdRequest {
+    """
+    Уникальный идентификатор
+    """
     id: ID!
 }
 
+"""
+Входные данные для постраничного запроса
+"""
 input PagesRequest {
-    limit: Int  @goField(forceResolver: false)
+    """
+    Количество элементов на странице
+    """
+    limit: Int @goField(forceResolver: false)
+
+    """
+    Номер страницы
+    """
     page: Int @goField(forceResolver: false)
 }
 
+"""
+Ответ с информацией о страницах
+"""
 type PagesResponse {
+    """
+    Общее количество элементов
+    """
     total: Int
+
+    """
+    Номер текущей страницы
+    """
     page: Int
+
+    """
+    Количество элементов на странице
+    """
     limit: Int
 }
 
+"""
+Ответ с булевым результатом
+"""
 type BoolResponse {
+    """
+    Результат операции
+    """
     result: Boolean!
 }
 
+"""
+Тип идентификатора ресурса
+"""
 type IdentifierType {
+    """
+    Имя приложения
+    """
     applicationName: String
+
+    """
+    Тип ресурса
+    """
     resourceType: String
+
+    """
+    Уникальный идентификатор ресурса
+    """
     resourceId: String!
 }
 
+"""
+Входные данные для идентификатора ресурса
+"""
 input IdentifierInput {
+    """
+    Имя приложения
+    """
     applicationName: String
+
+    """
+    Тип ресурса
+    """
     resourceType: String
+
+    """
+    Уникальный идентификатор ресурса
+    """
     resourceId: String!
 }
 
+"""
+Тип временной метки
+"""
 type Timestamp {
+    """
+    Секунды с 1970-01-01T00:00:00Z (Unix время)
+    """
     seconds: Int
+
+    """
+    Наносекунды
+    """
     nanos: Int
 }
-

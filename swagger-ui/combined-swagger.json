@@ -1,0 +1,2170 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Botany Calc API",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "Analysis Service",
+      "description": "Endpoints for managing analysis data."
+    },
+    {
+      "name": "Authentication Service",
+      "description": "Endpoints for user authentication."
+    },
+    {
+      "name": "Ecomorph Service",
+      "description": "Endpoints for managing ecomorph data."
+    },
+    {
+      "name": "Image Service",
+      "description": "Endpoints for managing image data."
+    },
+    {
+      "name": "Plant Service",
+      "description": "Endpoints for managing plant data."
+    },
+    {
+      "name": "Transect Service",
+      "description": "Endpoints for managing transect data."
+    },
+    {
+      "name": "Trial Site Service",
+      "description": "Endpoints for managing trial site data."
+    },
+    {
+      "name": "Type Plant Service",
+      "description": "Endpoints for managing type plant data."
+    },
+    {
+      "name": "User Service",
+      "description": "Endpoints for managing user data."
+    }
+  ],
+  "paths": {
+    "/analysis": {
+      "get": {
+        "tags": [
+          "Analysis Service"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Get List of Analysis",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "Page number",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of items per page",
+            "name": "pageSize",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Title to search",
+            "name": "searchTitle",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/AnalysisList"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Analysis Service"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Create Analysis",
+        "parameters": [
+          {
+            "description": "Analysis data",
+            "name": "analysis",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/InputCreateAnalysis"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Analysis"
+            }
+          }
+        }
+      }
+    },
+    "/auth/refreshtoken": {
+      "post": {
+        "tags": [
+          "Authentication Service"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Refresh Access Token",
+        "parameters": [
+          {
+            "description": "Refresh token",
+            "name": "token",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/RefreshTokenRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful token refresh",
+            "schema": {
+              "$ref": "#/definitions/SignInUserResponse"
+            }
+          }
+        }
+      }
+    },
+    "/auth/signin": {
+      "post": {
+        "tags": [
+          "Authentication Service"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Sign In User",
+        "parameters": [
+          {
+            "description": "User sign in credentials",
+            "name": "credentials",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/SignInUserInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful sign in",
+            "schema": {
+              "$ref": "#/definitions/SignInUserResponse"
+            }
+          }
+        }
+      }
+    },
+    "/auth/signup": {
+      "post": {
+        "tags": [
+          "Authentication Service"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Sign Up User",
+        "parameters": [
+          {
+            "description": "User sign up data",
+            "name": "user",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/SignUpUserInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful sign up",
+            "schema": {
+              "$ref": "#/definitions/SignInUserResponse"
+            }
+          }
+        }
+      }
+    },
+    "/auth/signup/superuser": {
+      "post": {
+        "tags": [
+          "Authentication Service"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Sign Up Super User",
+        "parameters": [
+          {
+            "description": "Super user sign up data",
+            "name": "user",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/SignUpUserInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful super user sign up",
+            "schema": {
+              "$ref": "#/definitions/SignInUserResponse"
+            }
+          }
+        }
+      }
+    },
+    "/ecomorphs": {
+      "get": {
+        "tags": [
+          "Ecomorph Service"
+        ],
+        "summary": "Получение списка всех типов",
+        "operationId": "GetListEcomorph",
+        "parameters": [
+          {
+            "type": "object",
+            "description": "Параметры пагинации",
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "$ref": "#/definitions/EcomorphListRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешная операция",
+            "schema": {
+              "$ref": "#/definitions/EcomorphsList"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Ecomorph Service"
+        ],
+        "summary": "Создание новой сущности",
+        "operationId": "InsertEcomorph",
+        "parameters": [
+          {
+            "description": "Данные для создания новой сущности",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/InputEcomorph"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешная операция",
+            "schema": {
+              "$ref": "#/definitions/Ecomorph"
+            }
+          }
+        }
+      }
+    },
+    "/ecomorphs/{id}": {
+      "get": {
+        "tags": [
+          "Ecomorph Service"
+        ],
+        "summary": "Получение сущности по заголовку",
+        "operationId": "GetEcomorphById",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Идентификатор Ecomorph",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешная операция",
+            "schema": {
+              "$ref": "#/definitions/Ecomorph"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Ecomorph Service"
+        ],
+        "summary": "Обновление сущности по заголовку",
+        "operationId": "UpdateEcomorph",
+        "parameters": [
+          {
+            "description": "Данные для обновления сущности",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/InputEcomorph"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешная операция",
+            "schema": {
+              "$ref": "#/definitions/Ecomorph"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Ecomorph Service"
+        ],
+        "summary": "Удаление сущности по заголовку",
+        "operationId": "DeleteEcomorphById",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Идентификатор Ecomorph",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешная операция",
+            "schema": {
+              "$ref": "#/definitions/BoolResponse"
+            }
+          }
+        }
+      }
+    },
+    "/img": {
+      "get": {
+        "tags": [
+          "Image Service"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Get List of Images",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "Page number",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of items per page",
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/ImgList"
+            }
+          }
+        }
+      }
+    },
+    "/img/{id}": {
+      "get": {
+        "tags": [
+          "Image Service"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Get Image by ID",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID of the image to retrieve",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Img"
+            }
+          }
+        }
+      }
+    },
+    "/plant": {
+      "put": {
+        "tags": [
+          "Plant Service"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Update Plant",
+        "parameters": [
+          {
+            "description": "Updated plant data",
+            "name": "plant",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/InputPlantRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Plant"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Plant Service"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Create Plant",
+        "parameters": [
+          {
+            "description": "Plant data",
+            "name": "plant",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/InputPlantRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Plant"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Plant Service"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Delete Plant",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID of the plant to delete",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/BoolResponse"
+            }
+          }
+        }
+      }
+    },
+    "/plant/list": {
+      "get": {
+        "tags": [
+          "Plant Service"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Get List of Plants",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "Page number",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of items per page",
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/PlantList"
+            }
+          }
+        }
+      }
+    },
+    "/plant/{id}": {
+      "get": {
+        "tags": [
+          "Plant Service"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Get Plant by ID",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID of the plant to retrieve",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Plant"
+            }
+          }
+        }
+      }
+    },
+    "/transect": {
+      "put": {
+        "tags": [
+          "Transect Service"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Update Transect",
+        "parameters": [
+          {
+            "description": "Updated transect data",
+            "name": "transect",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/InputTransectRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Transect"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Transect Service"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Create Transect",
+        "parameters": [
+          {
+            "description": "Transect data",
+            "name": "transect",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/InputTransectRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Transect"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Transect Service"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Delete Transect",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID of the transect to delete",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/BoolResponse"
+            }
+          }
+        }
+      }
+    },
+    "/transect/list": {
+      "get": {
+        "tags": [
+          "Transect Service"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Get List of Transects",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "Page number",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of items per page",
+            "name": "pageSize",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Title to search",
+            "name": "searchTitle",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Dominant type",
+            "name": "dominant",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Sub-dominant type",
+            "name": "subDominant",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/TransectList"
+            }
+          }
+        }
+      }
+    },
+    "/transect/{id}": {
+      "get": {
+        "tags": [
+          "Transect Service"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Get Transect by ID",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID of the transect to retrieve",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/Transect"
+            }
+          }
+        }
+      }
+    },
+    "/trialsite": {
+      "put": {
+        "tags": [
+          "Trial Site Service"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Update Trial Site",
+        "parameters": [
+          {
+            "description": "Updated trial site data",
+            "name": "trialSite",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/InputTrialSiteRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/TrialSite"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Trial Site Service"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Create Trial Site",
+        "parameters": [
+          {
+            "description": "Trial site data",
+            "name": "trialSite",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/InputTrialSiteRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/TrialSite"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Trial Site Service"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Delete Trial Site",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID of the trial site to delete",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/BoolResponse"
+            }
+          }
+        }
+      }
+    },
+    "/trialsite/{id}": {
+      "get": {
+        "tags": [
+          "Trial Site Service"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Get Trial Site by ID",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID of the trial site to retrieve",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/TrialSite"
+            }
+          }
+        }
+      }
+    },
+    "/typeplant": {
+      "put": {
+        "tags": [
+          "Type Plant Service"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Update Type Plant",
+        "parameters": [
+          {
+            "description": "Updated type plant data",
+            "name": "typePlant",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/InputTypePlantRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/TypePlant"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Type Plant Service"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Create Type Plant",
+        "parameters": [
+          {
+            "description": "Type plant data",
+            "name": "typePlant",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/InputTypePlantRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/TypePlant"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Type Plant Service"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Delete Type Plant",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID of the type plant to delete",
+            "name": "id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/BoolResponse"
+            }
+          }
+        }
+      }
+    },
+    "/typeplant/list": {
+      "get": {
+        "tags": [
+          "Type Plant Service"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Get List of Type Plants",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "Page number",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int32",
+            "description": "Number of items per page",
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/TypePlantList"
+            }
+          }
+        }
+      }
+    },
+    "/typeplant/{id}": {
+      "get": {
+        "tags": [
+          "Type Plant Service"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Get Type Plant by ID",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID of the type plant to retrieve",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/TypePlant"
+            }
+          }
+        }
+      }
+    },
+    "/user/me": {
+      "get": {
+        "tags": [
+          "User Service"
+        ],
+        "description": "Retrieves information about the currently authenticated user.",
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Get Current User",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          }
+        }
+      }
+    },
+    "/v1/ecomorphs": {
+      "get": {
+        "tags": [
+          "Ecomorph Entity Service"
+        ],
+        "summary": "Получение списка всех сущностей",
+        "operationId": "GetAllEcomorphEntity",
+        "responses": {
+          "200": {
+            "description": "Успешная операция",
+            "schema": {
+              "$ref": "#/definitions/EcomorphsEntityList"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Ecomorph Entity Service"
+        ],
+        "summary": "Создание новой сущности",
+        "operationId": "InsertEcomorphEntity",
+        "parameters": [
+          {
+            "description": "Данные для создания новой сущности",
+            "name": "input",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/InputEcomorphsEntity"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешная операция",
+            "schema": {
+              "$ref": "#/definitions/EcomorphsEntity"
+            }
+          }
+        }
+      }
+    },
+    "/v1/ecomorphs/{id}": {
+      "get": {
+        "tags": [
+          "Ecomorph Entity Service"
+        ],
+        "summary": "Получение сущности по идентификатору",
+        "operationId": "GetEcomorphEntityByID",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Идентификатор Ecomorph",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешная операция",
+            "schema": {
+              "$ref": "#/definitions/EcomorphsEntity"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Ecomorph Entity Service"
+        ],
+        "summary": "Обновление сущности по идентификатору",
+        "operationId": "UpdateEcomorphEntity",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Идентификатор Ecomorph",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Данные для обновления сущности",
+            "name": "input",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/InputEcomorphsEntity"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешная операция",
+            "schema": {
+              "$ref": "#/definitions/EcomorphsEntity"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Ecomorph Entity Service"
+        ],
+        "summary": "Удаление сущности по идентификатору",
+        "operationId": "DeleteEcomorphEntityByID",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Идентификатор Ecomorph",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешная операция",
+            "schema": {
+              "$ref": "#/definitions/BoolResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Analysis": {
+      "type": "object",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "deletedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "id": {
+          "$ref": "#/definitions/rpcIdentifier"
+        },
+        "path": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "transect": {
+          "$ref": "#/definitions/Transect"
+        },
+        "typeAnalysis": {
+          "$ref": "#/definitions/TypeAnalysis"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "userId": {
+          "$ref": "#/definitions/rpcIdentifier"
+        }
+      }
+    },
+    "AnalysisList": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Analysis"
+          }
+        },
+        "page": {
+          "$ref": "#/definitions/PagesResponse"
+        }
+      }
+    },
+    "BoolResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Ecomorph": {
+      "type": "object",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "deletedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/definitions/rpcIdentifier"
+        },
+        "title": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "userId": {
+          "$ref": "#/definitions/rpcIdentifier"
+        }
+      }
+    },
+    "EcomorphListRequest": {
+      "type": "object",
+      "properties": {
+        "filter": {
+          "$ref": "#/definitions/FilterEcomorph"
+        },
+        "page": {
+          "$ref": "#/definitions/PagesRequest"
+        }
+      }
+    },
+    "EcomorphsEntity": {
+      "type": "object",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "deletedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string"
+        },
+        "displayTable": {
+          "type": "string"
+        },
+        "ecomorphs": {
+          "$ref": "#/definitions/Ecomorph"
+        },
+        "id": {
+          "$ref": "#/definitions/rpcIdentifier"
+        },
+        "score": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "title": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "userId": {
+          "$ref": "#/definitions/rpcIdentifier"
+        }
+      }
+    },
+    "EcomorphsEntityList": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EcomorphsEntity"
+          }
+        },
+        "page": {
+          "$ref": "#/definitions/PagesResponse"
+        }
+      }
+    },
+    "EcomorphsList": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Ecomorph"
+          }
+        },
+        "page": {
+          "$ref": "#/definitions/PagesResponse"
+        }
+      }
+    },
+    "FilterAnalysis": {
+      "type": "object",
+      "properties": {
+        "ecomorph": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Ecomorph"
+          }
+        },
+        "id": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/rpcIdentifier"
+          }
+        },
+        "searchTitle": {
+          "type": "string"
+        },
+        "transect": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Transect"
+          }
+        },
+        "typeAnalysis": {
+          "$ref": "#/definitions/TypeAnalysis"
+        }
+      }
+    },
+    "FilterEcomorph": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/rpcIdentifier"
+          }
+        },
+        "publicly": {
+          "type": "boolean"
+        },
+        "searchTitle": {
+          "type": "string"
+        }
+      }
+    },
+    "FilterTransect": {
+      "type": "object",
+      "properties": {
+        "dominant": {
+          "$ref": "#/definitions/TypePlant"
+        },
+        "id": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/rpcIdentifier"
+          }
+        },
+        "searchTitle": {
+          "type": "string"
+        },
+        "subDominant": {
+          "$ref": "#/definitions/TypePlant"
+        }
+      }
+    },
+    "FilterTrialSite": {
+      "type": "object",
+      "properties": {
+        "dominant": {
+          "$ref": "#/definitions/TypePlant"
+        },
+        "id": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/rpcIdentifier"
+          }
+        },
+        "searchTitle": {
+          "type": "string"
+        },
+        "subDominant": {
+          "$ref": "#/definitions/TypePlant"
+        }
+      }
+    },
+    "FilterTypePlant": {
+      "type": "object",
+      "properties": {
+        "ecomorphsEntity": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/EcomorphsEntity"
+          }
+        },
+        "id": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/rpcIdentifier"
+          }
+        },
+        "searchTitle": {
+          "type": "string"
+        }
+      }
+    },
+    "Identifier": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "Img": {
+      "type": "object",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "deletedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "id": {
+          "$ref": "#/definitions/rpcIdentifier"
+        },
+        "name": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "userId": {
+          "$ref": "#/definitions/rpcIdentifier"
+        }
+      }
+    },
+    "ImgList": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Img"
+          }
+        },
+        "page": {
+          "$ref": "#/definitions/PagesResponse"
+        }
+      }
+    },
+    "InputCreateAnalysis": {
+      "type": "object",
+      "properties": {
+        "ecomorph": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Ecomorph"
+          }
+        },
+        "title": {
+          "type": "string"
+        },
+        "transect": {
+          "$ref": "#/definitions/Transect"
+        },
+        "typeAnalysis": {
+          "type": "string",
+          "enum": [
+            "TypeAnalysisPlant",
+            "TypeAnalysisTransect"
+          ]
+        }
+      }
+    },
+    "InputEcomorph": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/rpcIdentifier"
+        },
+        "payload": {
+          "$ref": "#/definitions/InputFormEcomorph"
+        },
+        "publicly": {
+          "type": "boolean"
+        }
+      }
+    },
+    "InputEcomorphsEntity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/Identifier"
+        },
+        "input": {
+          "$ref": "#/definitions/InputFormEcomorphsEntity"
+        },
+        "publicly": {
+          "type": "boolean"
+        }
+      }
+    },
+    "InputFormEcomorph": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "InputFormEcomorphsEntity": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "displayTable": {
+          "type": "string"
+        },
+        "ecomorphs": {
+          "$ref": "#/definitions/Ecomorph"
+        },
+        "score": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "InputFormPlant": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "coverage": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "typePlantId": {
+          "$ref": "#/definitions/TypePlant"
+        }
+      }
+    },
+    "InputFormTransectRequest": {
+      "type": "object",
+      "properties": {
+        "countTypes": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "covered": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "dominant": {
+          "$ref": "#/definitions/TypePlant"
+        },
+        "img": {
+          "$ref": "#/definitions/Img"
+        },
+        "rating": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "square": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "squareTrialSite": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "subDominant": {
+          "$ref": "#/definitions/TypePlant"
+        },
+        "title": {
+          "type": "string"
+        },
+        "trialSite": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/TrialSite"
+          }
+        }
+      }
+    },
+    "InputFormTrialSiteRequest": {
+      "type": "object",
+      "properties": {
+        "Plant": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Plant"
+          }
+        },
+        "countTypes": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "covered": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "dominant": {
+          "$ref": "#/definitions/TypePlant"
+        },
+        "img": {
+          "$ref": "#/definitions/Img"
+        },
+        "rating": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "subDominant": {
+          "$ref": "#/definitions/TypePlant"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "InputFormTypePlantRequest": {
+      "type": "object",
+      "properties": {
+        "ecomorphsEntity": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/EcomorphsEntity"
+          }
+        },
+        "img": {
+          "$ref": "#/definitions/Img"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "InputPlantRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "input": {
+          "$ref": "#/definitions/InputFormPlant"
+        }
+      }
+    },
+    "InputTransectRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "input": {
+          "$ref": "#/definitions/InputFormTransectRequest"
+        }
+      }
+    },
+    "InputTrialSiteRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "input": {
+          "$ref": "#/definitions/InputFormTrialSiteRequest"
+        }
+      }
+    },
+    "InputTypePlantRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "input": {
+          "$ref": "#/definitions/InputFormTypePlantRequest"
+        },
+        "publicly": {
+          "type": "boolean"
+        }
+      }
+    },
+    "PagesRequest": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "page": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "PagesResponse": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "page": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "Plant": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "coverage": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "id": {
+          "$ref": "#/definitions/rpcIdentifier"
+        },
+        "typePlant": {
+          "$ref": "#/definitions/TypePlant"
+        },
+        "userId": {
+          "$ref": "#/definitions/rpcIdentifier"
+        }
+      }
+    },
+    "PlantList": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Plant"
+          }
+        },
+        "page": {
+          "$ref": "#/definitions/PagesResponse"
+        }
+      }
+    },
+    "RefreshTokenRequest": {
+      "type": "object",
+      "properties": {
+        "refresh_token": {
+          "type": "string"
+        }
+      }
+    },
+    "RoleType": {
+      "type": "string",
+      "default": "SuperUser",
+      "enum": [
+        "SuperUser",
+        "NormalUser"
+      ]
+    },
+    "SignInUserInput": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "SignInUserResponse": {
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "type": "string"
+        },
+        "refresh_token": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "SignUpUserInput": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "Timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "Transect": {
+      "type": "object",
+      "properties": {
+        "countTypes": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "covered": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "deletedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "dominant": {
+          "$ref": "#/definitions/TypePlant"
+        },
+        "id": {
+          "$ref": "#/definitions/rpcIdentifier"
+        },
+        "img": {
+          "$ref": "#/definitions/Img"
+        },
+        "rating": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "square": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "squareTrialSite": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "subDominant": {
+          "$ref": "#/definitions/TypePlant"
+        },
+        "title": {
+          "type": "string"
+        },
+        "trialSite": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/TrialSite"
+          }
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "userId": {
+          "$ref": "#/definitions/rpcIdentifier"
+        }
+      }
+    },
+    "TransectList": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Transect"
+          }
+        },
+        "page": {
+          "$ref": "#/definitions/PagesResponse"
+        }
+      }
+    },
+    "TrialSite": {
+      "type": "object",
+      "properties": {
+        "Plant": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Plant"
+          }
+        },
+        "countTypes": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "covered": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "deletedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "dominant": {
+          "$ref": "#/definitions/TypePlant"
+        },
+        "id": {
+          "$ref": "#/definitions/rpcIdentifier"
+        },
+        "img": {
+          "$ref": "#/definitions/Img"
+        },
+        "rating": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "subDominant": {
+          "$ref": "#/definitions/TypePlant"
+        },
+        "title": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "userId": {
+          "$ref": "#/definitions/rpcIdentifier"
+        }
+      }
+    },
+    "TrialSiteList": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/TrialSite"
+          }
+        },
+        "page": {
+          "$ref": "#/definitions/PagesResponse"
+        }
+      }
+    },
+    "TypeAnalysis": {
+      "type": "string",
+      "default": "TypeAnalysisPlant",
+      "enum": [
+        "TypeAnalysisPlant",
+        "TypeAnalysisTransect"
+      ]
+    },
+    "TypePlant": {
+      "type": "object",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "deletedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ecomorphsEntity": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/EcomorphsEntity"
+          }
+        },
+        "id": {
+          "$ref": "#/definitions/rpcIdentifier"
+        },
+        "img": {
+          "$ref": "#/definitions/Img"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "userId": {
+          "$ref": "#/definitions/rpcIdentifier"
+        }
+      }
+    },
+    "TypePlantList": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/TypePlant"
+          }
+        },
+        "page": {
+          "$ref": "#/definitions/PagesResponse"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "email": {
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/definitions/rpcIdentifier"
+        },
+        "name": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/definitions/RoleType"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "UserResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcIdentifier": {
+      "description": "atlas.rpc.Identifier",
+      "type": "string",
+      "format": "string",
+      "title": "A number of application services require a mechanism to\nencode the identity of a particular resource across applications.\nThe resource identifiers consist of the application ID,\nan application-defined resource type,\nand an application-defined ID for that resource",
+      "properties": {
+        "applicationName": {
+          "type": "string",
+          "title": "An application identifier that will be used among\nother infrastructure services to identify the application"
+        },
+        "resourceId": {
+          "type": "string",
+          "title": "An application specific resource identity of a resource"
+        },
+        "resourceType": {
+          "type": "string",
+          "title": "An application specific type name of a resource"
+        }
+      }
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

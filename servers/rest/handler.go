@@ -35,7 +35,14 @@ func (h *Handler) InitRoutes(router *chi.Mux) *chi.Mux {
 
 	router.Use(corsMiddleware.Handler)
 	router.Post("/save", h.services.SaveImg)
+	// Serve the Swagger UI
+	fs := http.FileServer(http.Dir("swagger-ui/swagger-ui-master/dist/"))
+	router.Handle("/swagger-ui/*", http.StripPrefix("/swagger-ui/", fs))
 
+	// Serve the Swagger JSON
+	router.Get("/swagger.json", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, filepath.Join("swagger-ui", "combined-swagger.json"))
+	})
 	router.Handle("/img/*", http.StripPrefix("/img/", http.FileServer(http.Dir("img"))))
 	router.Handle("/analysis/*", http.StripPrefix("/analysis/", http.FileServer(http.Dir("analysis"))))
 

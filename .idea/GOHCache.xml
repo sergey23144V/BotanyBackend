@@ -1151,10 +1151,17 @@
     </option>
     <option name="scannedPathMapping">
       <map>
+        <entry key="file://$USER_HOME$/GolandProjects/SwaggerCombined/main.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1718014732442" />
+            </ScannedPath>
+          </value>
+        </entry>
         <entry key="file://$PROJECT_DIR$/cmd/main.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1717953385404" />
+              <option name="lastModified" value="1718024359860" />
             </ScannedPath>
           </value>
         </entry>
@@ -2158,19 +2165,26 @@
         <entry key="file://$PROJECT_DIR$/servers/rest/cmd.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1714501361666" />
+              <option name="lastModified" value="1718024613433" />
             </ScannedPath>
           </value>
         </entry>
         <entry key="file://$PROJECT_DIR$/servers/rest/handler.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1717333560405" />
+              <option name="lastModified" value="1718024579581" />
               <option name="schema">
                 <list>
                   <option value="Handler" />
                 </list>
               </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/swagger-ui/cmd.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1718014934457" />
             </ScannedPath>
           </value>
         </entry>

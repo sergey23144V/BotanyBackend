@@ -8,6 +8,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.1-0.20200107013213-dc14462fd587+incompatible
 	github.com/go-chi/chi v1.5.5
 	github.com/gofrs/uuid v4.4.0+incompatible
+	github.com/gorilla/mux v1.8.1
 	github.com/infobloxopen/atlas-app-toolkit/v2 v2.2.1-0.20240313220428-5449c0c2a27f
 	github.com/infobloxopen/protoc-gen-gorm v1.1.4
 	github.com/machinebox/graphql v0.2.2

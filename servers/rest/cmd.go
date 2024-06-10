@@ -24,6 +24,7 @@ func StartRest(service *service.Service) {
 		}
 
 		log.Println("Starting server on http://localhost:8080")
+		log.Println("Starting server swagger on http://localhost:8080/swagger-ui/")
 
 		// Запуск сервера
 		if err := srv.ListenAndServe(); err != nil {

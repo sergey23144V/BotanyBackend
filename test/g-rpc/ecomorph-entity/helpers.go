@@ -15,8 +15,8 @@ func CreateEcomorphsEntity(ctx context.Context, client g_rpc.ClientService) *res
 			Title:        "Не переносящий влагу",
 			Ecomorphs:    &api.Ecomorph{Id: ecomorph.CreateEcomorph(ctx, client.Ecomorph)},
 			Description:  "Ну про вид",
-			DisplayTable: "MsKs",
-			Score:        0,
+			DisplayTable: "dt",
+			Score:        2,
 		},
 	}
 

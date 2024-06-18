@@ -45,13 +45,13 @@ func StartServerGraphQl() {
 
 func GetClient() (*client.Client, string) {
 
-	StartServerGraphQl()
+	//StartServerGraphQl()
 
 	time.Sleep(2 * time.Second)
 
 	user := &api.SignInUserInput{
-		Email:    "serg2",
-		Password: "Sergey2222",
+		Email:    "Admin",
+		Password: "Admin",
 	}
 
 	clientServer := client.NewClient("http://localhost:80/api")

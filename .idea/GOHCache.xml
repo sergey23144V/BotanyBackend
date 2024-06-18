@@ -1151,17 +1151,10 @@
     </option>
     <option name="scannedPathMapping">
       <map>
-        <entry key="file://$USER_HOME$/GolandProjects/SwaggerCombined/main.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1718014732442" />
-            </ScannedPath>
-          </value>
-        </entry>
         <entry key="file://$PROJECT_DIR$/cmd/main.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1718024359860" />
+              <option name="lastModified" value="1718740323835" />
             </ScannedPath>
           </value>
         </entry>
@@ -1181,7 +1174,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/auth-helper/HttpAuth.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1715094926573" />
+              <option name="lastModified" value="1718670146852" />
               <option name="schema">
                 <list>
                   <option value="TokenClaims" />
@@ -2181,13 +2174,6 @@
             </ScannedPath>
           </value>
         </entry>
-        <entry key="file://$PROJECT_DIR$/swagger-ui/cmd.go">
-          <value>
-            <ScannedPath>
-              <option name="lastModified" value="1718014934457" />
-            </ScannedPath>
-          </value>
-        </entry>
       </map>
     </option>
     <option name="tableStructMapping">
@@ -2355,6 +2341,6 @@
         <entry key="x" value="x" />
       </map>
     </option>
-    <option name="lastTimeChecked" value="1717953272592" />
+    <option name="lastTimeChecked" value="1718668940799" />
   </component>
 </project>

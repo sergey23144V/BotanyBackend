@@ -21,9 +21,11 @@ func TestCreateEcomorphsEntity(t *testing.T) {
 			name: "Done",
 			Ecomorph: &api.InputEcomorphsEntity{
 				Input: &api.InputFormEcomorphsEntity{
-					Title:       "Семейство",
-					Description: "Ну про вид",
-					Ecomorphs:   &api.Ecomorph{Id: ecomorph.CreateEcomorph(ctx, client.Ecomorph)},
+					Title:        "Семейство",
+					Description:  "Ну про вид",
+					DisplayTable: "dt",
+					Score:        2,
+					Ecomorphs:    &api.Ecomorph{Id: ecomorph.CreateEcomorph(ctx, client.Ecomorph)},
 				},
 			},
 			expected: true,
@@ -32,9 +34,11 @@ func TestCreateEcomorphsEntity(t *testing.T) {
 			name: "Done",
 			Ecomorph: &api.InputEcomorphsEntity{
 				Input: &api.InputFormEcomorphsEntity{
-					Title:       "Семейство",
-					Description: "Ну про вид",
-					Ecomorphs:   &api.Ecomorph{Id: ecomorph.CreateEcomorph(ctx, client.Ecomorph)},
+					Title:        "Семейство",
+					DisplayTable: "dt",
+					Score:        2,
+					Description:  "Ну про вид",
+					Ecomorphs:    &api.Ecomorph{Id: ecomorph.CreateEcomorph(ctx, client.Ecomorph)},
 				},
 				Publicly: true,
 			},
@@ -73,10 +77,9 @@ func TestGetEcomorphEntityById(t *testing.T) {
 
 	for _, testCase := range testTable {
 		t.Run(testCase.name, func(t *testing.T) {
-			result, err := client.Ecomorph_Emtity.GetEcomorphEntityByID(ctx, testCase.idEcomorph)
-			g_rpc.Log(result.Ecomorphs.Title)
+			_, err := client.Ecomorph_Emtity.GetEcomorphEntityByID(ctx, testCase.idEcomorph)
 			if testCase.expected {
-				err := DeleteEcomorphsEntity(ctx, *client, testCase.idEcomorph.Id)
+				//err := DeleteEcomorphsEntity(ctx, *client, testCase.idEcomorph.Id)
 				assert.NoError(t, err, "Done")
 			} else {
 				assert.Error(t, err, "Error")

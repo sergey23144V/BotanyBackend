@@ -64,8 +64,8 @@ func Authorisation(ctx context.Context, authClient api.AuthServiceClient, input 
 func GetToken(ctx context.Context, authClient api.AuthServiceClient) (context.Context, error) {
 
 	input := &api.SignInUserInput{
-		Email:    "serg2",
-		Password: "Sergey2222",
+		Email:    "Admin",
+		Password: "Admin",
 	}
 
 	user, err := authClient.SignInUser(ctx, input)
@@ -111,7 +111,7 @@ func GetAuthClient() (api.AuthServiceClient, *grpc.ClientConn) {
 }
 
 func GetClient() (*ClientService, context.Context) {
-	StartServerGRPC()
+	//StartServerGRPC()
 
 	time.Sleep(2 * time.Second)
 

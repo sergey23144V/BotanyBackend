@@ -49,7 +49,7 @@ func AuthInterceptorGraphQL() func(http.Handler) http.Handler {
 				return
 			}
 
-			if findAuth(string(body)) || reqBody["operationName"].(string) == "IntrospectionQuery" {
+			if findAuth(string(body)) || reqBody["operationName"] != nil && reqBody["operationName"].(string) == "IntrospectionQuery" {
 				next.ServeHTTP(w, r)
 				return
 			}

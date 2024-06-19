@@ -1154,7 +1154,7 @@
         <entry key="file://$PROJECT_DIR$/cmd/main.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1718740323835" />
+              <option name="lastModified" value="1718789655633" />
             </ScannedPath>
           </value>
         </entry>
@@ -1174,7 +1174,7 @@
         <entry key="file://$PROJECT_DIR$/pkg/auth-helper/HttpAuth.go">
           <value>
             <ScannedPath>
-              <option name="lastModified" value="1718670146852" />
+              <option name="lastModified" value="1718749515961" />
               <option name="schema">
                 <list>
                   <option value="TokenClaims" />
@@ -2341,6 +2341,6 @@
         <entry key="x" value="x" />
       </map>
     </option>
-    <option name="lastTimeChecked" value="1718668940799" />
+    <option name="lastTimeChecked" value="1718789240595" />
   </component>
 </project>

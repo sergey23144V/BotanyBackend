@@ -15,7 +15,7 @@ const (
 	Salt              = "hjqrhjqw124617ajfhajs"
 	SigningKey        = "qrkjk#4#%35FSFJlja#4353KSFjH"
 	SigningKeyRefresh = "qrkjk#4#%35FSfdsdgdsfdfJlja#4353KSFjH"
-	TokenTTL          = 2 * time.Minute
+	TokenTTL          = 30 * time.Second
 	TokenTTLRefresh   = 4 * 7 * 24 * time.Hour
 )
 

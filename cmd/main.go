@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/joho/godotenv"
 	"github.com/sergey23144V/BotanyBackend/pkg/repository"
 	"github.com/sergey23144V/BotanyBackend/pkg/service"
 	g_rpc "github.com/sergey23144V/BotanyBackend/servers/g-rpc"
@@ -8,17 +9,23 @@ import (
 	"github.com/sergey23144V/BotanyBackend/servers/graphql"
 	"github.com/sergey23144V/BotanyBackend/servers/rest"
 	"log"
+	"os"
 )
 
 func main() {
 
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Ошибка загрузки файла .env: %v", err)
+	}
+
 	cfgDB := repository.Config{
-		Host:     "db",
-		Port:     "5432",
-		Username: "postgres",
-		DBName:   "botany",
-		SSLMode:  "disable",
-		Password: "123321",
+		Host:     os.Getenv("HOST"),
+		Port:     os.Getenv("PORT"),
+		Username: os.Getenv("USER"),
+		DBName:   os.Getenv("DB"),
+		SSLMode:  os.Getenv("SSLMode"),
+		Password: os.Getenv("PASSWORD"),
 	}
 
 	db, err := repository.ConnectDB(cfgDB)
